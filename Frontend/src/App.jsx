@@ -34,7 +34,29 @@ function IconLock(props) {
   )
 }
 
-function TextField({ label, placeholder, type = 'text', icon, value, onChange }) {
+function IconPhone(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.57 3.57.57a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.24.2 2.45.57 3.57a1 1 0 0 1-.24 1.02l-2.2 2.2Z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
+function IconLocation(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5Z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
+function TextField({ label, placeholder, type = 'text', icon, value, onChange, inputMode, maxLength, pattern }) {
   return (
     <label className="field">
       <div className="fieldLabel">{label}</div>
@@ -44,9 +66,26 @@ function TextField({ label, placeholder, type = 'text', icon, value, onChange })
           className="fieldInput"
           placeholder={placeholder}
           type={type}
+          inputMode={inputMode}
+          maxLength={maxLength}
+          pattern={pattern}
           value={value}
           onChange={(e) => onChange(e.target.value)}
         />
+      </div>
+    </label>
+  )
+}
+
+function SelectField({ label, icon, value, onChange, children }) {
+  return (
+    <label className="field">
+      <div className="fieldLabel">{label}</div>
+      <div className="fieldControl">
+        <span className="fieldIcon">{icon}</span>
+        <select className="fieldSelect" value={value} onChange={(e) => onChange(e.target.value)} required>
+          {children}
+        </select>
       </div>
     </label>
   )
@@ -56,7 +95,7 @@ function TopNav({ variant = 'transparent' }) {
   return (
     <header className={`topbar ${variant === 'solid' ? 'topbarSolid' : ''}`}>
       <Link to="/" className="brand brandLink" aria-label="TradesMap home">
-        <img className="brandLogo" src="/assets/Logo_tradesmap.png" alt="TradesMap" />
+        <img className="brandLogo" src="/assets/logo_tradesmap.png" alt="TradesMap" />
       </Link>
 
       <nav className="navLinks" aria-label="Top navigation">
@@ -109,6 +148,68 @@ function AuthPage({ initialMode = 'login' }) {
   const [email, setEmail] = useState('')
   const [registerPassword, setRegisterPassword] = useState('')
 
+  const [phoneNumber, setPhoneNumber] = useState('')
+  const [address, setAddress] = useState('')
+  const [city, setCity] = useState('')
+  const [stateUS, setStateUS] = useState('')
+  const [zip, setZip] = useState('')
+
+  const usStates = useMemo(
+    () => [
+      { name: 'Alabama', code: 'AL' },
+      { name: 'Alaska', code: 'AK' },
+      { name: 'Arizona', code: 'AZ' },
+      { name: 'Arkansas', code: 'AR' },
+      { name: 'California', code: 'CA' },
+      { name: 'Colorado', code: 'CO' },
+      { name: 'Connecticut', code: 'CT' },
+      { name: 'Delaware', code: 'DE' },
+      { name: 'Florida', code: 'FL' },
+      { name: 'Georgia', code: 'GA' },
+      { name: 'Hawaii', code: 'HI' },
+      { name: 'Idaho', code: 'ID' },
+      { name: 'Illinois', code: 'IL' },
+      { name: 'Indiana', code: 'IN' },
+      { name: 'Iowa', code: 'IA' },
+      { name: 'Kansas', code: 'KS' },
+      { name: 'Kentucky', code: 'KY' },
+      { name: 'Louisiana', code: 'LA' },
+      { name: 'Maine', code: 'ME' },
+      { name: 'Maryland', code: 'MD' },
+      { name: 'Massachusetts', code: 'MA' },
+      { name: 'Michigan', code: 'MI' },
+      { name: 'Minnesota', code: 'MN' },
+      { name: 'Mississippi', code: 'MS' },
+      { name: 'Missouri', code: 'MO' },
+      { name: 'Montana', code: 'MT' },
+      { name: 'Nebraska', code: 'NE' },
+      { name: 'Nevada', code: 'NV' },
+      { name: 'New Hampshire', code: 'NH' },
+      { name: 'New Jersey', code: 'NJ' },
+      { name: 'New Mexico', code: 'NM' },
+      { name: 'New York', code: 'NY' },
+      { name: 'North Carolina', code: 'NC' },
+      { name: 'North Dakota', code: 'ND' },
+      { name: 'Ohio', code: 'OH' },
+      { name: 'Oklahoma', code: 'OK' },
+      { name: 'Oregon', code: 'OR' },
+      { name: 'Pennsylvania', code: 'PA' },
+      { name: 'Rhode Island', code: 'RI' },
+      { name: 'South Carolina', code: 'SC' },
+      { name: 'South Dakota', code: 'SD' },
+      { name: 'Tennessee', code: 'TN' },
+      { name: 'Texas', code: 'TX' },
+      { name: 'Utah', code: 'UT' },
+      { name: 'Vermont', code: 'VT' },
+      { name: 'Virginia', code: 'VA' },
+      { name: 'Washington', code: 'WA' },
+      { name: 'West Virginia', code: 'WV' },
+      { name: 'Wisconsin', code: 'WI' },
+      { name: 'Wyoming', code: 'WY' },
+    ],
+    [],
+  )
+
   const submitLabel = useMemo(() => (mode === 'login' ? 'Log in' : 'Create account'), [mode])
 
   useEffect(() => {
@@ -122,125 +223,149 @@ function AuthPage({ initialMode = 'login' }) {
   }
 
   return (
-    <div className="page">
-      <div className="bg" />
+    <div className="authPage">
+      <div className="bg bgAuth" />
       <div className="bgOverlay" />
 
-      <TopNav variant="transparent" />
+      <main className="authMain">
+        <div className="authBrand" aria-hidden="true">
+          <img className="authLogo" src="/assets/logo_tradesmap.png" alt="" />
+        </div>
 
-      <main className="content">
-        <section className="leftPane" aria-hidden="true">
-          <div className="phoneCard">
-            <img className="phoneImage" src="/assets/appimge.png" alt="" />
+        <div className="authCard authCardCompact">
+          <div className="tabs" role="tablist" aria-label="Authentication tabs">
+            <button
+              type="button"
+              className={`tab ${mode === 'login' ? 'tabActive' : ''}`}
+              role="tab"
+              aria-selected={mode === 'login'}
+              onClick={() => navigate('/login')}
+            >
+              Log in
+            </button>
+            <button
+              type="button"
+              className={`tab ${mode === 'register' ? 'tabActive' : ''}`}
+              role="tab"
+              aria-selected={mode === 'register'}
+              onClick={() => navigate('/register')}
+            >
+              Register
+            </button>
+            <div className={`tabIndicator ${mode === 'login' ? 'tabLeft' : 'tabRight'}`} aria-hidden="true" />
           </div>
-        </section>
 
-        <section className="rightPane">
-          <div className="authCard">
-            <div className="authHeader">
-              <div className="authTitle">Welcome</div>
-              <div className="authSubtitle">Log in or create an account to get started</div>
-            </div>
+          <form className="form" onSubmit={onSubmit}>
+            {mode === 'login' ? (
+              <>
+                <TextField
+                  label=""
+                  placeholder="Username"
+                  icon={<IconUser />}
+                  value={loginUsername}
+                  onChange={setLoginUsername}
+                />
 
-            <div className="tabs" role="tablist" aria-label="Authentication tabs">
-              <button
-                type="button"
-                className={`tab ${mode === 'login' ? 'tabActive' : ''}`}
-                role="tab"
-                aria-selected={mode === 'login'}
-                onClick={() => setMode('login')}
-              >
-                Log in
-              </button>
-              <button
-                type="button"
-                className={`tab ${mode === 'register' ? 'tabActive' : ''}`}
-                role="tab"
-                aria-selected={mode === 'register'}
-                onClick={() => setMode('register')}
-              >
-                Register
-              </button>
-              <div className={`tabIndicator ${mode === 'login' ? 'tabLeft' : 'tabRight'}`} aria-hidden="true" />
-            </div>
+                <TextField
+                  label=""
+                  placeholder="Password"
+                  type="password"
+                  icon={<IconLock />}
+                  value={loginPassword}
+                  onChange={setLoginPassword}
+                />
 
-            <form className="form" onSubmit={onSubmit}>
-              {mode === 'login' ? (
-                <>
-                  <TextField
-                    label="Username"
-                    placeholder="Your username"
-                    icon={<IconUser />}
-                    value={loginUsername}
-                    onChange={setLoginUsername}
-                  />
+                <div className="formRow">
+                  <a className="link" href="#">
+                    Forgot password?
+                  </a>
+                </div>
 
-                  <TextField
-                    label="Password"
-                    placeholder="••••••"
-                    type="password"
-                    icon={<IconLock />}
-                    value={loginPassword}
-                    onChange={setLoginPassword}
-                  />
-
-                  <div className="formRow">
-                    <a className="link" href="#">
-                      Forgot password?
-                    </a>
-                  </div>
-
-                  <button type="submit" className="btn btnPrimary">
-                    {submitLabel}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <TextField
-                    label="Full name"
-                    placeholder="John Doe"
-                    icon={<IconUser />}
-                    value={fullName}
-                    onChange={setFullName}
-                  />
-
-                  <TextField
-                    label="Email"
-                    placeholder="you@email.com"
-                    icon={<IconMail />}
-                    value={email}
-                    onChange={setEmail}
-                  />
-
-                  <TextField
-                    label="Password"
-                    placeholder="Create a password"
-                    type="password"
-                    icon={<IconLock />}
-                    value={registerPassword}
-                    onChange={setRegisterPassword}
-                  />
-
-                  <button type="submit" className="btn btnSuccess">
-                    {submitLabel}
-                  </button>
-                </>
-              )}
-            </form>
-
-            <div className="authBottomNav">
-              {mode === 'login' ? (
-                <button type="button" className="authSwap" onClick={() => navigate('/register')}>
-                  New here? Create an account
+                <button type="submit" className="btn btnPrimary">
+                  {submitLabel}
                 </button>
-              ) : (
-                <button type="button" className="authSwap" onClick={() => navigate('/login')}>
-                  Already have an account? Log in
+              </>
+            ) : (
+              <>
+                <TextField
+                  label=""
+                  placeholder="Full name"
+                  icon={<IconUser />}
+                  value={fullName}
+                  onChange={setFullName}
+                />
+
+                <TextField
+                  label=""
+                  placeholder="Email"
+                  icon={<IconMail />}
+                  value={email}
+                  onChange={setEmail}
+                />
+
+                <TextField
+                  label=""
+                  placeholder="Phone number"
+                  icon={<IconPhone />}
+                  value={phoneNumber}
+                  onChange={setPhoneNumber}
+                  inputMode="tel"
+                />
+
+                <TextField
+                  label=""
+                  placeholder="Address"
+                  icon={<IconLocation />}
+                  value={address}
+                  onChange={setAddress}
+                />
+
+                <TextField
+                  label=""
+                  placeholder="City"
+                  icon={<IconLocation />}
+                  value={city}
+                  onChange={setCity}
+                />
+
+                <SelectField label="" icon={<IconLocation />} value={stateUS} onChange={setStateUS}>
+                  <option value="" disabled>
+                    State
+                  </option>
+                  {usStates.map((s) => (
+                    <option key={s.code} value={s.code}>
+                      {s.name} ({s.code})
+                    </option>
+                  ))}
+                </SelectField>
+
+                <TextField
+                  label=""
+                  placeholder="Zip"
+                  icon={<IconLocation />}
+                  value={zip}
+                  onChange={(v) => setZip(String(v).replace(/\D/g, '').slice(0, 5))}
+                  inputMode="numeric"
+                  maxLength={5}
+                  pattern="\\d{5}"
+                />
+
+                <TextField
+                  label=""
+                  placeholder="Password"
+                  type="password"
+                  icon={<IconLock />}
+                  value={registerPassword}
+                  onChange={setRegisterPassword}
+                />
+
+                <button type="submit" className="btn btnSuccess">
+                  {submitLabel}
                 </button>
-              )}
-            </div>
-          </div>
-        </section>
+              </>
+            )}
+          </form>
+        </div>
       </main>
     </div>
   )
