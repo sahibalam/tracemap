@@ -133,7 +133,7 @@ function TopNav({ variant = 'transparent' }) {
 function HomePage() {
   return (
     <div className="home">
-      <div className="bg" />
+      <div className="bg bgAuth" />
       <div className="bgOverlay" />
       <TopNav variant="transparent" />
 
