@@ -292,6 +292,21 @@ a {
   transition: transform 200ms ease;
 }
 
+.tabs.login .tabIndicator {
+  background: linear-gradient(180deg, var(--blue) 0%, var(--blue2) 100%);
+  box-shadow: 0 12px 24px rgba(15, 78, 169, 0.22);
+}
+
+.tabs.register .tabIndicator {
+  background: linear-gradient(180deg, var(--green) 0%, #249c54 100%);
+  box-shadow: 0 12px 24px rgba(47, 180, 99, 0.2);
+}
+
+.tabs.login .tabActive,
+.tabs.register .tabActive {
+  color: rgba(255, 255, 255, 0.96);
+}
+
 .tabLeft {
   transform: translateX(4px);
 }

@@ -233,7 +233,7 @@ function AuthPage({ initialMode = 'login' }) {
         </div>
 
         <div className="authCard authCardCompact">
-          <div className="tabs" role="tablist" aria-label="Authentication tabs">
+          <div className={`tabs ${mode}`} role="tablist" aria-label="Authentication tabs">
             <button
               type="button"
               className={`tab ${mode === 'login' ? 'tabActive' : ''}`}
