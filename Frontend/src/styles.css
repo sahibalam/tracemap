@@ -55,6 +55,7 @@ a {
   background-image: url('/assets/tradesmapback%20image.png');
   filter: none;
   transform: none;
+  background-position: center top;
 }
 
 .bgOverlay {
@@ -318,6 +319,28 @@ a {
 .form {
   display: grid;
   gap: 14px;
+}
+
+.formGrid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.formGrid3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .formGrid2 {
+    grid-template-columns: 1fr;
+  }
+
+  .formGrid3 {
+    grid-template-columns: 1fr;
+  }
 }
 
 .field {

@@ -56,6 +56,17 @@ function IconLocation(props) {
   )
 }
 
+function IconGlobe(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M12 2a10 10 0 1 0 10 10A10.01 10.01 0 0 0 12 2Zm7.93 9h-3.18a15.7 15.7 0 0 0-1.23-5.02A8.03 8.03 0 0 1 19.93 11ZM12 4c.93 0 2.44 1.83 3.22 7H8.78C9.56 5.83 11.07 4 12 4ZM4.07 13h3.18a15.7 15.7 0 0 0 1.23 5.02A8.03 8.03 0 0 1 4.07 13Zm3.18-2H4.07a8.03 8.03 0 0 1 4.18-5.02A15.7 15.7 0 0 0 7.25 11Zm1.53 2h6.44C14.44 18.17 12.93 20 12 20s-2.44-1.83-3.22-7Zm6.97 5.02A15.7 15.7 0 0 0 16.75 13h3.18a8.03 8.03 0 0 1-4.18 5.02ZM16.75 11a15.7 15.7 0 0 0-1.23-5.02A8.03 8.03 0 0 1 19.93 11Z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
 function TextField({ label, placeholder, type = 'text', icon, value, onChange, inputMode, maxLength, pattern }) {
   return (
     <label className="field">
@@ -153,6 +164,7 @@ function AuthPage({ initialMode = 'login' }) {
   const [city, setCity] = useState('')
   const [stateUS, setStateUS] = useState('')
   const [zip, setZip] = useState('')
+  const [language, setLanguage] = useState('')
 
   const usStates = useMemo(
     () => [
@@ -303,14 +315,24 @@ function AuthPage({ initialMode = 'login' }) {
                   onChange={setEmail}
                 />
 
-                <TextField
-                  label=""
-                  placeholder="Phone number"
-                  icon={<IconPhone />}
-                  value={phoneNumber}
-                  onChange={setPhoneNumber}
-                  inputMode="tel"
-                />
+                <div className="formGrid2">
+                  <TextField
+                    label=""
+                    placeholder="Phone number"
+                    icon={<IconPhone />}
+                    value={phoneNumber}
+                    onChange={setPhoneNumber}
+                    inputMode="tel"
+                  />
+
+                  <SelectField label="" icon={<IconGlobe />} value={language} onChange={setLanguage}>
+                    <option value="" disabled>
+                      Language
+                    </option>
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                  </SelectField>
+                </div>
 
                 <TextField
                   label=""
@@ -320,35 +342,37 @@ function AuthPage({ initialMode = 'login' }) {
                   onChange={setAddress}
                 />
 
-                <TextField
-                  label=""
-                  placeholder="City"
-                  icon={<IconLocation />}
-                  value={city}
-                  onChange={setCity}
-                />
+                <div className="formGrid3">
+                  <TextField
+                    label=""
+                    placeholder="City"
+                    icon={<IconLocation />}
+                    value={city}
+                    onChange={setCity}
+                  />
 
-                <SelectField label="" icon={<IconLocation />} value={stateUS} onChange={setStateUS}>
-                  <option value="" disabled>
-                    State
-                  </option>
-                  {usStates.map((s) => (
-                    <option key={s.code} value={s.code}>
-                      {s.name} ({s.code})
+                  <SelectField label="" icon={<IconLocation />} value={stateUS} onChange={setStateUS}>
+                    <option value="" disabled>
+                      State
                     </option>
-                  ))}
-                </SelectField>
+                    {usStates.map((s) => (
+                      <option key={s.code} value={s.code}>
+                        {s.name} ({s.code})
+                      </option>
+                    ))}
+                  </SelectField>
 
-                <TextField
-                  label=""
-                  placeholder="Zip"
-                  icon={<IconLocation />}
-                  value={zip}
-                  onChange={(v) => setZip(String(v).replace(/\D/g, '').slice(0, 5))}
-                  inputMode="numeric"
-                  maxLength={5}
-                  pattern="\\d{5}"
-                />
+                  <TextField
+                    label=""
+                    placeholder="Zip"
+                    icon={<IconLocation />}
+                    value={zip}
+                    onChange={(v) => setZip(String(v).replace(/\D/g, '').slice(0, 5))}
+                    inputMode="numeric"
+                    maxLength={5}
+                    pattern="\\d{5}"
+                  />
+                </div>
 
                 <TextField
                   label=""
