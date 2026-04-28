@@ -1707,22 +1707,27 @@ function TextField({
   pattern,
   readOnly,
 }) {
+  const inputProps = {
+    className: 'fieldInput',
+    placeholder,
+    type,
+    inputMode,
+    maxLength,
+    readOnly,
+    value,
+    onChange: (e) => onChange?.(e.target.value),
+  }
+
+  if (typeof pattern === 'string' && pattern.trim() !== '') {
+    inputProps.pattern = pattern
+  }
+
   return (
     <label className="field">
       <div className="fieldLabel">{label}</div>
       <div className="fieldControl">
         <span className="fieldIcon">{icon}</span>
-        <input
-          className="fieldInput"
-          placeholder={placeholder}
-          type={type}
-          inputMode={inputMode}
-          maxLength={maxLength}
-          pattern={pattern}
-          readOnly={readOnly}
-          value={value}
-          onChange={(e) => onChange?.(e.target.value)}
-        />
+        <input {...inputProps} />
       </div>
     </label>
   )
