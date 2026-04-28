@@ -2043,10 +2043,7 @@ function AuthPage({ initialMode = 'login' }) {
                     placeholder="Zip"
                     icon={<IconLocation />}
                     value={zip}
-                    onChange={(v) => setZip(String(v).replace(/\D/g, '').slice(0, 5))}
-                    inputMode="numeric"
-                    maxLength={5}
-                    pattern="[0-9]{5}"
+                    onChange={setZip}
                   />
                 </div>
 
