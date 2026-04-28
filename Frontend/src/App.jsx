@@ -1948,7 +1948,7 @@ function AuthPage({ initialMode = 'login' }) {
             <div className={`tabIndicator ${mode === 'login' ? 'tabLeft' : 'tabRight'}`} aria-hidden="true" />
           </div>
 
-          <form className="form" onSubmit={onSubmit}>
+          <form className="form" onSubmit={onSubmit} noValidate={mode === 'register'}>
             {mode === 'login' ? (
               <>
                 <TextField
