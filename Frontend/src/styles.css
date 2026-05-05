@@ -80,14 +80,20 @@ a {
   gap: 18px;
 }
 
+.topbarSolid .topbarInner {
+  max-width: none;
+  margin: 0;
+  padding: 10px 22px;
+}
+
 .topbarCenter {
   flex: 1;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 .topbarSearch {
-  width: min(560px, 100%);
+  width: min(420px, 100%);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -477,7 +483,7 @@ a {
 
 .topbarSolid .brandLogo {
   width: 268px;
-  height: 68px;
+  height: 54px;
   filter: drop-shadow(0 12px 20px rgba(18, 38, 63, 0.12)) brightness(1.02) contrast(1.02);
 }
 
@@ -530,6 +536,22 @@ a {
 .navActions {
   display: flex;
   align-items: center;
+}
+
+.navActionsSolid {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbarAvatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  object-fit: cover;
+  border: 1px solid rgba(18, 38, 63, 0.12);
+  box-shadow: 0 10px 20px rgba(18, 38, 63, 0.1);
+  background: rgba(255, 255, 255, 0.85);
 }
 
 .navPill {
@@ -1176,6 +1198,27 @@ a {
   gap: 10px;
 }
 
+.wizardFieldset {
+  margin: 0;
+  padding: 14px 14px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(18, 38, 63, 0.08);
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.wizardLegend {
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  color: rgba(23, 38, 58, 0.82);
+}
+
+.wizardFieldsetBody {
+  display: grid;
+  gap: 12px;
+}
+
 .wizardChecks {
   display: grid;
   gap: 10px;
@@ -1222,6 +1265,19 @@ a {
 .wizardWideField {
   margin-top: 10px;
 }
+
+ .wizardTextArea {
+  width: 100%;
+  display: block;
+  border-radius: 12px;
+  border: 1px solid rgba(18, 38, 63, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  padding: 12px 12px;
+  outline: none;
+  font-weight: 800;
+  color: rgba(23, 38, 58, 0.82);
+  resize: vertical;
+ }
 
 .wizardProjectList {
   display: grid;

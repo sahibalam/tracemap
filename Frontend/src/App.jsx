@@ -361,13 +361,652 @@ function WizardSummaryPage() {
   )
 }
 
+function CompanyAuthPage({ initialMode = 'login' }) {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const [mode, setMode] = useState(initialMode)
+
+  const [loginUsername, setLoginUsername] = useState('')
+  const [loginPassword, setLoginPassword] = useState('')
+
+  const [companyEmail, setCompanyEmail] = useState('')
+  const [companyPhone, setCompanyPhone] = useState('')
+  const [companyFirstName, setCompanyFirstName] = useState('')
+  const [companyLastName, setCompanyLastName] = useState('')
+  const [companyPassword, setCompanyPassword] = useState('')
+  const [companyLanguage, setCompanyLanguage] = useState('')
+  const [companyRole, setCompanyRole] = useState('')
+  const [companyAcceptTerms, setCompanyAcceptTerms] = useState(false)
+  const [companyAcceptPrivacy, setCompanyAcceptPrivacy] = useState(false)
+
+  const submitLabel = useMemo(() => (mode === 'login' ? 'Log in' : 'Create account'), [mode])
+
+  useEffect(() => {
+    const nextMode = location.pathname === '/company/register' ? 'register' : 'login'
+    setMode(nextMode)
+  }, [location.pathname])
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    if (mode === 'register') {
+      navigate('/company/verify', {
+        state: {
+          email: companyEmail,
+          phoneNumber: companyPhone,
+          firstName: companyFirstName,
+          lastName: companyLastName,
+          language: companyLanguage,
+          role: companyRole,
+          acceptTerms: companyAcceptTerms,
+          acceptPrivacy: companyAcceptPrivacy,
+        },
+      })
+      return
+    }
+
+    // UI only (no backend wiring yet)
+  }
+
+  return (
+    <div className="authPage">
+      <div className="bg bgAuth" />
+      <div className="bgOverlay" />
+
+      <main className="authMain">
+        <div className="authBrand" aria-hidden="true">
+          <img className="authLogo" src="/assets/logo_tradesmap.png" alt="" />
+        </div>
+
+        <div className="authCard authCardCompact">
+          <div className={`tabs ${mode}`} role="tablist" aria-label="Company authentication tabs">
+            <button
+              type="button"
+              className={`tab ${mode === 'login' ? 'tabActive' : ''}`}
+              role="tab"
+              aria-selected={mode === 'login'}
+              onClick={() => navigate('/company/login')}
+            >
+              Log in
+            </button>
+            <button
+              type="button"
+              className={`tab ${mode === 'register' ? 'tabActive' : ''}`}
+              role="tab"
+              aria-selected={mode === 'register'}
+              onClick={() => navigate('/company/register')}
+            >
+              Register
+            </button>
+            <div className={`tabIndicator ${mode === 'login' ? 'tabLeft' : 'tabRight'}`} aria-hidden="true" />
+          </div>
+
+          <form className="form" onSubmit={onSubmit} noValidate={mode === 'register'}>
+            {mode === 'login' ? (
+              <>
+                <TextField label="" placeholder="Username" icon={<IconUser />} value={loginUsername} onChange={setLoginUsername} />
+                <TextField
+                  label=""
+                  placeholder="Password"
+                  type="password"
+                  icon={<IconLock />}
+                  value={loginPassword}
+                  onChange={setLoginPassword}
+                />
+                <div className="formRow">
+                  <a className="link" href="#">
+                    Forgot password?
+                  </a>
+                </div>
+                <button type="submit" className="btn btnPrimary">
+                  {submitLabel}
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="formGrid2">
+                  <TextField label="" placeholder="Email ID" icon={<IconMail />} value={companyEmail} onChange={setCompanyEmail} />
+                  <TextField
+                    label=""
+                    placeholder="Phone"
+                    icon={<IconPhone />}
+                    value={companyPhone}
+                    onChange={setCompanyPhone}
+                    inputMode="tel"
+                  />
+                </div>
+
+                <div className="formGrid2">
+                  <TextField label="" placeholder="First name" icon={<IconUser />} value={companyFirstName} onChange={setCompanyFirstName} />
+                  <TextField label="" placeholder="Last name" icon={<IconUser />} value={companyLastName} onChange={setCompanyLastName} />
+                </div>
+
+                <div className="formGrid2">
+                  <TextField
+                    label=""
+                    placeholder="Password"
+                    type="password"
+                    icon={<IconLock />}
+                    value={companyPassword}
+                    onChange={setCompanyPassword}
+                  />
+
+                  <SelectField label="" icon={<IconGlobe />} value={companyLanguage} onChange={setCompanyLanguage}>
+                    <option value="" disabled>
+                      Language
+                    </option>
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                  </SelectField>
+                </div>
+
+                <SelectField label="" icon={<IconSupport />} value={companyRole} onChange={setCompanyRole}>
+                  <option value="" disabled>
+                    Select the role
+                  </option>
+                  <option value="company_admin">Company Admin</option>
+                  <option value="operations_manager">Operations Manager</option>
+                  <option value="project_manager">Project Manager</option>
+                  <option value="superintendent">Superintendent</option>
+                  <option value="recruiter">Recruiter</option>
+                  <option value="safety_manager">Safety Manager</option>
+                  <option value="billing_ap">Billing/AP</option>
+                  <option value="read_only">Read only</option>
+                </SelectField>
+
+                <div className="wizardChecks wizardChecks2">
+                  <label className="wizardCheck">
+                    <input type="checkbox" checked={companyAcceptTerms} onChange={(e) => setCompanyAcceptTerms(e.target.checked)} />
+                    Accept terms of service
+                  </label>
+                  <label className="wizardCheck">
+                    <input type="checkbox" checked={companyAcceptPrivacy} onChange={(e) => setCompanyAcceptPrivacy(e.target.checked)} />
+                    Accept Privacy Policy
+                  </label>
+                </div>
+
+                <button type="submit" className="btn btnSuccess">
+                  {submitLabel}
+                </button>
+              </>
+            )}
+          </form>
+        </div>
+      </main>
+    </div>
+  )
+}
+
+function CompanyVerifyPage() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const state = location?.state ?? {}
+
+  const email = state.email ?? ''
+  const phoneNumber = state.phoneNumber ?? ''
+
+  return (
+    <div className="appShell">
+      <TopNav variant="solid" />
+
+      <div className="appShellBody appShellBodyVerify">
+        <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
+          <div className="sideNavHeader">
+            <div className="sideMark" aria-hidden="true">
+              <img className="sideMarkLogo" src="/assets/tradesmap_icon.png" alt="" />
+            </div>
+            <div className="sideMeta">
+              <div className="sideTitle">Tradesmap</div>
+              <div className="sideSubtitle">Studio work workspace</div>
+            </div>
+          </div>
+
+          <div className="sideNavMain">
+            <div className="sideGroupLabel">WORKSPACE</div>
+            <nav className="sideGroup" aria-label="Workspace">
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconGrid />
+                </span>
+                <span className="sideText">Overview</span>
+              </span>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconFolder />
+                </span>
+                <span className="sideText">Projects</span>
+                <span className="sideBadge" aria-label="12 projects">
+                  12
+                </span>
+              </span>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconChart />
+                </span>
+                <span className="sideText">Revenues</span>
+              </span>
+              <a className="sideItem sideItemActive" href="#">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconUser />
+                </span>
+                <span className="sideText">Profile</span>
+              </a>
+            </nav>
+          </div>
+
+          <div className="sideNavBottom">
+            <div className="sideGroupLabel">GENERAL</div>
+            <nav className="sideGroup" aria-label="General">
+              <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/company/login')}>
+                <span className="sideIcon" aria-hidden="true">
+                  <IconLogout />
+                </span>
+                <span className="sideText">Sign out</span>
+              </button>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconSupport />
+                </span>
+                <span className="sideText">Support</span>
+              </span>
+            </nav>
+          </div>
+        </aside>
+
+        <main className="appContent">
+          <div className="verifyPage">
+            <div className="authCard authCardCompact verifyCard verifyCardV2">
+              <div className="verifyTitle verifyTitleV2">Confirm your email and phone number to secure your account.</div>
+
+              <div className="verifyRows" role="group" aria-label="Verification">
+                <div className="verifyRow">
+                  <div className="verifyRowLabel">
+                    Email ID <span className="verifyRequired" aria-hidden="true">*</span>
+                  </div>
+
+                  <div className="verifyRowMain">
+                    <TextField label="" placeholder="Email" icon={<IconMail />} value={email} readOnly />
+
+                    <div className="verifyRowActions">
+                      <button type="button" className="btn btnPrimary verifyInlineBtn" onClick={() => navigate('/company/wizard')}>
+                        Verify
+                      </button>
+                      <button type="button" className="verifyResend" onClick={() => {}}>
+                        Resend
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="verifyRowRight">
+                    <div className="verifyRowHint">Not your email?</div>
+                    <button type="button" className="verifyChange" onClick={() => navigate('/company/register')}>
+                      Change it
+                    </button>
+                  </div>
+                </div>
+
+                <div className="verifyRow">
+                  <div className="verifyRowLabel">
+                    Phone No. <span className="verifyRequired" aria-hidden="true">*</span>
+                  </div>
+
+                  <div className="verifyRowMain">
+                    <TextField label="" placeholder="Phone" icon={<IconPhone />} value={phoneNumber} readOnly />
+
+                    <div className="verifyRowActions">
+                      <button type="button" className="btn btnPrimary verifyInlineBtn" onClick={() => navigate('/company/wizard')}>
+                        Verify
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="verifyRowRight">
+                    <div className="verifyRowHint">Not your phone?</div>
+                    <button type="button" className="verifyChange" onClick={() => navigate('/company/register')}>
+                      Change it
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  )
+}
+
+function CompanyWizardPage() {
+  const navigate = useNavigate()
+  const [step, setStep] = useState(1)
+
+  const maxStep = 3
+
+  const [legalName, setLegalName] = useState('')
+  const [dbaName, setDbaName] = useState('')
+  const [ein, setEin] = useState('')
+  const [entityType, setEntityType] = useState('')
+  const [formationDate, setFormationDate] = useState('')
+  const [stateOfFormation, setStateOfFormation] = useState('')
+
+  const [primaryAddress, setPrimaryAddress] = useState('')
+  const [primaryCity, setPrimaryCity] = useState('')
+  const [primaryState, setPrimaryState] = useState('')
+  const [primaryZip, setPrimaryZip] = useState('')
+
+  const [mailingAddress, setMailingAddress] = useState('')
+  const [mailingCity, setMailingCity] = useState('')
+  const [mailingState, setMailingState] = useState('')
+  const [mailingZip, setMailingZip] = useState('')
+
+  const [yearsInBusiness, setYearsInBusiness] = useState('')
+  const [website, setWebsite] = useState('')
+
+  const [companyType, setCompanyType] = useState('')
+  const [deliveryModel, setDeliveryModel] = useState('')
+  const [projectFocus, setProjectFocus] = useState({})
+
+  const stepTitle = step === 1 ? 'Business Identity' : step === 2 ? 'Business Classification' : 'Company Wizard — Continued'
+  const stepSubtitle =
+    step === 1
+      ? 'Use to capture legal identity and address basics for the company profile.'
+      : step === 2
+        ? 'Use to classify the business type, delivery model, and primary project focus.'
+        : 'We will add the next company wizard steps here.'
+
+  const goNext = () => setStep((s) => Math.min(maxStep, s + 1))
+  const goPrev = () => setStep((s) => Math.max(1, s - 1))
+
+  const toggleMapValue = (key, setMap) => (e) => setMap((prev) => ({ ...prev, [key]: e.target.checked }))
+
+  const wizardInner = (
+    <div className="wizardPage">
+      <div className="wizardCard">
+        <div className="wizardHeader">
+          <div>
+            <div className="wizardTitle">{stepTitle}</div>
+            <div className="wizardSubtitle">{stepSubtitle}</div>
+          </div>
+
+          <div className="wizardStepPills" aria-label="Company wizard steps">
+            {Array.from({ length: maxStep }).map((_, idx) => {
+              const n = idx + 1
+              return (
+                <button
+                  key={n}
+                  type="button"
+                  className={`wizardStepPill ${step === n ? 'wizardStepPillActive' : ''}`}
+                  onClick={() => setStep(n)}
+                >
+                  {n}
+                </button>
+              )
+            })}
+          </div>
+        </div>
+
+        {step === 1 ? (
+          <div className="wizardBody">
+            <div className="wizardSection">
+              <div className="wizardSectionBar">Business Identity</div>
+
+              <div className="wizardGrid2">
+                <TextField label="" placeholder="Legal Name" icon={<IconSupport />} value={legalName} onChange={setLegalName} />
+                <TextField label="" placeholder="DBA Name" icon={<IconSupport />} value={dbaName} onChange={setDbaName} />
+              </div>
+
+              <div className="wizardGrid2">
+                <TextField label="" placeholder="EIN" icon={<IconSupport />} value={ein} onChange={setEin} />
+                <SelectField label="" icon={<IconSupport />} value={entityType} onChange={setEntityType}>
+                  <option value="" disabled>
+                    Entity Type
+                  </option>
+                  <option value="llc">LLC</option>
+                  <option value="corporation">Corporation</option>
+                  <option value="partnership">Partnership</option>
+                  <option value="sole_proprietor">Sole Proprietor</option>
+                </SelectField>
+              </div>
+
+              <div className="wizardGrid2">
+                <TextField
+                  label=""
+                  placeholder="MM/DD/YYYY"
+                  icon={<IconSupport />}
+                  value={formationDate}
+                  onChange={setFormationDate}
+                />
+                <TextField
+                  label=""
+                  placeholder="State of Formation"
+                  icon={<IconLocation />}
+                  value={stateOfFormation}
+                  onChange={setStateOfFormation}
+                />
+              </div>
+            </div>
+
+            <fieldset className="wizardFieldset">
+              <legend className="wizardLegend">Primary Address</legend>
+              <div className="wizardFieldsetBody">
+                <TextField label="" placeholder="Address" icon={<IconLocation />} value={primaryAddress} onChange={setPrimaryAddress} />
+                <div className="wizardGrid3">
+                  <TextField label="" placeholder="City" icon={<IconLocation />} value={primaryCity} onChange={setPrimaryCity} />
+                  <TextField label="" placeholder="State" icon={<IconLocation />} value={primaryState} onChange={setPrimaryState} />
+                  <TextField label="" placeholder="Zip" icon={<IconLocation />} value={primaryZip} onChange={setPrimaryZip} />
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset className="wizardFieldset">
+              <legend className="wizardLegend">Mailing Address</legend>
+              <div className="wizardFieldsetBody">
+                <TextField label="" placeholder="Address" icon={<IconLocation />} value={mailingAddress} onChange={setMailingAddress} />
+                <div className="wizardGrid3">
+                  <TextField label="" placeholder="City" icon={<IconLocation />} value={mailingCity} onChange={setMailingCity} />
+                  <TextField label="" placeholder="State" icon={<IconLocation />} value={mailingState} onChange={setMailingState} />
+                  <TextField label="" placeholder="Zip" icon={<IconLocation />} value={mailingZip} onChange={setMailingZip} />
+                </div>
+              </div>
+            </fieldset>
+
+            <div className="wizardSection">
+              <div className="wizardSectionBar">Company Details</div>
+              <div className="wizardGrid2">
+                <SelectField label="" icon={<IconSupport />} value={yearsInBusiness} onChange={setYearsInBusiness}>
+                  <option value="" disabled>
+                    Years of Business
+                  </option>
+                  {Array.from({ length: 51 }).map((_, idx) => (
+                    <option key={idx} value={String(idx)}>
+                      {idx}
+                    </option>
+                  ))}
+                </SelectField>
+                <TextField label="" placeholder="Website" icon={<IconSupport />} value={website} onChange={setWebsite} />
+              </div>
+
+              <div className="wizardGrid2">
+                <label className="field">
+                  <div className="fieldLabel" />
+                  <div className="fieldControl">
+                    <span className="fieldIcon">
+                      <IconFolder />
+                    </span>
+                    <input className="fieldInput" type="file" />
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+        ) : step === 2 ? (
+          <div className="wizardBody">
+            <div className="wizardSection">
+              <div className="wizardSectionBar">Business Classification</div>
+
+              <div className="wizardGrid2">
+                <SelectField label="" icon={<IconSupport />} value={companyType} onChange={setCompanyType}>
+                  <option value="" disabled>
+                    Company type
+                  </option>
+                  <option value="general_contractor">general contractor</option>
+                  <option value="sub_contractor">sub contractor</option>
+                  <option value="staffing_partner">staffing partner</option>
+                </SelectField>
+
+                <SelectField label="" icon={<IconSupport />} value={deliveryModel} onChange={setDeliveryModel}>
+                  <option value="" disabled>
+                    Delivery Model
+                  </option>
+                  <option value="labour_only">labour only</option>
+                  <option value="labour_plus_supervisor">labour + supervisor</option>
+                  <option value="self_performs_scope">self performs scope</option>
+                  <option value="staffing_general">staffing general</option>
+                  <option value="managed_network">managed network</option>
+                  <option value="mixed_model">mixed model</option>
+                </SelectField>
+              </div>
+            </div>
+
+            <div className="wizardSection">
+              <div className="wizardSectionBar">Project focus</div>
+              <div className="wizardChecks wizardChecks2">
+                {[
+                  'Interiors',
+                  'Retail',
+                  'Industrial',
+                  'Drywall & framing',
+                  'acoustical ceilings',
+                  'Finish carpentry',
+                  'Renovation',
+                  'Retail Rollout',
+                  'Hospitality / Medical / Education',
+                  'Industrial Interiors',
+                  'government secure',
+                  'Mixed',
+                ].map((k) => (
+                  <label key={k} className="wizardCheck">
+                    <input type="checkbox" checked={!!projectFocus[k]} onChange={toggleMapValue(k, setProjectFocus)} />
+                    {k}
+                  </label>
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="wizardBody">
+            <div className="wipCard" role="status">
+              Company wizard work in progress
+            </div>
+          </div>
+        )}
+
+        <div className="wizardFooter">
+          <button type="button" className="btn" onClick={step === 1 ? () => navigate('/company/verify') : goPrev}>
+            Back
+          </button>
+          <div className="wizardFooterRight">
+            {step > 1 ? (
+              <button type="button" className="btn" onClick={goPrev}>
+                Previous
+              </button>
+            ) : null}
+            {step < maxStep ? (
+              <button type="button" className="btn btnPrimary wizardNextBtn" onClick={goNext}>
+                Next
+              </button>
+            ) : (
+              <button type="button" className="btn btnSuccess" onClick={() => navigate('/')}>
+                Finish
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+
+  return (
+    <div className="appShell">
+      <TopNav variant="solid" />
+
+      <div className="appShellBody appShellBodyVerify">
+        <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
+          <div className="sideNavHeader">
+            <div className="sideMark" aria-hidden="true">
+              <img className="sideMarkLogo" src="/assets/tradesmap_icon.png" alt="" />
+            </div>
+            <div className="sideMeta">
+              <div className="sideTitle">Tradesmap</div>
+              <div className="sideSubtitle">Studio work workspace</div>
+            </div>
+          </div>
+
+          <div className="sideNavMain">
+            <div className="sideGroupLabel">WORKSPACE</div>
+            <nav className="sideGroup" aria-label="Workspace">
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconGrid />
+                </span>
+                <span className="sideText">Overview</span>
+              </span>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconFolder />
+                </span>
+                <span className="sideText">Projects</span>
+                <span className="sideBadge" aria-label="12 projects">
+                  12
+                </span>
+              </span>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconChart />
+                </span>
+                <span className="sideText">Revenues</span>
+              </span>
+              <a className="sideItem sideItemActive" href="#">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconUser />
+                </span>
+                <span className="sideText">Profile</span>
+              </a>
+            </nav>
+          </div>
+
+          <div className="sideNavBottom">
+            <div className="sideGroupLabel">GENERAL</div>
+            <nav className="sideGroup" aria-label="General">
+              <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/company/login')}>
+                <span className="sideIcon" aria-hidden="true">
+                  <IconLogout />
+                </span>
+                <span className="sideText">Sign out</span>
+              </button>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <IconSupport />
+                </span>
+                <span className="sideText">Support</span>
+              </span>
+            </nav>
+          </div>
+        </aside>
+
+        <main className="appContent">{wizardInner}</main>
+      </div>
+    </div>
+  )
+}
+
 function WizardPage({ embedded = false, initialStepOverride }) {
   const navigate = useNavigate()
   const location = useLocation()
 
   const [step, setStep] = useState(1)
 
-  const maxStep = 8
+  const maxStep = 9
 
   useEffect(() => {
     const requested = initialStepOverride ?? location?.state?.initialStep
@@ -465,6 +1104,11 @@ function WizardPage({ embedded = false, initialStepOverride }) {
   ])
   const [safetyFlags, setSafetyFlags] = useState({})
 
+  const [emergencyMedicalInfo, setEmergencyMedicalInfo] = useState('none')
+  const [bloodGroup, setBloodGroup] = useState('')
+  const [emergencyMedicalFlags, setEmergencyMedicalFlags] = useState({})
+  const [emergencyInstructions, setEmergencyInstructions] = useState('')
+
   const [emergencyContactName, setEmergencyContactName] = useState('')
   const [emergencyContactRelationship, setEmergencyContactRelationship] = useState('')
   const [emergencyContactPhone, setEmergencyContactPhone] = useState('')
@@ -486,35 +1130,39 @@ function WizardPage({ embedded = false, initialStepOverride }) {
     step === 1
       ? 'Worker Account & Identity Intake'
       : step === 2
-        ? 'Trade Profile & Skill Matrix'
+        ? 'Emergency Medical Information'
         : step === 3
-          ? 'Work History & Project Experience'
+          ? 'Trade Profile & Skill Matrix'
           : step === 4
-            ? 'Work History & Project Experience — Continued'
+            ? 'Work History & Project Experience'
             : step === 5
-              ? 'Classification, Tax & Compliance Intake'
+              ? 'Work History & Project Experience — Continued'
               : step === 6
-                ? 'Availability, Travel, Pay & Assignment Preferences'
+                ? 'Classification, Tax & Compliance Intake'
                 : step === 7
-                  ? 'Certifications, Safety & Equipment Qualifications'
-                  : 'Emergency Contact, Policies & Acknowledgments'
+                  ? 'Availability, Travel, Pay & Assignment Preferences'
+                  : step === 8
+                    ? 'Certifications, Safety & Equipment Qualifications'
+                    : 'Emergency Contact, Policies & Acknowledgments'
 
   const stepSubtitle =
     step === 1
       ? 'Use for initial account creation, identity basics, contact data, and public profile photo.'
       : step === 2
-        ? 'Use to classify primary trade, level, years of experience, specialty skills, and field capability.'
+        ? 'Optional information to assist emergency responders.'
         : step === 3
-          ? 'Use to collect recent projects, type of work performed, role held, and reference-ready experience.'
+          ? 'Use to classify primary trade, level, years of experience, specialty skills, and field capability.'
           : step === 4
-            ? 'Continue collecting recent project history and references.'
+            ? 'Use to collect recent projects, type of work performed, role held, and reference-ready experience.'
             : step === 5
-              ? 'Use to route the worker or subcontractor through the correct compliance path for W-2 / 1099 onboarding.'
+              ? 'Continue collecting recent project history and references.'
               : step === 6
-                ? 'Use to collect start date, schedule, travel radius, pay preference, and deployment expectations.'
+                ? 'Use to route the worker or subcontractor through the correct compliance path for W-2 / 1099 onboarding.'
                 : step === 7
-                  ? 'Use to collect proof of OSHA, lift, PIT, CPR, and related safety training relevant to interiors work.'
-                  : 'Use to capture emergency contact details and signed acknowledgments required before activation.'
+                  ? 'Use to collect start date, schedule, travel radius, pay preference, and deployment expectations.'
+                  : step === 8
+                    ? 'Use to collect proof of OSHA, lift, PIT, CPR, and related safety training relevant to interiors work.'
+                    : 'Use to capture emergency contact details and signed acknowledgments required before activation.'
 
   const goNext = () => setStep((s) => Math.min(maxStep, s + 1))
   const goPrev = () => setStep((s) => Math.max(1, s - 1))
@@ -561,6 +1209,12 @@ function WizardPage({ embedded = false, initialStepOverride }) {
           earliestStartDate,
           hourlyRateRequested,
           payPrefs,
+        },
+        medical: {
+          emergencyMedicalInfo,
+          bloodGroup,
+          emergencyMedicalFlags,
+          emergencyInstructions,
         },
         acknowledgments: {
           emergencyContactName,
@@ -687,6 +1341,100 @@ function WizardPage({ embedded = false, initialStepOverride }) {
               ) : step === 2 ? (
                 <div className="wizardBody">
                   <div className="wizardSection">
+                    <div className="wizardSectionBar">Emergency Medical Information</div>
+                    <div className="wizardSubtitle" style={{ marginTop: 8 }}>
+                      Optional information to assist emergency responders
+                    </div>
+
+                    <div className="wizardGrid2" style={{ marginTop: 12 }}>
+                      <SelectField label="Blood Group" icon={<IconSupport />} value={bloodGroup} onChange={setBloodGroup}>
+                        <option value="" disabled>
+                          Select blood group
+                        </option>
+                        {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((bg) => (
+                          <option key={bg} value={bg}>
+                            {bg}
+                          </option>
+                        ))}
+                      </SelectField>
+                    </div>
+
+                    <div style={{ marginTop: 16 }}>
+                      Do you have emergency medical information first aid personnel or emergency responders should know?
+                    </div>
+
+                    <div className="wizardChecks" style={{ marginTop: 12 }}>
+                      <label className="wizardCheck">
+                        <input
+                          type="radio"
+                          name="emergencyMedicalInfo"
+                          checked={emergencyMedicalInfo === 'none'}
+                          onChange={() => setEmergencyMedicalInfo('none')}
+                        />
+                        No emergency medical information
+                      </label>
+                      <label className="wizardCheck">
+                        <input
+                          type="radio"
+                          name="emergencyMedicalInfo"
+                          checked={emergencyMedicalInfo === 'disclosure'}
+                          onChange={() => setEmergencyMedicalInfo('disclosure')}
+                        />
+                        Yes, voluntary disclosure
+                      </label>
+                      <label className="wizardCheck">
+                        <input
+                          type="radio"
+                          name="emergencyMedicalInfo"
+                          checked={emergencyMedicalInfo === 'skip'}
+                          onChange={() => setEmergencyMedicalInfo('skip')}
+                        />
+                        Skip for now
+                      </label>
+                    </div>
+
+                    {emergencyMedicalInfo === 'disclosure' ? (
+                      <div style={{ marginTop: 16 }}>
+                        <div className="wizardGrid2 wizardGrid2Tight">
+                          {[
+                            'Severe allergy',
+                            'Diabetes / blood sugar risk',
+                            'Heart condition / device',
+                            'Mobility / communication limitation',
+                            'Asthma / respiratory risk',
+                            'Seizure condition',
+                            'Bleeding risk',
+                            'Emergency medication/device carried',
+                          ].map((k) => (
+                            <label key={k} className="wizardCheck">
+                              <input type="checkbox" checked={!!emergencyMedicalFlags[k]} onChange={toggleMapValue(k, setEmergencyMedicalFlags)} />
+                              {k}
+                            </label>
+                          ))}
+                        </div>
+
+                        <div style={{ marginTop: 12, fontWeight: 600 }}>Important Emergency Instructions</div>
+                        <div style={{ marginTop: 6, fontSize: 12, opacity: 0.85 }}>
+                          Do not include genetic or highly sensitive medical details.
+                        </div>
+
+                        <div style={{ marginTop: 10 }}>
+                          <textarea
+                            className="wizardTextArea"
+                            value={emergencyInstructions}
+                            onChange={(e) => setEmergencyInstructions(e.target.value)}
+                            placeholder="Enter instructions (max 1000 characters)"
+                            maxLength={1000}
+                            rows={4}
+                          />
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              ) : step === 3 ? (
+                <div className="wizardBody">
+                  <div className="wizardSection">
                     <div className="wizardSectionBar">1. Trade Classification</div>
                     <div className="wizardGrid2">
                       <TextField label="" placeholder="Primary trade" icon={<IconSupport />} value={primaryTrade} onChange={setPrimaryTrade} />
@@ -804,7 +1552,7 @@ function WizardPage({ embedded = false, initialStepOverride }) {
                     </div>
                   </div>
                 </div>
-              ) : step === 3 ? (
+              ) : step === 4 ? (
                 <div className="wizardBody">
                   <div className="wizardSection">
                     <div className="wizardSectionBar">Recent Projects (Last 3 to 5 Relevant Projects)</div>
@@ -889,7 +1637,7 @@ function WizardPage({ embedded = false, initialStepOverride }) {
                     </div>
                   </div>
                 </div>
-              ) : step === 4 ? (
+              ) : step === 5 ? (
                 <div className="wizardBody">
                   <div className="wizardSection">
                     <div className="wizardSectionBar">Project 3</div>
@@ -1020,7 +1768,7 @@ function WizardPage({ embedded = false, initialStepOverride }) {
                     />
                   </div>
                 </div>
-              ) : step === 5 ? (
+              ) : step === 6 ? (
                 <div className="wizardBody">
                   <div className="wizardSection">
                     <div className="wizardSectionBar">1. Classification Selection & Routing</div>
@@ -1186,7 +1934,7 @@ function WizardPage({ embedded = false, initialStepOverride }) {
                     </div>
                   </div>
                 </div>
-              ) : step === 6 ? (
+              ) : step === 7 ? (
                 <div className="wizardBody">
                   <div className="wizardSection">
                     <div className="wizardSectionBar">1. Start Date & Pay Structure</div>
@@ -1286,7 +2034,7 @@ function WizardPage({ embedded = false, initialStepOverride }) {
                     <div className="wizardAvailabilityHint">Enter start/end times if available. Leave blank if unavailable.</div>
                   </div>
                 </div>
-              ) : step === 7 ? (
+              ) : step === 8 ? (
                 <div className="wizardBody">
                   <div className="wizardSection">
                     <div className="wizardSectionBar">1. Certification Checklist</div>
@@ -1784,12 +2532,15 @@ function TopNav({ variant = 'transparent' }) {
 
         <nav className="navActions" aria-label="Authentication navigation">
           {variant === 'solid' ? (
-            <button type="button" className="navIconButton" aria-label="Notifications" onClick={() => navigate('/login')}>
-              <IconBell />
-              <span className="navIconBadge" aria-hidden="true">
-                7
-              </span>
-            </button>
+            <div className="navActionsSolid">
+              <button type="button" className="navIconButton" aria-label="Notifications" onClick={() => navigate('/login')}>
+                <IconBell />
+                <span className="navIconBadge" aria-hidden="true">
+                  7
+                </span>
+              </button>
+              <img className="topbarAvatar" src="/assets/worker.avif" alt="Worker avatar" />
+            </div>
           ) : (
             <NavLink to="/login" className={({ isActive }) => `navPill ${isActive ? 'navPillActive' : ''}`}>
               Login
@@ -2232,6 +2983,10 @@ export default function App() {
       <Route path="/verify" element={<VerifyPage />} />
       <Route path="/wizard" element={<WizardPage />} />
       <Route path="/wizard/summary" element={<WizardSummaryPage />} />
+      <Route path="/company/login" element={<CompanyAuthPage initialMode="login" />} />
+      <Route path="/company/register" element={<CompanyAuthPage initialMode="register" />} />
+      <Route path="/company/verify" element={<CompanyVerifyPage />} />
+      <Route path="/company/wizard" element={<CompanyWizardPage />} />
       <Route path="*" element={<HomePage />} />
     </Routes>
   )
