@@ -69,7 +69,6 @@ function WizardSummaryPage() {
             </div>
             <div className="sideMeta">
               <div className="sideTitle">Tradesmap</div>
-              <div className="sideSubtitle">Studio work workspace</div>
             </div>
           </div>
 
@@ -557,7 +556,6 @@ function CompanyVerifyPage() {
             </div>
             <div className="sideMeta">
               <div className="sideTitle">Tradesmap</div>
-              <div className="sideSubtitle">Studio work workspace</div>
             </div>
           </div>
 
@@ -680,7 +678,7 @@ function CompanyWizardPage() {
   const navigate = useNavigate()
   const [step, setStep] = useState(1)
 
-  const maxStep = 3
+  const maxStep = 5
 
   const [legalName, setLegalName] = useState('')
   const [dbaName, setDbaName] = useState('')
@@ -706,18 +704,142 @@ function CompanyWizardPage() {
   const [deliveryModel, setDeliveryModel] = useState('')
   const [projectFocus, setProjectFocus] = useState({})
 
-  const stepTitle = step === 1 ? 'Business Identity' : step === 2 ? 'Business Classification' : 'Company Wizard — Continued'
+  const [projectSize, setProjectSize] = useState('')
+  const [crewSize, setCrewSize] = useState('')
+
+  const [travelWork, setTravelWork] = useState(null)
+  const [shiftType, setShiftType] = useState(null)
+  const [secureWork, setSecureWork] = useState(null)
+  const [hourly, setHourly] = useState(null)
+  const [piecework, setPiecework] = useState(null)
+  const [foremanRequired, setForemanRequired] = useState(null)
+
+  const [supplyExpectation, setSupplyExpectation] = useState('')
+  const [workerDocs, setWorkerDocs] = useState('')
+
+  const [w9TaxProfileFile, setW9TaxProfileFile] = useState('')
+  const [coiFile, setCoiFile] = useState('')
+  const [generalLiabilityFile, setGeneralLiabilityFile] = useState('')
+  const [workersCompFile, setWorkersCompFile] = useState('')
+  const [licensesFile, setLicensesFile] = useState('')
+
+  const [billingEntityName, setBillingEntityName] = useState('')
+  const [billingEmail, setBillingEmail] = useState('')
+  const [billingPhone, setBillingPhone] = useState('')
+  const [authorizedSignerAck, setAuthorizedSignerAck] = useState(false)
+  const [acceptMsaAck, setAcceptMsaAck] = useState(false)
+
+  const [users, setUsers] = useState([
+    {
+      name: 'Max',
+      email: 'max@abc.com',
+      role: 'Owner',
+      phone: '+1 213 333 4444',
+      status: 'Active',
+    },
+  ])
+  const [inviteOpen, setInviteOpen] = useState(false)
+  const [inviteFullName, setInviteFullName] = useState('')
+  const [inviteEmail, setInviteEmail] = useState('')
+  const [invitePhone, setInvitePhone] = useState('')
+  const [inviteRole, setInviteRole] = useState('')
+  const [invitePerms, setInvitePerms] = useState({})
+
+  const stepTitle =
+    step === 1
+      ? 'Business Identity'
+      : step === 2
+        ? 'Business Classification'
+        : step === 3
+          ? 'Operational Profile'
+          : step === 4
+            ? 'Compliance & Documents'
+            : step === 5
+              ? 'Users, Roles & Access Control'
+            : 'Company Wizard — Continued'
   const stepSubtitle =
     step === 1
       ? 'Use to capture legal identity and address basics for the company profile.'
       : step === 2
         ? 'Use to classify the business type, delivery model, and primary project focus.'
-        : 'We will add the next company wizard steps here.'
+        : step === 3
+          ? 'Use to capture operational preferences and workforce requirements.'
+          : step === 4
+            ? 'Upload required documents and complete legal acknowledgements.'
+            : 'Invite additional company users and assign roles and permissions.'
 
   const goNext = () => setStep((s) => Math.min(maxStep, s + 1))
   const goPrev = () => setStep((s) => Math.max(1, s - 1))
 
   const toggleMapValue = (key, setMap) => (e) => setMap((prev) => ({ ...prev, [key]: e.target.checked }))
+
+  const YesNoToggle = ({ label, value, onChange }) => (
+    <div className="wizardToggleField">
+      <div className="wizardToggleLabel">{label}</div>
+      <div className="wizardToggle">
+        <button
+          type="button"
+          className={`wizardToggleBtn ${value === true ? 'wizardToggleBtnActive' : ''}`}
+          onClick={() => onChange(true)}
+        >
+          Yes
+        </button>
+        <button
+          type="button"
+          className={`wizardToggleBtn ${value === false ? 'wizardToggleBtnActive' : ''}`}
+          onClick={() => onChange(false)}
+        >
+          No
+        </button>
+      </div>
+    </div>
+  )
+
+  const FileField = ({ label, fileName, onChange }) => (
+    <div>
+      <label className="field">
+        <div className="fieldLabel">{label}</div>
+        <div className="fieldControl">
+          <span className="fieldIcon">
+            <IconFolder />
+          </span>
+          <input
+            className="fieldInput"
+            type="file"
+            onChange={(e) => {
+              const next = e.target.files && e.target.files[0] ? e.target.files[0].name : ''
+              onChange(next)
+            }}
+          />
+        </div>
+      </label>
+      <div style={{ marginTop: 6, fontSize: 12, opacity: 0.75, fontWeight: 700 }}>{fileName ? fileName : 'No file selected'}</div>
+    </div>
+  )
+
+  const closeInvite = () => {
+    setInviteOpen(false)
+    setInviteFullName('')
+    setInviteEmail('')
+    setInvitePhone('')
+    setInviteRole('')
+    setInvitePerms({})
+  }
+
+  const sendInvite = () => {
+    const perms = Object.keys(invitePerms).filter((k) => invitePerms[k])
+    setUsers((prev) => [
+      ...prev,
+      {
+        name: inviteFullName || 'New user',
+        email: inviteEmail,
+        role: inviteRole || 'Read only',
+        phone: invitePhone,
+        status: perms.length ? 'Invited' : 'Invited',
+      },
+    ])
+    closeInvite()
+  }
 
   const wizardInner = (
     <div className="wizardPage">
@@ -893,6 +1015,225 @@ function CompanyWizardPage() {
               </div>
             </div>
           </div>
+        ) : step === 3 ? (
+          <div className="wizardBody">
+            <div className="wizardSection">
+              <div className="wizardSectionBar">Operational profile</div>
+
+              <div className="wizardGrid2">
+                <TextField label="" placeholder="Project size" icon={<IconSupport />} value={projectSize} onChange={setProjectSize} />
+                <TextField label="" placeholder="Crew size" icon={<IconSupport />} value={crewSize} onChange={setCrewSize} />
+              </div>
+
+              <div className="wizardGrid2" style={{ marginTop: 6 }}>
+                <YesNoToggle label="Travel work" value={travelWork} onChange={setTravelWork} />
+                <YesNoToggle label="Shift type" value={shiftType} onChange={setShiftType} />
+              </div>
+
+              <div className="wizardGrid2" style={{ marginTop: 6 }}>
+                <YesNoToggle label="Secure work" value={secureWork} onChange={setSecureWork} />
+                <YesNoToggle label="Hourly" value={hourly} onChange={setHourly} />
+              </div>
+
+              <div className="wizardGrid2" style={{ marginTop: 6 }}>
+                <YesNoToggle label="Piecework" value={piecework} onChange={setPiecework} />
+                <YesNoToggle label="Foreman required" value={foremanRequired} onChange={setForemanRequired} />
+              </div>
+            </div>
+
+            <div className="wizardSection">
+              <div style={{ fontWeight: 900, marginBottom: 10 }}>Tradesmap is expected to supply</div>
+              <div className="wizardChecks wizardChecksInline" style={{ marginTop: 0 }}>
+                <label className="wizardCheck">
+                  <input
+                    type="radio"
+                    name="supplyExpectation"
+                    checked={supplyExpectation === 'workers'}
+                    onChange={() => setSupplyExpectation('workers')}
+                  />
+                  only workers
+                </label>
+                <label className="wizardCheck">
+                  <input
+                    type="radio"
+                    name="supplyExpectation"
+                    checked={supplyExpectation === 'workers_leadership'}
+                    onChange={() => setSupplyExpectation('workers_leadership')}
+                  />
+                  workers + leadership
+                </label>
+              </div>
+
+              <div style={{ fontWeight: 900, marginTop: 16 }}>What workers documents/certification required.</div>
+              <div style={{ marginTop: 10 }}>
+                <textarea
+                  className="wizardTextArea"
+                  value={workerDocs}
+                  onChange={(e) => setWorkerDocs(e.target.value)}
+                  placeholder="Enter required documents/certifications"
+                  rows={4}
+                />
+              </div>
+            </div>
+          </div>
+        ) : step === 4 ? (
+          <div className="wizardBody">
+            <div className="wizardSection">
+              <div className="wizardSectionBar">Compliance &amp; Documents</div>
+              <div className="wizardSubtitle" style={{ marginTop: 8 }}>
+                Upload required documents and complete legal acknowledgements.
+              </div>
+
+              <div style={{ marginTop: 14 }}>
+                <FileField label="W-9 / Tax profile" fileName={w9TaxProfileFile} onChange={setW9TaxProfileFile} />
+              </div>
+
+              <div style={{ marginTop: 12 }}>
+                <FileField label="Certificate of Insurance (COI)" fileName={coiFile} onChange={setCoiFile} />
+              </div>
+
+              <div style={{ marginTop: 12 }}>
+                <FileField label="General Liability Evidence" fileName={generalLiabilityFile} onChange={setGeneralLiabilityFile} />
+              </div>
+
+              <div style={{ marginTop: 12 }}>
+                <FileField label="Workers compensation" fileName={workersCompFile} onChange={setWorkersCompFile} />
+              </div>
+
+              <div style={{ marginTop: 12 }}>
+                <FileField label="Licenses (if applicable)" fileName={licensesFile} onChange={setLicensesFile} />
+              </div>
+
+              <div className="wizardGrid2" style={{ marginTop: 16 }}>
+                <TextField
+                  label=""
+                  placeholder="Billing entity name"
+                  icon={<IconUser />}
+                  value={billingEntityName}
+                  onChange={setBillingEntityName}
+                />
+                <TextField label="" placeholder="Billing email" icon={<IconMail />} value={billingEmail} onChange={setBillingEmail} />
+              </div>
+
+              <div className="wizardGrid2" style={{ marginTop: 8 }}>
+                <TextField label="" placeholder="Billing phone" icon={<IconPhone />} value={billingPhone} onChange={setBillingPhone} />
+              </div>
+
+              <div className="wizardChecks" style={{ marginTop: 14 }}>
+                <label className="wizardCheck">
+                  <input type="checkbox" checked={authorizedSignerAck} onChange={(e) => setAuthorizedSignerAck(e.target.checked)} />I confirm I am an authorized signer for this company
+                </label>
+                <label className="wizardCheck">
+                  <input type="checkbox" checked={acceptMsaAck} onChange={(e) => setAcceptMsaAck(e.target.checked)} />I accept the terms &amp; Master Service Agreement (MSA)
+                </label>
+              </div>
+            </div>
+          </div>
+        ) : step === 5 ? (
+          <div className="wizardBody">
+            <div className="wizardSection">
+              <div className="wizardSectionBar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                <span>Users management</span>
+                <button type="button" className="wizardPillBtn wizardPillBtnPrimary" onClick={() => setInviteOpen(true)}>
+                  <span className="wizardPillBtnLabel">Invite user</span>
+                  <span className="wizardPillBtnIcon" aria-hidden="true">+</span>
+                </button>
+              </div>
+
+              <div className="wizardSummaryTable" style={{ marginTop: 12 }}>
+                <div className="wizardSummaryTableHead" style={{ gridTemplateColumns: '1fr 1.4fr 0.8fr 1.1fr 0.8fr' }}>
+                  <div>Name</div>
+                  <div>Email</div>
+                  <div>Role</div>
+                  <div>Phone no.</div>
+                  <div>Status</div>
+                </div>
+                {users.map((u, idx) => (
+                  <div key={`${u.email}-${idx}`} className="wizardSummaryTableRow" style={{ gridTemplateColumns: '1fr 1.4fr 0.8fr 1.1fr 0.8fr' }}>
+                    <div>{u.name}</div>
+                    <div>{u.email}</div>
+                    <div>{u.role}</div>
+                    <div>{u.phone}</div>
+                    <div>
+                      <span className="wizardSummaryStatusPill">{u.status}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {inviteOpen ? (
+              <div className="tmModalOverlay" role="dialog" aria-modal="true" aria-label="Invite user">
+                <div className="tmModal">
+                  <div className="tmModalHeader">
+                    <div className="tmModalTitle">Add user</div>
+                    <button type="button" className="tmModalClose" onClick={closeInvite} aria-label="Close">
+                      ×
+                    </button>
+                  </div>
+
+                  <div className="tmModalBody">
+                    <div className="wizardGrid2">
+                      <TextField label="" placeholder="Full name" icon={<IconUser />} value={inviteFullName} onChange={setInviteFullName} />
+                      <TextField label="" placeholder="Email" icon={<IconMail />} value={inviteEmail} onChange={setInviteEmail} />
+                      <TextField label="" placeholder="Phone number" icon={<IconPhone />} value={invitePhone} onChange={setInvitePhone} />
+                      <SelectField label="" icon={<IconSupport />} value={inviteRole} onChange={setInviteRole}>
+                        <option value="" disabled>
+                          Select the role
+                        </option>
+                        {[
+                          'Company Admin',
+                          'Operations Manager',
+                          'Project Manager',
+                          'Superintendent',
+                          'Recruiter',
+                          'Safety Manager',
+                          'Billing / AP',
+                          'Read only',
+                        ].map((r) => (
+                          <option key={r} value={r}>
+                            {r}
+                          </option>
+                        ))}
+                      </SelectField>
+                    </div>
+
+                    <div style={{ marginTop: 12, fontWeight: 900 }}>Permissions</div>
+                    <div className="wizardChecks wizardChecks2" style={{ marginTop: 10 }}>
+                      {[
+                        'Create projects',
+                        'Edit projects',
+                        'Manage users',
+                        'Billing access',
+                        'View workers',
+                        'Request workers',
+                      ].map((p) => (
+                        <label key={p} className="wizardCheck">
+                          <input type="checkbox" checked={!!invitePerms[p]} onChange={toggleMapValue(p, setInvitePerms)} />
+                          {p}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="tmModalFooter">
+                    <button type="button" className="wizardPillBtn wizardPillBtnSecondary" onClick={closeInvite}>
+                      <span className="wizardPillBtnLabel">Cancel</span>
+                      <span className="wizardPillBtnIcon" aria-hidden="true">
+                        <IconX />
+                      </span>
+                    </button>
+                    <button type="button" className="wizardPillBtn wizardPillBtnSuccess" onClick={sendInvite}>
+                      <span className="wizardPillBtnLabel">Send invite</span>
+                      <span className="wizardPillBtnIcon" aria-hidden="true">
+                        <IconCheck />
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : null}
+          </div>
         ) : (
           <div className="wizardBody">
             <div className="wipCard" role="status">
@@ -902,22 +1243,34 @@ function CompanyWizardPage() {
         )}
 
         <div className="wizardFooter">
-          <button type="button" className="btn" onClick={step === 1 ? () => navigate('/company/verify') : goPrev}>
-            Back
+          <button type="button" className="wizardPillBtn" onClick={step === 1 ? () => navigate('/company/verify') : goPrev}>
+            <span className="wizardPillBtnLabel">Back</span>
+            <span className="wizardPillBtnIcon" aria-hidden="true">
+              <IconChevronLeft />
+            </span>
           </button>
           <div className="wizardFooterRight">
             {step > 1 ? (
-              <button type="button" className="btn" onClick={goPrev}>
-                Previous
+              <button type="button" className="wizardPillBtn" onClick={goPrev}>
+                <span className="wizardPillBtnLabel">Previous</span>
+                <span className="wizardPillBtnIcon" aria-hidden="true">
+                  <IconChevronLeft />
+                </span>
               </button>
             ) : null}
             {step < maxStep ? (
-              <button type="button" className="btn btnPrimary wizardNextBtn" onClick={goNext}>
-                Next
+              <button type="button" className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" onClick={goNext}>
+                <span className="wizardPillBtnLabel">Next</span>
+                <span className="wizardPillBtnIcon" aria-hidden="true">
+                  <IconChevronRight />
+                </span>
               </button>
             ) : (
-              <button type="button" className="btn btnSuccess" onClick={() => navigate('/')}>
-                Finish
+              <button type="button" className="wizardPillBtn wizardPillBtnSuccess" onClick={() => navigate('/') }>
+                <span className="wizardPillBtnLabel">Finish</span>
+                <span className="wizardPillBtnIcon" aria-hidden="true">
+                  <IconCheck />
+                </span>
               </button>
             )}
           </div>
@@ -938,7 +1291,6 @@ function CompanyWizardPage() {
             </div>
             <div className="sideMeta">
               <div className="sideTitle">Tradesmap</div>
-              <div className="sideSubtitle">Studio work workspace</div>
             </div>
           </div>
 
@@ -2198,22 +2550,34 @@ function WizardPage({ embedded = false, initialStepOverride }) {
               )}
 
               <div className="wizardFooter">
-                <button type="button" className="btn" onClick={() => navigate('/verify')}>
-                  Back
+                <button type="button" className="wizardPillBtn" onClick={() => navigate('/verify')}>
+                  <span className="wizardPillBtnLabel">Back</span>
+                  <span className="wizardPillBtnIcon" aria-hidden="true">
+                    <IconChevronLeft />
+                  </span>
                 </button>
                 <div className="wizardFooterRight">
                   {step > 1 ? (
-                    <button type="button" className="btn" onClick={goPrev}>
-                      Previous
+                    <button type="button" className="wizardPillBtn" onClick={goPrev}>
+                      <span className="wizardPillBtnLabel">Previous</span>
+                      <span className="wizardPillBtnIcon" aria-hidden="true">
+                        <IconChevronLeft />
+                      </span>
                     </button>
                   ) : null}
                   {step < maxStep ? (
-                    <button type="button" className="btn btnPrimary wizardNextBtn" onClick={goNext}>
-                      Next
+                    <button type="button" className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" onClick={goNext}>
+                      <span className="wizardPillBtnLabel">Next</span>
+                      <span className="wizardPillBtnIcon" aria-hidden="true">
+                        <IconChevronRight />
+                      </span>
                     </button>
                   ) : (
-                    <button type="button" className="btn btnSuccess" onClick={finishWizard}>
-                      Finish
+                    <button type="button" className="wizardPillBtn wizardPillBtnSuccess" onClick={finishWizard}>
+                      <span className="wizardPillBtnLabel">Finish</span>
+                      <span className="wizardPillBtnIcon" aria-hidden="true">
+                        <IconCheck />
+                      </span>
                     </button>
                   )}
                 </div>
@@ -2238,7 +2602,6 @@ function WizardPage({ embedded = false, initialStepOverride }) {
             </div>
             <div className="sideMeta">
               <div className="sideTitle">Tradesmap</div>
-              <div className="sideSubtitle">Studio work workspace</div>
             </div>
           </div>
 
@@ -2333,17 +2696,6 @@ function IconChart(props) {
   )
 }
 
-function IconSupport(props) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path
-        d="M12 2a8 8 0 0 0-8 8v4a3 3 0 0 0 3 3h1v-8H7a1 1 0 0 0-1 1v4a1 1 0 0 1-1-1v-3a7 7 0 0 1 14 0v3a1 1 0 0 1-1 1v-4a1 1 0 0 0-1-1h-1v8h1a3 3 0 0 0 3-3v-4a8 8 0 0 0-8-8Zm-1 18h2a2 2 0 0 0 2-2h-6a2 2 0 0 0 2 2Z"
-        fill="currentColor"
-      />
-    </svg>
-  )
-}
-
 function IconLogout(props) {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
@@ -2351,6 +2703,49 @@ function IconLogout(props) {
         d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z"
         fill="currentColor"
       />
+    </svg>
+  )
+}
+
+function IconSupport(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path
+        d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.9-6.4h1.8V17h-1.8v-1.4zm1.8-2.2h-1.8c0-2.6 3-2.3 3-4.4 0-1.1-.9-1.8-2.1-1.8-1.1 0-2 .7-2.1 1.8H8.1c.1-2.1 1.9-3.6 4-3.6 2.3 0 3.9 1.4 3.9 3.5 0 2.7-3 2.7-3 4.5z"
+        fill="currentColor"
+      />
+    </svg>
+  )
+}
+
+function IconChevronLeft(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconChevronRight(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M9 6l6 6-6 6" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconCheck(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M20 6 9 17l-5-5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function IconX(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M18 6 6 18M6 6l12 12" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   )
 }
@@ -2554,7 +2949,7 @@ function TopNav({ variant = 'transparent' }) {
 
 function HomePage() {
   return (
-    <div className="home">
+    <div className="page">
       <div className="bg bgAuth" />
       <div className="bgOverlay" />
       <TopNav variant="transparent" />
@@ -2843,7 +3238,6 @@ function VerifyPage() {
             </div>
             <div className="sideMeta">
               <div className="sideTitle">Tradesmap</div>
-              <div className="sideSubtitle">Studio work workspace</div>
             </div>
           </div>
 
