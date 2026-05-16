@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, NavLink, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import ProjectPage from './components/ProjectPage'
 
 function IconUser(props) {
   return (
@@ -81,15 +82,15 @@ function WizardSummaryPage() {
                 </span>
                 <span className="sideText">Overview</span>
               </span>
-              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon" aria-hidden="true">
-                  <IconFolder />
-                </span>
-                <span className="sideText">Projects</span>
-                <span className="sideBadge" aria-label="12 projects">
-                  12
-                </span>
-              </span>
+             <NavLink to="/projects" className={({ isActive }) => `sideItem ${isActive ? 'sideItemActive' : ''}`}>
+  <span className="sideIcon" aria-hidden="true">
+    <IconFolder />
+  </span>
+  <span className="sideText">Projects</span>
+  <span className="sideBadge" aria-label="12 projects">
+    12
+  </span>
+</NavLink>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true">
                   <IconChart />
@@ -568,15 +569,15 @@ function CompanyVerifyPage() {
                 </span>
                 <span className="sideText">Overview</span>
               </span>
-              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon" aria-hidden="true">
-                  <IconFolder />
-                </span>
-                <span className="sideText">Projects</span>
-                <span className="sideBadge" aria-label="12 projects">
-                  12
-                </span>
-              </span>
+       <NavLink to="/projects" className={({ isActive }) => `sideItem ${isActive ? 'sideItemActive' : ''}`}>
+  <span className="sideIcon" aria-hidden="true">
+    <IconFolder />
+  </span>
+  <span className="sideText">Projects</span>
+  <span className="sideBadge" aria-label="12 projects">
+    12
+  </span>
+</NavLink>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true">
                   <IconChart />
@@ -1303,15 +1304,15 @@ function CompanyWizardPage() {
                 </span>
                 <span className="sideText">Overview</span>
               </span>
-              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon" aria-hidden="true">
-                  <IconFolder />
-                </span>
-                <span className="sideText">Projects</span>
-                <span className="sideBadge" aria-label="12 projects">
-                  12
-                </span>
-              </span>
+            <NavLink to="/projects" className={({ isActive }) => `sideItem ${isActive ? 'sideItemActive' : ''}`}>
+  <span className="sideIcon" aria-hidden="true">
+    <IconFolder />
+  </span>
+  <span className="sideText">Projects</span>
+  <span className="sideBadge" aria-label="12 projects">
+    12
+  </span>
+</NavLink>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true">
                   <IconChart />
@@ -2614,15 +2615,15 @@ function WizardPage({ embedded = false, initialStepOverride }) {
                 </span>
                 <span className="sideText">Overview</span>
               </span>
-              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon" aria-hidden="true">
-                  <IconFolder />
-                </span>
-                <span className="sideText">Projects</span>
-                <span className="sideBadge" aria-label="12 projects">
-                  12
-                </span>
-              </span>
+              <NavLink to="/projects" className={({ isActive }) => `sideItem ${isActive ? 'sideItemActive' : ''}`}>
+  <span className="sideIcon" aria-hidden="true">
+    <IconFolder />
+  </span>
+  <span className="sideText">Projects</span>
+  <span className="sideBadge" aria-label="12 projects">
+    12
+  </span>
+</NavLink>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true">
                   <IconChart />
@@ -3250,15 +3251,15 @@ function VerifyPage() {
                 </span>
                 <span className="sideText">Overview</span>
               </span>
-              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon" aria-hidden="true">
-                  <IconFolder />
-                </span>
-                <span className="sideText">Projects</span>
-                <span className="sideBadge" aria-label="12 projects">
-                  12
-                </span>
-              </span>
+             <NavLink to="/projects" className={({ isActive }) => `sideItem ${isActive ? 'sideItemActive' : ''}`}>
+  <span className="sideIcon" aria-hidden="true">
+    <IconFolder />
+  </span>
+  <span className="sideText">Projects</span>
+  <span className="sideBadge" aria-label="12 projects">
+    12
+  </span>
+</NavLink>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true">
                   <IconChart />
@@ -3382,6 +3383,7 @@ export default function App() {
       <Route path="/company/verify" element={<CompanyVerifyPage />} />
       <Route path="/company/wizard" element={<CompanyWizardPage />} />
       <Route path="*" element={<HomePage />} />
+      <Route path="/projects" element={<ProjectPage />} />
     </Routes>
   )
 }
