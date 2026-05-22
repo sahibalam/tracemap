@@ -25,9 +25,6 @@ body {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "SF Pro Text", "Segoe UI",
     Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   color: var(--text);
-}
-
-body {
   overflow: hidden;
 }
 
@@ -1315,7 +1312,7 @@ a {
   margin-top: 10px;
 }
 
- .wizardTextArea {
+.wizardTextArea {
   width: 100%;
   display: block;
   border-radius: 12px;
@@ -1326,7 +1323,7 @@ a {
   font-weight: 800;
   color: rgba(23, 38, 58, 0.82);
   resize: vertical;
- }
+}
 
 .wizardProjectList {
   display: grid;
@@ -1994,8 +1991,6 @@ a {
   }
 }
 
-
-
 /* Project Page Base Styles */
 .projectPage {
   padding: 24px 0;
@@ -2025,7 +2020,6 @@ a {
   border: 1px solid rgba(18, 38, 63, 0.08);
   border-radius: 16px;
   padding: 24px;
-  /* NO margin-bottom here - remove it! */
 }
 
 .projectRow {
@@ -2236,12 +2230,8 @@ a {
     justify-content: center;
   }
 }
-/* ============================================ */
-/* PROJECT PAGE TWO COLUMN LAYOUT */
-/* Add this at the very end of your styles.css */
-/* ============================================ */
 
-/* Two column grid layout */
+/* Two column layout */
 .projectTwoColumn {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -2249,7 +2239,6 @@ a {
   margin-bottom: 20px;
 }
 
-/* Left and Right column containers */
 .projectLeftColumn,
 .projectRightColumn {
   display: flex;
@@ -2257,36 +2246,30 @@ a {
   gap: 20px;
 }
 
-/* Remove margin-bottom from sections inside columns */
 .projectLeftColumn .projectSection,
 .projectRightColumn .projectSection {
   margin-bottom: 0;
 }
 
-/* Full width sections (for Workers and Location) */
 .projectSection.fullWidth {
   margin-bottom: 20px;
 }
 
-/* Field group for better spacing */
 .projectFieldGroup {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* Remove margin-bottom from fields inside field group */
 .projectFieldGroup .projectField {
   margin-bottom: 0;
 }
 
-/* Ensure consistent height for sections in two-column layout */
 .projectTwoColumn .projectSection {
   margin-bottom: 0;
   height: 100%;
 }
 
-/* Responsive: Stack columns on mobile/tablet */
 @media (max-width: 900px) {
   .projectTwoColumn {
     grid-template-columns: 1fr;
@@ -2299,7 +2282,6 @@ a {
   }
 }
 
-/* Project Type Checkbox Group */
 .projectCheckboxGroup {
   display: flex;
   gap: 24px;
