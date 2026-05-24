@@ -457,222 +457,126 @@ function WizardStep4({ data, onChange, onNext, onBack }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Special Requirements</h2>
-      <p className="wizardStepSubtitle"></p>
+      <p className="wizardStepSubtitle">
+      </p>
       
       <div className="wizardForm">
-        {/* Flags selected note */}
         <div className="wizardFlagsNote">
           <span className="wizardFlagsNoteIcon">📌</span>
           <span className="wizardFlagsNoteText">Flags selected - Triggers admin review or automatic matching rule</span>
         </div>
 
-        {/* WAGE & PAYROLL */}
         <div className="wizardCategorySection">
           <h3 className="wizardCategoryTitle">WAGE & PAYROLL</h3>
           <div className="wizardCheckboxGrid">
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.davisBaconFlag || false}
-                onChange={handleCheckboxChange('davisBaconFlag')}
-              />
+              <input type="checkbox" checked={data.davisBaconFlag || false} onChange={handleCheckboxChange('davisBaconFlag')} />
               <span>Davis-Bacon / Federal Prevailing Wage</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.statePrevailingWageFlag || false}
-                onChange={handleCheckboxChange('statePrevailingWageFlag')}
-              />
+              <input type="checkbox" checked={data.statePrevailingWageFlag || false} onChange={handleCheckboxChange('statePrevailingWageFlag')} />
               <span>State Prevailing Wage</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.localPrevailingWageFlag || false}
-                onChange={handleCheckboxChange('localPrevailingWageFlag')}
-              />
+              <input type="checkbox" checked={data.localPrevailingWageFlag || false} onChange={handleCheckboxChange('localPrevailingWageFlag')} />
               <span>Local Prevailing Wage</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.certifiedPayrollRequiredFlag || false}
-                onChange={handleCheckboxChange('certifiedPayrollRequiredFlag')}
-              />
+              <input type="checkbox" checked={data.certifiedPayrollRequiredFlag || false} onChange={handleCheckboxChange('certifiedPayrollRequiredFlag')} />
               <span>Certified Payroll</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.unionRequirementFlag || false}
-                onChange={handleCheckboxChange('unionRequirementFlag')}
-              />
+              <input type="checkbox" checked={data.unionRequirementFlag || false} onChange={handleCheckboxChange('unionRequirementFlag')} />
               <span>Union / PLA Requirement</span>
             </label>
           </div>
         </div>
 
-        {/* WORKER ELIGIBILITY */}
         <div className="wizardCategorySection">
           <h3 className="wizardCategoryTitle">WORKER ELIGIBILITY</h3>
           <div className="wizardCheckboxGrid">
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.backgroundCheckFlag || false}
-                onChange={handleCheckboxChange('backgroundCheckFlag')}
-              />
+              <input type="checkbox" checked={data.backgroundCheckFlag || false} onChange={handleCheckboxChange('backgroundCheckFlag')} />
               <span>Background Check</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.drugTestFlag || false}
-                onChange={handleCheckboxChange('drugTestFlag')}
-              />
+              <input type="checkbox" checked={data.drugTestFlag || false} onChange={handleCheckboxChange('drugTestFlag')} />
               <span>Drug Test</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.osha10Flag || false}
-                onChange={handleCheckboxChange('osha10Flag')}
-              />
+              <input type="checkbox" checked={data.osha10Flag || false} onChange={handleCheckboxChange('osha10Flag')} />
               <span>OSHA 10</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.osha30Flag || false}
-                onChange={handleCheckboxChange('osha30Flag')}
-              />
+              <input type="checkbox" checked={data.osha30Flag || false} onChange={handleCheckboxChange('osha30Flag')} />
               <span>OSHA 30</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.usCitizenOnlyFlag || false}
-                onChange={handleCheckboxChange('usCitizenOnlyFlag')}
-              />
+              <input type="checkbox" checked={data.usCitizenOnlyFlag || false} onChange={handleCheckboxChange('usCitizenOnlyFlag')} />
               <span>U.S. Citizen Only</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.healthcareFacilityFlag || false}
-                onChange={handleCheckboxChange('healthcareFacilityFlag')}
-              />
+              <input type="checkbox" checked={data.healthcareFacilityFlag || false} onChange={handleCheckboxChange('healthcareFacilityFlag')} />
               <span>Healthcare Facility Requirements</span>
             </label>
           </div>
         </div>
 
-        {/* SITE ACCESS */}
         <div className="wizardCategorySection">
           <h3 className="wizardCategoryTitle">SITE ACCESS</h3>
           <div className="wizardCheckboxGrid">
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.badgeRequiredFlag || false}
-                onChange={handleCheckboxChange('badgeRequiredFlag')}
-              />
+              <input type="checkbox" checked={data.badgeRequiredFlag || false} onChange={handleCheckboxChange('badgeRequiredFlag')} />
               <span>Badge Required</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.securityClearanceFlag || false}
-                onChange={handleCheckboxChange('securityClearanceFlag')}
-              />
+              <input type="checkbox" checked={data.securityClearanceFlag || false} onChange={handleCheckboxChange('securityClearanceFlag')} />
               <span>Security Clearance</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.airportAccessFlag || false}
-                onChange={handleCheckboxChange('airportAccessFlag')}
-              />
+              <input type="checkbox" checked={data.airportAccessFlag || false} onChange={handleCheckboxChange('airportAccessFlag')} />
               <span>Airport Access</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.portAccessFlag || false}
-                onChange={handleCheckboxChange('portAccessFlag')}
-              />
+              <input type="checkbox" checked={data.portAccessFlag || false} onChange={handleCheckboxChange('portAccessFlag')} />
               <span>Port Access</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.militaryBaseAccessFlag || false}
-                onChange={handleCheckboxChange('militaryBaseAccessFlag')}
-              />
+              <input type="checkbox" checked={data.militaryBaseAccessFlag || false} onChange={handleCheckboxChange('militaryBaseAccessFlag')} />
               <span>Military Base Access</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.nasaAccessFlag || false}
-                onChange={handleCheckboxChange('nasaAccessFlag')}
-              />
+              <input type="checkbox" checked={data.nasaAccessFlag || false} onChange={handleCheckboxChange('nasaAccessFlag')} />
               <span>NASA / Space Facility Access</span>
             </label>
           </div>
         </div>
 
-        {/* LOGISTICS & SCHEDULE */}
         <div className="wizardCategorySection">
           <h3 className="wizardCategoryTitle">LOGISTICS & SCHEDULE</h3>
           <div className="wizardCheckboxGrid">
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.travelRequiredFlag || false}
-                onChange={handleCheckboxChange('travelRequiredFlag')}
-              />
+              <input type="checkbox" checked={data.travelRequiredFlag || false} onChange={handleCheckboxChange('travelRequiredFlag')} />
               <span>Travel Required</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.perDiemRequiredFlag || false}
-                onChange={handleCheckboxChange('perDiemRequiredFlag')}
-              />
+              <input type="checkbox" checked={data.perDiemRequiredFlag || false} onChange={handleCheckboxChange('perDiemRequiredFlag')} />
               <span>Per Diem Required</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.hotelRequiredFlag || false}
-                onChange={handleCheckboxChange('hotelRequiredFlag')}
-              />
+              <input type="checkbox" checked={data.hotelRequiredFlag || false} onChange={handleCheckboxChange('hotelRequiredFlag')} />
               <span>Hotel Required</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.nightShiftFlag || false}
-                onChange={handleCheckboxChange('nightShiftFlag')}
-              />
+              <input type="checkbox" checked={data.nightShiftFlag || false} onChange={handleCheckboxChange('nightShiftFlag')} />
               <span>Night Shift</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.weekendShiftFlag || false}
-                onChange={handleCheckboxChange('weekendShiftFlag')}
-              />
+              <input type="checkbox" checked={data.weekendShiftFlag || false} onChange={handleCheckboxChange('weekendShiftFlag')} />
               <span>Weekend Shift</span>
             </label>
             <label className="wizardCheckboxLabel">
-              <input 
-                type="checkbox" 
-                checked={data.highUrgencyFlag || false}
-                onChange={handleCheckboxChange('highUrgencyFlag')}
-              />
+              <input type="checkbox" checked={data.highUrgencyFlag || false} onChange={handleCheckboxChange('highUrgencyFlag')} />
               <span>High Urgency / Short Notice</span>
             </label>
           </div>
@@ -693,8 +597,436 @@ function WizardStep4({ data, onChange, onNext, onBack }) {
   )
 }
 
-// ============ WIZARD STEP 5: BUDGET & TEAM ============
+// ============ WIZARD STEP 5: WORK TYPE SELECTION (DYNAMIC) ============
 function WizardStep5({ data, onChange, onNext, onBack }) {
+  const handleChange = (field, value) => {
+    onChange({ ...data, [field]: value })
+  }
+
+  const handleRadioChange = (field) => (e) => {
+    onChange({ ...data, [field]: e.target.value })
+  }
+
+  const workTypeOptions = [
+    "Select work type...",
+    "Hourly Workforce Posting",
+    "Lump Sum / Execution Support"
+  ]
+
+  const primaryTradeOptions = [
+    "Electrical",
+    "Plumbing",
+    "HVAC",
+    "Carpentry",
+    "Concrete",
+    "Steel/Iron",
+    "Roofing",
+    "Painting",
+    "Demolition",
+    "Insulation",
+    "Masonry",
+    "General Labor"
+  ]
+
+  const requestedTradeOptions = [
+    "Electrical",
+    "Plumbing",
+    "HVAC",
+    "Carpentry",
+    "Concrete",
+    "Steel/Iron",
+    "Roofing",
+    "Painting",
+    "Drywall / Framing",
+    "Masonry",
+    "General Labor",
+    "Demolition"
+  ]
+
+  const urgencyOptions = [
+    { value: "normal", label: "Normal", description: "Standard matching priority, no premium." },
+    { value: "urgent", label: "Urgent", description: "Boosted priority, may apply premium rates." },
+    { value: "emergency", label: "Emergency / Short Notice", description: "Highest priority, premium rates, admin notified." }
+  ]
+
+  const renderHourlyWorkforceUI = () => (
+    <>
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">PRIMARY TRADE CATEGORY</label>
+          <span className="wizardFieldRequired">REQUIRED</span>
+        </div>
+        <div className="wizardTradeGrid">
+          {primaryTradeOptions.map(trade => (
+            <label key={trade} className="wizardTradeLabel">
+              <input 
+                type="radio" 
+                name="primaryTrade"
+                value={trade}
+                checked={data.primaryTrade === trade}
+                onChange={handleRadioChange('primaryTrade')}
+              />
+              <span>{trade}</span>
+            </label>
+          ))}
+        </div>
+        <p className="wizardFieldHint">
+          Select the primary trade — additional packages can be added after posting.
+        </p>
+      </div>
+
+      <div className="wizardManagementSection">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">MANAGEMENT STYLE</label>
+          <span className="wizardFieldConditional">CONDITIONAL</span>
+        </div>
+        <div className="wizardManagementOptions">
+          <label className={`wizardManagementCard ${data.managementStyle === 'self-managed' ? 'active' : ''}`}>
+            <input 
+              type="radio" 
+              name="managementStyle"
+              value="self-managed"
+              checked={data.managementStyle === 'self-managed'}
+              onChange={handleRadioChange('managementStyle')}
+            />
+            <div className="wizardManagementContent">
+              <strong>Self-Managed</strong>
+              <span>Your team manages workers directly. TradesMap handles matching and payments only.</span>
+            </div>
+          </label>
+          <label className={`wizardManagementCard ${data.managementStyle === 'support-needed' ? 'active' : ''}`}>
+            <input 
+              type="radio" 
+              name="managementStyle"
+              value="support-needed"
+              checked={data.managementStyle === 'support-needed'}
+              onChange={handleRadioChange('managementStyle')}
+            />
+            <div className="wizardManagementContent">
+              <strong>Support Needed</strong>
+              <span>TradesMap operations team provides active workforce management and oversight.</span>
+            </div>
+          </label>
+        </div>
+        <p className="wizardFieldHint">
+          Determines admin review routing and operations assignment.
+        </p>
+      </div>
+
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">URGENCY LEVEL</label>
+          <span className="wizardFieldRequired">REQUIRED</span>
+        </div>
+        <div className="wizardUrgencyOptions">
+          {urgencyOptions.map(option => (
+            <label key={option.value} className={`wizardUrgencyCard ${data.urgencyLevel === option.value ? 'active' : ''}`}>
+              <input 
+                type="radio" 
+                name="urgencyLevel"
+                value={option.value}
+                checked={data.urgencyLevel === option.value}
+                onChange={handleRadioChange('urgencyLevel')}
+              />
+              <div className="wizardUrgencyContent">
+                <strong>{option.label}</strong>
+                <span>{option.description}</span>
+              </div>
+            </label>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+
+  const renderLumpSumUI = () => (
+    <>
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">SCOPE DESCRIPTION</label>
+          <span className="wizardFieldRequired">REQUIRED</span>
+        </div>
+        <textarea 
+          className="wizardFieldTextarea" 
+          placeholder="Describe the requested scope of work. e.g. framing/drywall/ACT package for floors 3-6..."
+          rows="4"
+          value={data.scopeDescription || ''}
+          onChange={(e) => handleChange('scopeDescription', e.target.value)}
+        />
+        <p className="wizardFieldHint">
+          Used for construction review. Be specific - include trades, areas, and any known constraints.
+        </p>
+      </div>
+
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">PLANS/DRAWINGS UPLOAD</label>
+          <span className="wizardFieldRequired">REQUIRED</span>
+        </div>
+        <div className="wizardFileUpload">
+          <button type="button" className="wizardUploadBtn" onClick={() => document.getElementById('plansUpload').click()}>
+            Click to upload plans & drawings
+          </button>
+          <input 
+            id="plansUpload"
+            type="file" 
+            style={{ display: 'none' }}
+            onChange={(e) => {
+              const file = e.target.files[0]
+              if (file) handleChange('plansFileName', file.name)
+            }}
+            accept=".pdf,.dwg,.jpg,.jpeg,.png"
+            multiple
+          />
+          <span className="wizardFileName">{data.plansFileName || 'No file selected'}</span>
+        </div>
+        <p className="wizardFieldHint">
+          PDF, DWG, sketches, addenda, specs - up to 50MB each. Required for admin and construction review. Include all relevant plans and addenda.
+        </p>
+      </div>
+
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">SCHEDULE UPLOAD OR DATES</label>
+          <span className="wizardFieldRequired">REQUIRED</span>
+        </div>
+        <div className="wizardFileUpload">
+          <button type="button" className="wizardUploadBtn" onClick={() => document.getElementById('scheduleUpload').click()}>
+            Upload schedule file
+          </button>
+          <input 
+            id="scheduleUpload"
+            type="file" 
+            style={{ display: 'none' }}
+            onChange={(e) => {
+              const file = e.target.files[0]
+              if (file) handleChange('scheduleFileName', file.name)
+            }}
+            accept=".pdf,.xlsx,.xls,.csv,.mpp"
+          />
+          <span className="wizardFileName">{data.scheduleFileName || 'No file selected'}</span>
+        </div>
+        <p className="wizardFieldHint">PDF, Excel, MPP, CSV</p>
+        
+        <div className="wizardOrDivider">
+          <span>- or enter dates manually -</span>
+        </div>
+        
+        <div className="wizardRow">
+          <div className="wizardField">
+            <label className="wizardFieldLabel">Start Date</label>
+            <input 
+              type="date" 
+              className="wizardFieldInput" 
+              value={data.projectStartDate || ''}
+              onChange={(e) => handleChange('projectStartDate', e.target.value)}
+            />
+          </div>
+          <div className="wizardField">
+            <label className="wizardFieldLabel">End Date / Milestone</label>
+            <input 
+              type="date" 
+              className="wizardFieldInput" 
+              value={data.projectEndDate || ''}
+              onChange={(e) => handleChange('projectEndDate', e.target.value)}
+            />
+          </div>
+        </div>
+        <p className="wizardFieldHint">
+          Must include start/end or key milestones. Used for risk and manpower planning.
+        </p>
+      </div>
+
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">REQUESTED TRADE SCOPE</label>
+          <span className="wizardFieldRequired">REQUIRED</span>
+        </div>
+        <div className="wizardTradeGrid">
+          {requestedTradeOptions.map(trade => (
+            <label key={trade} className="wizardTradeLabel">
+              <input 
+                type="checkbox" 
+                value={trade}
+                checked={(data.requestedTrades || []).includes(trade)}
+                onChange={(e) => {
+                  const currentTrades = data.requestedTrades || []
+                  if (e.target.checked) {
+                    handleChange('requestedTrades', [...currentTrades, trade])
+                  } else {
+                    handleChange('requestedTrades', currentTrades.filter(t => t !== trade))
+                  }
+                }}
+              />
+              <span>{trade}</span>
+            </label>
+          ))}
+        </div>
+        <p className="wizardFieldHint">
+          Multiple trades can be selected. Used for estimating and manpower planning.
+        </p>
+      </div>
+
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">BUDGET / TARGET PRICE</label>
+          <span className="wizardFieldOptional">OPTIONAL</span>
+        </div>
+        <div className="wizardCurrencyInput">
+          <span className="currencySymbol">$</span>
+          <input 
+            type="text" 
+            className="wizardFieldInputCurrency" 
+            placeholder="0.00"
+            value={data.targetBudget || ''}
+            onChange={(e) => handleChange('targetBudget', e.target.value)}
+          />
+        </div>
+        <p className="wizardFieldHint">
+          Optional company budget expectation. Helps determine commercial feasibility during review.
+        </p>
+      </div>
+
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">SUPERINTENDENT PROVIDED BY COMPANY</label>
+          <span className="wizardFieldRequired">REQUIRED</span>
+        </div>
+        <div className="wizardRadioOptions">
+          <label className={`wizardRadioCard ${data.superintendentProvided === 'yes' ? 'active' : ''}`}>
+            <input 
+              type="radio" 
+              name="superintendentProvided"
+              value="yes"
+              checked={data.superintendentProvided === 'yes'}
+              onChange={handleRadioChange('superintendentProvided')}
+            />
+            <div className="wizardRadioContent">
+              <strong>Yes — Company provides</strong>
+              <span>Your team provides field leadership. TradesMap may supply foreman or pusher support.</span>
+            </div>
+          </label>
+          <label className={`wizardRadioCard ${data.superintendentProvided === 'no' ? 'active' : ''}`}>
+            <input 
+              type="radio" 
+              name="superintendentProvided"
+              value="no"
+              checked={data.superintendentProvided === 'no'}
+              onChange={handleRadioChange('superintendentProvided')}
+            />
+            <div className="wizardRadioContent">
+              <strong>No — Support needed</strong>
+              <span>TradesMap will assign field leadership as part of the execution plan.</span>
+            </div>
+          </label>
+        </div>
+        <p className="wizardFieldHint">
+          Defines field leadership structure and execution model routing.
+        </p>
+      </div>
+
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">TRADESMAP FIELD LEAD NEEDED</label>
+          <span className="wizardFieldConditional">CONDITIONAL</span>
+        </div>
+        <div className="wizardRadioOptionsHorizontal">
+          <label className={`wizardRadioCardHorizontal ${data.fieldLeadNeeded === 'yes' ? 'active' : ''}`}>
+            <input 
+              type="radio" 
+              name="fieldLeadNeeded"
+              value="yes"
+              checked={data.fieldLeadNeeded === 'yes'}
+              onChange={handleRadioChange('fieldLeadNeeded')}
+            />
+            <div className="wizardRadioContent">
+              <strong>Yes</strong>
+              <span>A TradesMap field lead will be assigned to this project.</span>
+            </div>
+          </label>
+          <label className={`wizardRadioCardHorizontal ${data.fieldLeadNeeded === 'no' ? 'active' : ''}`}>
+            <input 
+              type="radio" 
+              name="fieldLeadNeeded"
+              value="no"
+              checked={data.fieldLeadNeeded === 'no'}
+              onChange={handleRadioChange('fieldLeadNeeded')}
+            />
+            <div className="wizardRadioContent">
+              <strong>No</strong>
+              <span>No additional field lead required from TradesMap.</span>
+            </div>
+          </label>
+        </div>
+        <p className="wizardFieldHint">
+          Used for execution planning. Determines support role assignment.
+        </p>
+      </div>
+
+      <div className="wizardField">
+        <div className="wizardFieldHeader">
+          <label className="wizardFieldLabel">RISK NOTES</label>
+          <span className="wizardFieldOptional">OPTIONAL</span>
+        </div>
+        <textarea 
+          className="wizardFieldTextarea" 
+          placeholder="Note any known risks — schedule delays, site access issues, material lead times, productivity concerns, drawing quality, etc."
+          rows="4"
+          value={data.riskNotes || ''}
+          onChange={(e) => handleChange('riskNotes', e.target.value)}
+        />
+        <p className="wizardFieldHint">
+          Used during review. Helps operations anticipate challenges before mobilization.
+        </p>
+      </div>
+    </>
+  )
+
+  return (
+    <div className="wizardStep">
+      <h2 className="wizardStepTitle">Work Type Selection</h2>
+      <p className="wizardStepSubtitle">
+      </p>
+      
+      <div className="wizardForm">
+        <div className="wizardField">
+          <div className="wizardFieldHeader">
+            <label className="wizardFieldLabel">WORK TYPE</label>
+            <span className="wizardFieldRequired">REQUIRED</span>
+          </div>
+          <select 
+            className="wizardFieldSelect"
+            value={data.workType || ''}
+            onChange={(e) => handleChange('workType', e.target.value)}
+          >
+            {workTypeOptions.map(option => (
+              <option key={option} value={option === "Select work type..." ? "" : option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {data.workType === 'Hourly Workforce Posting' && renderHourlyWorkforceUI()}
+        {data.workType === 'Lump Sum / Execution Support' && renderLumpSumUI()}
+      </div>
+
+      <div className="wizardActions">
+        <button className="wizardPillBtn wizardPillBtnSecondary" onClick={onBack}>
+          <span className="wizardPillBtnIcon"><IconArrowLeft /></span>
+          <span className="wizardPillBtnLabel">Back</span>
+        </button>
+        <button className="wizardPillBtn wizardPillBtnPrimary" onClick={onNext}>
+          <span className="wizardPillBtnLabel">Next</span>
+          <span className="wizardPillBtnIcon"><IconArrowRight /></span>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ============ WIZARD STEP 6: BUDGET & TEAM ============
+function WizardStep6({ data, onChange, onNext, onBack }) {
   const handleChange = (field, value) => {
     onChange({ ...data, [field]: value })
   }
@@ -754,8 +1086,8 @@ function WizardStep5({ data, onChange, onNext, onBack }) {
   )
 }
 
-// ============ WIZARD STEP 6: REVIEW & SUBMIT ============
-function WizardStep6({ data, onBack, onSubmit }) {
+// ============ WIZARD STEP 7: REVIEW & SUBMIT ============
+function WizardStep7({ data, onBack, onSubmit }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Review & Submit</h2>
@@ -860,11 +1192,11 @@ function WizardStep6({ data, onBack, onSubmit }) {
             <div>
               <strong>WAGE & PAYROLL:</strong>
               <ul>
-                <li>Davis-Bacon / Federal Prevailing Wage: {data.davisBaconFlag ? '✓' : '✗'}</li>
+                <li>Davis-Bacon: {data.davisBaconFlag ? '✓' : '✗'}</li>
                 <li>State Prevailing Wage: {data.statePrevailingWageFlag ? '✓' : '✗'}</li>
                 <li>Local Prevailing Wage: {data.localPrevailingWageFlag ? '✓' : '✗'}</li>
                 <li>Certified Payroll: {data.certifiedPayrollRequiredFlag ? '✓' : '✗'}</li>
-                <li>Union / PLA Requirement: {data.unionRequirementFlag ? '✓' : '✗'}</li>
+                <li>Union Requirement: {data.unionRequirementFlag ? '✓' : '✗'}</li>
               </ul>
             </div>
             <div>
@@ -875,7 +1207,7 @@ function WizardStep6({ data, onBack, onSubmit }) {
                 <li>OSHA 10: {data.osha10Flag ? '✓' : '✗'}</li>
                 <li>OSHA 30: {data.osha30Flag ? '✓' : '✗'}</li>
                 <li>U.S. Citizen Only: {data.usCitizenOnlyFlag ? '✓' : '✗'}</li>
-                <li>Healthcare Facility Requirements: {data.healthcareFacilityFlag ? '✓' : '✗'}</li>
+                <li>Healthcare Facility: {data.healthcareFacilityFlag ? '✓' : '✗'}</li>
               </ul>
             </div>
             <div>
@@ -885,8 +1217,8 @@ function WizardStep6({ data, onBack, onSubmit }) {
                 <li>Security Clearance: {data.securityClearanceFlag ? '✓' : '✗'}</li>
                 <li>Airport Access: {data.airportAccessFlag ? '✓' : '✗'}</li>
                 <li>Port Access: {data.portAccessFlag ? '✓' : '✗'}</li>
-                <li>Military Base Access: {data.militaryBaseAccessFlag ? '✓' : '✗'}</li>
-                <li>NASA / Space Facility Access: {data.nasaAccessFlag ? '✓' : '✗'}</li>
+                <li>Military Base: {data.militaryBaseAccessFlag ? '✓' : '✗'}</li>
+                <li>NASA Access: {data.nasaAccessFlag ? '✓' : '✗'}</li>
               </ul>
             </div>
             <div>
@@ -897,10 +1229,70 @@ function WizardStep6({ data, onBack, onSubmit }) {
                 <li>Hotel Required: {data.hotelRequiredFlag ? '✓' : '✗'}</li>
                 <li>Night Shift: {data.nightShiftFlag ? '✓' : '✗'}</li>
                 <li>Weekend Shift: {data.weekendShiftFlag ? '✓' : '✗'}</li>
-                <li>High Urgency / Short Notice: {data.highUrgencyFlag ? '✓' : '✗'}</li>
+                <li>High Urgency: {data.highUrgencyFlag ? '✓' : '✗'}</li>
               </ul>
             </div>
           </div>
+        </div>
+
+        <div className="wizardReviewSection">
+          <h3 className="wizardReviewTitle">Work Type Selection</h3>
+          <div className="wizardReviewRow">
+            <span className="wizardReviewLabel">Work Type:</span>
+            <span className="wizardReviewValue">{data.workType || '-'}</span>
+          </div>
+          {data.workType === 'Hourly Workforce Posting' && (
+            <>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Primary Trade:</span>
+                <span className="wizardReviewValue">{data.primaryTrade || '-'}</span>
+              </div>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Management Style:</span>
+                <span className="wizardReviewValue">{data.managementStyle === 'self-managed' ? 'Self-Managed' : data.managementStyle === 'support-needed' ? 'Support Needed' : '-'}</span>
+              </div>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Urgency Level:</span>
+                <span className="wizardReviewValue">{data.urgencyLevel === 'normal' ? 'Normal' : data.urgencyLevel === 'urgent' ? 'Urgent' : data.urgencyLevel === 'emergency' ? 'Emergency' : '-'}</span>
+              </div>
+            </>
+          )}
+          {data.workType === 'Lump Sum / Execution Support' && (
+            <>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Scope Description:</span>
+                <span className="wizardReviewValue">{data.scopeDescription || '-'}</span>
+              </div>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Plans:</span>
+                <span className="wizardReviewValue">{data.plansFileName || '-'}</span>
+              </div>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Schedule:</span>
+                <span className="wizardReviewValue">{data.scheduleFileName || data.projectStartDate ? `${data.projectStartDate} to ${data.projectEndDate}` : '-'}</span>
+              </div>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Requested Trades:</span>
+                <span className="wizardReviewValue">{(data.requestedTrades || []).join(', ') || '-'}</span>
+              </div>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Target Budget:</span>
+                <span className="wizardReviewValue">{data.targetBudget ? `$${data.targetBudget}` : '-'}</span>
+              </div>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Superintendent:</span>
+                <span className="wizardReviewValue">{data.superintendentProvided === 'yes' ? 'Company Provides' : 'Support Needed'}</span>
+              </div>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Field Lead:</span>
+                <span className="wizardReviewValue">{data.fieldLeadNeeded === 'yes' ? 'Yes' : 'No'}</span>
+              </div>
+              <div className="wizardReviewRow">
+                <span className="wizardReviewLabel">Risk Notes:</span>
+                <span className="wizardReviewValue">{data.riskNotes || '-'}</span>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="wizardReviewSection">
@@ -961,7 +1353,7 @@ function ProjectWizard({ onComplete, onCancel }) {
     certifiedPayrollFlag: false,
     secureSiteFlag: false,
     classificationNotes: '',
-    // Step 4 - Special Requirements
+    // Step 4
     davisBaconFlag: false,
     statePrevailingWageFlag: false,
     localPrevailingWageFlag: false,
@@ -986,6 +1378,21 @@ function ProjectWizard({ onComplete, onCancel }) {
     weekendShiftFlag: false,
     highUrgencyFlag: false,
     // Step 5
+    workType: '',
+    primaryTrade: '',
+    managementStyle: '',
+    urgencyLevel: '',
+    scopeDescription: '',
+    plansFileName: '',
+    scheduleFileName: '',
+    projectStartDate: '',
+    projectEndDate: '',
+    requestedTrades: [],
+    targetBudget: '',
+    superintendentProvided: '',
+    fieldLeadNeeded: '',
+    riskNotes: '',
+    // Step 6
     budget: '',
     workerCount: '',
     teamMembers: ''
@@ -1012,23 +1419,25 @@ function ProjectWizard({ onComplete, onCancel }) {
     onComplete(newProject)
   }
 
-  const stepNames = ['Basic Info', 'Location', 'Classification', 'Requirements', 'Budget', 'Review']
+  const stepNames = ['Basic Info', 'Location', 'Classification', 'Requirements', 'Work Type', 'Budget', 'Review']
 
   return (
     <div className="projectWizard">
-      <div className="wizardCloseWrapper">
-        <button className="wizardCloseBtn" onClick={onCancel}>×</button>
+      {/* Sticky Header Section */}
+      <div className="wizardStickyHeader">
+   
+        
+        <div className="wizardSteps">
+          {stepNames.map((name, idx) => (
+            <div key={idx} className={`wizardStepIndicator ${step > idx + 1 ? 'completed' : ''} ${step === idx + 1 ? 'active' : ''}`}>
+              <div className="wizardStepCircle">{step > idx + 1 ? <IconCheck /> : idx + 1}</div>
+              <span className="wizardStepName">{name}</span>
+            </div>
+          ))}
+        </div>
       </div>
       
-      <div className="wizardSteps">
-        {stepNames.map((name, idx) => (
-          <div key={idx} className={`wizardStepIndicator ${step > idx + 1 ? 'completed' : ''} ${step === idx + 1 ? 'active' : ''}`}>
-            <div className="wizardStepCircle">{step > idx + 1 ? <IconCheck /> : idx + 1}</div>
-            <span className="wizardStepName">{name}</span>
-          </div>
-        ))}
-      </div>
-      
+      {/* Scrollable Content Area */}
       <div className="wizardContent">
         {step === 1 && (
           <WizardStep1 
@@ -1071,6 +1480,14 @@ function ProjectWizard({ onComplete, onCancel }) {
         )}
         {step === 6 && (
           <WizardStep6 
+            data={wizardData} 
+            onChange={updateWizardData} 
+            onNext={handleNext} 
+            onBack={handleBack} 
+          />
+        )}
+        {step === 7 && (
+          <WizardStep7 
             data={wizardData} 
             onBack={handleBack} 
             onSubmit={handleSubmit} 
@@ -1267,7 +1684,7 @@ export default function ProjectPage() {
                           <span>📅 Created: {new Date(project.createdAt).toLocaleDateString()}</span>
                           <span>👥 {project.workerCount || 0} workers</span>
                         </div>
-                        <small>Sector: {project.projectSector || 'Not specified'}</small>
+                        <small>Work Type: {project.workType || 'Not specified'}</small>
                       </div>
                     ))}
                   </div>
@@ -1285,15 +1702,29 @@ export default function ProjectPage() {
           border-radius: 20px;
           border: 1px solid rgba(18, 38, 63, 0.08);
           box-shadow: 0 24px 60px rgba(18, 38, 63, 0.2);
-          overflow: hidden;
+          overflow: visible;
           position: relative;
+          max-height: calc(100vh - 40px);
+          display: flex;
+          flex-direction: column;
+        }
+        
+        /* Sticky header container */
+        .wizardStickyHeader {
+          position: sticky;
+          top: 0;
+          background: rgba(255, 255, 255, 0.98);
+          backdrop-filter: blur(10px);
+          z-index: 20;
+          border-bottom: 1px solid rgba(18, 38, 63, 0.08);
+          border-radius: 20px 20px 0 0;
         }
         
         .wizardCloseWrapper {
           position: absolute;
           top: 16px;
           right: 16px;
-          z-index: 10;
+          z-index: 30;
         }
         
         .wizardCloseBtn {
@@ -1317,8 +1748,9 @@ export default function ProjectPage() {
         
         .wizardSteps {
           display: flex;
-          padding: 32px 24px 0;
+          padding: 24px 48px 16px 24px;
           gap: 8px;
+          background: rgba(255, 255, 255, 0.98);
         }
         
         .wizardStepIndicator {
@@ -1379,6 +1811,7 @@ export default function ProjectPage() {
           font-weight: 700;
           color: rgba(23, 38, 58, 0.6);
           text-align: center;
+          white-space: nowrap;
         }
         
         .wizardStepIndicator.active .wizardStepName {
@@ -1386,8 +1819,31 @@ export default function ProjectPage() {
           font-weight: 900;
         }
         
+        /* Scrollable content area */
         .wizardContent {
           padding: 24px;
+          overflow-y: auto;
+          flex: 1;
+          max-height: calc(100vh - 200px);
+        }
+        
+        /* Custom scrollbar for content */
+        .wizardContent::-webkit-scrollbar {
+          width: 6px;
+        }
+        
+        .wizardContent::-webkit-scrollbar-track {
+          background: rgba(18, 38, 63, 0.05);
+          border-radius: 10px;
+        }
+        
+        .wizardContent::-webkit-scrollbar-thumb {
+          background: rgba(15, 78, 169, 0.3);
+          border-radius: 10px;
+        }
+        
+        .wizardContent::-webkit-scrollbar-thumb:hover {
+          background: rgba(15, 78, 169, 0.5);
         }
         
         .wizardStep {
@@ -1444,6 +1900,16 @@ export default function ProjectPage() {
           font-weight: 800;
           color: #ef4444;
           background: rgba(239, 68, 68, 0.1);
+          padding: 2px 8px;
+          border-radius: 20px;
+          letter-spacing: 0.5px;
+        }
+        
+        .wizardFieldConditional {
+          font-size: 11px;
+          font-weight: 800;
+          color: #f59e0b;
+          background: rgba(245, 158, 11, 0.1);
           padding: 2px 8px;
           border-radius: 20px;
           letter-spacing: 0.5px;
@@ -1695,6 +2161,328 @@ export default function ProjectPage() {
           accent-color: var(--blue);
         }
         
+        /* Work Type Selection Styles */
+        .wizardTradeGrid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
+        
+        .wizardTradeLabel {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 14px;
+          font-weight: 600;
+          color: rgba(23, 38, 58, 0.78);
+          cursor: pointer;
+          padding: 10px 12px;
+          background: rgba(255, 255, 255, 0.96);
+          border: 1px solid rgba(18, 38, 63, 0.08);
+          border-radius: 12px;
+          transition: all 0.2s ease;
+        }
+        
+        .wizardTradeLabel:hover {
+          background: rgba(15, 78, 169, 0.04);
+          border-color: rgba(15, 78, 169, 0.2);
+        }
+        
+        .wizardTradeLabel input[type="radio"],
+        .wizardTradeLabel input[type="checkbox"] {
+          width: 16px;
+          height: 16px;
+          cursor: pointer;
+          accent-color: var(--blue);
+        }
+        
+        .wizardManagementSection {
+          margin-top: 8px;
+        }
+        
+        .wizardManagementOptions {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        
+        .wizardManagementCard {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 16px;
+          background: rgba(255, 255, 255, 0.96);
+          border: 1px solid rgba(18, 38, 63, 0.08);
+          border-radius: 16px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .wizardManagementCard:hover {
+          background: rgba(15, 78, 169, 0.04);
+          border-color: rgba(15, 78, 169, 0.2);
+        }
+        
+        .wizardManagementCard.active {
+          border-color: var(--blue);
+          background: rgba(15, 78, 169, 0.04);
+          box-shadow: 0 2px 8px rgba(15, 78, 169, 0.1);
+        }
+        
+        .wizardManagementCard input[type="radio"] {
+          margin-top: 2px;
+          accent-color: var(--blue);
+        }
+        
+        .wizardManagementContent {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        
+        .wizardManagementContent strong {
+          font-size: 14px;
+          font-weight: 800;
+          color: rgba(23, 38, 58, 0.88);
+        }
+        
+        .wizardManagementContent span {
+          font-size: 13px;
+          color: rgba(23, 38, 58, 0.65);
+          line-height: 1.4;
+        }
+        
+        .wizardUrgencyOptions {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        
+        .wizardUrgencyCard {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 16px;
+          background: rgba(255, 255, 255, 0.96);
+          border: 1px solid rgba(18, 38, 63, 0.08);
+          border-radius: 16px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .wizardUrgencyCard:hover {
+          background: rgba(15, 78, 169, 0.04);
+          border-color: rgba(15, 78, 169, 0.2);
+        }
+        
+        .wizardUrgencyCard.active {
+          border-color: var(--blue);
+          background: rgba(15, 78, 169, 0.04);
+          box-shadow: 0 2px 8px rgba(15, 78, 169, 0.1);
+        }
+        
+        .wizardUrgencyCard input[type="radio"] {
+          margin-top: 2px;
+          accent-color: var(--blue);
+        }
+        
+        .wizardUrgencyContent {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        
+        .wizardUrgencyContent strong {
+          font-size: 14px;
+          font-weight: 800;
+          color: rgba(23, 38, 58, 0.88);
+        }
+        
+        .wizardUrgencyContent span {
+          font-size: 13px;
+          color: rgba(23, 38, 58, 0.65);
+          line-height: 1.4;
+        }
+        
+        /* File Upload Styles */
+        .wizardFileUpload {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 16px;
+          background: rgba(15, 78, 169, 0.04);
+          border-radius: 12px;
+          border: 1px dashed rgba(15, 78, 169, 0.25);
+          flex-wrap: wrap;
+        }
+        
+        .wizardUploadBtn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 20px;
+          background: linear-gradient(180deg, var(--blue) 0%, var(--blue2) 100%);
+          color: white;
+          border: none;
+          border-radius: 10px;
+          font-weight: 700;
+          font-size: 13px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .wizardUploadBtn:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 8px 20px rgba(15, 78, 169, 0.25);
+        }
+        
+        .wizardFileName {
+          font-size: 13px;
+          color: rgba(23, 38, 58, 0.65);
+          font-weight: 500;
+        }
+        
+        .wizardOrDivider {
+          text-align: center;
+          margin: 16px 0;
+          position: relative;
+        }
+        
+        .wizardOrDivider span {
+          background: rgba(255, 255, 255, 0.96);
+          padding: 0 12px;
+          font-size: 12px;
+          color: rgba(23, 38, 58, 0.5);
+          font-weight: 600;
+        }
+        
+        .wizardOrDivider::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: rgba(18, 38, 63, 0.1);
+          z-index: -1;
+        }
+        
+        /* Currency Input */
+        .wizardCurrencyInput {
+          display: flex;
+          align-items: center;
+          border: 1.5px solid rgba(18, 38, 63, 0.1);
+          border-radius: 12px;
+          background: white;
+          overflow: hidden;
+        }
+        
+        .currencySymbol {
+          padding: 12px 0 12px 16px;
+          font-size: 16px;
+          font-weight: 600;
+          color: rgba(23, 38, 58, 0.6);
+          background: rgba(15, 78, 169, 0.04);
+        }
+        
+        .wizardFieldInputCurrency {
+          flex: 1;
+          padding: 12px 16px;
+          border: none;
+          outline: none;
+          font-size: 14px;
+          font-weight: 600;
+          color: rgba(23, 38, 58, 0.88);
+          background: transparent;
+        }
+        
+        /* Radio Options */
+        .wizardRadioOptions {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        
+        .wizardRadioCard {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 16px;
+          background: rgba(255, 255, 255, 0.96);
+          border: 1px solid rgba(18, 38, 63, 0.08);
+          border-radius: 16px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .wizardRadioCard:hover {
+          background: rgba(15, 78, 169, 0.04);
+          border-color: rgba(15, 78, 169, 0.2);
+        }
+        
+        .wizardRadioCard.active {
+          border-color: var(--blue);
+          background: rgba(15, 78, 169, 0.04);
+          box-shadow: 0 2px 8px rgba(15, 78, 169, 0.1);
+        }
+        
+        .wizardRadioCard input[type="radio"] {
+          margin-top: 2px;
+          accent-color: var(--blue);
+        }
+        
+        .wizardRadioContent {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        
+        .wizardRadioContent strong {
+          font-size: 14px;
+          font-weight: 800;
+          color: rgba(23, 38, 58, 0.88);
+        }
+        
+        .wizardRadioContent span {
+          font-size: 13px;
+          color: rgba(23, 38, 58, 0.65);
+          line-height: 1.4;
+        }
+        
+        .wizardRadioOptionsHorizontal {
+          display: flex;
+          gap: 16px;
+        }
+        
+        .wizardRadioCardHorizontal {
+          flex: 1;
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+          padding: 16px;
+          background: rgba(255, 255, 255, 0.96);
+          border: 1px solid rgba(18, 38, 63, 0.08);
+          border-radius: 16px;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        
+        .wizardRadioCardHorizontal:hover {
+          background: rgba(15, 78, 169, 0.04);
+          border-color: rgba(15, 78, 169, 0.2);
+        }
+        
+        .wizardRadioCardHorizontal.active {
+          border-color: var(--blue);
+          background: rgba(15, 78, 169, 0.04);
+          box-shadow: 0 2px 8px rgba(15, 78, 169, 0.1);
+        }
+        
+        .wizardRadioCardHorizontal input[type="radio"] {
+          margin-top: 2px;
+          accent-color: var(--blue);
+        }
+        
         .wizardActions {
           display: flex;
           justify-content: space-between;
@@ -1901,13 +2689,46 @@ export default function ProjectPage() {
             grid-template-columns: 1fr;
           }
           
+          .wizardTradeGrid {
+            grid-template-columns: 1fr;
+          }
+          
           .wizardReviewGrid {
             grid-template-columns: 1fr;
+          }
+          
+          .wizardRadioOptionsHorizontal {
+            flex-direction: column;
+          }
+          
+          .wizardFileUpload {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          
+          .wizardUploadBtn {
+            justify-content: center;
           }
           
           .wizardSteps {
             flex-direction: column;
             align-items: flex-start;
+            padding: 20px 40px 12px 16px;
+          }
+          
+          .wizardStepName {
+            white-space: normal;
+            font-size: 9px;
+          }
+          
+          .wizardStepCircle {
+            width: 30px;
+            height: 30px;
+            font-size: 12px;
+          }
+          
+          .wizardStepIndicator:not(:last-child):before {
+            top: 15px;
           }
           
           .wizardStepIndicator:not(:last-child):before {
