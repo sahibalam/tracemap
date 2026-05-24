@@ -342,8 +342,7 @@ function WizardStep3({ data, onChange, onNext, onBack }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Project Classification</h2>
-      <p className="wizardStepSubtitle">
-      </p>
+      <p className="wizardStepSubtitle"></p>
       
       <div className="wizardForm">
         <div className="wizardRow">
@@ -457,8 +456,7 @@ function WizardStep4({ data, onChange, onNext, onBack }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Special Requirements</h2>
-      <p className="wizardStepSubtitle">
-      </p>
+      <p className="wizardStepSubtitle"></p>
       
       <div className="wizardForm">
         <div className="wizardFlagsNote">
@@ -597,7 +595,7 @@ function WizardStep4({ data, onChange, onNext, onBack }) {
   )
 }
 
-// ============ WIZARD STEP 5: WORK TYPE SELECTION (EXACTLY LIKE 5th-wizard.jpeg - ALL SECTIONS VISIBLE BY DEFAULT) ============
+// ============ WIZARD STEP 5: WORK TYPE SELECTION ============
 function WizardStep5({ data, onChange, onNext, onBack }) {
   const handleChange = (field, value) => {
     onChange({ ...data, [field]: value })
@@ -629,11 +627,9 @@ function WizardStep5({ data, onChange, onNext, onBack }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Work Type Selection</h2>
-      <p className="wizardStepSubtitle">
-      </p>
+      <p className="wizardStepSubtitle"></p>
       
       <div className="wizardForm">
-        {/* WORK TYPE dropdown */}
         <div className="wizardField">
           <div className="wizardFieldHeader">
             <label className="wizardFieldLabel">WORK TYPE</label>
@@ -655,7 +651,6 @@ function WizardStep5({ data, onChange, onNext, onBack }) {
           </p>
         </div>
 
-        {/* PRIMARY TRADE CATEGORY - ALWAYS VISIBLE */}
         <div className="wizardField">
           <div className="wizardFieldHeader">
             <label className="wizardFieldLabel">PRIMARY TRADE CATEGORY</label>
@@ -680,7 +675,6 @@ function WizardStep5({ data, onChange, onNext, onBack }) {
           </p>
         </div>
 
-        {/* SELF-MANAGED OR SUPPORT NEEDED - ALWAYS VISIBLE */}
         <div className="wizardManagementSection">
           <div className="wizardFieldHeader">
             <label className="wizardFieldLabel">SELF-MANAGED OR SUPPORT NEEDED</label>
@@ -719,7 +713,6 @@ function WizardStep5({ data, onChange, onNext, onBack }) {
           </p>
         </div>
 
-        {/* URGENCY LEVEL - ALWAYS VISIBLE */}
         <div className="wizardField">
           <div className="wizardFieldHeader">
             <label className="wizardFieldLabel">URGENCY LEVEL</label>
@@ -762,7 +755,7 @@ function WizardStep5({ data, onChange, onNext, onBack }) {
   )
 }
 
-// ============ WIZARD STEP 6: DETAILS (Hourly → Additional Demand Details, Lump Sum → Execution Support) ============
+// ============ WIZARD STEP 6: DEMAND PACKAGE ============
 function WizardStep6({ data, onChange, onNext, onBack }) {
   const handleChange = (field, value) => {
     onChange({ ...data, [field]: value })
@@ -773,7 +766,6 @@ function WizardStep6({ data, onChange, onNext, onBack }) {
     else onChange({ ...data, [field]: current.filter(item => item !== option) })
   }
 
-  // ----- Hourly UI: Additional Demand Package Details -----
   const renderHourlyUI = () => {
     const tradeOptions = [
       "Electrical", "Plumbing", "HVAC", "Carpentry", "Concrete",
@@ -953,7 +945,6 @@ function WizardStep6({ data, onChange, onNext, onBack }) {
     )
   }
 
-  // ----- Lump Sum UI (Execution Support) -----
   const renderLumpSumUI = () => (
     <>
       <div className="wizardField">
@@ -1169,8 +1160,7 @@ function WizardStep6({ data, onChange, onNext, onBack }) {
       <h2 className="wizardStepTitle">
         {data.workType === 'Hourly Workforce Posting' ? 'Demand Package Details' : 'Execution Support Details'}
       </h2>
-      <p className="wizardStepSubtitle">
-      </p>
+      <p className="wizardStepSubtitle"></p>
       <div className="wizardForm">
         {data.workType === 'Hourly Workforce Posting' && renderHourlyUI()}
         {data.workType === 'Lump Sum / Execution Support' && renderLumpSumUI()}
@@ -1189,69 +1179,8 @@ function WizardStep6({ data, onChange, onNext, onBack }) {
   )
 }
 
-// ============ WIZARD STEP 7: BUDGET & TEAM ============
-function WizardStep7({ data, onChange, onNext, onBack }) {
-  const handleChange = (field, value) => {
-    onChange({ ...data, [field]: value })
-  }
-
-  return (
-    <div className="wizardStep">
-      <h2 className="wizardStepTitle">Budget & Team</h2>
-      <p className="wizardStepSubtitle"></p>
-      
-      <div className="wizardForm">
-        <div className="wizardRow">
-          <div className="wizardField">
-            <label className="wizardFieldLabel">Project Budget</label>
-            <input 
-              type="text" 
-              className="wizardFieldInput" 
-              placeholder="$"
-              value={data.budget || ''}
-              onChange={(e) => handleChange('budget', e.target.value)}
-            />
-          </div>
-          <div className="wizardField">
-            <label className="wizardFieldLabel">Number of Workers</label>
-            <input 
-              type="number" 
-              className="wizardFieldInput" 
-              placeholder="0"
-              value={data.workerCount || ''}
-              onChange={(e) => handleChange('workerCount', e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="wizardField">
-          <label className="wizardFieldLabel">Team Members / Contractors</label>
-          <textarea 
-            className="wizardFieldTextarea" 
-            placeholder="List key team members and contractors"
-            rows="3"
-            value={data.teamMembers || ''}
-            onChange={(e) => handleChange('teamMembers', e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div className="wizardActions">
-        <button className="wizardPillBtn wizardPillBtnSecondary" onClick={onBack}>
-          <span className="wizardPillBtnIcon"><IconArrowLeft /></span>
-          <span className="wizardPillBtnLabel">Back</span>
-        </button>
-        <button className="wizardPillBtn wizardPillBtnPrimary" onClick={onNext}>
-          <span className="wizardPillBtnLabel">Next</span>
-          <span className="wizardPillBtnIcon"><IconArrowRight /></span>
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// ============ WIZARD STEP 8: REVIEW & SUBMIT ============
-function WizardStep8({ data, onBack, onSubmit }) {
+// ============ WIZARD STEP 7: REVIEW & SUBMIT ============
+function WizardStep7({ data, onBack, onSubmit }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Review & Submit</h2>
@@ -1490,22 +1419,6 @@ function WizardStep8({ data, onBack, onSubmit }) {
             </>
           )}
         </div>
-
-        <div className="wizardReviewSection">
-          <h3 className="wizardReviewTitle">Budget & Team</h3>
-          <div className="wizardReviewRow">
-            <span className="wizardReviewLabel">Budget:</span>
-            <span className="wizardReviewValue">{data.budget || '-'}</span>
-          </div>
-          <div className="wizardReviewRow">
-            <span className="wizardReviewLabel">Workers:</span>
-            <span className="wizardReviewValue">{data.workerCount || '-'}</span>
-          </div>
-          <div className="wizardReviewRow">
-            <span className="wizardReviewLabel">Team Members:</span>
-            <span className="wizardReviewValue">{data.teamMembers || '-'}</span>
-          </div>
-        </div>
       </div>
 
       <div className="wizardActions">
@@ -1599,11 +1512,7 @@ function ProjectWizard({ onComplete, onCancel }) {
     targetBudget: '',
     superintendentProvided: '',
     fieldLeadNeeded: '',
-    riskNotes: '',
-    // Step 7
-    budget: '',
-    workerCount: '',
-    teamMembers: ''
+    riskNotes: ''
   })
 
   const updateWizardData = (newData) => {
@@ -1618,7 +1527,7 @@ function ProjectWizard({ onComplete, onCancel }) {
     onComplete(newProject)
   }
 
-  const stepNames = ['Basic Info', 'Location', 'Classification', 'Requirements', 'Work Type', 'Details', 'Budget', 'Review']
+  const stepNames = ['Basic Info', 'Location', 'Classification', 'Requirements', 'Work Type', 'Demand Package', 'Review']
 
   return (
     <div className="projectWizard">
@@ -1641,8 +1550,7 @@ function ProjectWizard({ onComplete, onCancel }) {
         {step === 4 && <WizardStep4 data={wizardData} onChange={updateWizardData} onNext={handleNext} onBack={handleBack} />}
         {step === 5 && <WizardStep5 data={wizardData} onChange={updateWizardData} onNext={handleNext} onBack={handleBack} />}
         {step === 6 && <WizardStep6 data={wizardData} onChange={updateWizardData} onNext={handleNext} onBack={handleBack} />}
-        {step === 7 && <WizardStep7 data={wizardData} onChange={updateWizardData} onNext={handleNext} onBack={handleBack} />}
-        {step === 8 && <WizardStep8 data={wizardData} onBack={handleBack} onSubmit={handleSubmit} />}
+        {step === 7 && <WizardStep7 data={wizardData} onBack={handleBack} onSubmit={handleSubmit} />}
       </div>
     </div>
   )
