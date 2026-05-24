@@ -78,7 +78,7 @@ function WizardStep1({ data, onChange, onNext }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Basic Project Information</h2>
-      <p className="wizardStepSubtitle">Enter the basic details for your construction project</p>
+      <p className="wizardStepSubtitle"></p>
       
       <div className="wizardForm">
         <div className="wizardField">
@@ -187,7 +187,7 @@ function WizardStep2({ data, onChange, onNext, onBack }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Location & Work Radius</h2>
-      <p className="wizardStepSubtitle">Enter project location and work radius details</p>
+      <p className="wizardStepSubtitle"></p>
       
       <div className="wizardForm">
         <div className="wizardField">
@@ -343,7 +343,6 @@ function WizardStep3({ data, onChange, onNext, onBack }) {
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Project Classification</h2>
       <p className="wizardStepSubtitle">
-        Classification drives rate logic, worker eligibility, credential requirements, and admin review.
       </p>
       
       <div className="wizardForm">
@@ -459,7 +458,6 @@ function WizardStep4({ data, onChange, onNext, onBack }) {
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Special Requirements</h2>
       <p className="wizardStepSubtitle">
-        Select all flags that apply. These affect worker eligibility, matching visibility, rates, and admin review.
       </p>
       
       <div className="wizardForm">
@@ -632,7 +630,6 @@ function WizardStep5({ data, onChange, onNext, onBack }) {
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Work Type Selection</h2>
       <p className="wizardStepSubtitle">
-        Select how you want to engage workers for this project. This controls the rest of the posting workflow.
       </p>
       
       <div className="wizardForm">
@@ -1173,9 +1170,6 @@ function WizardStep6({ data, onChange, onNext, onBack }) {
         {data.workType === 'Hourly Workforce Posting' ? 'Demand Package Details' : 'Execution Support Details'}
       </h2>
       <p className="wizardStepSubtitle">
-        {data.workType === 'Hourly Workforce Posting'
-          ? 'Define the trade, staffing levels, schedule, and credentials for this demand package. Multiple packages can be created per project.'
-          : 'Provide detailed scope, schedule, and support requirements for execution.'}
       </p>
       <div className="wizardForm">
         {data.workType === 'Hourly Workforce Posting' && renderHourlyUI()}
@@ -1204,7 +1198,7 @@ function WizardStep7({ data, onChange, onNext, onBack }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Budget & Team</h2>
-      <p className="wizardStepSubtitle">Enter budget and team information</p>
+      <p className="wizardStepSubtitle"></p>
       
       <div className="wizardForm">
         <div className="wizardRow">
@@ -1261,7 +1255,7 @@ function WizardStep8({ data, onBack, onSubmit }) {
   return (
     <div className="wizardStep">
       <h2 className="wizardStepTitle">Review & Submit</h2>
-      <p className="wizardStepSubtitle">Review your project information before submitting</p>
+      <p className="wizardStepSubtitle"></p>
       
       <div className="wizardReview">
         <div className="wizardReviewSection">
@@ -1629,9 +1623,7 @@ function ProjectWizard({ onComplete, onCancel }) {
   return (
     <div className="projectWizard">
       <div className="wizardStickyHeader">
-        <div className="wizardCloseWrapper">
-          <button className="wizardCloseBtn" onClick={onCancel}>×</button>
-        </div>
+       
         <div className="wizardSteps">
           {stepNames.map((name, idx) => (
             <div key={idx} className={`wizardStepIndicator ${step > idx + 1 ? 'completed' : ''} ${step === idx + 1 ? 'active' : ''}`}>
