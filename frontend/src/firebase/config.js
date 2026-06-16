@@ -7,10 +7,14 @@ import {
   createUserWithEmailAndPassword,
   RecaptchaVerifier,
   signInWithPhoneNumber,
-  applyActionCode  // Add this
+  applyActionCode,
+  // ✅ Email Magic Link ke liye yeh 3 functions import karo
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink
 } from 'firebase/auth'
 
-// 🔴 COPY YOUR CONFIG FROM FIREBASE CONSOLE
+// 🔴 YOUR FIREBASE CONFIG (Copy from Firebase Console)
 const firebaseConfig = {
   apiKey: "AIzaSyAy0RYWwWuTwkk9ESPxQKX62Et-qZT-yTs",
   authDomain: "tradesmap-737e3.firebaseapp.com",
@@ -24,12 +28,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig)
 const auth = getAuth(app)
 
+// ✅ Export all required functions
 export { 
-  auth, 
+  auth,
+  // Email/Password
   sendEmailVerification, 
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
+  // Phone
   RecaptchaVerifier,
   signInWithPhoneNumber,
-  applyActionCode  // Export this
+  // Email Action
+  applyActionCode,
+  // ✅ Email Magic Link (New)
+  sendSignInLinkToEmail,
+  isSignInWithEmailLink,
+  signInWithEmailLink
 }

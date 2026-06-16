@@ -96,22 +96,44 @@ import {
 } from '../firebase/config'
 
 // Create Firebase user and send email verification
+// Create Firebase user and send email verification
 export const registerAndSendEmailVerification = async (email, password) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password)
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    )
+
     const user = userCredential.user
-    await sendEmailVerification(user)
-    return { 
-      success: true, 
+
+    // Send verification email with custom redirect URL
+    await sendEmailVerification(user, {
+      url: 'https://tradesmap.com/verify-email',
+      handleCodeInApp: false
+    })
+
+    return {
+      success: true,
       message: 'Verification email sent! Please check your inbox.',
-      user: user
+      user
     }
+
   } catch (error) {
     console.error('Email verification error:', error)
+
     if (error.code === 'auth/email-already-in-use') {
-      return { success: false, message: 'Email already in use. Please login or use different email.' }
+      return {
+        success: false,
+        message:
+          'Email already in use. Please login or use different email.'
+      }
     }
-    return { success: false, message: error.message }
+
+    return {
+      success: false,
+      message: error.message
+    }
   }
 }
 
