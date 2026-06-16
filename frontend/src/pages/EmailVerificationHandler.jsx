@@ -10,28 +10,51 @@ export function EmailVerificationHandler() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    setStatus('success')
-    setMessage('Email verified successfully! Redirecting...')
+    const verifyEmail = async () => {
+      try {
+        const queryParams = new URLSearchParams(location.search)
   
-    const pendingEmail = localStorage.getItem('pendingEmail')
-    const pendingPhone = localStorage.getItem('pendingPhoneNumber')
-    const pendingPassword = localStorage.getItem('pendingPassword')
-    const pendingFirstName = localStorage.getItem('pendingFirstName')
-    const pendingLastName = localStorage.getItem('pendingLastName')
+        const mode = queryParams.get('mode')
+        const oobCode = queryParams.get('oobCode')
   
-    setTimeout(() => {
-      navigate('/verify', {
-        state: {
-          email: pendingEmail,
-          phoneNumber: pendingPhone,
-          registerPassword: pendingPassword,
-          firstName: pendingFirstName,
-          lastName: pendingLastName,
-          emailVerified: true
+        if (mode !== 'verifyEmail' || !oobCode) {
+          throw new Error('Invalid verification link')
         }
-      })
-    }, 2000)
-  }, [navigate])
+  
+        await applyActionCode(auth, oobCode)
+  
+        setStatus('success')
+        setMessage('Email verified successfully! Redirecting...')
+  
+        const pendingEmail = localStorage.getItem('pendingEmail')
+        const pendingPhone = localStorage.getItem('pendingPhoneNumber')
+        const pendingPassword = localStorage.getItem('pendingPassword')
+        const pendingFirstName = localStorage.getItem('pendingFirstName')
+        const pendingLastName = localStorage.getItem('pendingLastName')
+  
+        setTimeout(() => {
+          navigate('/verify', {
+            state: {
+              email: pendingEmail,
+              phoneNumber: pendingPhone,
+              registerPassword: pendingPassword,
+              firstName: pendingFirstName,
+              lastName: pendingLastName,
+              emailVerified: true
+            }
+          })
+        }, 2000)
+  
+      } catch (error) {
+        console.error(error)
+  
+        setStatus('error')
+        setMessage(error.message || 'Verification failed')
+      }
+    }
+  
+    verifyEmail()
+  }, [location, navigate])
 
   return (
     <div className="authPage">

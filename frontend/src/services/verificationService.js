@@ -110,7 +110,7 @@ export const registerAndSendEmailVerification = async (email, password) => {
     // Send verification email with custom redirect URL
     await sendEmailVerification(user, {
       url: 'https://tradesmap.com/verify-email',
-      handleCodeInApp: false
+      handleCodeInApp: true
     })
 
     return {
