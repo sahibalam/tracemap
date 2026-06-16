@@ -189,7 +189,11 @@ export const setupRecaptcha = (containerId) => {
 // Send phone OTP
 export const sendPhoneOTP = async (phoneNumber, recaptchaVerifier) => {
   try {
-    const formattedPhone = phoneNumber.startsWith('+') ? phoneNumber : `+1${phoneNumber.replace(/\D/g, '')}`
+    const formattedPhone = phoneNumber.startsWith('+')
+  ? phoneNumber
+  : `+91${phoneNumber.replace(/\D/g, '')}`
+  console.log('Original Phone:', phoneNumber)
+console.log('Formatted Phone:', formattedPhone)
     const confirmationResult = await signInWithPhoneNumber(
       auth, 
       formattedPhone, 
