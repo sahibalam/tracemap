@@ -10,54 +10,28 @@ export function EmailVerificationHandler() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
-    const handleEmailVerification = async () => {
-      try {
-        const queryParams = new URLSearchParams(location.search)
-        const mode = queryParams.get('mode')
-        const oobCode = queryParams.get('oobCode')
-
-        if (mode === 'verifyEmail' && oobCode) {
-          // Verify the email with Firebase
-          await applyActionCode(auth, oobCode)
-          
-          setStatus('success')
-          setMessage('Email verified successfully! Redirecting to verification page...')
-          
-          // Get pending data from localStorage
-          const pendingEmail = localStorage.getItem('pendingEmail')
-          const pendingPhone = localStorage.getItem('pendingPhoneNumber')
-          const pendingPassword = localStorage.getItem('pendingPassword')
-          const pendingFirstName = localStorage.getItem('pendingFirstName')
-          const pendingLastName = localStorage.getItem('pendingLastName')
-          
-          // Redirect back to verify page after 2 seconds
-          setTimeout(() => {
-            navigate('/verify', { 
-              state: { 
-                email: pendingEmail,
-                phoneNumber: pendingPhone,
-                registerPassword: pendingPassword,
-                firstName: pendingFirstName,
-                lastName: pendingLastName,
-                emailVerified: true  // This will set emailVerified = true in verify page
-              } 
-            })
-          }, 2000)
-        } else {
-          setStatus('error')
-          setMessage('Invalid verification link')
-          setTimeout(() => navigate('/register'), 3000)
+    setStatus('success')
+    setMessage('Email verified successfully! Redirecting...')
+  
+    const pendingEmail = localStorage.getItem('pendingEmail')
+    const pendingPhone = localStorage.getItem('pendingPhoneNumber')
+    const pendingPassword = localStorage.getItem('pendingPassword')
+    const pendingFirstName = localStorage.getItem('pendingFirstName')
+    const pendingLastName = localStorage.getItem('pendingLastName')
+  
+    setTimeout(() => {
+      navigate('/verify', {
+        state: {
+          email: pendingEmail,
+          phoneNumber: pendingPhone,
+          registerPassword: pendingPassword,
+          firstName: pendingFirstName,
+          lastName: pendingLastName,
+          emailVerified: true
         }
-      } catch (error) {
-        console.error('Verification error:', error)
-        setStatus('error')
-        setMessage(error.message || 'Verification failed. Please try again.')
-        setTimeout(() => navigate('/register'), 3000)
-      }
-    }
-
-    handleEmailVerification()
-  }, [location, navigate])
+      })
+    }, 2000)
+  }, [navigate])
 
   return (
     <div className="authPage">
