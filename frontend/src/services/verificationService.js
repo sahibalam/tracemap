@@ -98,7 +98,7 @@ import {
 export const registerAndSendEmailVerification = async (email) => {
   try {
     const response = await fetch(
-      'https://api.tradesmap.com/api/auth/send-email-verification',
+      'https://tradesmap.com/api/auth/send-email-verification',
       //'http://localhost:5001/api/auth/send-email-verification',
       {
         method: 'POST',

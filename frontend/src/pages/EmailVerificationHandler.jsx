@@ -22,7 +22,7 @@ export function EmailVerificationHandler() {
     
         const response =
           await fetch(
-           `https://api.tradesmap.com/api/auth/verify-email?token=${token}`
+           `https://tradesmap.com/api/auth/verify-email?token=${token}`
            //`http://localhost:5001/api/auth/verify-email?token=${token}`
           )
     
