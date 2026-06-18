@@ -95,41 +95,25 @@ import {
   signInWithEmailAndPassword  // Add this
 } from '../firebase/config'
 
-// Create Firebase user and send email verification
-// Create Firebase user and send email verification
-export const registerAndSendEmailVerification = async (email, password) => {
+export const registerAndSendEmailVerification = async (email) => {
   try {
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
+    const response = await fetch(
+      'https://api.tradesmap.com/api/auth/send-email-verification',
+      //'http://localhost:5001/api/auth/send-email-verification',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      }
     )
 
-    const user = userCredential.user
+    const data = await response.json()
 
-    // Send verification email with custom redirect URL
-    await sendEmailVerification(user, {
-      url: 'https://tradesmap.com/verify-email',
-      handleCodeInApp: true
-    })
-
-    return {
-      success: true,
-      message: 'Verification email sent! Please check your inbox.',
-      user
-    }
+    return data
 
   } catch (error) {
-    console.error('Email verification error:', error)
-
-    if (error.code === 'auth/email-already-in-use') {
-      return {
-        success: false,
-        message:
-          'Email already in use. Please login or use different email.'
-      }
-    }
-
     return {
       success: false,
       message: error.message

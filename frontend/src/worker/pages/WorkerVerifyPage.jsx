@@ -544,23 +544,6 @@ export function WorkerVerifyPage() {
   
   const recaptchaContainerRef = useRef(null)
 
-  useEffect(() => {
-    const checkEmailVerificationStatus = async () => {
-      try {
-        if (auth.currentUser) {
-          await auth.currentUser.reload()
-  
-          if (auth.currentUser.emailVerified) {
-            setEmailVerified(true)
-          }
-        }
-      } catch (error) {
-        console.error('Email verification status check failed:', error)
-      }
-    }
-  
-    checkEmailVerificationStatus()
-  }, [])
   // Send Email Verification Link
   const handleSendEmailLink = async () => {
     if (!password) {
@@ -572,7 +555,10 @@ export function WorkerVerifyPage() {
     setError('')
     
     try {
-      const result = await registerAndSendEmailVerification(email, password)
+      const result =
+      await registerAndSendEmailVerification(
+        email
+      )
       
       if (result.success) {
         setFirebaseUser(result.user)

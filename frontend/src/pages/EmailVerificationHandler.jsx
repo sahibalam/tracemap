@@ -11,46 +11,62 @@ export function EmailVerificationHandler() {
 
   useEffect(() => {
     const verifyEmail = async () => {
+
       try {
-        const queryParams = new URLSearchParams(location.search)
-  
-        const mode = queryParams.get('mode')
-        const oobCode = queryParams.get('oobCode')
-  
-        if (mode !== 'verifyEmail' || !oobCode) {
-          throw new Error('Invalid verification link')
+    
+        const queryParams =
+          new URLSearchParams(location.search)
+    
+        const token =
+          queryParams.get('token')
+    
+        const response =
+          await fetch(
+           `https://api.tradesmap.com/api/auth/verify-email?token=${token}`
+           //`http://localhost:5001/api/auth/verify-email?token=${token}`
+          )
+    
+        const data =
+          await response.json()
+    
+        if (!data.success) {
+          throw new Error(data.message)
         }
-  
-        await applyActionCode(auth, oobCode)
-  
+    
         setStatus('success')
-        setMessage('Email verified successfully! Redirecting...')
-  
-        const pendingEmail = localStorage.getItem('pendingEmail')
-        const pendingPhone = localStorage.getItem('pendingPhoneNumber')
-        const pendingPassword = localStorage.getItem('pendingPassword')
-        const pendingFirstName = localStorage.getItem('pendingFirstName')
-        const pendingLastName = localStorage.getItem('pendingLastName')
-  
+    
+        setMessage(
+          'Email verified successfully!'
+        )
+    
+        const pendingEmail =
+          localStorage.getItem('pendingEmail')
+    
+        const pendingPhone =
+          localStorage.getItem('pendingPhoneNumber')
+    
         setTimeout(() => {
+    
           navigate('/verify', {
             state: {
               email: pendingEmail,
               phoneNumber: pendingPhone,
-              registerPassword: pendingPassword,
-              firstName: pendingFirstName,
-              lastName: pendingLastName,
               emailVerified: true
             }
           })
+    
         }, 2000)
-  
+    
       } catch (error) {
-        console.error(error)
-  
+    
         setStatus('error')
-        setMessage(error.message || 'Verification failed')
+    
+        setMessage(
+          error.message
+        )
+    
       }
+    
     }
   
     verifyEmail()
