@@ -795,7 +795,6 @@
 //     </div>
 //   )
 // }
-
 // src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef } from 'react'
 import { TextField } from '../../../common/components/TextField'
@@ -870,135 +869,145 @@ export function WizardStep1({ data, onChange, onNext }) {
           </div>
         </div>
 
-        {/* Address Section - 2 Column Layout */}
+        {/* Address + Current Address */}
         <div className="wizardSection">
-          <div className="wizardSectionBar">Address</div>
           <div className="wizardGrid2">
-            {/* Left Column: Address */}
-            <TextField 
-              placeholder="Address" 
-              icon={<IconLocation />} 
-              value={data.addressLine1 || ''} 
-              onChange={(v) => handleChange('addressLine1', v)} 
-            />
-            
-            {/* Right Column: City, State, Zip stacked vertically */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <TextField 
-                placeholder="City" 
-                icon={<IconLocation />} 
-                value={data.city || ''} 
-                onChange={(v) => handleChange('city', v)} 
-              />
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <TextField 
-                  placeholder="State" 
-                  icon={<IconLocation />} 
-                  value={data.stateCode || ''} 
-                  onChange={(v) => handleChange('stateCode', v)} 
-                  style={{ flex: 1 }}
-                />
-                <TextField 
-                  placeholder="Zip" 
-                  icon={<IconLocation />} 
-                  value={data.zip || ''} 
-                  onChange={(v) => handleChange('zip', v)} 
-                  style={{ flex: 1 }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Current Address Section - 2 Column Layout */}
-        <div className="wizardSection">
-          <div className="wizardSectionBar">Current Address</div>
-          <div className="wizardGrid2">
-            {/* Left Column: Address */}
-            <TextField 
-              placeholder="Address" 
-              icon={<IconLocation />} 
-              value={data.currentAddressLine1 || ''} 
-              onChange={(v) => handleChange('currentAddressLine1', v)} 
-            />
-            
-            {/* Right Column: City, State, Zip stacked vertically */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <TextField 
-                placeholder="City" 
-                icon={<IconLocation />} 
-                value={data.currentCity || ''} 
-                onChange={(v) => handleChange('currentCity', v)} 
-              />
-              <div style={{ display: 'flex', gap: '8px' }}>
-                <TextField 
-                  placeholder="State" 
-                  icon={<IconLocation />} 
-                  value={data.currentStateCode || ''} 
-                  onChange={(v) => handleChange('currentStateCode', v)} 
-                  style={{ flex: 1 }}
-                />
-                <TextField 
-                  placeholder="Zip" 
-                  icon={<IconLocation />} 
-                  value={data.currentZip || ''} 
-                  onChange={(v) => handleChange('currentZip', v)} 
-                  style={{ flex: 1 }}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Details Section */}
-        <div className="wizardSection">
-          <div className="wizardSectionBar">Details</div>
-          <div className="wizardGrid2">
+            {/* Address */}
             <div>
-              <TextField 
-                placeholder="Date of birth" 
-                icon={<IconSupport />} 
-                value={data.dob || ''} 
-                onChange={(v) => handleChange('dob', v)} 
+              <div className="wizardSectionBar">Address</div>
+              <TextField
+                placeholder="Address"
+                icon={<IconLocation />}
+                value={data.addressLine1 || ''}
+                onChange={(v) => handleChange('addressLine1', v)}
               />
-              <div style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', marginTop: '4px' }}>
-                MM-DD-YYYY
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                <TextField
+                  placeholder="City"
+                  icon={<IconLocation />}
+                  value={data.city || ''}
+                  onChange={(v) => handleChange('city', v)}
+                  style={{ flex: 1 }}
+                />
+                <TextField
+                  placeholder="State"
+                  icon={<IconLocation />}
+                  value={data.stateCode || ''}
+                  onChange={(v) => handleChange('stateCode', v)}
+                  style={{ flex: 1 }}
+                />
+                <TextField
+                  placeholder="Zip"
+                  icon={<IconLocation />}
+                  value={data.zip || ''}
+                  onChange={(v) => handleChange('zip', v)}
+                  style={{ flex: 1 }}
+                />
+              </div>
+            </div>
+
+            {/* Current Address */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                <div className="wizardSectionBar" style={{ marginBottom: 0 }}>
+                  Current Address
+                </div>
+                <label style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
+                  <input
+                    type="checkbox"
+                    checked={data.sameAsAddress || false}
+                    onChange={(e) => {
+                      const checked = e.target.checked
+                      onChange({
+                        ...data,
+                        sameAsAddress: checked,
+                        currentAddressLine1: checked ? data.addressLine1 : '',
+                        currentCity: checked ? data.city : '',
+                        currentStateCode: checked ? data.stateCode : '',
+                        currentZip: checked ? data.zip : '',
+                      })
+                    }}
+                  />
+                  Same as Address
+                </label>
+              </div>
+              <TextField
+                placeholder="Address"
+                icon={<IconLocation />}
+                value={data.currentAddressLine1 || ''}
+                onChange={(v) => handleChange('currentAddressLine1', v)}
+              />
+              <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                <TextField
+                  placeholder="City"
+                  icon={<IconLocation />}
+                  value={data.currentCity || ''}
+                  onChange={(v) => handleChange('currentCity', v)}
+                  style={{ flex: 1 }}
+                />
+                <TextField
+                  placeholder="State"
+                  icon={<IconLocation />}
+                  value={data.currentStateCode || ''}
+                  onChange={(v) => handleChange('currentStateCode', v)}
+                  style={{ flex: 1 }}
+                />
+                <TextField
+                  placeholder="Zip"
+                  icon={<IconLocation />}
+                  value={data.currentZip || ''}
+                  onChange={(v) => handleChange('currentZip', v)}
+                  style={{ flex: 1 }}
+                />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Language(s) Known Section */}
+        {/* Details */}
         <div className="wizardSection">
-          <div className="wizardSectionBar">Language(s) Known</div>
-          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-            <label className="wizardCheck" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <input 
-                type="radio" 
-                name="primaryLanguage" 
-                checked={data.primaryLanguage === 'English'} 
-                onChange={() => handleChange('primaryLanguage', 'English')} 
+          <div className="wizardGrid2">
+            {/* DOB */}
+            <div>
+              <div className="wizardSectionBar">Date of Birth</div>
+              <TextField
+                placeholder="MM-DD-YYYY"
+                icon={<IconSupport />}
+                value={data.dob || ''}
+                onChange={(v) => handleChange('dob', v)}
               />
-              English
-            </label>
-            <label className="wizardCheck" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <input 
-                type="radio" 
-                name="primaryLanguage" 
-                checked={data.primaryLanguage === 'English+Spanish'} 
-                onChange={() => handleChange('primaryLanguage', 'English+Spanish')} 
-              />
-              English+Spanish
-            </label>
-            <label className="wizardCheck" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <input 
-                type="radio" 
-                name="primaryLanguage" 
-                checked={data.primaryLanguage === 'Spanish'} 
-                onChange={() => handleChange('primaryLanguage', 'Spanish')} 
-              />
-              Spanish
-            </label>
+            </div>
+
+            {/* Languages */}
+            <div>
+              <div className="wizardSectionBar">Language(s) Known</div>
+              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '15px' }}>
+                <label className="wizardCheck" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <input
+                    type="checkbox"
+                    checked={data.english || false}
+                    onChange={(e) => handleChange('english', e.target.checked)}
+                  />
+                  English
+                </label>
+                <label className="wizardCheck" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <input
+                    type="checkbox"
+                    checked={data.englishSpanish || false}
+                    onChange={(e) => handleChange('englishSpanish', e.target.checked)}
+                  />
+                  English+Spanish
+                </label>
+                <label className="wizardCheck" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <input
+                    type="checkbox"
+                    checked={data.spanish || false}
+                    onChange={(e) => handleChange('spanish', e.target.checked)}
+                  />
+                  Spanish
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 
