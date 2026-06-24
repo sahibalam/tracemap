@@ -796,7 +796,6 @@
 //   )
 // }
 
-
 // src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef } from 'react'
 import { TextField } from '../../../common/components/TextField'
@@ -871,69 +870,83 @@ export function WizardStep1({ data, onChange, onNext }) {
           </div>
         </div>
 
-        {/* Address Section */}
+        {/* Address Section - 2 Column Layout */}
         <div className="wizardSection">
           <div className="wizardSectionBar">Address</div>
           <div className="wizardGrid2">
+            {/* Left Column: Address */}
             <TextField 
               placeholder="Address" 
               icon={<IconLocation />} 
               value={data.addressLine1 || ''} 
               onChange={(v) => handleChange('addressLine1', v)} 
             />
-          </div>
-          <div className="wizardGrid3" style={{ marginTop: '8px' }}>
-            <TextField 
-              placeholder="City" 
-              icon={<IconLocation />} 
-              value={data.city || ''} 
-              onChange={(v) => handleChange('city', v)} 
-            />
-            <TextField 
-              placeholder="State" 
-              icon={<IconLocation />} 
-              value={data.stateCode || ''} 
-              onChange={(v) => handleChange('stateCode', v)} 
-            />
-            <TextField 
-              placeholder="Zip" 
-              icon={<IconLocation />} 
-              value={data.zip || ''} 
-              onChange={(v) => handleChange('zip', v)} 
-            />
+            
+            {/* Right Column: City, State, Zip stacked vertically */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <TextField 
+                placeholder="City" 
+                icon={<IconLocation />} 
+                value={data.city || ''} 
+                onChange={(v) => handleChange('city', v)} 
+              />
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <TextField 
+                  placeholder="State" 
+                  icon={<IconLocation />} 
+                  value={data.stateCode || ''} 
+                  onChange={(v) => handleChange('stateCode', v)} 
+                  style={{ flex: 1 }}
+                />
+                <TextField 
+                  placeholder="Zip" 
+                  icon={<IconLocation />} 
+                  value={data.zip || ''} 
+                  onChange={(v) => handleChange('zip', v)} 
+                  style={{ flex: 1 }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Current Address Section */}
+        {/* Current Address Section - 2 Column Layout */}
         <div className="wizardSection">
           <div className="wizardSectionBar">Current Address</div>
           <div className="wizardGrid2">
+            {/* Left Column: Address */}
             <TextField 
               placeholder="Address" 
               icon={<IconLocation />} 
               value={data.currentAddressLine1 || ''} 
               onChange={(v) => handleChange('currentAddressLine1', v)} 
             />
-          </div>
-          <div className="wizardGrid3" style={{ marginTop: '8px' }}>
-            <TextField 
-              placeholder="City" 
-              icon={<IconLocation />} 
-              value={data.currentCity || ''} 
-              onChange={(v) => handleChange('currentCity', v)} 
-            />
-            <TextField 
-              placeholder="State" 
-              icon={<IconLocation />} 
-              value={data.currentStateCode || ''} 
-              onChange={(v) => handleChange('currentStateCode', v)} 
-            />
-            <TextField 
-              placeholder="Zip" 
-              icon={<IconLocation />} 
-              value={data.currentZip || ''} 
-              onChange={(v) => handleChange('currentZip', v)} 
-            />
+            
+            {/* Right Column: City, State, Zip stacked vertically */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <TextField 
+                placeholder="City" 
+                icon={<IconLocation />} 
+                value={data.currentCity || ''} 
+                onChange={(v) => handleChange('currentCity', v)} 
+              />
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <TextField 
+                  placeholder="State" 
+                  icon={<IconLocation />} 
+                  value={data.currentStateCode || ''} 
+                  onChange={(v) => handleChange('currentStateCode', v)} 
+                  style={{ flex: 1 }}
+                />
+                <TextField 
+                  placeholder="Zip" 
+                  icon={<IconLocation />} 
+                  value={data.currentZip || ''} 
+                  onChange={(v) => handleChange('currentZip', v)} 
+                  style={{ flex: 1 }}
+                />
+              </div>
+            </div>
           </div>
         </div>
 
