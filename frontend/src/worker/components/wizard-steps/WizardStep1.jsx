@@ -813,8 +813,10 @@ function IconSupport(props) {
 export function WizardStep1({ data, onChange, onNext }) {
   const [profilePreview, setProfilePreview] = useState(data.profilePreview || '')
   const [profileImage, setProfileImage] = useState(null)
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
   
   const uploadRef = useRef(null)
+  const datePickerRef = useRef(null)
   
   const handleChange = (field, value) => {
     onChange({ ...data, [field]: value })
@@ -844,6 +846,7 @@ export function WizardStep1({ data, onChange, onNext }) {
     } else {
       handleChange('dob', '')
     }
+    setIsDatePickerOpen(false)
   }
 
   // Parse date string to Date object for react-datepicker
@@ -858,8 +861,243 @@ export function WizardStep1({ data, onChange, onNext }) {
 
   const isValid = data.emailAddress && data.mobilePhone && data.legalFirstName && data.legalLastName && data.dob && data.city && data.stateCode && data.zip
 
+  // Custom styles for date picker
+  const datePickerStyles = `
+    .custom-date-picker .react-datepicker__input-container input {
+      width: 100%;
+      height: 48px;
+      padding: 0 16px;
+      border: 1px solid rgba(18, 38, 63, 0.12);
+      border-radius: 12px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      color: #17263a;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .custom-date-picker .react-datepicker__input-container input:hover {
+      border-color: rgba(15, 78, 169, 0.4);
+    }
+
+    .custom-date-picker .react-datepicker__input-container input:focus {
+      border-color: #0f4ea9;
+      box-shadow: 0 0 0 3px rgba(15, 78, 169, 0.1);
+    }
+
+    .custom-date-picker .react-datepicker__input-container input::placeholder {
+      color: rgba(23, 38, 58, 0.4);
+    }
+
+    /* Calendar dropdown styling */
+    .custom-date-picker .react-datepicker {
+      font-family: inherit;
+      border-radius: 16px;
+      border: 1px solid rgba(18, 38, 63, 0.08);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
+      background: white;
+      padding: 8px;
+      overflow: hidden;
+    }
+
+    .custom-date-picker .react-datepicker__header {
+      background: white;
+      border-bottom: 1px solid rgba(18, 38, 63, 0.06);
+      padding: 12px 0 8px 0;
+      border-radius: 16px 16px 0 0;
+    }
+
+    .custom-date-picker .react-datepicker__current-month {
+      color: #17263a;
+      font-weight: 700;
+      font-size: 15px;
+      padding-bottom: 4px;
+    }
+
+    .custom-date-picker .react-datepicker__day-name {
+      color: rgba(23, 38, 58, 0.5);
+      font-weight: 600;
+      font-size: 12px;
+      width: 36px;
+      margin: 2px;
+    }
+
+    .custom-date-picker .react-datepicker__day {
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+      margin: 2px;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #17263a;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .custom-date-picker .react-datepicker__day:hover {
+      background: rgba(15, 78, 169, 0.08);
+      border-radius: 10px;
+    }
+
+    .custom-date-picker .react-datepicker__day--selected {
+      background: #0f4ea9 !important;
+      color: white !important;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+
+    .custom-date-picker .react-datepicker__day--selected:hover {
+      background: #0b3f90 !important;
+    }
+
+    .custom-date-picker .react-datepicker__day--keyboard-selected {
+      background: rgba(15, 78, 169, 0.15);
+      border-radius: 10px;
+    }
+
+    .custom-date-picker .react-datepicker__day--today {
+      font-weight: 700;
+      color: #0f4ea9;
+    }
+
+    .custom-date-picker .react-datepicker__day--today::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 4px;
+      background: #0f4ea9;
+      border-radius: 50%;
+      margin: 0 auto;
+      margin-top: -2px;
+    }
+
+    .custom-date-picker .react-datepicker__day--disabled {
+      color: rgba(23, 38, 58, 0.2);
+      cursor: not-allowed;
+    }
+
+    .custom-date-picker .react-datepicker__day--disabled:hover {
+      background: transparent;
+    }
+
+    .custom-date-picker .react-datepicker__day--outside-month {
+      color: rgba(23, 38, 58, 0.2);
+    }
+
+    .custom-date-picker .react-datepicker__navigation {
+      top: 14px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+    }
+
+    .custom-date-picker .react-datepicker__navigation:hover {
+      background: rgba(15, 78, 169, 0.08);
+    }
+
+    .custom-date-picker .react-datepicker__navigation-icon::before {
+      border-color: #17263a;
+      border-width: 2px 2px 0 0;
+      height: 8px;
+      width: 8px;
+    }
+
+    .custom-date-picker .react-datepicker__navigation-icon:hover::before {
+      border-color: #0f4ea9;
+    }
+
+    .custom-date-picker .react-datepicker__day--weekend {
+      color: #e11d48;
+    }
+
+    .custom-date-picker .react-datepicker__day--weekend.react-datepicker__day--selected {
+      color: white;
+    }
+
+    /* Month dropdown styling */
+    .custom-date-picker .react-datepicker__month-dropdown,
+    .custom-date-picker .react-datepicker__year-dropdown {
+      border-radius: 12px;
+      border: 1px solid rgba(18, 38, 63, 0.08);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      background: white;
+      padding: 4px;
+    }
+
+    .custom-date-picker .react-datepicker__month-option,
+    .custom-date-picker .react-datepicker__year-option {
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .custom-date-picker .react-datepicker__month-option:hover,
+    .custom-date-picker .react-datepicker__year-option:hover {
+      background: rgba(15, 78, 169, 0.08);
+    }
+
+    .custom-date-picker .react-datepicker__month-option--selected,
+    .custom-date-picker .react-datepicker__year-option--selected {
+      background: rgba(15, 78, 169, 0.1);
+      font-weight: 600;
+    }
+
+    /* Custom calendar icon in input */
+    .date-picker-wrapper {
+      position: relative;
+    }
+
+    .date-picker-wrapper .calendar-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(23, 38, 58, 0.4);
+      pointer-events: none;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .date-picker-wrapper .react-datepicker__input-container input {
+      padding-right: 44px !important;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .custom-date-picker .react-datepicker {
+        width: 100% !important;
+        max-width: 320px;
+      }
+      
+      .custom-date-picker .react-datepicker__day {
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 13px;
+      }
+      
+      .custom-date-picker .react-datepicker__day-name {
+        width: 32px;
+        font-size: 11px;
+      }
+    }
+  `
+
   return (
     <div className="wizardStep">
+      {/* Inject custom styles */}
+      <style>{datePickerStyles}</style>
+      
       <div className="wizardBody">
         {/* Personal Information Section */}
         <div className="wizardSection">
@@ -990,28 +1228,36 @@ export function WizardStep1({ data, onChange, onNext }) {
         {/* Details */}
         <div className="wizardSection">
           <div className="wizardGrid2">
-            {/* DOB - React DatePicker */}
+            {/* DOB - React DatePicker with Custom Styling */}
             <div>
               <div className="wizardSectionBar">Date of Birth</div>
-              <div style={{ position: 'relative' }}>
+              <div className="date-picker-wrapper custom-date-picker">
                 <DatePicker
+                  ref={datePickerRef}
                   selected={parseDate(data.dob)}
                   onChange={handleDateChange}
                   dateFormat="MM/dd/yyyy"
                   placeholderText="MM/DD/YYYY"
                   maxDate={new Date()}
+                  onCalendarOpen={() => setIsDatePickerOpen(true)}
+                  onCalendarClose={() => setIsDatePickerOpen(false)}
+                  showYearDropdown
+                  showMonthDropdown
+                  dropdownMode="select"
+                  yearDropdownItemNumber={100}
+                  scrollableYearDropdown
                   className="date-picker-input"
-                  style={{
-                    width: '100%',
-                    height: '48px',
-                    padding: '0 12px',
-                    border: '1px solid rgba(18,38,63,0.12)',
-                    borderRadius: '12px',
-                    fontSize: '14px',
-                    outline: 'none',
-                    background: 'white'
-                  }}
+                  popperPlacement="bottom-start"
+                  popperModifiers={[
+                    {
+                      name: 'offset',
+                      options: {
+                        offset: [0, 8],
+                      },
+                    },
+                  ]}
                 />
+                <span className="calendar-icon">📅</span>
                 <div style={{ 
                   fontSize: '11px', 
                   color: 'rgba(23,38,58,0.5)', 
