@@ -796,6 +796,8 @@
 //   )
 // }// src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef } from 'react'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import { TextField } from '../../../common/components/TextField'
 import { IconUser, IconMail, IconPhone, IconLocation, IconUpload } from '../../../common/components/Icons'
 
@@ -832,38 +834,26 @@ export function WizardStep1({ data, onChange, onNext }) {
     }
   }
 
-  // Format date from YYYY-MM-DD to MM/DD/YYYY for display
-  const formatDateToDisplay = (dateStr) => {
-    if (!dateStr) return ''
-    const parts = dateStr.split('-')
-    if (parts.length === 3) {
-      return `${parts[1]}/${parts[2]}/${parts[0]}`
-    }
-    return dateStr
-  }
-
-  // Convert MM/DD/YYYY to YYYY-MM-DD for input[type="date"]
-  const formatDateForInput = (dateStr) => {
-    if (!dateStr) return ''
-    const parts = dateStr.split('/')
-    if (parts.length === 3) {
-      return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`
-    }
-    return dateStr
-  }
-
-  // Handle date change from calendar picker
-  const handleDateChange = (e) => {
-    const value = e.target.value
-    if (value) {
-      // Convert YYYY-MM-DD to MM/DD/YYYY for storage
-      const parts = value.split('-')
-      if (parts.length === 3) {
-        handleChange('dob', `${parts[1]}/${parts[2]}/${parts[0]}`)
-      }
+  // Handle date change from react-datepicker
+  const handleDateChange = (date) => {
+    if (date) {
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      const year = date.getFullYear()
+      handleChange('dob', `${month}/${day}/${year}`)
     } else {
       handleChange('dob', '')
     }
+  }
+
+  // Parse date string to Date object for react-datepicker
+  const parseDate = (dateStr) => {
+    if (!dateStr) return null
+    const parts = dateStr.split('/')
+    if (parts.length === 3) {
+      return new Date(`${parts[2]}-${parts[0]}-${parts[1]}`)
+    }
+    return null
   }
 
   const isValid = data.emailAddress && data.mobilePhone && data.legalFirstName && data.legalLastName && data.dob && data.city && data.stateCode && data.zip
@@ -1000,46 +990,28 @@ export function WizardStep1({ data, onChange, onNext }) {
         {/* Details */}
         <div className="wizardSection">
           <div className="wizardGrid2">
-            {/* DOB - Calendar Picker */}
+            {/* DOB - React DatePicker */}
             <div>
               <div className="wizardSectionBar">Date of Birth</div>
               <div style={{ position: 'relative' }}>
-                <div style={{ 
-                  display: 'flex', 
-                  border: '1px solid rgba(18,38,63,0.12)', 
-                  borderRadius: '12px', 
-                  height: '48px', 
-                  background: 'white', 
-                  width: '100%',
-                  alignItems: 'center'
-                }}>
-                  <span style={{ 
-                    padding: '0 12px', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    borderRight: '1px solid rgba(18,38,63,0.12)', 
-                    color: '#17263a'
-                  }}>
-                    📅
-                  </span>
-                  <input 
-                    type="date"
-                    value={formatDateForInput(data.dob || '')}
-                    onChange={handleDateChange}
-                    max={new Date().toISOString().split('T')[0]}
-                    style={{ 
-                      flex: 1, 
-                      border: 'none', 
-                      outline: 'none', 
-                      padding: '0 12px',
-                      borderRadius: '12px', 
-                      fontSize: '14px',
-                      height: '46px',
-                      background: 'transparent',
-                      color: '#17263a'
-                    }}
-                  />
-                </div>
+                <DatePicker
+                  selected={parseDate(data.dob)}
+                  onChange={handleDateChange}
+                  dateFormat="MM/dd/yyyy"
+                  placeholderText="MM/DD/YYYY"
+                  maxDate={new Date()}
+                  className="date-picker-input"
+                  style={{
+                    width: '100%',
+                    height: '48px',
+                    padding: '0 12px',
+                    border: '1px solid rgba(18,38,63,0.12)',
+                    borderRadius: '12px',
+                    fontSize: '14px',
+                    outline: 'none',
+                    background: 'white'
+                  }}
+                />
                 <div style={{ 
                   fontSize: '11px', 
                   color: 'rgba(23,38,58,0.5)', 
@@ -1050,7 +1022,7 @@ export function WizardStep1({ data, onChange, onNext }) {
                   <span>MM/DD/YYYY</span>
                   {data.dob && (
                     <span style={{ color: '#2fb463' }}>
-                      ✓ {formatDateToDisplay(data.dob)}
+                      ✓ {data.dob}
                     </span>
                   )}
                 </div>
