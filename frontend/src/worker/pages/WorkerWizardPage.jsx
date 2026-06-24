@@ -343,7 +343,6 @@
 // }
 
 
-
 // src/worker/pages/WorkerWizardPage.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -365,7 +364,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const [step, setStep] = useState(1)
   const maxStep = 9
 
-  // Wizard data state - initialize with values from localStorage
+  // ✅ Initialize state with data from localStorage
   const [wizardData, setWizardData] = useState(() => {
     // Read from localStorage
     const pendingFirstName = localStorage.getItem('pendingFirstName') || ''
@@ -502,15 +501,24 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     }
   })
 
-  // Clear localStorage after data is loaded (optional - comment out if you want to keep data)
-  // useEffect(() => {
-  //   // Clear pending data after it's been loaded
-  //   const itemsToRemove = [
-  //     'pendingFirstName', 'pendingLastName', 'pendingEmail', 'pendingPhoneNumber',
-  //     'pendingDob', 'pendingCity', 'pendingState', 'pendingZip', 'pendingLanguage'
-  //   ]
-  //   itemsToRemove.forEach(item => localStorage.removeItem(item))
-  // }, [])
+  // ✅ Clear localStorage AFTER data is loaded into state
+  useEffect(() => {
+    // Only clear if we have data in localStorage
+    const hasPendingData = localStorage.getItem('pendingFirstName') || 
+                          localStorage.getItem('pendingEmail') ||
+                          localStorage.getItem('pendingPhoneNumber')
+    
+    if (hasPendingData) {
+      // Clear pending data after it's been loaded into state
+      const itemsToRemove = [
+        'pendingFirstName', 'pendingLastName', 'pendingEmail', 'pendingPhoneNumber',
+        'pendingDob', 'pendingCity', 'pendingState', 'pendingZip', 'pendingLanguage',
+        'pendingPassword'
+      ]
+      itemsToRemove.forEach(item => localStorage.removeItem(item))
+      console.log('✅ Cleared pending registration data from localStorage')
+    }
+  }, []) // Empty dependency array = runs once on mount
 
   useEffect(() => {
     const requested = initialStepOverride ?? location?.state?.initialStep
@@ -547,14 +555,6 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const goPrev = () => setStep((s) => Math.max(1, s - 1))
 
   const finishWizard = () => {
-    // Clear localStorage after finishing wizard
-    const itemsToRemove = [
-      'pendingFirstName', 'pendingLastName', 'pendingEmail', 'pendingPhoneNumber',
-      'pendingDob', 'pendingCity', 'pendingState', 'pendingZip', 'pendingLanguage',
-      'pendingPassword'
-    ]
-    itemsToRemove.forEach(item => localStorage.removeItem(item))
-
     navigate('/wizard/summary', {
       state: {
         basics: {
