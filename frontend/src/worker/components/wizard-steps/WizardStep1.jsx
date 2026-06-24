@@ -794,8 +794,7 @@
 //       </div>
 //     </div>
 //   )
-// }
-// src/worker/components/wizard-steps/WizardStep1.jsx
+// }// src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef } from 'react'
 import { TextField } from '../../../common/components/TextField'
 import { IconUser, IconMail, IconPhone, IconLocation, IconUpload } from '../../../common/components/Icons'
@@ -830,6 +829,40 @@ export function WizardStep1({ data, onChange, onNext }) {
         handleChange('profileImage', file)
       }
       reader.readAsDataURL(file)
+    }
+  }
+
+  // Format date from YYYY-MM-DD to MM/DD/YYYY for display
+  const formatDateToDisplay = (dateStr) => {
+    if (!dateStr) return ''
+    const parts = dateStr.split('-')
+    if (parts.length === 3) {
+      return `${parts[1]}/${parts[2]}/${parts[0]}`
+    }
+    return dateStr
+  }
+
+  // Convert MM/DD/YYYY to YYYY-MM-DD for input[type="date"]
+  const formatDateForInput = (dateStr) => {
+    if (!dateStr) return ''
+    const parts = dateStr.split('/')
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`
+    }
+    return dateStr
+  }
+
+  // Handle date change from calendar picker
+  const handleDateChange = (e) => {
+    const value = e.target.value
+    if (value) {
+      // Convert YYYY-MM-DD to MM/DD/YYYY for storage
+      const parts = value.split('-')
+      if (parts.length === 3) {
+        handleChange('dob', `${parts[1]}/${parts[2]}/${parts[0]}`)
+      }
+    } else {
+      handleChange('dob', '')
     }
   }
 
@@ -967,15 +1000,61 @@ export function WizardStep1({ data, onChange, onNext }) {
         {/* Details */}
         <div className="wizardSection">
           <div className="wizardGrid2">
-            {/* DOB */}
+            {/* DOB - Calendar Picker */}
             <div>
               <div className="wizardSectionBar">Date of Birth</div>
-              <TextField
-                placeholder="MM-DD-YYYY"
-                icon={<IconSupport />}
-                value={data.dob || ''}
-                onChange={(v) => handleChange('dob', v)}
-              />
+              <div style={{ position: 'relative' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  border: '1px solid rgba(18,38,63,0.12)', 
+                  borderRadius: '12px', 
+                  height: '48px', 
+                  background: 'white', 
+                  width: '100%',
+                  alignItems: 'center'
+                }}>
+                  <span style={{ 
+                    padding: '0 12px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    borderRight: '1px solid rgba(18,38,63,0.12)', 
+                    color: '#17263a'
+                  }}>
+                    📅
+                  </span>
+                  <input 
+                    type="date"
+                    value={formatDateForInput(data.dob || '')}
+                    onChange={handleDateChange}
+                    max={new Date().toISOString().split('T')[0]}
+                    style={{ 
+                      flex: 1, 
+                      border: 'none', 
+                      outline: 'none', 
+                      padding: '0 12px',
+                      borderRadius: '12px', 
+                      fontSize: '14px',
+                      height: '46px',
+                      background: 'transparent',
+                      color: '#17263a'
+                    }}
+                  />
+                </div>
+                <div style={{ 
+                  fontSize: '11px', 
+                  color: 'rgba(23,38,58,0.5)', 
+                  marginTop: '4px',
+                  display: 'flex',
+                  justifyContent: 'space-between'
+                }}>
+                  <span>MM/DD/YYYY</span>
+                  {data.dob && (
+                    <span style={{ color: '#2fb463' }}>
+                      ✓ {formatDateToDisplay(data.dob)}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Languages */}
