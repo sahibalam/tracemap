@@ -509,6 +509,294 @@
 //   )
 // }
 
+// // src/worker/components/wizard-steps/WizardStep1.jsx
+// import { useState, useRef } from 'react'
+// import { TextField } from '../../../common/components/TextField'
+// import { IconUser, IconMail, IconPhone, IconLocation, IconUpload } from '../../../common/components/Icons'
+
+// // IconSupport component
+// function IconSupport(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" {...props}>
+//       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z" fill="currentColor"/>
+//     </svg>
+//   )
+// }
+
+// export function WizardStep1({ data, onChange, onNext }) {
+//   const [profilePreview, setProfilePreview] = useState(data.profilePreview || '')
+//   const [profileImage, setProfileImage] = useState(null)
+  
+//   // Refs for file inputs
+//   const uploadRef = useRef(null)
+  
+//   const handleChange = (field, value) => {
+//     onChange({ ...data, [field]: value })
+//   }
+
+//   // Handle profile image upload
+//   const handleFileUpload = (e) => {
+//     const file = e.target.files[0]
+//     if (file) {
+//       setProfileImage(file)
+//       const reader = new FileReader()
+//       reader.onloadend = () => {
+//         setProfilePreview(reader.result)
+//         handleChange('profilePreview', reader.result)
+//         handleChange('profileImage', file)
+//       }
+//       reader.readAsDataURL(file)
+//     }
+//   }
+
+//   const isValid = data.emailAddress && data.mobilePhone && data.legalFirstName && data.legalLastName && data.dob && data.city && data.stateCode && data.zip
+
+//   return (
+//     <div className="wizardStep">
+//       <div className="wizardBody">
+//         {/* Personal Information Section */}
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">Personal Information</div>
+//           <div className="wizardGrid2">
+//             <TextField 
+//               placeholder="First name" 
+//               icon={<IconUser />} 
+//               value={data.legalFirstName || ''} 
+//               onChange={(v) => handleChange('legalFirstName', v)} 
+//             />
+//             <TextField 
+//               placeholder="Last name" 
+//               icon={<IconUser />} 
+//               value={data.legalLastName || ''} 
+//               onChange={(v) => handleChange('legalLastName', v)} 
+//             />
+//             <TextField 
+//               placeholder="Email Address" 
+//               icon={<IconMail />} 
+//               value={data.emailAddress || ''} 
+//               onChange={(v) => handleChange('emailAddress', v)} 
+//             />
+//             <TextField 
+//               placeholder="Mobile number" 
+//               icon={<IconPhone />} 
+//               value={data.mobilePhone || ''} 
+//               onChange={(v) => handleChange('mobilePhone', v)} 
+//             />
+//           </div>
+//         </div>
+
+//         {/* Address Section */}
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">Address</div>
+//           <div className="wizardGrid2">
+//             <TextField 
+//               placeholder="Address" 
+//               icon={<IconLocation />} 
+//               value={data.addressLine1 || ''} 
+//               onChange={(v) => handleChange('addressLine1', v)} 
+//             />
+//             <div className="wizardGrid3" style={{ gridColumn: '1 / -1' }}>
+//               <TextField 
+//                 placeholder="City" 
+//                 icon={<IconLocation />} 
+//                 value={data.city || ''} 
+//                 onChange={(v) => handleChange('city', v)} 
+//               />
+//               <TextField 
+//                 placeholder="State" 
+//                 icon={<IconLocation />} 
+//                 value={data.stateCode || ''} 
+//                 onChange={(v) => handleChange('stateCode', v)} 
+//               />
+//               <TextField 
+//                 placeholder="Zip" 
+//                 icon={<IconLocation />} 
+//                 value={data.zip || ''} 
+//                 onChange={(v) => handleChange('zip', v)} 
+//               />
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Current Address Section */}
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">Current Address</div>
+//           <div className="wizardGrid2">
+//             <TextField 
+//               placeholder="Address" 
+//               icon={<IconLocation />} 
+//               value={data.currentAddressLine1 || ''} 
+//               onChange={(v) => handleChange('currentAddressLine1', v)} 
+//             />
+//             <div className="wizardGrid3" style={{ gridColumn: '1 / -1' }}>
+//               <TextField 
+//                 placeholder="City" 
+//                 icon={<IconLocation />} 
+//                 value={data.currentCity || ''} 
+//                 onChange={(v) => handleChange('currentCity', v)} 
+//               />
+//               <TextField 
+//                 placeholder="State" 
+//                 icon={<IconLocation />} 
+//                 value={data.currentStateCode || ''} 
+//                 onChange={(v) => handleChange('currentStateCode', v)} 
+//               />
+//               <TextField 
+//                 placeholder="Zip" 
+//                 icon={<IconLocation />} 
+//                 value={data.currentZip || ''} 
+//                 onChange={(v) => handleChange('currentZip', v)} 
+//               />
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Details Section */}
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">Details</div>
+//           <div className="wizardGrid2">
+//             <div>
+//               <TextField 
+//                 placeholder="Date of birth" 
+//                 icon={<IconSupport />} 
+//                 value={data.dob || ''} 
+//                 onChange={(v) => handleChange('dob', v)} 
+//               />
+//               <div style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', marginTop: '4px' }}>
+//                 MM-DD-YYYY
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* Language(s) Known Section */}
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">Language(s) Known</div>
+//           <div className="wizardChecks" style={{ display: 'flex', gap: '20px' }}>
+//             <label className="wizardCheck">
+//               <input 
+//                 type="radio" 
+//                 name="primaryLanguage" 
+//                 checked={data.primaryLanguage === 'English'} 
+//                 onChange={() => handleChange('primaryLanguage', 'English')} 
+//               />
+//               English
+//             </label>
+//             <label className="wizardCheck">
+//               <input 
+//                 type="radio" 
+//                 name="primaryLanguage" 
+//                 checked={data.primaryLanguage === 'English+Spanish'} 
+//                 onChange={() => handleChange('primaryLanguage', 'English+Spanish')} 
+//               />
+//               English+Spanish
+//             </label>
+//             <label className="wizardCheck">
+//               <input 
+//                 type="radio" 
+//                 name="primaryLanguage" 
+//                 checked={data.primaryLanguage === 'Spanish'} 
+//                 onChange={() => handleChange('primaryLanguage', 'Spanish')} 
+//               />
+//               Spanish
+//             </label>
+//           </div>
+//         </div>
+
+//         {/* Profile Image Section */}
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">Profile Image</div>
+//           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+//             {/* Profile Image Preview */}
+//             <div style={{ 
+//               width: '80px', 
+//               height: '80px', 
+//               borderRadius: '50%', 
+//               background: 'rgba(15,78,169,0.1)',
+//               display: 'flex',
+//               alignItems: 'center',
+//               justifyContent: 'center',
+//               overflow: 'hidden',
+//               border: '2px solid rgba(15,78,169,0.2)'
+//             }}>
+//               {profilePreview ? (
+//                 <img src={profilePreview} alt="Profile" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+//               ) : (
+//                 <IconUser style={{ width: '40px', height: '40px', color: 'rgba(15,78,169,0.5)' }} />
+//               )}
+//             </div>
+            
+//             {/* Upload Button */}
+//             <button
+//               type="button"
+//               onClick={() => uploadRef.current?.click()}
+//               style={{ 
+//                 display: 'inline-flex', 
+//                 alignItems: 'center', 
+//                 gap: '6px',
+//                 padding: '8px 20px',
+//                 background: 'rgba(15,78,169,0.1)',
+//                 borderRadius: '25px',
+//                 cursor: 'pointer',
+//                 fontSize: '13px',
+//                 fontWeight: '600',
+//                 border: 'none'
+//               }}
+//             >
+//               <IconUpload style={{ width: '14px', height: '14px' }} />
+//               Upload
+//             </button>
+//             <input 
+//               ref={uploadRef}
+//               type="file" 
+//               accept="image/*" 
+//               onChange={handleFileUpload} 
+//               style={{ display: 'none' }} 
+//             />
+//           </div>
+//         </div>
+
+//         {/* Agreements Section */}
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">Agreements</div>
+//           <div className="wizardChecks">
+//             <label className="wizardCheck">
+//               <input type="checkbox" checked={data.acceptTerms || false} onChange={(e) => handleChange('acceptTerms', e.target.checked)} />
+//               I accept the bottomless terms of use
+//             </label>
+//             <label className="wizardCheck">
+//               <input type="checkbox" checked={data.acceptPrivacy || false} onChange={(e) => handleChange('acceptPrivacy', e.target.checked)} />
+//               I accept the privacy policy
+//             </label>
+//             <label className="wizardCheck">
+//               <input type="checkbox" checked={data.consentElectronic || false} onChange={(e) => handleChange('consentElectronic', e.target.checked)} />
+//               I consent to electronic records
+//             </label>
+//             <label className="wizardCheck">
+//               <input type="checkbox" checked={data.certifyAccurate || false} onChange={(e) => handleChange('certifyAccurate', e.target.checked)} />
+//               I confirm the information entered is accurate
+//             </label>
+//           </div>
+//         </div>
+//       </div>
+
+//       <div className="wizardFooter">
+//         <button type="button" className="wizardPillBtn" disabled>
+//           <span className="wizardPillBtnLabel">Back</span>
+//           <span className="wizardPillBtnIcon">←</span>
+//         </button>
+//         <div className="wizardFooterRight">
+//           <button type="button" className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" onClick={onNext} disabled={!isValid}>
+//             <span className="wizardPillBtnLabel">Next</span>
+//             <span className="wizardPillBtnIcon">→</span>
+//           </button>
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
+
+
 // src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef } from 'react'
 import { TextField } from '../../../common/components/TextField'
@@ -527,14 +815,12 @@ export function WizardStep1({ data, onChange, onNext }) {
   const [profilePreview, setProfilePreview] = useState(data.profilePreview || '')
   const [profileImage, setProfileImage] = useState(null)
   
-  // Refs for file inputs
   const uploadRef = useRef(null)
   
   const handleChange = (field, value) => {
     onChange({ ...data, [field]: value })
   }
 
-  // Handle profile image upload
   const handleFileUpload = (e) => {
     const file = e.target.files[0]
     if (file) {
@@ -595,26 +881,26 @@ export function WizardStep1({ data, onChange, onNext }) {
               value={data.addressLine1 || ''} 
               onChange={(v) => handleChange('addressLine1', v)} 
             />
-            <div className="wizardGrid3" style={{ gridColumn: '1 / -1' }}>
-              <TextField 
-                placeholder="City" 
-                icon={<IconLocation />} 
-                value={data.city || ''} 
-                onChange={(v) => handleChange('city', v)} 
-              />
-              <TextField 
-                placeholder="State" 
-                icon={<IconLocation />} 
-                value={data.stateCode || ''} 
-                onChange={(v) => handleChange('stateCode', v)} 
-              />
-              <TextField 
-                placeholder="Zip" 
-                icon={<IconLocation />} 
-                value={data.zip || ''} 
-                onChange={(v) => handleChange('zip', v)} 
-              />
-            </div>
+          </div>
+          <div className="wizardGrid3" style={{ marginTop: '8px' }}>
+            <TextField 
+              placeholder="City" 
+              icon={<IconLocation />} 
+              value={data.city || ''} 
+              onChange={(v) => handleChange('city', v)} 
+            />
+            <TextField 
+              placeholder="State" 
+              icon={<IconLocation />} 
+              value={data.stateCode || ''} 
+              onChange={(v) => handleChange('stateCode', v)} 
+            />
+            <TextField 
+              placeholder="Zip" 
+              icon={<IconLocation />} 
+              value={data.zip || ''} 
+              onChange={(v) => handleChange('zip', v)} 
+            />
           </div>
         </div>
 
@@ -628,26 +914,26 @@ export function WizardStep1({ data, onChange, onNext }) {
               value={data.currentAddressLine1 || ''} 
               onChange={(v) => handleChange('currentAddressLine1', v)} 
             />
-            <div className="wizardGrid3" style={{ gridColumn: '1 / -1' }}>
-              <TextField 
-                placeholder="City" 
-                icon={<IconLocation />} 
-                value={data.currentCity || ''} 
-                onChange={(v) => handleChange('currentCity', v)} 
-              />
-              <TextField 
-                placeholder="State" 
-                icon={<IconLocation />} 
-                value={data.currentStateCode || ''} 
-                onChange={(v) => handleChange('currentStateCode', v)} 
-              />
-              <TextField 
-                placeholder="Zip" 
-                icon={<IconLocation />} 
-                value={data.currentZip || ''} 
-                onChange={(v) => handleChange('currentZip', v)} 
-              />
-            </div>
+          </div>
+          <div className="wizardGrid3" style={{ marginTop: '8px' }}>
+            <TextField 
+              placeholder="City" 
+              icon={<IconLocation />} 
+              value={data.currentCity || ''} 
+              onChange={(v) => handleChange('currentCity', v)} 
+            />
+            <TextField 
+              placeholder="State" 
+              icon={<IconLocation />} 
+              value={data.currentStateCode || ''} 
+              onChange={(v) => handleChange('currentStateCode', v)} 
+            />
+            <TextField 
+              placeholder="Zip" 
+              icon={<IconLocation />} 
+              value={data.currentZip || ''} 
+              onChange={(v) => handleChange('currentZip', v)} 
+            />
           </div>
         </div>
 
@@ -672,8 +958,8 @@ export function WizardStep1({ data, onChange, onNext }) {
         {/* Language(s) Known Section */}
         <div className="wizardSection">
           <div className="wizardSectionBar">Language(s) Known</div>
-          <div className="wizardChecks" style={{ display: 'flex', gap: '20px' }}>
-            <label className="wizardCheck">
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+            <label className="wizardCheck" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <input 
                 type="radio" 
                 name="primaryLanguage" 
@@ -682,7 +968,7 @@ export function WizardStep1({ data, onChange, onNext }) {
               />
               English
             </label>
-            <label className="wizardCheck">
+            <label className="wizardCheck" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <input 
                 type="radio" 
                 name="primaryLanguage" 
@@ -691,7 +977,7 @@ export function WizardStep1({ data, onChange, onNext }) {
               />
               English+Spanish
             </label>
-            <label className="wizardCheck">
+            <label className="wizardCheck" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <input 
                 type="radio" 
                 name="primaryLanguage" 
@@ -707,7 +993,6 @@ export function WizardStep1({ data, onChange, onNext }) {
         <div className="wizardSection">
           <div className="wizardSectionBar">Profile Image</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
-            {/* Profile Image Preview */}
             <div style={{ 
               width: '80px', 
               height: '80px', 
@@ -726,7 +1011,6 @@ export function WizardStep1({ data, onChange, onNext }) {
               )}
             </div>
             
-            {/* Upload Button */}
             <button
               type="button"
               onClick={() => uploadRef.current?.click()}
@@ -734,13 +1018,14 @@ export function WizardStep1({ data, onChange, onNext }) {
                 display: 'inline-flex', 
                 alignItems: 'center', 
                 gap: '6px',
-                padding: '8px 20px',
+                padding: '8px 24px',
                 background: 'rgba(15,78,169,0.1)',
                 borderRadius: '25px',
                 cursor: 'pointer',
                 fontSize: '13px',
                 fontWeight: '600',
-                border: 'none'
+                border: 'none',
+                color: '#0f4ea9'
               }}
             >
               <IconUpload style={{ width: '14px', height: '14px' }} />
