@@ -507,7 +507,9 @@
 //       </div>
 //     </div>
 //   )
-// }// src/worker/components/wizard-steps/WizardStep1.jsx
+// }
+
+// src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef } from 'react'
 import { TextField } from '../../../common/components/TextField'
 import { IconUser, IconMail, IconPhone, IconLocation, IconUpload } from '../../../common/components/Icons'
