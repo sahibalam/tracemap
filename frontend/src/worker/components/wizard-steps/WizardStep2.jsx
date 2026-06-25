@@ -50,42 +50,6 @@ const TRADE_LEVEL_MAP = {
   ],
 }
 
-// Skill Areas
-const SKILL_AREAS = [
-  'Layout',
-  'Framing',
-  'Hanging',
-  'Taping',
-  'Finishing',
-  'Grid/Tile',
-  'Trim/Carpentry',
-  'Insulation',
-  'Demolition',
-  'Punch/Final Clean',
-  'Lead/Supervision',
-  'Blueprint Reading',
-]
-
-// Field Readiness
-const FIELD_READINESS = [
-  { key: 'blueprints', label: 'Can read blueprints / plans' },
-  { key: 'lifts', label: 'Comfortable on lifts' },
-  { key: 'occupied', label: 'Worked occupied spaces' },
-  { key: 'nightShifts', label: 'Available for night shifts' },
-  { key: 'travel', label: 'Available for travel' },
-  { key: 'leadCrew', label: 'Can lead a crew' },
-]
-
-// Additional Skills/Tools
-const ADDITIONAL_SKILLS = [
-  'Scaffolding',
-  'Lift Operation',
-  'Welding',
-  'Power Tools',
-  'Hand Tools',
-  'Safety Training',
-]
-
 export function WizardStep2({ data, onChange, onNext, onBack }) {
   const handleChange = (field, value) => {
     onChange({
@@ -102,36 +66,11 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     })
   }
 
-  const handleSkillToggle = (skill) => (e) => {
-    const current = data.skills || {}
-    handleChange('skills', {
-      ...current,
-      [skill]: e.target.checked,
-    })
-  }
-
-  const handleFieldReadinessToggle = (key) => (e) => {
-    const current = data.fieldReadiness || {}
-    handleChange('fieldReadiness', {
-      ...current,
-      [key]: e.target.checked,
-    })
-  }
-
-  const handleAdditionalSkillToggle = (skill) => (e) => {
-    const current = data.additionalSkillsList || {}
-    handleChange('additionalSkillsList', {
-      ...current,
-      [skill]: e.target.checked,
-    })
-  }
-
   const workerLevels = TRADE_LEVEL_MAP[data.primaryTrade] || []
 
   return (
     <div className="wizardStep">
       <div className="wizardBody">
-        {/* Trade Profile & Skill Matrix Section */}
         <div className="wizardSection">
           <div className="wizardSectionBar">Trade Profile & Skill Matrix</div>
 
@@ -174,85 +113,6 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
               value={data.yearOfExperience || ''}
               onChange={(value) => handleChange('yearOfExperience', value)}
               placeholder="Enter years"
-            />
-          </div>
-        </div>
-
-        {/* Skill Areas Section */}
-        <div className="wizardSection">
-          <div className="wizardSectionBar">Skill Areas</div>
-          <div className="wizardGrid3" style={{ marginTop: 12 }}>
-            {SKILL_AREAS.map((skill) => (
-              <label key={skill} className="wizardCheck">
-                <input
-                  type="checkbox"
-                  checked={!!(data.skills?.[skill] || false)}
-                  onChange={handleSkillToggle(skill)}
-                />
-                {skill}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Field Readiness Section */}
-        <div className="wizardSection">
-          <div className="wizardSectionBar">Field Readiness</div>
-          <div className="wizardGrid3" style={{ marginTop: 12 }}>
-            {FIELD_READINESS.map(({ key, label }) => (
-              <label key={key} className="wizardCheck">
-                <input
-                  type="checkbox"
-                  checked={!!(data.fieldReadiness?.[key] || false)}
-                  onChange={handleFieldReadinessToggle(key)}
-                />
-                {label}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Additional Skills / Tools Section */}
-        <div className="wizardSection">
-          <div className="wizardSectionBar">Additional Skills / Tools</div>
-          <div className="wizardGrid3" style={{ marginTop: 12 }}>
-            {ADDITIONAL_SKILLS.map((skill) => (
-              <label key={skill} className="wizardCheck">
-                <input
-                  type="checkbox"
-                  checked={!!(data.additionalSkillsList?.[skill] || false)}
-                  onChange={handleAdditionalSkillToggle(skill)}
-                />
-                {skill}
-              </label>
-            ))}
-          </div>
-
-          {/* Other skills input */}
-          <div style={{ marginTop: 12 }}>
-            <TextField
-              placeholder="Other skills / tools / systems worked with"
-              value={data.additionalSkills || ''}
-              onChange={(value) => handleChange('additionalSkills', value)}
-            />
-          </div>
-        </div>
-
-        {/* Travel & Deployment Section */}
-        <div className="wizardSection">
-          <div className="wizardSectionBar">Travel & Deployment</div>
-          <div className="wizardGrid2" style={{ marginTop: 12 }}>
-            <TextField
-              placeholder="Travel radius (miles)"
-              type="number"
-              min="0"
-              value={data.travelRadiusMiles || ''}
-              onChange={(value) => handleChange('travelRadiusMiles', value)}
-            />
-            <TextField
-              placeholder="Languages"
-              value={data.languages || ''}
-              onChange={(value) => handleChange('languages', value)}
             />
           </div>
         </div>
