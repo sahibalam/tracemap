@@ -1948,9 +1948,9 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                       data.primaryTrade === data.secondaryTrade && 
                       data.workerLevel === data.secondaryWorkerLevel
 
-  // Get all trade options for secondary (excluding the primary trade)
+  // Get all trade options for secondary (including primary trade)
   const getSecondaryTradeOptions = () => {
-    return Object.keys(TRADE_LEVEL_MAP).filter(trade => trade !== data.primaryTrade)
+    return Object.keys(TRADE_LEVEL_MAP)
   }
 
   return (
