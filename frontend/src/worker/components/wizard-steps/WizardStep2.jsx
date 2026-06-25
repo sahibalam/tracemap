@@ -3985,6 +3985,55 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                 </div>
               </fieldset>
             )}
+
+            {/* ✅ NEW: Additional Skills/Tools/Systems Text Area */}
+            <div style={{ marginTop: 16 }}>
+              <div style={{ 
+                fontSize: '14px', 
+                fontWeight: 600, 
+                color: '#17263a', 
+                marginBottom: 8 
+              }}>
+                Additional Skills / Tools / Systems
+              </div>
+              <textarea
+                className="wizardTextArea"
+                value={data.additionalSkillsTools || ''}
+                onChange={(e) => handleChange('additionalSkillsTools', e.target.value)}
+                placeholder="Enter additional skills, tools, or systems you have experience with..."
+                rows={4}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  border: '1px solid rgba(18, 38, 63, 0.12)',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  fontFamily: 'inherit',
+                  resize: 'vertical',
+                  outline: 'none',
+                  transition: 'all 0.2s ease',
+                  background: 'white',
+                  color: '#17263a',
+                  minHeight: '100px',
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#0f4ea9'
+                  e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+                  e.target.style.boxShadow = 'none'
+                }}
+              />
+              <div style={{ 
+                fontSize: '11px', 
+                color: 'rgba(23, 38, 58, 0.5)', 
+                marginTop: '4px',
+                textAlign: 'right'
+              }}>
+                {data.additionalSkillsTools?.length || 0} characters
+              </div>
+            </div>
           </div>
         </div>
       </div>
