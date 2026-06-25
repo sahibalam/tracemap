@@ -39,7 +39,7 @@ const TRADE_LEVEL_MAP = {
   'Insulation': [
     'Helper',
     'Mechanic',
-    'Lead',
+    'Lead',  // This will trigger the responsibilities section
   ],
   'Demolition/Punch/Final Clean': [
     'Helper',
@@ -50,7 +50,7 @@ const TRADE_LEVEL_MAP = {
   ],
 }
 
-// Lead/Foreman responsibilities
+// Lead/Foreman responsibilities (applies to both "Lead" and "Lead/Foreman")
 const LEAD_FOREMAN_RESPONSIBILITIES = [
   'Crew size managed',
   'Manpower planning',
@@ -83,7 +83,10 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     onChange({
       ...data,
       workerLevel: value,
-      leadForemanResponsibilities: value === 'Lead/Foreman' ? (data.leadForemanResponsibilities || {}) : {},
+      // Reset responsibilities if not "Lead" or "Lead/Foreman"
+      leadForemanResponsibilities: (value === 'Lead' || value === 'Lead/Foreman') 
+        ? (data.leadForemanResponsibilities || {}) 
+        : {},
     })
   }
 
@@ -96,7 +99,9 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
   }
 
   const workerLevels = TRADE_LEVEL_MAP[data.primaryTrade] || []
-  const showLeadForemanSection = data.workerLevel === 'Lead/Foreman'
+  
+  // Show responsibilities for both "Lead" AND "Lead/Foreman"
+  const showLeadForemanSection = data.workerLevel === 'Lead' || data.workerLevel === 'Lead/Foreman'
 
   return (
     <div className="wizardStep">
@@ -163,10 +168,9 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                 color: '#0f4ea9',
                 background: 'white',
                 borderRadius: '8px',
-                padding: '0 12px',
                 marginLeft: '8px',
               }}>
-                Lead/Foreman Responsibilities
+                {data.workerLevel === 'Lead' ? 'Lead Responsibilities' : 'Lead/Foreman Responsibilities'}
               </legend>
 
               <div className="wizardGrid2" style={{ marginTop: 4 }}>
