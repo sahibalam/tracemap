@@ -39,7 +39,7 @@ const TRADE_LEVEL_MAP = {
   'Insulation': [
     'Helper',
     'Mechanic',
-    'Lead',  // This will trigger the responsibilities section
+    'Lead',
   ],
   'Demolition/Punch/Final Clean': [
     'Helper',
@@ -62,6 +62,19 @@ const LEAD_FOREMAN_RESPONSIBILITIES = [
   'Coordination with superintendent',
 ]
 
+// Metal Framing Skills (applies to Helper, Mechanic, Advanced Mechanic)
+const METAL_FRAMING_SKILLS = [
+  'Layout',
+  'Shaft walls',
+  'Partition types',
+  'Rated assemblies',
+  'Stud/track gauge',
+  'Bulkheads/softits',
+  'Backing/blocking',
+  'High-wall framing',
+  'MEP Coordination',
+]
+
 export function WizardStep2({ data, onChange, onNext, onBack }) {
   const handleChange = (field, value) => {
     onChange({
@@ -76,18 +89,28 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
       primaryTrade: value,
       workerLevel: '',
       leadForemanResponsibilities: {},
+      metalFramingSkills: {},
     })
   }
 
   const handleLevelChange = (value) => {
-    onChange({
+    const updates = {
       ...data,
       workerLevel: value,
-      // Reset responsibilities if not "Lead" or "Lead/Foreman"
-      leadForemanResponsibilities: (value === 'Lead' || value === 'Lead/Foreman') 
-        ? (data.leadForemanResponsibilities || {}) 
-        : {},
-    })
+    }
+
+    // Reset responsibilities if not "Lead" or "Lead/Foreman"
+    if (value !== 'Lead' && value !== 'Lead/Foreman') {
+      updates.leadForemanResponsibilities = {}
+    }
+
+    // Reset metal framing skills if not Metal Framing trade or not Helper/Mechanic/Advanced Mechanic
+    if (data.primaryTrade !== 'Metal Framing' || 
+        (value !== 'Helper' && value !== 'Mechanic' && value !== 'Advanced Mechanic')) {
+      updates.metalFramingSkills = {}
+    }
+
+    onChange(updates)
   }
 
   const handleResponsibilityToggle = (responsibility) => (e) => {
@@ -98,10 +121,35 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     })
   }
 
+  const handleMetalFramingSkillToggle = (skill) => (e) => {
+    const current = data.metalFramingSkills || {}
+    handleChange('metalFramingSkills', {
+      ...current,
+      [skill]: e.target.checked,
+    })
+  }
+
   const workerLevels = TRADE_LEVEL_MAP[data.primaryTrade] || []
   
   // Show responsibilities for both "Lead" AND "Lead/Foreman"
   const showLeadForemanSection = data.workerLevel === 'Lead' || data.workerLevel === 'Lead/Foreman'
+  
+  // Show Metal Framing skills when:
+  // 1. Primary Trade is "Metal Framing"
+  // 2. Worker Level is "Helper", "Mechanic", or "Advanced Mechanic"
+  const showMetalFramingSection = 
+    data.primaryTrade === 'Metal Framing' && 
+    (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic')
+
+  // Get the level abbreviation for display
+  const getLevelAbbreviation = (level) => {
+    switch(level) {
+      case 'Helper': return 'H'
+      case 'Mechanic': return 'M'
+      case 'Advanced Mechanic': return 'A'
+      default: return ''
+    }
+  }
 
   return (
     <div className="wizardStep">
@@ -150,6 +198,53 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
               placeholder="Enter years"
             />
           </div>
+
+          {/* Metal Framing Skills - Legend Field Format */}
+          {showMetalFramingSection && (
+            <fieldset style={{
+              marginTop: 24,
+              padding: '16px 20px 20px 20px',
+              border: '1px solid rgba(15, 78, 169, 0.2)',
+              borderRadius: '12px',
+              background: 'rgba(15, 78, 169, 0.03)',
+              position: 'relative',
+            }}>
+              <legend style={{
+                padding: '0 12px',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#0f4ea9',
+                background: 'white',
+                borderRadius: '8px',
+                marginLeft: '8px',
+              }}>
+                Metal Framing ({getLevelAbbreviation(data.workerLevel)})
+              </legend>
+
+              <div style={{ 
+                fontSize: '12px', 
+                color: 'rgba(23, 38, 58, 0.5)', 
+                marginBottom: 12,
+                marginTop: 4,
+                fontWeight: 500,
+              }}>
+                Skills
+              </div>
+
+              <div className="wizardGrid2" style={{ marginTop: 4 }}>
+                {METAL_FRAMING_SKILLS.map((skill) => (
+                  <label key={skill} className="wizardCheck">
+                    <input
+                      type="checkbox"
+                      checked={!!(data.metalFramingSkills?.[skill] || false)}
+                      onChange={handleMetalFramingSkillToggle(skill)}
+                    />
+                    {skill}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
 
           {/* Lead/Foreman Responsibilities - Legend Field Format */}
           {showLeadForemanSection && (
