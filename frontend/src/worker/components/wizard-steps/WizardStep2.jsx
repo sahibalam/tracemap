@@ -50,6 +50,18 @@ const TRADE_LEVEL_MAP = {
   ],
 }
 
+// Lead/Foreman responsibilities
+const LEAD_FOREMAN_RESPONSIBILITIES = [
+  'Crew size managed',
+  'Manpower planning',
+  'Daily planning',
+  'Daily enforcement',
+  'Housekeeping enforcement',
+  'Daily reporting',
+  'Punch closeout',
+  'Coordination with superintendent',
+]
+
 export function WizardStep2({ data, onChange, onNext, onBack }) {
   const handleChange = (field, value) => {
     onChange({
@@ -63,10 +75,29 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
       ...data,
       primaryTrade: value,
       workerLevel: '',
+      leadForemanResponsibilities: {}, // Reset responsibilities when trade changes
+    })
+  }
+
+  const handleLevelChange = (value) => {
+    onChange({
+      ...data,
+      workerLevel: value,
+      // Reset responsibilities if not Lead/Foreman
+      leadForemanResponsibilities: value === 'Lead/Foreman' ? (data.leadForemanResponsibilities || {}) : {},
+    })
+  }
+
+  const handleResponsibilityToggle = (responsibility) => (e) => {
+    const current = data.leadForemanResponsibilities || {}
+    handleChange('leadForemanResponsibilities', {
+      ...current,
+      [responsibility]: e.target.checked,
     })
   }
 
   const workerLevels = TRADE_LEVEL_MAP[data.primaryTrade] || []
+  const showLeadForemanSection = data.workerLevel === 'Lead/Foreman'
 
   return (
     <div className="wizardStep">
@@ -95,7 +126,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
               label="Worker Levels"
               value={data.workerLevel || ''}
               disabled={!data.primaryTrade}
-              onChange={(value) => handleChange('workerLevel', value)}
+              onChange={handleLevelChange}
             >
               <option value="">Select Worker Level</option>
               {workerLevels.map((level) => (
@@ -115,6 +146,32 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
               placeholder="Enter years"
             />
           </div>
+
+          {/* Lead/Foreman Responsibilities - Auto-generated when Lead/Foreman is selected */}
+          {showLeadForemanSection && (
+            <div style={{ marginTop: 24, borderTop: '1px solid rgba(18,38,63,0.08)', paddingTop: 20 }}>
+              <div style={{ 
+                fontSize: '14px', 
+                fontWeight: 600, 
+                color: '#17263a',
+                marginBottom: 12
+              }}>
+                Lead/Foreman Responsibilities
+              </div>
+              <div className="wizardGrid2" style={{ marginTop: 8 }}>
+                {LEAD_FOREMAN_RESPONSIBILITIES.map((responsibility) => (
+                  <label key={responsibility} className="wizardCheck">
+                    <input
+                      type="checkbox"
+                      checked={!!(data.leadForemanResponsibilities?.[responsibility] || false)}
+                      onChange={handleResponsibilityToggle(responsibility)}
+                    />
+                    {responsibility}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
