@@ -75,6 +75,19 @@ const METAL_FRAMING_SKILLS = [
   'MEP Coordination',
 ]
 
+// Drywall Hanging Skills (applies to Helper, Mechanic, Advanced Mechanic)
+const DRYWALL_HANGING_SKILLS = [
+  'Walls',
+  'Ceiling',
+  'Fire-rated board',
+  'Abuse board',
+  'Shaft-wall board',
+  'High walls',
+  'Production hanging',
+  'Lift work',
+  'Blueprint reading',
+]
+
 export function WizardStep2({ data, onChange, onNext, onBack }) {
   const handleChange = (field, value) => {
     onChange({
@@ -90,6 +103,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
       workerLevel: '',
       leadForemanResponsibilities: {},
       metalFramingSkills: {},
+      drywallHangingSkills: {},
     })
   }
 
@@ -108,6 +122,12 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     if (data.primaryTrade !== 'Metal Framing' || 
         (value !== 'Helper' && value !== 'Mechanic' && value !== 'Advanced Mechanic')) {
       updates.metalFramingSkills = {}
+    }
+
+    // Reset drywall hanging skills if not Drywall Hanging trade or not Helper/Mechanic/Advanced Mechanic
+    if (data.primaryTrade !== 'Drywall Hanging' || 
+        (value !== 'Helper' && value !== 'Mechanic' && value !== 'Advanced Mechanic')) {
+      updates.drywallHangingSkills = {}
     }
 
     onChange(updates)
@@ -129,6 +149,14 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     })
   }
 
+  const handleDrywallHangingSkillToggle = (skill) => (e) => {
+    const current = data.drywallHangingSkills || {}
+    handleChange('drywallHangingSkills', {
+      ...current,
+      [skill]: e.target.checked,
+    })
+  }
+
   const workerLevels = TRADE_LEVEL_MAP[data.primaryTrade] || []
   
   // Show responsibilities for both "Lead" AND "Lead/Foreman"
@@ -141,6 +169,13 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     data.primaryTrade === 'Metal Framing' && 
     (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic')
 
+  // Show Drywall Hanging skills when:
+  // 1. Primary Trade is "Drywall Hanging"
+  // 2. Worker Level is "Helper", "Mechanic", or "Advanced Mechanic"
+  const showDrywallHangingSection = 
+    data.primaryTrade === 'Drywall Hanging' && 
+    (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic')
+
   // Get the level abbreviation for display
   const getLevelAbbreviation = (level) => {
     switch(level) {
@@ -149,6 +184,12 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
       case 'Advanced Mechanic': return 'A'
       default: return ''
     }
+  }
+
+  // Get the legend title based on trade and level
+  const getLegendTitle = (trade, level) => {
+    const abbr = getLevelAbbreviation(level)
+    return `${trade} (${abbr})`
   }
 
   return (
@@ -218,7 +259,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                 borderRadius: '8px',
                 marginLeft: '8px',
               }}>
-                Metal Framing ({getLevelAbbreviation(data.workerLevel)})
+                {getLegendTitle(data.primaryTrade, data.workerLevel)}
               </legend>
 
               <div style={{ 
@@ -238,6 +279,53 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                       type="checkbox"
                       checked={!!(data.metalFramingSkills?.[skill] || false)}
                       onChange={handleMetalFramingSkillToggle(skill)}
+                    />
+                    {skill}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          )}
+
+          {/* Drywall Hanging Skills - Legend Field Format */}
+          {showDrywallHangingSection && (
+            <fieldset style={{
+              marginTop: 24,
+              padding: '16px 20px 20px 20px',
+              border: '1px solid rgba(15, 78, 169, 0.2)',
+              borderRadius: '12px',
+              background: 'rgba(15, 78, 169, 0.03)',
+              position: 'relative',
+            }}>
+              <legend style={{
+                padding: '0 12px',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#0f4ea9',
+                background: 'white',
+                borderRadius: '8px',
+                marginLeft: '8px',
+              }}>
+                {getLegendTitle(data.primaryTrade, data.workerLevel)}
+              </legend>
+
+              <div style={{ 
+                fontSize: '12px', 
+                color: 'rgba(23, 38, 58, 0.5)', 
+                marginBottom: 12,
+                marginTop: 4,
+                fontWeight: 500,
+              }}>
+                Skills
+              </div>
+
+              <div className="wizardGrid2" style={{ marginTop: 4 }}>
+                {DRYWALL_HANGING_SKILLS.map((skill) => (
+                  <label key={skill} className="wizardCheck">
+                    <input
+                      type="checkbox"
+                      checked={!!(data.drywallHangingSkills?.[skill] || false)}
+                      onChange={handleDrywallHangingSkillToggle(skill)}
                     />
                     {skill}
                   </label>
