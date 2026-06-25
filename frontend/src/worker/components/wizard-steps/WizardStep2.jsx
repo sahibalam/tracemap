@@ -75,7 +75,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
       ...data,
       primaryTrade: value,
       workerLevel: '',
-      leadForemanResponsibilities: {}, // Reset responsibilities when trade changes
+      leadForemanResponsibilities: {},
     })
   }
 
@@ -83,7 +83,6 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     onChange({
       ...data,
       workerLevel: value,
-      // Reset responsibilities if not Lead/Foreman
       leadForemanResponsibilities: value === 'Lead/Foreman' ? (data.leadForemanResponsibilities || {}) : {},
     })
   }
@@ -147,18 +146,30 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
             />
           </div>
 
-          {/* Lead/Foreman Responsibilities - Auto-generated when Lead/Foreman is selected */}
+          {/* Lead/Foreman Responsibilities - Legend Field Format */}
           {showLeadForemanSection && (
-            <div style={{ marginTop: 24, borderTop: '1px solid rgba(18,38,63,0.08)', paddingTop: 20 }}>
-              <div style={{ 
-                fontSize: '14px', 
-                fontWeight: 600, 
-                color: '#17263a',
-                marginBottom: 12
+            <fieldset style={{
+              marginTop: 24,
+              padding: '16px 20px 20px 20px',
+              border: '1px solid rgba(15, 78, 169, 0.2)',
+              borderRadius: '12px',
+              background: 'rgba(15, 78, 169, 0.03)',
+              position: 'relative',
+            }}>
+              <legend style={{
+                padding: '0 12px',
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#0f4ea9',
+                background: 'white',
+                borderRadius: '8px',
+                padding: '0 12px',
+                marginLeft: '8px',
               }}>
                 Lead/Foreman Responsibilities
-              </div>
-              <div className="wizardGrid2" style={{ marginTop: 8 }}>
+              </legend>
+
+              <div className="wizardGrid2" style={{ marginTop: 4 }}>
                 {LEAD_FOREMAN_RESPONSIBILITIES.map((responsibility) => (
                   <label key={responsibility} className="wizardCheck">
                     <input
@@ -170,7 +181,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                   </label>
                 ))}
               </div>
-            </div>
+            </fieldset>
           )}
         </div>
       </div>
