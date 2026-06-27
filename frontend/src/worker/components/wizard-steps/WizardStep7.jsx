@@ -1,114 +1,100 @@
-// src/worker/components/wizard-steps/WizardStep7.jsx
-import { TextField } from '../../../common/components/TextField'
-import { IconSupport, IconLocation } from '../../../common/components/Icons'
+// src/worker/components/wizard-steps/WizardStep8.jsx
 
-export function WizardStep7({ data, onChange, onNext, onBack }) {
-  const handleChange = (field, value) => {
-    onChange({ ...data, [field]: value })
-  }
-
+export function WizardStep8({ data, onChange, onNext, onBack }) {
   const toggleMapValue = (key, setMap) => (e) => {
     const current = data[key] || {}
     setMap({ ...current, [key]: e.target.checked })
   }
 
-  const setPayPrefs = (prefs) => handleChange('payPrefs', prefs)
-  const setTravelPrefs = (prefs) => handleChange('travelPrefs', prefs)
-  const setAvailability = (availability) => handleChange('availability', availability)
+  const setCertChecklist = (checklist) => handleChange('certChecklist', checklist)
+  const setSafetyFlags = (flags) => handleChange('safetyFlags', flags)
+
+  const updateCertRow = (index, key) => (value) => {
+    const rows = [...(data.certRows || [])]
+    rows[index] = { ...rows[index], [key]: value }
+    handleChange('certRows', rows)
+  }
+
+  const handleChange = (field, value) => {
+    onChange({ ...data, [field]: value })
+  }
+
+  const certRows = data.certRows || [
+    { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+    { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+    { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+  ]
 
   return (
     <div className="wizardStep">
       <div className="wizardBody">
         <div className="wizardSection">
-          <div className="wizardSectionBar">1. Start Date & Pay Structure</div>
-          <div className="wizardGrid3">
-            <TextField
-              placeholder="Earliest start date"
-              icon={<IconSupport />}
-              value={data.earliestStartDate || ''}
-              onChange={(v) => handleChange('earliestStartDate', v)}
-            />
-            <TextField
-              placeholder="Hourly rate requested"
-              icon={<IconSupport />}
-              value={data.hourlyRateRequested || ''}
-              onChange={(v) => handleChange('hourlyRateRequested', v)}
-            />
-            <TextField
-              placeholder="Piecework basis / notes"
-              icon={<IconSupport />}
-              value={data.pieceworkNotes || ''}
-              onChange={(v) => handleChange('pieceworkNotes', v)}
-            />
+          <div className="wizardSectionBar">1. Certification Checklist</div>
+          <div className="wizardSkillsGrid">
+            <div className="wizardSkillCol">
+              {['OSHA 10', 'OSHA 30', 'Scissor lift'].map((k) => (
+                <label key={k} className="wizardCheck">
+                  <input type="checkbox" checked={!!(data.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
+                  {k}
+                </label>
+              ))}
+            </div>
+            <div className="wizardSkillCol">
+              {['Boom / aerial lift', 'Forklift / PIT', 'CPR / First Aid'].map((k) => (
+                <label key={k} className="wizardCheck">
+                  <input type="checkbox" checked={!!(data.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
+                  {k}
+                </label>
+              ))}
+            </div>
+            <div className="wizardSkillCol">
+              {['Fall protection', 'HazCom', 'Site-specific orientation'].map((k) => (
+                <label key={k} className="wizardCheck">
+                  <input type="checkbox" checked={!!(data.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
+                  {k}
+                </label>
+              ))}
+            </div>
           </div>
+        </div>
 
-          <div className="wizardGrid5 wizardGrid5Tight">
-            {['Hourly', 'Piecework', 'Both', 'Open to overtime', 'Available weekends'].map((k) => (
-              <label key={k} className="wizardCheck">
-                <input type="checkbox" checked={!!(data.payPrefs?.[k] || false)} onChange={toggleMapValue(k, setPayPrefs)} />
-                {k}
-              </label>
+        <div className="wizardSection">
+          <div className="wizardSectionBar">2. Verification Data</div>
+          <div className="wizardTable">
+            <div className="wizardTableHead">
+              <div>Certification / card name</div>
+              <div>Card number / ID</div>
+              <div>Issue date</div>
+              <div>Expiration date</div>
+              <div>Upload / file ref</div>
+            </div>
+            {certRows.map((row, idx) => (
+              <div key={idx} className="wizardTableRow">
+                <input className="wizardTableInput" value={row.name} onChange={(e) => updateCertRow(idx, 'name')(e.target.value)} />
+                <input className="wizardTableInput" value={row.cardNumber} onChange={(e) => updateCertRow(idx, 'cardNumber')(e.target.value)} />
+                <input className="wizardTableInput" value={row.issueDate} onChange={(e) => updateCertRow(idx, 'issueDate')(e.target.value)} />
+                <input className="wizardTableInput" value={row.expirationDate} onChange={(e) => updateCertRow(idx, 'expirationDate')(e.target.value)} />
+                <input className="wizardTableInput" value={row.uploadRef} onChange={(e) => updateCertRow(idx, 'uploadRef')(e.target.value)} />
+              </div>
             ))}
           </div>
         </div>
 
         <div className="wizardSection">
-          <div className="wizardSectionBar">2. Travel & Deployment</div>
-          <div className="wizardGrid3">
-            <TextField
-              placeholder="Travel radius (mi)"
-              icon={<IconSupport />}
-              value={data.travelRadiusMiles || ''}
-              onChange={(v) => handleChange('travelRadiusMiles', v)}
-            />
-            <TextField
-              placeholder="Home market / city"
-              icon={<IconLocation />}
-              value={data.homeMarketCity || ''}
-              onChange={(v) => handleChange('homeMarketCity', v)}
-            />
-            <TextField
-              placeholder="States willing to work in"
-              icon={<IconLocation />}
-              value={data.statesWillingToWorkIn || ''}
-              onChange={(v) => handleChange('statesWillingToWorkIn', v)}
-            />
-          </div>
-
-          <div className="wizardGrid3 wizardGrid3Tight">
-            {['Needs housing for travel work', 'Needs per diem', 'Own transportation'].map((k) => (
-              <label key={k} className="wizardCheck">
-                <input type="checkbox" checked={!!(data.travelPrefs?.[k] || false)} onChange={toggleMapValue(k, setTravelPrefs)} />
-                {k}
-              </label>
-            ))}
-          </div>
-        </div>
-
-        <div className="wizardSection">
-          <div className="wizardSectionBar">3. Availability Calendar</div>
-          <div className="wizardAvailability">
+          <div className="wizardSectionBar">3. Safety Readiness Flags</div>
+          <div className="wizardGrid2 wizardGrid2Tight">
             {[
-              ['Mon', 'mon'],
-              ['Tue', 'tue'],
-              ['Wed', 'wed'],
-              ['Thu', 'thu'],
-              ['Fri', 'fri'],
-              ['Sat', 'sat'],
-              ['Sun', 'sun'],
-            ].map(([label, key]) => (
-              <label key={key} className="wizardAvailabilityCell">
-                <div className="wizardAvailabilityLabel">{label}</div>
-                <input
-                  className="wizardAvailabilityInput"
-                  value={data.availability?.[key] || ''}
-                  onChange={(e) => setAvailability({ ...data.availability, [key]: e.target.value })}
-                  placeholder=""
-                />
+              'Worker understands stop-work authority for unsafe conditions',
+              'Drug-screen-ready if required by project',
+              'Worker can provide PPE for standard interior scopes',
+              'Badge / secure-site onboarding available',
+            ].map((k) => (
+              <label key={k} className="wizardCheck">
+                <input type="checkbox" checked={!!(data.safetyFlags?.[k] || false)} onChange={toggleMapValue(k, setSafetyFlags)} />
+                {k}
               </label>
             ))}
           </div>
-          <div className="wizardAvailabilityHint">Enter start/end times if available. Leave blank if unavailable.</div>
         </div>
       </div>
 

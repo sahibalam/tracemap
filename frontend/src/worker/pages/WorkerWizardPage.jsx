@@ -761,7 +761,7 @@ import { WizardStep5 } from '../components/wizard-steps/WizardStep5'
 import { WizardStep6 } from '../components/wizard-steps/WizardStep6'
 import { WizardStep7 } from '../components/wizard-steps/WizardStep7'
 import { WizardStep8 } from '../components/wizard-steps/WizardStep8'
-import { WizardStep9 } from '../components/wizard-steps/WizardStep9'
+import { WizardStep9 } from '../components/wizard-steps/WizardStep8'
 
 export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const navigate = useNavigate()
@@ -1062,8 +1062,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
         {step === 5 && <WizardStep5 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
         {step === 6 && <WizardStep6 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
         {step === 7 && <WizardStep7 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-        {step === 8 && <WizardStep8 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-        {step === 9 && <WizardStep9 data={wizardData} onChange={setWizardData} onFinish={finishWizard} onBack={goPrev} />}
+        {step === 8 && <WizardStep8 data={wizardData} onChange={setWizardData} onFinish={finishWizard} onBack={goPrev}  />}
       </div>
     </div>
   )

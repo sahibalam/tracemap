@@ -1,99 +1,87 @@
-// src/worker/components/wizard-steps/WizardStep8.jsx
+// src/worker/components/wizard-steps/WizardStep9.jsx
+import { TextField } from '../../../common/components/TextField'
+import { IconUser, IconSupport, IconPhone } from '../../../common/components/Icons'
 
-export function WizardStep8({ data, onChange, onNext, onBack }) {
+export function WizardStep9({ data, onChange, onFinish, onBack }) {
+  const handleChange = (field, value) => {
+    onChange({ ...data, [field]: value })
+  }
+
   const toggleMapValue = (key, setMap) => (e) => {
     const current = data[key] || {}
     setMap({ ...current, [key]: e.target.checked })
   }
 
-  const setCertChecklist = (checklist) => handleChange('certChecklist', checklist)
-  const setSafetyFlags = (flags) => handleChange('safetyFlags', flags)
+  const setPolicyAcks = (acks) => handleChange('policyAcks', acks)
 
-  const updateCertRow = (index, key) => (value) => {
-    const rows = [...(data.certRows || [])]
-    rows[index] = { ...rows[index], [key]: value }
-    handleChange('certRows', rows)
-  }
-
-  const handleChange = (field, value) => {
-    onChange({ ...data, [field]: value })
-  }
-
-  const certRows = data.certRows || [
-    { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
-    { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
-    { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
-  ]
+  const isValid = data.emergencyContactName && data.emergencyContactRelationship && data.emergencyContactPhone && data.signatureWorkerName && data.signatureDate
 
   return (
     <div className="wizardStep">
       <div className="wizardBody">
         <div className="wizardSection">
-          <div className="wizardSectionBar">1. Certification Checklist</div>
-          <div className="wizardSkillsGrid">
-            <div className="wizardSkillCol">
-              {['OSHA 10', 'OSHA 30', 'Scissor lift'].map((k) => (
-                <label key={k} className="wizardCheck">
-                  <input type="checkbox" checked={!!(data.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
-                  {k}
-                </label>
-              ))}
-            </div>
-            <div className="wizardSkillCol">
-              {['Boom / aerial lift', 'Forklift / PIT', 'CPR / First Aid'].map((k) => (
-                <label key={k} className="wizardCheck">
-                  <input type="checkbox" checked={!!(data.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
-                  {k}
-                </label>
-              ))}
-            </div>
-            <div className="wizardSkillCol">
-              {['Fall protection', 'HazCom', 'Site-specific orientation'].map((k) => (
-                <label key={k} className="wizardCheck">
-                  <input type="checkbox" checked={!!(data.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
-                  {k}
-                </label>
-              ))}
-            </div>
+          <div className="wizardSectionBar">1. Emergency Contact</div>
+          <div className="wizardGrid3">
+            <TextField
+              placeholder="Contact name"
+              icon={<IconUser />}
+              value={data.emergencyContactName || ''}
+              onChange={(v) => handleChange('emergencyContactName', v)}
+            />
+            <TextField
+              placeholder="Relationship"
+              icon={<IconSupport />}
+              value={data.emergencyContactRelationship || ''}
+              onChange={(v) => handleChange('emergencyContactRelationship', v)}
+            />
+            <TextField
+              placeholder="Phone"
+              icon={<IconPhone />}
+              value={data.emergencyContactPhone || ''}
+              onChange={(v) => handleChange('emergencyContactPhone', v)}
+            />
           </div>
         </div>
 
         <div className="wizardSection">
-          <div className="wizardSectionBar">2. Verification Data</div>
-          <div className="wizardTable">
-            <div className="wizardTableHead">
-              <div>Certification / card name</div>
-              <div>Card number / ID</div>
-              <div>Issue date</div>
-              <div>Expiration date</div>
-              <div>Upload / file ref</div>
-            </div>
-            {certRows.map((row, idx) => (
-              <div key={idx} className="wizardTableRow">
-                <input className="wizardTableInput" value={row.name} onChange={(e) => updateCertRow(idx, 'name')(e.target.value)} />
-                <input className="wizardTableInput" value={row.cardNumber} onChange={(e) => updateCertRow(idx, 'cardNumber')(e.target.value)} />
-                <input className="wizardTableInput" value={row.issueDate} onChange={(e) => updateCertRow(idx, 'issueDate')(e.target.value)} />
-                <input className="wizardTableInput" value={row.expirationDate} onChange={(e) => updateCertRow(idx, 'expirationDate')(e.target.value)} />
-                <input className="wizardTableInput" value={row.uploadRef} onChange={(e) => updateCertRow(idx, 'uploadRef')(e.target.value)} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="wizardSection">
-          <div className="wizardSectionBar">3. Safety Readiness Flags</div>
-          <div className="wizardGrid2 wizardGrid2Tight">
+          <div className="wizardSectionBar">2. Acknowledgments</div>
+          <div className="wizardChecks">
             {[
-              'Worker understands stop-work authority for unsafe conditions',
-              'Drug-screen-ready if required by project',
-              'Worker can provide PPE for standard interior scopes',
-              'Badge / secure-site onboarding available',
+              'I understand project assignment is contingent on profile, compliance, and project-specific approval.',
+              'I will provide accurate information and update certifications when they expire.',
+              'I understand I may be removed from assignment or hidden from matching if safety or conduct issues arise.',
+              'I will follow site safety, housekeeping, attendance, and reporting requirements.',
+              'I consent to electronic records, signature, and communications through the app.',
             ].map((k) => (
               <label key={k} className="wizardCheck">
-                <input type="checkbox" checked={!!(data.safetyFlags?.[k] || false)} onChange={toggleMapValue(k, setSafetyFlags)} />
+                <input type="checkbox" checked={!!(data.policyAcks?.[k] || false)} onChange={toggleMapValue(k, setPolicyAcks)} />
                 {k}
               </label>
             ))}
+          </div>
+        </div>
+
+        <div className="wizardSection">
+          <div className="wizardSectionBar">3. Signature</div>
+          <div className="wizardGrid3">
+            <TextField
+              placeholder="Worker full legal name"
+              icon={<IconUser />}
+              value={data.signatureWorkerName || ''}
+              onChange={(v) => handleChange('signatureWorkerName', v)}
+            />
+            <TextField
+              placeholder="Date"
+              icon={<IconSupport />}
+              value={data.signatureDate || ''}
+              onChange={(v) => handleChange('signatureDate', v)}
+            />
+            <TextField
+              placeholder="Signature / e-sign token"
+              icon={<IconSupport />}
+              value={data.signatureToken || ''}
+              onChange={(v) => handleChange('signatureToken', v)}
+            />
           </div>
         </div>
       </div>
@@ -104,9 +92,9 @@ export function WizardStep8({ data, onChange, onNext, onBack }) {
           <span className="wizardPillBtnIcon">←</span>
         </button>
         <div className="wizardFooterRight">
-          <button type="button" className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" onClick={onNext}>
-            <span className="wizardPillBtnLabel">Next</span>
-            <span className="wizardPillBtnIcon">→</span>
+          <button type="button" className="wizardPillBtn wizardPillBtnSuccess" onClick={onFinish} disabled={!isValid}>
+            <span className="wizardPillBtnLabel">Finish</span>
+            <span className="wizardPillBtnIcon">✓</span>
           </button>
         </div>
       </div>
