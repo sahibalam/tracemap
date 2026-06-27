@@ -1,8 +1,8 @@
-// src/worker/components/wizard-steps/WizardStep7.jsx
+// src/worker/components/wizard-steps/WizardStep6.jsx
 import { TextField } from '../../../common/components/TextField'
 import { IconSupport, IconLocation } from '../../../common/components/Icons'
 
-export function WizardStep7({ data, onChange, onNext, onBack }) {
+export function WizardStep6({ data, onChange, onNext, onBack }) {
   const handleChange = (field, value) => {
     onChange({ ...data, [field]: value })
   }

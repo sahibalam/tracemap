@@ -1,6 +1,6 @@
-// src/worker/components/wizard-steps/WizardStep8.jsx
+// src/worker/components/wizard-steps/WizardStep7.jsx
 
-export function WizardStep8({ data, onChange, onNext, onBack }) {
+export function WizardStep7({ data, onChange, onNext, onBack }) {
   const toggleMapValue = (key, setMap) => (e) => {
     const current = data[key] || {}
     setMap({ ...current, [key]: e.target.checked })
