@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 
 export function WizardStep5({ data, onChange, onNext, onBack }) {
   const fileInputRefs = useRef({})
+  const [openDatePicker, setOpenDatePicker] = useState(null)
 
   const toggleMapValue = (key, setMap) => (e) => {
     const current = data[key] || {}
@@ -49,6 +50,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
     } else {
       updateCertRow(index, field)('')
     }
+    setOpenDatePicker(null)
   }
 
   // Parse date string to Date object for react-datepicker
@@ -107,7 +109,6 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
       padding: 8px;
       overflow: hidden;
       font-size: 13px;
-      z-index: 1000;
     }
 
     .cert-date-picker .react-datepicker__header {
@@ -243,6 +244,15 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
       pointer-events: none;
       opacity: 0.6;
     }
+
+    /* Fix for popper positioning */
+    .react-datepicker-popper {
+      z-index: 9999 !important;
+    }
+
+    .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle {
+      display: none;
+    }
   `
 
   // File upload button styles
@@ -327,7 +337,8 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
           <div style={{ 
             width: '100%', 
             overflowX: 'auto',
-            marginTop: '8px'
+            marginTop: '8px',
+            position: 'relative'
           }}>
             {/* Header Row */}
             <div style={{ 
@@ -419,7 +430,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                 />
 
                 {/* Issue date - Calendar Picker */}
-                <div className="cert-date-picker" style={{ width: '100%' }}>
+                <div className="cert-date-picker" style={{ width: '100%', position: 'relative' }}>
                   <DatePicker
                     selected={parseDate(row.issueDate)}
                     onChange={handleDateChange(idx, 'issueDate')}
@@ -440,12 +451,26 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                           offset: [0, 8],
                         },
                       },
+                      {
+                        name: 'preventOverflow',
+                        options: {
+                          boundariesElement: 'viewport',
+                        },
+                      },
+                      {
+                        name: 'flip',
+                        options: {
+                          fallbackPlacements: ['top-start', 'bottom-start'],
+                        },
+                      },
                     ]}
+                    onCalendarOpen={() => setOpenDatePicker(`issue-${idx}`)}
+                    onCalendarClose={() => setOpenDatePicker(null)}
                   />
                 </div>
 
                 {/* Expiration date - Calendar Picker */}
-                <div className="cert-date-picker" style={{ width: '100%' }}>
+                <div className="cert-date-picker" style={{ width: '100%', position: 'relative' }}>
                   <DatePicker
                     selected={parseDate(row.expirationDate)}
                     onChange={handleDateChange(idx, 'expirationDate')}
@@ -465,7 +490,21 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                           offset: [0, 8],
                         },
                       },
+                      {
+                        name: 'preventOverflow',
+                        options: {
+                          boundariesElement: 'viewport',
+                        },
+                      },
+                      {
+                        name: 'flip',
+                        options: {
+                          fallbackPlacements: ['top-start', 'bottom-start'],
+                        },
+                      },
                     ]}
+                    onCalendarOpen={() => setOpenDatePicker(`exp-${idx}`)}
+                    onCalendarClose={() => setOpenDatePicker(null)}
                   />
                 </div>
 
