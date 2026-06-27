@@ -761,7 +761,6 @@ import { WizardStep5 } from '../components/wizard-steps/WizardStep5'
 import { WizardStep6 } from '../components/wizard-steps/WizardStep6'
 import { WizardStep7 } from '../components/wizard-steps/WizardStep7'
 import { WizardStep8 } from '../components/wizard-steps/WizardStep8'
-import { WizardStep9 } from '../components/wizard-steps/WizardStep8'
 
 export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const navigate = useNavigate()
