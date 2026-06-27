@@ -767,7 +767,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const location = useLocation()
 
   const [step, setStep] = useState(1)
-  const maxStep = 9
+  const maxStep = 8
 
   // ✅ Initialize state with data from localStorage
   const [wizardData, setWizardData] = useState(() => {
