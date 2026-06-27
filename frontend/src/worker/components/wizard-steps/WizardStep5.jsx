@@ -1,182 +1,96 @@
 // src/worker/components/wizard-steps/WizardStep5.jsx
-import { TextField } from '../../../common/components/TextField'
-import { IconUser, IconSupport, IconLocation } from '../../../common/components/Icons'
 
 export function WizardStep5({ data, onChange, onNext, onBack }) {
-  const handleChange = (field, value) => {
-    onChange({ ...data, [field]: value })
-  }
-
   const toggleMapValue = (key, setMap) => (e) => {
     const current = data[key] || {}
     setMap({ ...current, [key]: e.target.checked })
   }
 
-  const setEmployeeFlags = (flags) => handleChange('employeeFlags', flags)
-  const setEntityFlags = (flags) => handleChange('entityFlags', flags)
-  const setStateSpecificFlags = (flags) => handleChange('stateSpecificFlags', flags)
+  const setCertChecklist = (checklist) => handleChange('certChecklist', checklist)
+  const setSafetyFlags = (flags) => handleChange('safetyFlags', flags)
+
+  const updateCertRow = (index, key) => (value) => {
+    const rows = [...(data.certRows || [])]
+    rows[index] = { ...rows[index], [key]: value }
+    handleChange('certRows', rows)
+  }
+
+  const handleChange = (field, value) => {
+    onChange({ ...data, [field]: value })
+  }
+
+  const certRows = data.certRows || [
+    { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+    { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+    { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+  ]
 
   return (
     <div className="wizardStep">
       <div className="wizardBody">
         <div className="wizardSection">
-          <div className="wizardSectionBar">1. Classification Selection & Routing</div>
-          <div className="wizardGrid2">
-            <div className="wizardChecks wizardChecks2">
-              <label className="wizardCheck">
-                <input
-                  type="radio"
-                  name="classificationPath"
-                  checked={data.classificationPath === 'employee'}
-                  onChange={() => handleChange('classificationPath', 'employee')}
-                />
-                Employee / W-2 path
-              </label>
-              <label className="wizardCheck">
-                <input
-                  type="radio"
-                  name="classificationPath"
-                  checked={data.classificationPath === 'subcontractor'}
-                  onChange={() => handleChange('classificationPath', 'subcontractor')}
-                />
-                Subcontractor / 1099 / entity path
-              </label>
+          <div className="wizardSectionBar">1. Certification Checklist</div>
+          <div className="wizardSkillsGrid">
+            <div className="wizardSkillCol">
+              {['OSHA 10', 'OSHA 30', 'Scissor lift'].map((k) => (
+                <label key={k} className="wizardCheck">
+                  <input type="checkbox" checked={!!(data.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
+                  {k}
+                </label>
+              ))}
             </div>
-
-            <TextField
-              placeholder="State of work"
-              icon={<IconLocation />}
-              value={data.stateOfWork || ''}
-              onChange={(v) => handleChange('stateOfWork', v)}
-            />
+            <div className="wizardSkillCol">
+              {['Boom / aerial lift', 'Forklift / PIT', 'CPR / First Aid'].map((k) => (
+                <label key={k} className="wizardCheck">
+                  <input type="checkbox" checked={!!(data.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
+                  {k}
+                </label>
+              ))}
+            </div>
+            <div className="wizardSkillCol">
+              {['Fall protection', 'HazCom', 'Site-specific orientation'].map((k) => (
+                <label key={k} className="wizardCheck">
+                  <input type="checkbox" checked={!!(data.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
+                  {k}
+                </label>
+              ))}
+            </div>
           </div>
         </div>
 
-        {data.classificationPath === 'employee' ? (
-          <div className="wizardSection">
-            <div className="wizardSectionBar">2. Employee / W-2 Path Requirements</div>
-            <div className="wizardGrid3">
-              <TextField
-                placeholder="Legal tax name"
-                icon={<IconUser />}
-                value={data.employeeTaxName || ''}
-                onChange={(v) => handleChange('employeeTaxName', v)}
-              />
-              <TextField 
-                placeholder="SSN" 
-                icon={<IconSupport />} 
-                value={data.employeeSsn || ''} 
-                onChange={(v) => handleChange('employeeSsn', v)} 
-              />
-              <TextField
-                placeholder="Employee start date"
-                icon={<IconSupport />}
-                value={data.employeeStartDate || ''}
-                onChange={(v) => handleChange('employeeStartDate', v)}
-              />
+        <div className="wizardSection">
+          <div className="wizardSectionBar">2. Verification Data</div>
+          <div className="wizardTable">
+            <div className="wizardTableHead">
+              <div>Certification / card name</div>
+              <div>Card number / ID</div>
+              <div>Issue date</div>
+              <div>Expiration date</div>
+              <div>Upload / file ref</div>
             </div>
-
-            <div className="wizardGrid3 wizardGrid3Tight">
-              {[
-                'Form I-9 completed',
-                'Identity / work authorization reviewed',
-                'Form W-4 completed',
-                'New-hire reporting required / completed',
-                "Workers' comp review required",
-                'Official form edition used',
-              ].map((k) => (
-                <label key={k} className="wizardCheck">
-                  <input type="checkbox" checked={!!(data.employeeFlags?.[k] || false)} onChange={toggleMapValue(k, setEmployeeFlags)} />
-                  {k}
-                </label>
-              ))}
-            </div>
-
-            <div className="wizardGrid2">
-              <TextField
-                placeholder="Reviewer name"
-                icon={<IconUser />}
-                value={data.reviewerName || ''}
-                onChange={(v) => handleChange('reviewerName', v)}
-              />
-              <TextField
-                placeholder="Compliance notes"
-                icon={<IconSupport />}
-                value={data.complianceNotes || ''}
-                onChange={(v) => handleChange('complianceNotes', v)}
-              />
-            </div>
+            {certRows.map((row, idx) => (
+              <div key={idx} className="wizardTableRow">
+                <input className="wizardTableInput" value={row.name} onChange={(e) => updateCertRow(idx, 'name')(e.target.value)} />
+                <input className="wizardTableInput" value={row.cardNumber} onChange={(e) => updateCertRow(idx, 'cardNumber')(e.target.value)} />
+                <input className="wizardTableInput" value={row.issueDate} onChange={(e) => updateCertRow(idx, 'issueDate')(e.target.value)} />
+                <input className="wizardTableInput" value={row.expirationDate} onChange={(e) => updateCertRow(idx, 'expirationDate')(e.target.value)} />
+                <input className="wizardTableInput" value={row.uploadRef} onChange={(e) => updateCertRow(idx, 'uploadRef')(e.target.value)} />
+              </div>
+            ))}
           </div>
-        ) : null}
-
-        {data.classificationPath === 'subcontractor' ? (
-          <div className="wizardSection">
-            <div className="wizardSectionBar">3. Subcontractor / 1099 / Entity Path Requirements</div>
-            <div className="wizardGrid4">
-              <TextField
-                placeholder="Legal entity name"
-                icon={<IconSupport />}
-                value={data.entityLegalName || ''}
-                onChange={(v) => handleChange('entityLegalName', v)}
-              />
-              <TextField 
-                placeholder="EIN" 
-                icon={<IconSupport />} 
-                value={data.entityEin || ''} 
-                onChange={(v) => handleChange('entityEin', v)} 
-              />
-              <TextField
-                placeholder="Entity type"
-                icon={<IconSupport />}
-                value={data.entityType || ''}
-                onChange={(v) => handleChange('entityType', v)}
-              />
-              <TextField
-                placeholder="State of registration"
-                icon={<IconLocation />}
-                value={data.entityStateRegistration || ''}
-                onChange={(v) => handleChange('entityStateRegistration', v)}
-              />
-            </div>
-
-            <div className="wizardGrid2">
-              <TextField
-                placeholder="DBA / trade name"
-                icon={<IconSupport />}
-                value={data.entityDbaName || ''}
-                onChange={(v) => handleChange('entityDbaName', v)}
-              />
-              <TextField
-                placeholder="Authorized signer"
-                icon={<IconUser />}
-                value={data.entityAuthorizedSigner || ''}
-                onChange={(v) => handleChange('entityAuthorizedSigner', v)}
-              />
-            </div>
-
-            <div className="wizardGrid3 wizardGrid3Tight">
-              {[
-                'Form W-9 completed',
-                'TIN match verified where required',
-                'Backup withholding flag reviewed',
-                'Independent contractor reporting needed',
-                'Contract / entity documentation reviewed',
-              ].map((k) => (
-                <label key={k} className="wizardCheck">
-                  <input type="checkbox" checked={!!(data.entityFlags?.[k] || false)} onChange={toggleMapValue(k, setEntityFlags)} />
-                  {k}
-                </label>
-              ))}
-            </div>
-          </div>
-        ) : null}
+        </div>
 
         <div className="wizardSection">
-          <div className="wizardSectionBar">4. State-Specific Flags</div>
-          <div className="wizardGrid3 wizardGrid3Tight">
-            {['Florida worker or project', 'Texas worker or project', "Workers' comp review required"].map((k) => (
+          <div className="wizardSectionBar">3. Safety Readiness Flags</div>
+          <div className="wizardGrid2 wizardGrid2Tight">
+            {[
+              'Worker understands stop-work authority for unsafe conditions',
+              'Drug-screen-ready if required by project',
+              'Worker can provide PPE for standard interior scopes',
+              'Badge / secure-site onboarding available',
+            ].map((k) => (
               <label key={k} className="wizardCheck">
-                <input type="checkbox" checked={!!(data.stateSpecificFlags?.[k] || false)} onChange={toggleMapValue(k, setStateSpecificFlags)} />
+                <input type="checkbox" checked={!!(data.safetyFlags?.[k] || false)} onChange={toggleMapValue(k, setSafetyFlags)} />
                 {k}
               </label>
             ))}
