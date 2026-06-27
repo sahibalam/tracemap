@@ -14,7 +14,7 @@ export function WizardStep6({ data, onChange, onFinish, onBack }) {
 
   const setPolicyAcks = (acks) => handleChange('policyAcks', acks)
 
-  const isValid = data.emergencyContactName && data.emergencyContactRelationship && data.emergencyContactPhone && data.signatureWorkerName && data.signatureDate
+  const isValid = data.emergencyContactName && data.emergencyContactRelationship && data.emergencyContactPhone
 
   return (
     <div className="wizardStep">
@@ -61,29 +61,7 @@ export function WizardStep6({ data, onChange, onFinish, onBack }) {
           </div>
         </div>
 
-        <div className="wizardSection">
-          <div className="wizardSectionBar">3. Signature</div>
-          <div className="wizardGrid3">
-            <TextField
-              placeholder="Worker full legal name"
-              icon={<IconUser />}
-              value={data.signatureWorkerName || ''}
-              onChange={(v) => handleChange('signatureWorkerName', v)}
-            />
-            <TextField
-              placeholder="Date"
-              icon={<IconSupport />}
-              value={data.signatureDate || ''}
-              onChange={(v) => handleChange('signatureDate', v)}
-            />
-            <TextField
-              placeholder="Signature / e-sign token"
-              icon={<IconSupport />}
-              value={data.signatureToken || ''}
-              onChange={(v) => handleChange('signatureToken', v)}
-            />
-          </div>
-        </div>
+        {/* ❌ REMOVED: Section 3. Signature */}
       </div>
 
       <div className="wizardFooter">
