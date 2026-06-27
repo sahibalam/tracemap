@@ -759,15 +759,13 @@ import { WizardStep3 } from '../components/wizard-steps/WizardStep3'
 import { WizardStep4 } from '../components/wizard-steps/WizardStep4'
 import { WizardStep5 } from '../components/wizard-steps/WizardStep5'
 import { WizardStep6 } from '../components/wizard-steps/WizardStep6'
-import { WizardStep7 } from '../components/wizard-steps/WizardStep7'
-import { WizardStep8 } from '../components/wizard-steps/WizardStep8'
 
 export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const navigate = useNavigate()
   const location = useLocation()
 
   const [step, setStep] = useState(1)
-  const maxStep = 8
+  const maxStep = 6
 
   // ✅ Initialize state with data from localStorage
   const [wizardData, setWizardData] = useState(() => {
@@ -1059,9 +1057,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
         {step === 3 && <WizardStep3 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
         {step === 4 && <WizardStep4 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
         {step === 5 && <WizardStep5 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-        {step === 6 && <WizardStep6 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-        {step === 7 && <WizardStep7 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-        {step === 8 && <WizardStep8 data={wizardData} onChange={setWizardData} onFinish={finishWizard} onBack={goPrev}  />}
+        {step === 6 && <WizardStep6 data={wizardData} onChange={setWizardData} onFinish={finishWizard} onBack={goPrev} />}
       </div>
     </div>
   )
