@@ -27,11 +27,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
   const handleFileUpload = (index) => (e) => {
     const file = e.target.files[0]
     if (file) {
-      // Store file name in the uploadRef field
       updateCertRow(index, 'uploadRef')(file.name)
-      
-      // You can also store the file object or convert to base64 if needed
-      // For now, we'll store the file name
       console.log(`File uploaded for row ${index}:`, file.name)
     }
   }
@@ -77,6 +73,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
       width: 100%;
       height: 36px;
       padding: 0 8px;
+      padding-right: 28px;
       border: 1px solid rgba(18, 38, 63, 0.12);
       border-radius: 6px;
       font-size: 13px;
@@ -85,6 +82,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
       color: #17263a;
       transition: all 0.2s ease;
       font-family: inherit;
+      cursor: pointer;
     }
 
     .cert-date-picker .react-datepicker__input-container input:hover {
@@ -109,6 +107,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
       padding: 8px;
       overflow: hidden;
       font-size: 13px;
+      z-index: 1000;
     }
 
     .cert-date-picker .react-datepicker__header {
@@ -227,6 +226,22 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
 
     .cert-date-picker .react-datepicker-wrapper {
       width: 100%;
+    }
+
+    /* Calendar icon inside the input */
+    .cert-date-picker .react-datepicker__input-container {
+      position: relative;
+    }
+
+    .cert-date-picker .react-datepicker__input-container::after {
+      content: '📅';
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      pointer-events: none;
+      opacity: 0.6;
     }
   `
 
@@ -486,8 +501,6 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
             ))}
           </div>
         </div>
-
-        {/* ❌ REMOVED: Safety Readiness Flags Section */}
       </div>
 
       <div className="wizardFooter">
