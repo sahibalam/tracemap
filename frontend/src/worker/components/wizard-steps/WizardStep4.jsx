@@ -1,5 +1,5 @@
 // src/worker/components/wizard-steps/WizardStep4.jsx
-import { TextField, SelectField } from '../../../common/components/TextField'
+import { TextField } from '../../../common/components/TextField'
 import { IconUser, IconSupport, IconLocation } from '../../../common/components/Icons'
 
 export function WizardStep4({ data, onChange, onNext, onBack }) {
@@ -18,84 +18,126 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
   return (
     <div className="wizardStep">
       <div className="wizardBody">
-        {/* Hourly Rate Section */}
+        {/* Row 1: Hourly Rate + Availability */}
         <div className="wizardSection">
-          <div className="wizardSectionBar">Hourly Rate</div>
-          <div style={{ maxWidth: '300px' }}>
-            <TextField
-              placeholder="$"
-              icon={<IconSupport />}
-              value={data.hourlyRate || ''}
-              onChange={(v) => handleChange('hourlyRate', v)}
-            />
+          <div className="wizardGrid2" style={{ alignItems: 'flex-start' }}>
+            {/* Hourly Rate */}
+            <div>
+              <div className="wizardSectionBar">Hourly Rate</div>
+              <div style={{ maxWidth: '200px' }}>
+                <TextField
+                  placeholder="$$"
+                  icon={<IconSupport />}
+                  value={data.hourlyRate || ''}
+                  onChange={(v) => handleChange('hourlyRate', v)}
+                />
+              </div>
+            </div>
+
+            {/* Availability */}
+            <div>
+              <div className="wizardSectionBar">Availability</div>
+              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '4px' }}>
+                <label className="wizardCheck">
+                  <input
+                    type="checkbox"
+                    checked={!!(data.payPrefs?.overtime || false)}
+                    onChange={toggleMapValue('overtime', setPayPrefs)}
+                  />
+                  Open to overtime
+                </label>
+                <label className="wizardCheck">
+                  <input
+                    type="checkbox"
+                    checked={!!(data.payPrefs?.weekends || false)}
+                    onChange={toggleMapValue('weekends', setPayPrefs)}
+                  />
+                  Available on weekends
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Travel Radius Section */}
+        {/* Row 2: Travel Radius + Willingness to Travel */}
         <div className="wizardSection">
-          <div className="wizardSectionBar">Travel Radius</div>
-          <div style={{ maxWidth: '300px' }}>
-            <SelectField
-              icon={<IconLocation />}
-              value={data.travelRadius || ''}
-              onChange={(v) => handleChange('travelRadius', v)}
-            >
-              <option value="">Select Radius</option>
-              <option value="50">50 miles</option>
-              <option value="75">75 miles</option>
-              <option value="100">100 miles</option>
-            </SelectField>
+          <div className="wizardGrid2" style={{ alignItems: 'flex-start' }}>
+            {/* Travel Radius */}
+            <div>
+              <div className="wizardSectionBar">Travel Radius</div>
+              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '4px' }}>
+                <label className="wizardCheck">
+                  <input
+                    type="radio"
+                    name="travelRadius"
+                    value="50"
+                    checked={data.travelRadius === '50'}
+                    onChange={() => handleChange('travelRadius', '50')}
+                  />
+                  50 miles
+                </label>
+                <label className="wizardCheck">
+                  <input
+                    type="radio"
+                    name="travelRadius"
+                    value="75"
+                    checked={data.travelRadius === '75'}
+                    onChange={() => handleChange('travelRadius', '75')}
+                  />
+                  75 miles
+                </label>
+                <label className="wizardCheck">
+                  <input
+                    type="radio"
+                    name="travelRadius"
+                    value="100"
+                    checked={data.travelRadius === '100'}
+                    onChange={() => handleChange('travelRadius', '100')}
+                  />
+                  100 miles
+                </label>
+              </div>
+            </div>
+
+            {/* Willingness to Travel */}
+            <div>
+              <div className="wizardSectionBar">Willingness to Travel</div>
+              <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', marginTop: '4px' }}>
+                <label className="wizardCheck">
+                  <input
+                    type="radio"
+                    name="willingToTravel"
+                    value="yes"
+                    checked={data.willingToTravel === 'yes'}
+                    onChange={() => {
+                      handleChange('willingToTravel', 'yes')
+                    }}
+                  />
+                  Yes
+                </label>
+                <label className="wizardCheck">
+                  <input
+                    type="radio"
+                    name="willingToTravel"
+                    value="no"
+                    checked={data.willingToTravel === 'no'}
+                    onChange={() => {
+                      handleChange('willingToTravel', 'no')
+                      // Reset travel preferences if 'No' is selected
+                      handleChange('travelPrefs', {})
+                    }}
+                  />
+                  No
+                </label>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Availability Options */}
-        <div className="wizardSection">
-          <div className="wizardSectionBar">Availability</div>
-          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-            <label className="wizardCheck">
-              <input
-                type="checkbox"
-                checked={!!(data.payPrefs?.overtime || false)}
-                onChange={toggleMapValue('overtime', setPayPrefs)}
-              />
-              Open to overtime
-            </label>
-            <label className="wizardCheck">
-              <input
-                type="checkbox"
-                checked={!!(data.payPrefs?.weekends || false)}
-                onChange={toggleMapValue('weekends', setPayPrefs)}
-              />
-              Available on weekends
-            </label>
-          </div>
-        </div>
-
-        {/* Willingness to Travel Section */}
-        <div className="wizardSection">
-          <div className="wizardSectionBar">Willingness to Travel</div>
-          <div style={{ maxWidth: '300px' }}>
-            <SelectField
-              icon={<IconLocation />}
-              value={data.willingToTravel || ''}
-              onChange={(v) => {
-                handleChange('willingToTravel', v)
-                // Reset travel preferences if 'No' is selected
-                if (v === 'no') {
-                  handleChange('travelPrefs', {})
-                }
-              }}
-            >
-              <option value="">Select Option</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </SelectField>
-          </div>
-
-          {/* Travel Preferences - Only show if "Yes" is selected */}
-          {data.willingToTravel === 'yes' && (
+        {/* Travel Preferences - Only show if "Yes" is selected */}
+        {data.willingToTravel === 'yes' && (
+          <div className="wizardSection">
             <div style={{ 
-              marginTop: 12,
               padding: '16px 20px',
               border: '1px solid rgba(15, 78, 169, 0.2)',
               borderRadius: '12px',
@@ -136,21 +178,8 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                 </label>
               </div>
             </div>
-          )}
-        </div>
-      </div>
-
-      <div className="wizardFooter">
-        <button type="button" className="wizardPillBtn" onClick={onBack}>
-          <span className="wizardPillBtnLabel">Back</span>
-          <span className="wizardPillBtnIcon">←</span>
-        </button>
-        <div className="wizardFooterRight">
-          <button type="button" className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" onClick={onNext}>
-            <span className="wizardPillBtnLabel">Next</span>
-            <span className="wizardPillBtnIcon">→</span>
-          </button>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   )
