@@ -63,19 +63,6 @@ export function WizardStep6({ data, onChange, onFinish, onBack }) {
 
         {/* ❌ REMOVED: Section 3. Signature */}
       </div>
-
-      <div className="wizardFooter">
-        <button type="button" className="wizardPillBtn" onClick={onBack}>
-          <span className="wizardPillBtnLabel">Back</span>
-          <span className="wizardPillBtnIcon">←</span>
-        </button>
-        <div className="wizardFooterRight">
-          <button type="button" className="wizardPillBtn wizardPillBtnSuccess" onClick={onFinish} disabled={!isValid}>
-            <span className="wizardPillBtnLabel">Finish</span>
-            <span className="wizardPillBtnIcon">✓</span>
-          </button>
-        </div>
-      </div>
     </div>
   )
 }

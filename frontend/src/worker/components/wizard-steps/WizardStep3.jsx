@@ -869,19 +869,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
           </div>
         </div>
       </div>
-
-      <div className="wizardFooter">
-        <button type="button" className="wizardPillBtn" onClick={onBack}>
-          <span className="wizardPillBtnLabel">Back</span>
-          <span className="wizardPillBtnIcon">←</span>
-        </button>
-        <div className="wizardFooterRight">
-          <button type="button" className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" onClick={onNext}>
-            <span className="wizardPillBtnLabel">Next</span>
-            <span className="wizardPillBtnIcon">→</span>
-          </button>
-        </div>
-      </div>
     </div>
   )
 }

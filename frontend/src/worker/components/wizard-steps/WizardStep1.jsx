@@ -1383,19 +1383,6 @@ export function WizardStep1({ data, onChange, onNext }) {
           </div>
         </div>
       </div>
-
-      <div className="wizardFooter">
-        <button type="button" className="wizardPillBtn" disabled>
-          <span className="wizardPillBtnLabel">Back</span>
-          <span className="wizardPillBtnIcon">←</span>
-        </button>
-        <div className="wizardFooterRight">
-          <button type="button" className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" onClick={onNext} disabled={!isValid}>
-            <span className="wizardPillBtnLabel">Next</span>
-            <span className="wizardPillBtnIcon">→</span>
-          </button>
-        </div>
-      </div>
     </div>
   )
 }
