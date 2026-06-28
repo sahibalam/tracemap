@@ -1093,7 +1093,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
 
     .authBrand .authLogo {
-      max-height: 60px;
+      max-height: 80px;
       width: auto;
     }
 
