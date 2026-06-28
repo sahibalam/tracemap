@@ -745,11 +745,11 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   const customStyles = `
     .auth-date-picker .react-datepicker__input-container input {
       width: 100%;
-      height: 48px;
+      height: 44px;
       padding: 0 12px;
       padding-right: 36px;
       border: 1px solid rgba(18, 38, 63, 0.12);
-      border-radius: 12px;
+      border-radius: 10px;
       font-size: 14px;
       outline: none;
       background: white;
@@ -937,9 +937,9 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       display: flex;
       align-items: center;
       width: 100%;
-      height: 48px;
+      height: 44px;
       border: 1px solid rgba(18, 38, 63, 0.12);
-      border-radius: 12px;
+      border-radius: 10px;
       background: white;
       transition: all 0.2s ease;
       box-sizing: border-box;
@@ -959,10 +959,10 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 12px;
+      padding: 0 10px;
       color: rgba(23, 38, 58, 0.4);
       flex-shrink: 0;
-      min-width: 42px;
+      min-width: 38px;
     }
 
     .password-input-icon svg {
@@ -992,7 +992,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 12px;
+      padding: 0 10px;
       background: none;
       border: none;
       cursor: pointer;
@@ -1000,7 +1000,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       transition: color 0.2s ease;
       flex-shrink: 0;
       height: 100%;
-      min-width: 44px;
+      min-width: 38px;
     }
 
     .password-eye-btn:hover {
@@ -1012,18 +1012,18 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
 
     .password-eye-btn svg {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
     }
 
     .formGrid2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .formGrid2 > * {
@@ -1035,7 +1035,9 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     .authCardCompact {
       max-width: 100%;
       overflow: hidden;
-      padding: 20px 24px;
+      padding: 16px 20px 20px 20px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .authCard {
@@ -1045,13 +1047,13 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
 
     .authMain {
       max-width: 100%;
-      padding: 20px;
+      padding: 16px;
       box-sizing: border-box;
     }
 
     .password-strength-container {
       margin-top: 2px;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       padding: 0 2px;
     }
 
@@ -1065,7 +1067,8 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     .btn {
       margin-top: 4px;
       width: 100%;
-      padding: 12px;
+      padding: 10px;
+      font-size: 14px;
     }
 
     .field {
@@ -1082,6 +1085,29 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
 
     .auth-date-picker .react-datepicker__input-container input {
       margin-bottom: 0;
+    }
+
+    .authBrand {
+      margin-bottom: 8px;
+    }
+
+    .authBrand .authLogo {
+      max-height: 32px;
+    }
+
+    .tabs {
+      margin-bottom: 12px;
+    }
+
+    .tab {
+      padding: 6px 16px;
+      font-size: 13px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
   `
 
@@ -1159,9 +1185,9 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                         },
                       ]}
                     />
-                    {dobError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '4px' }}>{dobError}</div>}
+                    {dobError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{dobError}</div>}
                     {!dobError && dob && calculateAge(formatDateToYYYYMMDD(dob)) >= 18 && (
-                      <div style={{ color: '#2fb463', fontSize: '11px', marginTop: '4px' }}>
+                      <div style={{ color: '#2fb463', fontSize: '11px', marginTop: '2px' }}>
                         ✓ Age: {calculateAge(formatDateToYYYYMMDD(dob))} years
                       </div>
                     )}
@@ -1170,9 +1196,9 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 
                 <div className="formGrid2">
                   <div style={{ width: '100%' }}>
-                    <div style={{ display: 'flex', border: '1px solid rgba(18,38,63,0.12)', borderRadius: '12px', height: '48px', background: 'white', width: '100%' }}>
+                    <div style={{ display: 'flex', border: '1px solid rgba(18,38,63,0.12)', borderRadius: '10px', height: '44px', background: 'white', width: '100%' }}>
                       <span style={{ 
-                        padding: '0 12px', display: 'flex', alignItems: 'center', fontWeight: 600, fontSize: '14px',
+                        padding: '0 10px', display: 'flex', alignItems: 'center', fontWeight: 600, fontSize: '13px',
                         borderRight: '1px solid rgba(18,38,63,0.12)', color: '#17263a'
                       }}>
                         +1
@@ -1180,10 +1206,10 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                       <input 
                         type="tel" placeholder="555-555-5555" value={phoneNumber}
                         onChange={(e) => handlePhoneChange(e.target.value)} maxLength={12}
-                        style={{ flex: 1, border: 'none', outline: 'none', padding: '0 12px', borderRadius: '12px', fontSize: '14px' }}
+                        style={{ flex: 1, border: 'none', outline: 'none', padding: '0 10px', borderRadius: '10px', fontSize: '14px' }}
                       />
                     </div>
-                    {phoneError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '4px' }}>{phoneError}</div>}
+                    {phoneError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{phoneError}</div>}
                   </div>
                   <SelectField icon={<IconGlobe />} value={language} onChange={setLanguage}>
                     <option value="" disabled>Language</option>
@@ -1229,7 +1255,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                   </div>
                 )}
                 
-                {passwordError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '4px' }}>{passwordError}</div>}
+                {passwordError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '2px' }}>{passwordError}</div>}
                 
                 <button type="submit" className="btn btnSuccess">Create account</button>
               </>
