@@ -420,6 +420,23 @@ import { TextField, SelectField } from '../../common/components/TextField'
 import { IconUser, IconMail, IconLock, IconPhone, IconGlobe } from '../../common/components/Icons'
 import { formatPhoneNumber } from '../../common/utils/validation'
 
+// Eye icon component
+function IconEye(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" {...props}>
+      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+    </svg>
+  )
+}
+
+function IconEyeOff(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" {...props}>
+      <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="currentColor"/>
+    </svg>
+  )
+}
+
 export function WorkerAuthPage({ initialMode = 'login' }) {
   const navigate = useNavigate()
   const location = useLocation()
@@ -435,6 +452,10 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [language, setLanguage] = useState('')
+  
+  // Password visibility states
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   
   // Validation errors
   const [phoneError, setPhoneError] = useState('')
@@ -625,6 +646,15 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
   }
 
+  // Toggle password visibility
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword)
+  }
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword)
+  }
+
   const onSubmit = (e) => {
     e.preventDefault()
     
@@ -694,8 +724,8 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     return formatDateToMMDDYYYY(dob)
   }
 
-  // Custom styles for date picker
-  const datePickerStyles = `
+  // Custom styles for date picker and password fields
+  const customStyles = `
     .auth-date-picker .react-datepicker__input-container input {
       width: 100%;
       height: 48px;
@@ -878,11 +908,59 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     .auth-date-picker .react-datepicker-popper {
       z-index: 9999 !important;
     }
+
+    /* Password field with eye icon */
+    .password-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .password-wrapper .field {
+      width: 100%;
+    }
+
+    .password-wrapper .field .fieldControl {
+      position: relative;
+    }
+
+    .password-wrapper .field .fieldControl .fieldInput {
+      padding-right: 44px !important;
+    }
+
+    .password-eye-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(23, 38, 58, 0.4);
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+      z-index: 2;
+    }
+
+    .password-eye-btn:hover {
+      color: #0f4ea9;
+    }
+
+    .password-eye-btn:focus {
+      outline: none;
+    }
+
+    .password-eye-btn svg {
+      width: 20px;
+      height: 20px;
+    }
   `
 
   return (
     <div className="authPage">
-      <style>{datePickerStyles}</style>
+      <style>{customStyles}</style>
       <div className="bg bgAuth" />
       <div className="bgOverlay" />
       <main className="authMain">
@@ -900,7 +978,27 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
             {mode === 'login' ? (
               <>
                 <TextField placeholder="Username" icon={<IconUser />} value={loginUsername} onChange={setLoginUsername} />
-                <TextField type="password" placeholder="Password" icon={<IconLock />} value={loginPassword} onChange={setLoginPassword} />
+                
+                {/* Login Password with Eye Icon */}
+                <div className="password-wrapper">
+                  <div style={{ position: 'relative', width: '100%' }}>
+                    <TextField 
+                      type={showPassword ? 'text' : 'password'} 
+                      placeholder="Password" 
+                      icon={<IconLock />} 
+                      value={loginPassword} 
+                      onChange={setLoginPassword} 
+                    />
+                    <button
+                      type="button"
+                      className="password-eye-btn"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    >
+                      {showPassword ? <IconEyeOff /> : <IconEye />}
+                    </button>
+                  </div>
+                </div>
                 <button type="submit" className="btn btnPrimary">Log in</button>
               </>
             ) : (
@@ -983,19 +1081,56 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                   </SelectField>
                 </div>
                 
-                {/* Password + Confirm Password Row */}
+                {/* Password + Confirm Password Row with Eye Icons */}
                 <div className="formGrid2">
-                  <div style={{ width: '100%' }}>
-                    <TextField type="password" placeholder="Password" icon={<IconLock />} value={registerPassword} onChange={handlePasswordChange} />
-                    {registerPassword && (
-                      <div style={{ marginTop: '4px' }}>
-                        <div style={{ height: '3px', background: getStrengthColor(), width: passwordStrength === 'Weak' ? '33%' : passwordStrength === 'Medium' ? '66%' : '100%', borderRadius: '3px' }} />
-                        <span style={{ fontSize: '11px', color: getStrengthColor(), fontWeight: 600 }}>{passwordStrength} password</span>
-                        <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', marginLeft: '8px' }}>(min 8 chars, letters & numbers)</span>
-                      </div>
-                    )}
+                  {/* Password Field */}
+                  <div className="password-wrapper">
+                    <div style={{ position: 'relative', width: '100%' }}>
+                      <TextField 
+                        type={showPassword ? 'text' : 'password'} 
+                        placeholder="Password" 
+                        icon={<IconLock />} 
+                        value={registerPassword} 
+                        onChange={handlePasswordChange} 
+                      />
+                      <button
+                        type="button"
+                        className="password-eye-btn"
+                        onClick={togglePasswordVisibility}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showPassword ? <IconEyeOff /> : <IconEye />}
+                      </button>
+                      {registerPassword && (
+                        <div style={{ marginTop: '4px' }}>
+                          <div style={{ height: '3px', background: getStrengthColor(), width: passwordStrength === 'Weak' ? '33%' : passwordStrength === 'Medium' ? '66%' : '100%', borderRadius: '3px' }} />
+                          <span style={{ fontSize: '11px', color: getStrengthColor(), fontWeight: 600 }}>{passwordStrength} password</span>
+                          <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', marginLeft: '8px' }}>(min 8 chars, letters & numbers)</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <TextField type="password" placeholder="Confirm Password" icon={<IconLock />} value={confirmPassword} onChange={handleConfirmPasswordChange} />
+
+                  {/* Confirm Password Field */}
+                  <div className="password-wrapper">
+                    <div style={{ position: 'relative', width: '100%' }}>
+                      <TextField 
+                        type={showConfirmPassword ? 'text' : 'password'} 
+                        placeholder="Confirm Password" 
+                        icon={<IconLock />} 
+                        value={confirmPassword} 
+                        onChange={handleConfirmPasswordChange} 
+                      />
+                      <button
+                        type="button"
+                        className="password-eye-btn"
+                        onClick={toggleConfirmPasswordVisibility}
+                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showConfirmPassword ? <IconEyeOff /> : <IconEye />}
+                      </button>
+                    </div>
+                  </div>
                 </div>
                 {passwordError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '-8px' }}>{passwordError}</div>}
                 
