@@ -20,6 +20,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
   // Handle slider change for travel radius
   const handleSliderChange = (e) => {
     const value = Number(e.target.value)
+    console.log('Slider value:', value) // Debug log
     handleChange('travelRadius', value)
   }
 
@@ -40,10 +41,89 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
     : 50
 
   // Calculate slider percentage for gradient fill
-  const sliderPercentage = (currentRadius / 100) * 100
+  const sliderPercentage = Math.min(100, Math.max(0, (currentRadius / 100) * 100))
+
+  // Debug log
+  console.log({
+    currentRadius,
+    sliderPercentage,
+    stored: data.travelRadius
+  })
+
+  // Slider styles with proper thumb styling
+  const sliderStyles = `
+    .travel-radius-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: transparent;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .travel-radius-slider::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(to right, #0f4ea9 0%, #0f4ea9 ${sliderPercentage}%, #e5e7eb ${sliderPercentage}%, #e5e7eb 100%);
+    }
+
+    .travel-radius-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0f4ea9;
+      border: 2px solid white;
+      cursor: pointer;
+      margin-top: -7px;
+      box-shadow: 0 2px 6px rgba(15, 78, 169, 0.3);
+      transition: transform 0.15s ease;
+    }
+
+    .travel-radius-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    .travel-radius-slider::-moz-range-track {
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(to right, #0f4ea9 0%, #0f4ea9 ${sliderPercentage}%, #e5e7eb ${sliderPercentage}%, #e5e7eb 100%);
+    }
+
+    .travel-radius-slider::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #0f4ea9;
+      border: 2px solid white;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(15, 78, 169, 0.3);
+    }
+
+    .travel-radius-slider::-moz-range-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    .travel-radius-slider:focus {
+      outline: none;
+    }
+
+    .travel-radius-slider:focus::-webkit-slider-thumb {
+      box-shadow: 0 0 0 4px rgba(15, 78, 169, 0.2);
+    }
+
+    .travel-radius-slider:focus::-moz-range-thumb {
+      box-shadow: 0 0 0 4px rgba(15, 78, 169, 0.2);
+    }
+  `
 
   return (
     <div className="wizardStep">
+      <style>{sliderStyles}</style>
+      
       <div className="wizardBody">
         {/* Row 1: Hourly Rate + Availability */}
         <div className="wizardSection">
@@ -96,22 +176,12 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <input
                     type="range"
+                    className="travel-radius-slider"
                     min="0"
                     max="100"
                     step="1"
                     value={currentRadius}
                     onChange={handleSliderChange}
-                    style={{
-                      flex: 1,
-                      height: '6px',
-                      WebkitAppearance: 'none',
-                      appearance: 'none',
-                      background: `linear-gradient(to right, #0f4ea9 0%, #0f4ea9 ${sliderPercentage}%, #e5e7eb ${sliderPercentage}%, #e5e7eb 100%)`,
-                      borderRadius: '3px',
-                      outline: 'none',
-                      transition: 'background 0.1s ease',
-                      cursor: 'pointer'
-                    }}
                   />
                   <span style={{ 
                     minWidth: '70px', 
