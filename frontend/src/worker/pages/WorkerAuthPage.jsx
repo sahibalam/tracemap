@@ -1070,6 +1070,11 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       padding: 10px;
       font-size: 14px;
     }
+      .createAccountBtn {
+  padding: 6px 10px;
+  min-height: 36px;
+  font-size: 13px;
+}
 
     .field {
       margin-bottom: 0 !important;
@@ -1259,7 +1264,12 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 
                 {passwordError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '2px' }}>{passwordError}</div>}
                 
-                <button type="submit" className="btn btnSuccess">Create account</button>
+                <button
+  type="submit"
+  className="btn btnSuccess createAccountBtn"
+>
+  Create account
+</button>
               </>
             )}
           </form>
