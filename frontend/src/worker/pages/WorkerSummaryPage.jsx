@@ -640,20 +640,14 @@ export function WorkerSummaryPage() {
     {
       name: 'ABC construct',
       client: 'XYZ Inc',
-      city: 'XYZ',
-      state: 'FL',
       role: 'Helper',
-      start: '04/12/2024',
-      end: '04/15/2025',
+      trade: 'Drywall',
     },
     {
       name: 'DMC construct',
       client: 'DMX Inc',
-      city: 'XYZ',
-      state: 'CA',
       role: 'Helper',
-      start: '04/05/2024',
-      end: '04/10/2025',
+      trade: 'Drywall',
     },
   ]
 
@@ -704,63 +698,85 @@ export function WorkerSummaryPage() {
         <main className="appContent">
           <div className="wizardSummaryPage" style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
             
-            {/* Top Row: Basic Information, Trade Profile, Subscription & Rewards */}
+            {/* Row 1: Basic Information, Trade Profile, Subscription & Rewards */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+              
               {/* Basic Information Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Basic Information</span>
-                  <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                     <IconPencil />
                   </button>
                 </div>
-                <div className="wizardSummaryCardBody">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-                    <img className="wizardSummaryAvatar" src="/assets/worker.avif" alt="Worker" style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+                    <img src="/assets/worker.avif" alt="Worker" style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '16px', color: '#17263a' }}>{displayValue(`${basics.legalFirstName ?? ''} ${basics.legalLastName ?? ''}`.trim(), 'Marcus Webb')}</div>
-                      <div className="wizardSummaryStatusPill" style={{ fontSize: '12px', color: '#2fb463', fontWeight: 500 }}>Active</div>
+                      <span style={{ fontSize: '12px', color: '#2fb463', fontWeight: 500 }}>Active</span>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Date of Birth</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.dob)}</div></div>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Language</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.primaryLanguage)}</div></div>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Email</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.emailAddress)}</div></div>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Phone No.</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.mobilePhone)}</div></div>
-                  </div>
-                  <div style={{ marginTop: '8px' }}>
-                    <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Address</span>
-                    <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue([basics.addressLine1, basics.addressLine2, basics.city, basics.stateCode, basics.zip].filter(Boolean).join(', '))}</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Date of Birth</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.dob)}</div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Language</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.primaryLanguage)}</div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Email</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.emailAddress)}</div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Phone No.</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.mobilePhone)}</div>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Address</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue([basics.addressLine1, basics.city, basics.stateCode, basics.zip].filter(Boolean).join(', '))}</div>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Trade Profile Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Trade Profile</span>
-                  <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                     <IconPencil />
                   </button>
                 </div>
-                <div className="wizardSummaryCardBody">
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Primary Trade</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(trade.primaryTrade)}</div></div>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Secondary Trade</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(trade.secondaryTrade || '—')}</div></div>
-                    <div style={{ gridColumn: '1 / -1' }}><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Experience</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(trade.yearOfExperience || trade.yearsExperience)} years</div></div>
+                <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Primary Trade</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(trade.primaryTrade)}</div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Secondary Trade</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(trade.secondaryTrade || '—')}</div>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Experience</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(trade.yearOfExperience || trade.yearsExperience)} years</div>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Subscription & Rewards Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Subscription & Rewards</span>
-                  <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                     <IconPencil />
                   </button>
                 </div>
-                <div className="wizardSummaryCardBody">
+                <div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Active Plan</span>
@@ -791,23 +807,25 @@ export function WorkerSummaryPage() {
               </div>
             </div>
 
-            {/* Work History Table */}
+            {/* Row 2: Work History */}
             <div className="wizardSummaryWideCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', marginBottom: '20px' }}>
-              <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Work History</span>
-                <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                   <IconPencil />
                 </button>
               </div>
-              <div className="wizardSummaryWideBody">
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '8px 12px', borderBottom: '2px solid rgba(18,38,63,0.08)', fontWeight: 600, fontSize: '13px', color: 'rgba(23,38,58,0.6)' }}>
+              <div>
+                {/* Table Header */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '8px 12px', borderBottom: '2px solid rgba(18,38,63,0.08)', fontWeight: 600, fontSize: '12px', color: 'rgba(23,38,58,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   <div>PROJECT</div>
                   <div>COMPANY</div>
                   <div>TRADE</div>
                   <div>ROLE</div>
                 </div>
+                {/* Table Rows */}
                 {(projects.length ? projects : fallbackProjects).map((p, idx) => (
-                  <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '8px 12px', borderBottom: '1px solid rgba(18,38,63,0.06)', fontSize: '14px', color: '#17263a' }}>
+                  <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
                     <div>{displayValue(p.name, 'ABC construct')}</div>
                     <div>{displayValue(p.client, 'XYZ Inc')}</div>
                     <div>{displayValue(p.trade, 'Drywall')}</div>
@@ -817,17 +835,18 @@ export function WorkerSummaryPage() {
               </div>
             </div>
 
-            {/* Bottom Row: Availability & Rate, Certifications & Safety, Tax Profile, Payment/Bank Details */}
+            {/* Row 3: Availability & Rate, Certifications & Safety, Tax Profile, Payment/Bank Details */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+              
               {/* Availability & Rate Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Availability & Rate</span>
-                  <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                     <IconPencil />
                   </button>
                 </div>
-                <div className="wizardSummaryCardBody">
+                <div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Hourly Rate</span>
@@ -847,13 +866,13 @@ export function WorkerSummaryPage() {
 
               {/* Certifications & Safety Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Certifications & Safety</span>
-                  <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                     <IconPencil />
                   </button>
                 </div>
-                <div className="wizardSummaryCardBody">
+                <div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>OSHA 30</span>
@@ -873,13 +892,13 @@ export function WorkerSummaryPage() {
 
               {/* Tax Profile Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Tax Profile</span>
-                  <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                     <IconPencil />
                   </button>
                 </div>
-                <div className="wizardSummaryCardBody">
+                <div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Classification</span>
@@ -897,13 +916,13 @@ export function WorkerSummaryPage() {
 
               {/* Payment/Bank Details Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Payment / Bank Details</span>
-                  <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                     <IconPencil />
                   </button>
                 </div>
-                <div className="wizardSummaryCardBody">
+                <div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Bank</span>
@@ -920,42 +939,59 @@ export function WorkerSummaryPage() {
               </div>
             </div>
 
-            {/* Bottom Row: Medical Details & Emergency Contact */}
+            {/* Row 4: Medical Details & Emergency Contact */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+              
               {/* Medical Details Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Medical Details</span>
-                  <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                     <IconPencil />
                   </button>
                 </div>
-                <div className="wizardSummaryCardBody">
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Blood Group</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(medical.bloodGroup)}</div></div>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Allergies</span><div style={{ fontSize: '14px', color: '#17263a' }}>No Allergies</div></div>
+                <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Blood Group</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(medical.bloodGroup)}</div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Allergies</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>No Allergies</div>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Emergency Contact Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div className="wizardSummaryCardTitle wizardSummaryCardTitleWithAction" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Emergency Contact</span>
-                  <button type="button" className="wizardSummaryEditBtn" aria-label="Edit" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9' }}>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
                     <IconPencil />
                   </button>
                 </div>
-                <div className="wizardSummaryCardBody">
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Name</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactName)}</div></div>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Relationship</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactRelationship)}</div></div>
-                    <div><span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Phone</span><div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactPhone)}</div></div>
+                <div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px 16px' }}>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Name</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactName)}</div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Relationship</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactRelationship)}</div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Phone</span>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactPhone)}</div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
+            {/* Footer Buttons */}
             <div className="wizardSummaryFooter" style={{ display: 'flex', justifyContent: 'center', gap: '16px', paddingTop: '20px', borderTop: '1px solid rgba(18,38,63,0.08)' }}>
               <button type="button" className="btn btnPrimary" onClick={() => navigate('/wizard')} style={{ padding: '10px 24px', borderRadius: '8px', background: '#0f4ea9', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
                 Back to wizard
