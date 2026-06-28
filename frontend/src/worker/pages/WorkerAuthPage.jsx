@@ -423,7 +423,7 @@ import { formatPhoneNumber } from '../../common/utils/validation'
 // Eye icon component
 function IconEye(props) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" {...props}>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" {...props}>
       <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
     </svg>
   )
@@ -431,7 +431,7 @@ function IconEye(props) {
 
 function IconEyeOff(props) {
   return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" {...props}>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" {...props}>
       <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="currentColor"/>
     </svg>
   )
@@ -1036,8 +1036,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       max-width: 100%;
       overflow: hidden;
       padding: 12px 16px 16px 16px;
-      max-height: 90vh;
-      overflow-y: auto;
     }
 
     .authCard {
@@ -1064,12 +1062,36 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       margin-bottom: 1px;
     }
 
+    /* Button styles - matching tab height */
     .btn {
-      margin-top: 4px;
       width: 100%;
-      padding: 8px;
+      padding: 6px 16px;
       font-size: 13px;
+      font-weight: 600;
       border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      height: 36px;
+      line-height: 1.5;
+    }
+
+    .btnSuccess {
+      background: #2fb463;
+      color: white;
+    }
+
+    .btnSuccess:hover {
+      background: #259c54;
+    }
+
+    .btnPrimary {
+      background: #0f4ea9;
+      color: white;
+    }
+
+    .btnPrimary:hover {
+      background: #0b3f90;
     }
 
     .field {
@@ -1100,11 +1122,35 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
 
     .tabs {
       margin-bottom: 8px;
+      display: flex;
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(18, 38, 63, 0.06);
     }
 
     .tab {
+      flex: 1;
       padding: 6px 16px;
       font-size: 13px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: center;
+      height: 36px;
+      line-height: 1.5;
+    }
+
+    .tabActive {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      color: #0f4ea9;
+    }
+
+    .tabIndicator {
+      display: none;
     }
 
     form {
@@ -1136,30 +1182,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       width: 16px;
       height: 16px;
     }
-
-    .btnSuccess {
-      background: #2fb463;
-      color: white;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btnSuccess:hover {
-      background: #259c54;
-    }
-
-    .btnPrimary {
-      background: #0f4ea9;
-      color: white;
-      border: none;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btnPrimary:hover {
-      background: #0b3f90;
-    }
   `
 
   return (
@@ -1175,7 +1197,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
           <div className={`tabs ${mode}`}>
             <button className={`tab ${mode === 'login' ? 'tabActive' : ''}`} onClick={() => navigate('/login')}>Log in</button>
             <button className={`tab ${mode === 'register' ? 'tabActive' : ''}`} onClick={() => navigate('/register')}>Register</button>
-            <div className={`tabIndicator ${mode === 'login' ? 'tabLeft' : 'tabRight'}`} />
           </div>
           
           <form onSubmit={onSubmit}>
