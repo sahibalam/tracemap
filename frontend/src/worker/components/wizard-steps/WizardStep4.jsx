@@ -19,7 +19,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
 
   // Handle slider change for travel radius
   const handleSliderChange = (e) => {
-    const value = e.target.value
+    const value = parseInt(e.target.value, 10)
     handleChange('travelRadius', value)
   }
 
@@ -33,6 +33,9 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
   }
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+  // Calculate slider percentage for gradient fill
+  const sliderPercentage = ((data.travelRadius || 50) / 100) * 100
 
   return (
     <div className="wizardStep">
@@ -90,18 +93,18 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     type="range"
                     min="0"
                     max="100"
-                    step="5"
-                    value={data.travelRadius || '50'}
+                    step="1"
+                    value={data.travelRadius || 50}
                     onChange={handleSliderChange}
                     style={{
                       flex: 1,
                       height: '6px',
                       WebkitAppearance: 'none',
                       appearance: 'none',
-                      background: 'linear-gradient(to right, #0f4ea9 0%, #0f4ea9 ' + ((data.travelRadius || 50) / 100 * 100) + '%, #e5e7eb ' + ((data.travelRadius || 50) / 100 * 100) + '%, #e5e7eb 100%)',
+                      background: `linear-gradient(to right, #0f4ea9 0%, #0f4ea9 ${sliderPercentage}%, #e5e7eb ${sliderPercentage}%, #e5e7eb 100%)`,
                       borderRadius: '3px',
                       outline: 'none',
-                      transition: 'background 0.2s ease',
+                      transition: 'background 0.1s ease',
                       cursor: 'pointer'
                     }}
                   />
@@ -170,53 +173,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
           </div>
         </div>
 
-        {/* NEW: Available Days Section */}
-        <div className="wizardSection">
-          <div className="wizardSectionBar">Available</div>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(7, 1fr)', 
-            gap: '8px',
-            marginTop: '8px'
-          }}>
-            {daysOfWeek.map((day) => (
-              <label key={day} className="wizardCheck" style={{ 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center',
-                gap: '4px',
-                padding: '8px 4px',
-                border: '1px solid rgba(18, 38, 63, 0.08)',
-                borderRadius: '8px',
-                background: 'white',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease'
-              }}>
-                <span style={{ 
-                  fontSize: '11px', 
-                  fontWeight: 500, 
-                  color: 'rgba(23, 38, 58, 0.6)',
-                  textTransform: 'uppercase'
-                }}>
-                  {day.slice(0, 3)}
-                </span>
-                <input
-                  type="checkbox"
-                  checked={!!(data.availability?.[day.toLowerCase()] || false)}
-                  onChange={handleDayToggle(day.toLowerCase())}
-                  style={{
-                    width: '18px',
-                    height: '18px',
-                    cursor: 'pointer',
-                    accentColor: '#0f4ea9'
-                  }}
-                />
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Travel Preferences - Only show if "Yes" is selected */}
+        {/* Travel Preferences - Moved ABOVE Available section */}
         {data.willingToTravel === 'yes' && (
           <div className="wizardSection">
             <div style={{ 
@@ -262,6 +219,52 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
             </div>
           </div>
         )}
+
+        {/* Available Days Section - Moved BELOW Travel Preferences */}
+        <div className="wizardSection">
+          <div className="wizardSectionBar">Available</div>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(7, 1fr)', 
+            gap: '8px',
+            marginTop: '8px'
+          }}>
+            {daysOfWeek.map((day) => (
+              <label key={day} className="wizardCheck" style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center',
+                gap: '4px',
+                padding: '8px 4px',
+                border: '1px solid rgba(18, 38, 63, 0.08)',
+                borderRadius: '8px',
+                background: 'white',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}>
+                <span style={{ 
+                  fontSize: '11px', 
+                  fontWeight: 500, 
+                  color: 'rgba(23, 38, 58, 0.6)',
+                  textTransform: 'uppercase'
+                }}>
+                  {day.slice(0, 3)}
+                </span>
+                <input
+                  type="checkbox"
+                  checked={!!(data.availability?.[day.toLowerCase()] || false)}
+                  onChange={handleDayToggle(day.toLowerCase())}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    cursor: 'pointer',
+                    accentColor: '#0f4ea9'
+                  }}
+                />
+              </label>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   )
