@@ -1047,7 +1047,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
 
     .authMain {
       max-width: 100%;
-      padding: 16px;
+      padding: 20px;
       box-sizing: border-box;
     }
 
@@ -1088,11 +1088,13 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
 
     .authBrand {
-      margin-bottom: 8px;
+      margin-bottom: 12px;
+      text-align: center;
     }
 
     .authBrand .authLogo {
-      max-height: 32px;
+      max-height: 60px;
+      width: auto;
     }
 
     .tabs {
@@ -1100,8 +1102,8 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
 
     .tab {
-      padding: 6px 16px;
-      font-size: 13px;
+      padding: 8px 20px;
+      font-size: 14px;
     }
 
     form {
