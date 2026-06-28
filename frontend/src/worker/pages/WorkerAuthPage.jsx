@@ -1072,11 +1072,11 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
 .createAccountBtn {
   width: 180px !important;
-  height: 34px !important;
-  min-height: 34px !important;
+  height: 24px !important;
+  min-height: 24px !important;
   padding: 0 !important;
   font-size: 13px !important;
-  margin: 8px auto 0 !important;
+  margin: 6px auto 0 !important;
   display: block !important;
 }
 
