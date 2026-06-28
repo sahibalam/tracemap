@@ -1,4 +1,5 @@
 // src/worker/components/wizard-steps/WizardStep4.jsx
+import { useState } from 'react'
 import { TextField } from '../../../common/components/TextField'
 import { IconUser, IconSupport, IconLocation } from '../../../common/components/Icons'
 
@@ -14,6 +15,24 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
 
   const setPayPrefs = (prefs) => handleChange('payPrefs', prefs)
   const setTravelPrefs = (prefs) => handleChange('travelPrefs', prefs)
+  const setAvailability = (availability) => handleChange('availability', availability)
+
+  // Handle slider change for travel radius
+  const handleSliderChange = (e) => {
+    const value = e.target.value
+    handleChange('travelRadius', value)
+  }
+
+  // Handle availability day toggle
+  const handleDayToggle = (day) => (e) => {
+    const current = data.availability || {}
+    setAvailability({
+      ...current,
+      [day]: e.target.checked
+    })
+  }
+
+  const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
   return (
     <div className="wizardStep">
@@ -62,40 +81,57 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
         {/* Row 2: Travel Radius + Willingness to Travel */}
         <div className="wizardSection">
           <div className="wizardGrid2" style={{ alignItems: 'flex-start' }}>
-            {/* Travel Radius */}
+            {/* Travel Radius - Slider */}
             <div>
               <div className="wizardSectionBar">Travel Radius</div>
-              <div style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginTop: '4px' }}>
-                <label className="wizardCheck">
+              <div style={{ marginTop: '4px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                   <input
-                    type="radio"
-                    name="travelRadius"
-                    value="50"
-                    checked={data.travelRadius === '50'}
-                    onChange={() => handleChange('travelRadius', '50')}
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    value={data.travelRadius || '50'}
+                    onChange={handleSliderChange}
+                    style={{
+                      flex: 1,
+                      height: '6px',
+                      WebkitAppearance: 'none',
+                      appearance: 'none',
+                      background: 'linear-gradient(to right, #0f4ea9 0%, #0f4ea9 ' + ((data.travelRadius || 50) / 100 * 100) + '%, #e5e7eb ' + ((data.travelRadius || 50) / 100 * 100) + '%, #e5e7eb 100%)',
+                      borderRadius: '3px',
+                      outline: 'none',
+                      transition: 'background 0.2s ease',
+                      cursor: 'pointer'
+                    }}
                   />
-                  50 miles
-                </label>
-                <label className="wizardCheck">
-                  <input
-                    type="radio"
-                    name="travelRadius"
-                    value="75"
-                    checked={data.travelRadius === '75'}
-                    onChange={() => handleChange('travelRadius', '75')}
-                  />
-                  75 miles
-                </label>
-                <label className="wizardCheck">
-                  <input
-                    type="radio"
-                    name="travelRadius"
-                    value="100"
-                    checked={data.travelRadius === '100'}
-                    onChange={() => handleChange('travelRadius', '100')}
-                  />
-                  100 miles
-                </label>
+                  <span style={{ 
+                    minWidth: '70px', 
+                    textAlign: 'center',
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#0f4ea9',
+                    background: 'rgba(15, 78, 169, 0.08)',
+                    padding: '4px 12px',
+                    borderRadius: '6px'
+                  }}>
+                    {data.travelRadius || 50} miles
+                  </span>
+                </div>
+                <div style={{ 
+                  display: 'flex', 
+                  justifyContent: 'space-between', 
+                  fontSize: '11px', 
+                  color: 'rgba(23, 38, 58, 0.4)',
+                  marginTop: '4px',
+                  padding: '0 2px'
+                }}>
+                  <span>0</span>
+                  <span>25</span>
+                  <span>50</span>
+                  <span>75</span>
+                  <span>100</span>
+                </div>
               </div>
             </div>
 
@@ -131,6 +167,52 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                 </label>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* NEW: Available Days Section */}
+        <div className="wizardSection">
+          <div className="wizardSectionBar">Available</div>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(7, 1fr)', 
+            gap: '8px',
+            marginTop: '8px'
+          }}>
+            {daysOfWeek.map((day) => (
+              <label key={day} className="wizardCheck" style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center',
+                gap: '4px',
+                padding: '8px 4px',
+                border: '1px solid rgba(18, 38, 63, 0.08)',
+                borderRadius: '8px',
+                background: 'white',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }}>
+                <span style={{ 
+                  fontSize: '11px', 
+                  fontWeight: 500, 
+                  color: 'rgba(23, 38, 58, 0.6)',
+                  textTransform: 'uppercase'
+                }}>
+                  {day.slice(0, 3)}
+                </span>
+                <input
+                  type="checkbox"
+                  checked={!!(data.availability?.[day.toLowerCase()] || false)}
+                  onChange={handleDayToggle(day.toLowerCase())}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    cursor: 'pointer',
+                    accentColor: '#0f4ea9'
+                  }}
+                />
+              </label>
+            ))}
           </div>
         </div>
 
