@@ -400,7 +400,7 @@ export function CompanyWizardPage() {
       <TopNav variant="solid" />
       <div className="appShellBody appShellBodyVerify">
         <aside className="sideNav sideNavBlue">
-          <div className="sideNavHeader"><div className="sideMark"><img className="sideMarkLogo" src="/assets/tradesmap_icon.png" alt="" /></div><div className="sideMeta"><div className="sideTitle">Tradesmap</div></div></div>
+         
           <div className="sideNavMain">
             <div className="sideGroupLabel">WORKSPACE</div>
             <nav className="sideGroup">
