@@ -927,9 +927,11 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       z-index: 9999 !important;
     }
 
-    /* Custom Password Input Styles */
+    /* Password Input Styles - Fixed to prevent overflow */
     .password-input-wrapper {
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
     }
 
     .password-input-container {
@@ -942,6 +944,8 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       border-radius: 12px;
       background: white;
       transition: all 0.2s ease;
+      box-sizing: border-box;
+      overflow: hidden;
     }
 
     .password-input-container:focus-within {
@@ -960,6 +964,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       padding: 0 12px;
       color: rgba(23, 38, 58, 0.4);
       flex-shrink: 0;
+      min-width: 42px;
     }
 
     .password-input-icon svg {
@@ -977,6 +982,8 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       color: #17263a;
       background: transparent;
       font-family: inherit;
+      min-width: 0;
+      width: 100%;
     }
 
     .password-input-field::placeholder {
@@ -995,6 +1002,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       transition: color 0.2s ease;
       flex-shrink: 0;
       height: 100%;
+      min-width: 44px;
     }
 
     .password-eye-btn:hover {
@@ -1008,6 +1016,39 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     .password-eye-btn svg {
       width: 20px;
       height: 20px;
+    }
+
+    /* Fix for form grid to prevent overflow */
+    .formGrid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .formGrid2 > * {
+      min-width: 0;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Fix for auth card */
+    .authCardCompact {
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .authCard {
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    .authMain {
+      max-width: 100%;
+      padding: 20px;
+      box-sizing: border-box;
     }
   `
 
