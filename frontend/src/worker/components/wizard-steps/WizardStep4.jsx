@@ -19,7 +19,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
 
   // Handle slider change for travel radius
   const handleSliderChange = (e) => {
-    const value = parseInt(e.target.value, 10)
+    const value = Number(e.target.value)
     handleChange('travelRadius', value)
   }
 
@@ -34,8 +34,13 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
 
   const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
 
+  // Get current radius value with fallback
+  const currentRadius = data.travelRadius !== undefined && data.travelRadius !== null && data.travelRadius !== '' 
+    ? Number(data.travelRadius) 
+    : 50
+
   // Calculate slider percentage for gradient fill
-  const sliderPercentage = ((data.travelRadius || 50) / 100) * 100
+  const sliderPercentage = (currentRadius / 100) * 100
 
   return (
     <div className="wizardStep">
@@ -94,7 +99,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     min="0"
                     max="100"
                     step="1"
-                    value={data.travelRadius || 50}
+                    value={currentRadius}
                     onChange={handleSliderChange}
                     style={{
                       flex: 1,
@@ -118,7 +123,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     padding: '4px 12px',
                     borderRadius: '6px'
                   }}>
-                    {data.travelRadius || 50} miles
+                    {currentRadius} miles
                   </span>
                 </div>
                 <div style={{ 
@@ -173,7 +178,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
           </div>
         </div>
 
-        {/* Travel Preferences - Moved ABOVE Available section */}
+        {/* Travel Preferences - Only show if "Yes" is selected */}
         {data.willingToTravel === 'yes' && (
           <div className="wizardSection">
             <div style={{ 
@@ -220,7 +225,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
           </div>
         )}
 
-        {/* Available Days Section - Moved BELOW Travel Preferences */}
+        {/* Available Days Section */}
         <div className="wizardSection">
           <div className="wizardSectionBar">Available</div>
           <div style={{ 
