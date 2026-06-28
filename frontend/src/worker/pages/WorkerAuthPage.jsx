@@ -1071,8 +1071,8 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       font-size: 14px;
     }
       .createAccountBtn {
-  padding: 6px 10px;
-  min-height: 36px;
+  padding: 3px 7px;
+  min-height: 26px;
   font-size: 13px;
 }
 
