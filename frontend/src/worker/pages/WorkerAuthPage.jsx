@@ -1070,10 +1070,14 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       padding: 10px;
       font-size: 14px;
     }
-      .createAccountBtn {
-  padding: 3px 7px;
-  min-height: 26px;
-  font-size: 13px;
+.createAccountBtn {
+  width: 180px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  padding: 0 !important;
+  font-size: 13px !important;
+  margin: 8px auto 0 !important;
+  display: block !important;
 }
 
     .field {
