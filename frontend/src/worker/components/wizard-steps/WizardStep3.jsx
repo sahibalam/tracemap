@@ -229,7 +229,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       
       <div className="wizardBody">
         <div className="wizardSection">
-          <div className="wizardSectionBar">Recent Projects (Last 3 to 5 Relevant Projects)</div>
+          {/* ❌ REMOVED: Recent Projects (Last 3 to 5 Relevant Projects) bar */}
           
           {/* Three project cards in a row */}
           <div style={{ 
@@ -349,7 +349,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                 </div>
               </div>
               
-              {/* Scope Summary as TextArea - Increased height */}
+              {/* Scope Summary as TextArea */}
               <div style={{ marginBottom: '8px' }}>
                 <textarea
                   className="wizardTextArea"
@@ -389,8 +389,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                   {(projects[0]?.scope?.length || 0)} characters
                 </div>
               </div>
-              
-              {/* ❌ REMOVED: Save Project button */}
             </div>
 
             {/* Project 2 */}
@@ -542,8 +540,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                   {(projects[1]?.scope?.length || 0)} characters
                 </div>
               </div>
-              
-              {/* ❌ REMOVED: Save Project button */}
             </div>
 
             {/* Project 3 */}
@@ -695,8 +691,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                   {(projects[2]?.scope?.length || 0)} characters
                 </div>
               </div>
-              
-              {/* ❌ REMOVED: Save Project button */}
             </div>
           </div>
         </div>
