@@ -411,12 +411,13 @@
 // export default WorkerAuthPage
 
 
-
 // src/worker/pages/WorkerAuthPage.jsx
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import DatePicker from 'react-datepicker'
+import 'react-datepicker/dist/react-datepicker.css'
 import { TextField, SelectField } from '../../common/components/TextField'
-import { IconUser, IconMail, IconLock, IconPhone, IconLocation, IconGlobe } from '../../common/components/Icons'
+import { IconUser, IconMail, IconLock, IconPhone, IconGlobe } from '../../common/components/Icons'
 import { formatPhoneNumber } from '../../common/utils/validation'
 
 export function WorkerAuthPage({ initialMode = 'login' }) {
@@ -490,9 +491,19 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   // Format date to MM/DD/YYYY for display
   const formatDateToMMDDYYYY = (dateStr) => {
     if (!dateStr) return ''
-    const parts = dateStr.split('-')
+    const parts = dateStr.split('/')
     if (parts.length === 3) {
-      return `${parts[1]}/${parts[2]}/${parts[0]}`
+      return `${parts[0]}/${parts[1]}/${parts[2]}`
+    }
+    return dateStr
+  }
+
+  // Format date to YYYY-MM-DD for storage
+  const formatDateToYYYYMMDD = (dateStr) => {
+    if (!dateStr) return ''
+    const parts = dateStr.split('/')
+    if (parts.length === 3) {
+      return `${parts[2]}-${parts[0]}-${parts[1]}`
     }
     return dateStr
   }
@@ -517,17 +528,29 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     return true
   }
 
-  // Handle DOB change
-  const handleDobChange = (value) => {
-    setDob(value)
-    validateDob(value)
+  // Handle date change from react-datepicker
+  const handleDateChange = (date) => {
+    if (date) {
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      const year = date.getFullYear()
+      const formattedDate = `${month}/${day}/${year}`
+      setDob(formattedDate)
+      validateDob(formattedDate)
+    } else {
+      setDob('')
+      setDobError('')
+    }
   }
 
-  // Get max date for 18 years ago
-  const getMaxDate = () => {
-    const date = new Date()
-    date.setFullYear(date.getFullYear() - 18)
-    return date.toISOString().split('T')[0]
+  // Parse date string to Date object for react-datepicker
+  const parseDate = (dateStr) => {
+    if (!dateStr) return null
+    const parts = dateStr.split('/')
+    if (parts.length === 3) {
+      return new Date(`${parts[2]}-${parts[0]}-${parts[1]}`)
+    }
+    return null
   }
 
   // Validate password strength
@@ -616,7 +639,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     const isPasswordValid = passwordValidation.valid && registerPassword === confirmPassword
     
     // Validate DOB
-    const age = calculateAge(dob)
+    const age = calculateAge(formatDateToYYYYMMDD(dob))
     const isAgeValid = age >= 18
     
     if (!isAgeValid) {
@@ -640,7 +663,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       localStorage.setItem('pendingPhoneNumber', phoneNumber)
       localStorage.setItem('pendingFirstName', firstName)
       localStorage.setItem('pendingLastName', lastName)
-      localStorage.setItem('pendingDob', dob)
+      localStorage.setItem('pendingDob', formatDateToYYYYMMDD(dob))
       localStorage.setItem('pendingLanguage', language)
       
       navigate('/verify', { 
@@ -651,7 +674,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
           firstName,
           lastName,
           registerPassword,
-          dob
+          dob: formatDateToYYYYMMDD(dob)
         } 
       })
     }
@@ -671,8 +694,195 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     return formatDateToMMDDYYYY(dob)
   }
 
+  // Custom styles for date picker
+  const datePickerStyles = `
+    .auth-date-picker .react-datepicker__input-container input {
+      width: 100%;
+      height: 48px;
+      padding: 0 12px;
+      padding-right: 36px;
+      border: 1px solid rgba(18, 38, 63, 0.12);
+      border-radius: 12px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      color: #17263a;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    .auth-date-picker .react-datepicker__input-container input:hover {
+      border-color: rgba(15, 78, 169, 0.4);
+    }
+
+    .auth-date-picker .react-datepicker__input-container input:focus {
+      border-color: #0f4ea9;
+      box-shadow: 0 0 0 3px rgba(15, 78, 169, 0.1);
+    }
+
+    .auth-date-picker .react-datepicker__input-container input::placeholder {
+      color: rgba(23, 38, 58, 0.4);
+    }
+
+    .auth-date-picker .react-datepicker {
+      font-family: inherit;
+      border-radius: 12px;
+      border: 1px solid rgba(18, 38, 63, 0.08);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
+      background: white;
+      padding: 8px;
+      overflow: hidden;
+      font-size: 13px;
+      z-index: 1000;
+    }
+
+    .auth-date-picker .react-datepicker__header {
+      background: white;
+      border-bottom: 1px solid rgba(18, 38, 63, 0.06);
+      padding: 10px 0 6px 0;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .auth-date-picker .react-datepicker__current-month {
+      color: #17263a;
+      font-weight: 700;
+      font-size: 14px;
+      padding-bottom: 4px;
+    }
+
+    .auth-date-picker .react-datepicker__day-name {
+      color: rgba(23, 38, 58, 0.5);
+      font-weight: 600;
+      font-size: 11px;
+      width: 32px;
+      margin: 2px;
+    }
+
+    .auth-date-picker .react-datepicker__day {
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
+      margin: 2px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #17263a;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .auth-date-picker .react-datepicker__day:hover {
+      background: rgba(15, 78, 169, 0.08);
+      border-radius: 8px;
+    }
+
+    .auth-date-picker .react-datepicker__day--selected {
+      background: #0f4ea9 !important;
+      color: white !important;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+
+    .auth-date-picker .react-datepicker__day--selected:hover {
+      background: #0b3f90 !important;
+    }
+
+    .auth-date-picker .react-datepicker__day--keyboard-selected {
+      background: rgba(15, 78, 169, 0.15);
+      border-radius: 8px;
+    }
+
+    .auth-date-picker .react-datepicker__day--today {
+      font-weight: 700;
+      color: #0f4ea9;
+    }
+
+    .auth-date-picker .react-datepicker__day--today::after {
+      content: '';
+      display: block;
+      width: 4px;
+      height: 4px;
+      background: #0f4ea9;
+      border-radius: 50%;
+      margin: 0 auto;
+      margin-top: -2px;
+    }
+
+    .auth-date-picker .react-datepicker__day--disabled {
+      color: rgba(23, 38, 58, 0.2);
+      cursor: not-allowed;
+    }
+
+    .auth-date-picker .react-datepicker__day--disabled:hover {
+      background: transparent;
+    }
+
+    .auth-date-picker .react-datepicker__day--outside-month {
+      color: rgba(23, 38, 58, 0.2);
+    }
+
+    .auth-date-picker .react-datepicker__navigation {
+      top: 12px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .auth-date-picker .react-datepicker__navigation:hover {
+      background: rgba(15, 78, 169, 0.08);
+    }
+
+    .auth-date-picker .react-datepicker__navigation-icon::before {
+      border-color: #17263a;
+      border-width: 2px 2px 0 0;
+      height: 7px;
+      width: 7px;
+    }
+
+    .auth-date-picker .react-datepicker__day--weekend {
+      color: #e11d48;
+    }
+
+    .auth-date-picker .react-datepicker__day--weekend.react-datepicker__day--selected {
+      color: white;
+    }
+
+    .auth-date-picker .react-datepicker__input-container {
+      position: relative;
+      width: 100%;
+    }
+
+    .auth-date-picker .react-datepicker-wrapper {
+      width: 100%;
+    }
+
+    .auth-date-picker .react-datepicker__input-container::after {
+      content: '📅';
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 16px;
+      pointer-events: none;
+      opacity: 0.6;
+    }
+
+    .auth-date-picker .react-datepicker-popper {
+      z-index: 9999 !important;
+    }
+  `
+
   return (
     <div className="authPage">
+      <style>{datePickerStyles}</style>
       <div className="bg bgAuth" />
       <div className="bgOverlay" />
       <main className="authMain">
@@ -704,29 +914,45 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 {/* Email + Date of Birth Row */}
                 <div className="formGrid2">
                   <TextField placeholder="Email" icon={<IconMail />} value={email} onChange={setEmail} />
-                  <div>
-                    <div style={{ display: 'flex', border: '1px solid rgba(18,38,63,0.12)', borderRadius: '12px', height: '48px', background: 'white', width: '100%' }}>
-                      <span style={{ 
-                        padding: '0 12px', display: 'flex', alignItems: 'center', 
-                        borderRight: '1px solid rgba(18,38,63,0.12)', color: '#17263a'
-                      }}>
-                        📅
-                      </span>
-                      <input 
-                        type="date"
-                        value={dob}
-                        onChange={(e) => handleDobChange(e.target.value)}
-                        max={getMaxDate()}
-                        style={{ 
-                          flex: 1, border: 'none', outline: 'none', padding: '0 12px',
-                          borderRadius: '12px', fontSize: '14px'
-                        }}
-                      />
-                    </div>
+                  <div className="auth-date-picker">
+                    <DatePicker
+                      selected={parseDate(dob)}
+                      onChange={handleDateChange}
+                      dateFormat="MM/dd/yyyy"
+                      placeholderText="MM/DD/YYYY"
+                      maxDate={new Date()}
+                      showYearDropdown
+                      showMonthDropdown
+                      dropdownMode="select"
+                      yearDropdownItemNumber={100}
+                      scrollableYearDropdown
+                      className="date-picker-input"
+                      popperPlacement="bottom-start"
+                      popperModifiers={[
+                        {
+                          name: 'offset',
+                          options: {
+                            offset: [0, 8],
+                          },
+                        },
+                        {
+                          name: 'preventOverflow',
+                          options: {
+                            boundariesElement: 'viewport',
+                          },
+                        },
+                        {
+                          name: 'flip',
+                          options: {
+                            fallbackPlacements: ['top-start', 'bottom-start'],
+                          },
+                        },
+                      ]}
+                    />
                     {dobError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '4px' }}>{dobError}</div>}
-                    {!dobError && dob && calculateAge(dob) >= 18 && (
+                    {!dobError && dob && calculateAge(formatDateToYYYYMMDD(dob)) >= 18 && (
                       <div style={{ color: '#2fb463', fontSize: '11px', marginTop: '4px' }}>
-                        ✓ Age: {calculateAge(dob)} years (DOB: {getDobDisplay()})
+                        ✓ Age: {calculateAge(formatDateToYYYYMMDD(dob))} years (DOB: {getDobDisplay()})
                       </div>
                     )}
                   </div>
