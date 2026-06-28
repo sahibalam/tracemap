@@ -927,7 +927,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       z-index: 9999 !important;
     }
 
-    /* Password Input Styles - Fixed to prevent overflow */
+    /* Password Input Styles */
     .password-input-wrapper {
       width: 100%;
       max-width: 100%;
@@ -1018,7 +1018,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       height: 20px;
     }
 
-    /* Fix for form grid to prevent overflow */
+    /* Form Grid */
     .formGrid2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1034,10 +1034,11 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       box-sizing: border-box;
     }
 
-    /* Fix for auth card */
+    /* Auth Card */
     .authCardCompact {
       max-width: 100%;
       overflow: hidden;
+      padding: 24px 28px;
     }
 
     .authCard {
@@ -1049,6 +1050,23 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       max-width: 100%;
       padding: 20px;
       box-sizing: border-box;
+    }
+
+    /* Password strength indicator */
+    .password-strength-container {
+      margin-top: 4px;
+      margin-bottom: 4px;
+    }
+
+    .password-strength-bar {
+      height: 3px;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .btn {
+      margin-top: 8px;
+      width: 100%;
     }
   `
 
@@ -1072,8 +1090,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
             {mode === 'login' ? (
               <>
                 <TextField placeholder="Username" icon={<IconUser />} value={loginUsername} onChange={setLoginUsername} />
-                
-                {/* Login Password with Eye Icon */}
                 <PasswordInput
                   placeholder="Password"
                   icon={<IconLock />}
@@ -1133,7 +1149,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                     {dobError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '4px' }}>{dobError}</div>}
                     {!dobError && dob && calculateAge(formatDateToYYYYMMDD(dob)) >= 18 && (
                       <div style={{ color: '#2fb463', fontSize: '11px', marginTop: '4px' }}>
-                        ✓ Age: {calculateAge(formatDateToYYYYMMDD(dob))} years (DOB: {getDobDisplay()})
+                        ✓ Age: {calculateAge(formatDateToYYYYMMDD(dob))} years
                       </div>
                     )}
                   </div>
@@ -1183,13 +1199,26 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                     onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
                   />
                 </div>
+                
+                {/* Password Strength - Moved inside a container with proper spacing */}
                 {registerPassword && (
-                  <div style={{ marginTop: '4px' }}>
-                    <div style={{ height: '3px', background: getStrengthColor(), width: passwordStrength === 'Weak' ? '33%' : passwordStrength === 'Medium' ? '66%' : '100%', borderRadius: '3px' }} />
-                    <span style={{ fontSize: '11px', color: getStrengthColor(), fontWeight: 600 }}>{passwordStrength} password</span>
-                    <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', marginLeft: '8px' }}>(min 8 chars, letters & numbers)</span>
+                  <div className="password-strength-container">
+                    <div 
+                      className="password-strength-bar" 
+                      style={{ 
+                        width: passwordStrength === 'Weak' ? '33%' : passwordStrength === 'Medium' ? '66%' : '100%',
+                        background: getStrengthColor()
+                      }} 
+                    />
+                    <span style={{ fontSize: '11px', color: getStrengthColor(), fontWeight: 600 }}>
+                      {passwordStrength} password
+                    </span>
+                    <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', marginLeft: '8px' }}>
+                      (min 8 chars, letters & numbers)
+                    </span>
                   </div>
                 )}
+                
                 {passwordError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '4px' }}>{passwordError}</div>}
                 
                 {/* Submit Button */}
@@ -1203,5 +1232,4 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   )
 }
 
-// Add this default export at the end
 export default WorkerAuthPage
