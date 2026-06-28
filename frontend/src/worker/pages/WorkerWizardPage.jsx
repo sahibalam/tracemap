@@ -1159,7 +1159,6 @@ import { WizardStep2 } from '../components/wizard-steps/WizardStep2'
 import { WizardStep3 } from '../components/wizard-steps/WizardStep3'
 import { WizardStep4 } from '../components/wizard-steps/WizardStep4'
 import { WizardStep5 } from '../components/wizard-steps/WizardStep5'
-import { WizardStep6 } from '../components/wizard-steps/WizardStep6'
 
 export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const navigate = useNavigate()
@@ -1336,7 +1335,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     //'Emergency Medical Information',
     'Work History & Project Experience',
     'Availability, Travel, Pay & Assignment Preferences',
-    'Certifications, Safety & Equipment Qualifications',
+   // 'Certifications, Safety & Equipment Qualifications',
     'Emergency Contact, Policies & Acknowledgments'
   ]
 
@@ -1346,7 +1345,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     //'Optional information to assist emergency responders.',
     'Use to collect recent projects, type of work performed, role held, and reference-ready experience.',
     'Use to collect start date, schedule, travel radius, pay preference, and deployment expectations.',
-    'Use to collect proof of OSHA, lift, PIT, CPR, and related safety training relevant to interiors work.',
+   // 'Use to collect proof of OSHA, lift, PIT, CPR, and related safety training relevant to interiors work.',
     'Use to capture emergency contact details and signed acknowledgments required before activation.'
   ]
 
@@ -1458,8 +1457,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
           {step === 2 && <WizardStep2 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
           {step === 3 && <WizardStep3 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
           {step === 4 && <WizardStep4 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-          {step === 5 && <WizardStep5 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-          {step === 6 && <WizardStep6 data={wizardData} onChange={setWizardData} onFinish={finishWizard} onBack={goPrev} />}
+          {step === 5 && <WizardStep5 data={wizardData} onChange={setWizardData} onFinish={finishWizard} onBack={goPrev} />}
         </div>
 
         {/* ✅ Sticky Footer */}
