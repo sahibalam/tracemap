@@ -1,5 +1,5 @@
 // src/worker/components/wizard-steps/WizardStep4.jsx
-import { TextField } from '../../../common/components/TextField'
+import { TextField, SelectField } from '../../../common/components/TextField'
 import { IconUser, IconSupport, IconLocation } from '../../../common/components/Icons'
 
 export function WizardStep4({ data, onChange, onNext, onBack }) {
@@ -12,175 +12,144 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
     setMap({ ...current, [key]: e.target.checked })
   }
 
-  const setEmployeeFlags = (flags) => handleChange('employeeFlags', flags)
-  const setEntityFlags = (flags) => handleChange('entityFlags', flags)
-  const setStateSpecificFlags = (flags) => handleChange('stateSpecificFlags', flags)
+  const setPayPrefs = (prefs) => handleChange('payPrefs', prefs)
+  const setTravelPrefs = (prefs) => handleChange('travelPrefs', prefs)
 
   return (
     <div className="wizardStep">
       <div className="wizardBody">
+        {/* Hourly Rate Section */}
         <div className="wizardSection">
-          <div className="wizardSectionBar">1. Classification Selection & Routing</div>
-          <div className="wizardGrid2">
-            <div className="wizardChecks wizardChecks2">
-              <label className="wizardCheck">
-                <input
-                  type="radio"
-                  name="classificationPath"
-                  checked={data.classificationPath === 'employee'}
-                  onChange={() => handleChange('classificationPath', 'employee')}
-                />
-                Employee / W-2 path
-              </label>
-              <label className="wizardCheck">
-                <input
-                  type="radio"
-                  name="classificationPath"
-                  checked={data.classificationPath === 'subcontractor'}
-                  onChange={() => handleChange('classificationPath', 'subcontractor')}
-                />
-                Subcontractor / 1099 / entity path
-              </label>
-            </div>
-
+          <div className="wizardSectionBar">Hourly Rate</div>
+          <div style={{ maxWidth: '300px' }}>
             <TextField
-              placeholder="State of work"
-              icon={<IconLocation />}
-              value={data.stateOfWork || ''}
-              onChange={(v) => handleChange('stateOfWork', v)}
+              placeholder="$"
+              icon={<IconSupport />}
+              value={data.hourlyRate || ''}
+              onChange={(v) => handleChange('hourlyRate', v)}
             />
           </div>
         </div>
 
-        {data.classificationPath === 'employee' ? (
-          <div className="wizardSection">
-            <div className="wizardSectionBar">2. Employee / W-2 Path Requirements</div>
-            <div className="wizardGrid3">
-              <TextField
-                placeholder="Legal tax name"
-                icon={<IconUser />}
-                value={data.employeeTaxName || ''}
-                onChange={(v) => handleChange('employeeTaxName', v)}
-              />
-              <TextField 
-                placeholder="SSN" 
-                icon={<IconSupport />} 
-                value={data.employeeSsn || ''} 
-                onChange={(v) => handleChange('employeeSsn', v)} 
-              />
-              <TextField
-                placeholder="Employee start date"
-                icon={<IconSupport />}
-                value={data.employeeStartDate || ''}
-                onChange={(v) => handleChange('employeeStartDate', v)}
-              />
-            </div>
-
-            <div className="wizardGrid3 wizardGrid3Tight">
-              {[
-                'Form I-9 completed',
-                'Identity / work authorization reviewed',
-                'Form W-4 completed',
-                'New-hire reporting required / completed',
-                "Workers' comp review required",
-                'Official form edition used',
-              ].map((k) => (
-                <label key={k} className="wizardCheck">
-                  <input type="checkbox" checked={!!(data.employeeFlags?.[k] || false)} onChange={toggleMapValue(k, setEmployeeFlags)} />
-                  {k}
-                </label>
-              ))}
-            </div>
-
-            <div className="wizardGrid2">
-              <TextField
-                placeholder="Reviewer name"
-                icon={<IconUser />}
-                value={data.reviewerName || ''}
-                onChange={(v) => handleChange('reviewerName', v)}
-              />
-              <TextField
-                placeholder="Compliance notes"
-                icon={<IconSupport />}
-                value={data.complianceNotes || ''}
-                onChange={(v) => handleChange('complianceNotes', v)}
-              />
-            </div>
-          </div>
-        ) : null}
-
-        {data.classificationPath === 'subcontractor' ? (
-          <div className="wizardSection">
-            <div className="wizardSectionBar">3. Subcontractor / 1099 / Entity Path Requirements</div>
-            <div className="wizardGrid4">
-              <TextField
-                placeholder="Legal entity name"
-                icon={<IconSupport />}
-                value={data.entityLegalName || ''}
-                onChange={(v) => handleChange('entityLegalName', v)}
-              />
-              <TextField 
-                placeholder="EIN" 
-                icon={<IconSupport />} 
-                value={data.entityEin || ''} 
-                onChange={(v) => handleChange('entityEin', v)} 
-              />
-              <TextField
-                placeholder="Entity type"
-                icon={<IconSupport />}
-                value={data.entityType || ''}
-                onChange={(v) => handleChange('entityType', v)}
-              />
-              <TextField
-                placeholder="State of registration"
-                icon={<IconLocation />}
-                value={data.entityStateRegistration || ''}
-                onChange={(v) => handleChange('entityStateRegistration', v)}
-              />
-            </div>
-
-            <div className="wizardGrid2">
-              <TextField
-                placeholder="DBA / trade name"
-                icon={<IconSupport />}
-                value={data.entityDbaName || ''}
-                onChange={(v) => handleChange('entityDbaName', v)}
-              />
-              <TextField
-                placeholder="Authorized signer"
-                icon={<IconUser />}
-                value={data.entityAuthorizedSigner || ''}
-                onChange={(v) => handleChange('entityAuthorizedSigner', v)}
-              />
-            </div>
-
-            <div className="wizardGrid3 wizardGrid3Tight">
-              {[
-                'Form W-9 completed',
-                'TIN match verified where required',
-                'Backup withholding flag reviewed',
-                'Independent contractor reporting needed',
-                'Contract / entity documentation reviewed',
-              ].map((k) => (
-                <label key={k} className="wizardCheck">
-                  <input type="checkbox" checked={!!(data.entityFlags?.[k] || false)} onChange={toggleMapValue(k, setEntityFlags)} />
-                  {k}
-                </label>
-              ))}
-            </div>
-          </div>
-        ) : null}
-
+        {/* Travel Radius Section */}
         <div className="wizardSection">
-          <div className="wizardSectionBar">4. State-Specific Flags</div>
-          <div className="wizardGrid3 wizardGrid3Tight">
-            {['Florida worker or project', 'Texas worker or project', "Workers' comp review required"].map((k) => (
-              <label key={k} className="wizardCheck">
-                <input type="checkbox" checked={!!(data.stateSpecificFlags?.[k] || false)} onChange={toggleMapValue(k, setStateSpecificFlags)} />
-                {k}
-              </label>
-            ))}
+          <div className="wizardSectionBar">Travel Radius</div>
+          <div style={{ maxWidth: '300px' }}>
+            <SelectField
+              icon={<IconLocation />}
+              value={data.travelRadius || ''}
+              onChange={(v) => handleChange('travelRadius', v)}
+            >
+              <option value="">Select Radius</option>
+              <option value="50">50 miles</option>
+              <option value="75">75 miles</option>
+              <option value="100">100 miles</option>
+            </SelectField>
           </div>
+        </div>
+
+        {/* Availability Options */}
+        <div className="wizardSection">
+          <div className="wizardSectionBar">Availability</div>
+          <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+            <label className="wizardCheck">
+              <input
+                type="checkbox"
+                checked={!!(data.payPrefs?.overtime || false)}
+                onChange={toggleMapValue('overtime', setPayPrefs)}
+              />
+              Open to overtime
+            </label>
+            <label className="wizardCheck">
+              <input
+                type="checkbox"
+                checked={!!(data.payPrefs?.weekends || false)}
+                onChange={toggleMapValue('weekends', setPayPrefs)}
+              />
+              Available on weekends
+            </label>
+          </div>
+        </div>
+
+        {/* Willingness to Travel Section */}
+        <div className="wizardSection">
+          <div className="wizardSectionBar">Willingness to Travel</div>
+          <div style={{ maxWidth: '300px' }}>
+            <SelectField
+              icon={<IconLocation />}
+              value={data.willingToTravel || ''}
+              onChange={(v) => {
+                handleChange('willingToTravel', v)
+                // Reset travel preferences if 'No' is selected
+                if (v === 'no') {
+                  handleChange('travelPrefs', {})
+                }
+              }}
+            >
+              <option value="">Select Option</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </SelectField>
+          </div>
+
+          {/* Travel Preferences - Only show if "Yes" is selected */}
+          {data.willingToTravel === 'yes' && (
+            <div style={{ 
+              marginTop: 12,
+              padding: '16px 20px',
+              border: '1px solid rgba(15, 78, 169, 0.2)',
+              borderRadius: '12px',
+              background: 'rgba(15, 78, 169, 0.03)',
+            }}>
+              <div style={{ 
+                fontSize: '13px', 
+                fontWeight: 500, 
+                color: '#17263a',
+                marginBottom: '10px'
+              }}>
+                Travel Preferences
+              </div>
+              <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+                <label className="wizardCheck">
+                  <input
+                    type="checkbox"
+                    checked={!!(data.travelPrefs?.housing || false)}
+                    onChange={toggleMapValue('housing', setTravelPrefs)}
+                  />
+                  Needs housing for travel work
+                </label>
+                <label className="wizardCheck">
+                  <input
+                    type="checkbox"
+                    checked={!!(data.travelPrefs?.perDiem || false)}
+                    onChange={toggleMapValue('perDiem', setTravelPrefs)}
+                  />
+                  Needs per diem
+                </label>
+                <label className="wizardCheck">
+                  <input
+                    type="checkbox"
+                    checked={!!(data.travelPrefs?.transportation || false)}
+                    onChange={toggleMapValue('transportation', setTravelPrefs)}
+                  />
+                  Own transportation
+                </label>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="wizardFooter">
+        <button type="button" className="wizardPillBtn" onClick={onBack}>
+          <span className="wizardPillBtnLabel">Back</span>
+          <span className="wizardPillBtnIcon">←</span>
+        </button>
+        <div className="wizardFooterRight">
+          <button type="button" className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" onClick={onNext}>
+            <span className="wizardPillBtnLabel">Next</span>
+            <span className="wizardPillBtnIcon">→</span>
+          </button>
         </div>
       </div>
     </div>

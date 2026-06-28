@@ -1333,8 +1333,9 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const stepTitles = [
     'Worker Account & Identity Intake',
     'Trade Profile & Skill Matrix',
-    'Emergency Medical Information',
+    //'Emergency Medical Information',
     'Work History & Project Experience',
+    'Availability, Travel, Pay & Assignment Preferences',
     'Certifications, Safety & Equipment Qualifications',
     'Emergency Contact, Policies & Acknowledgments'
   ]
@@ -1342,8 +1343,9 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const stepSubtitles = [
     'Use for initial account creation, identity basics, contact data, and public profile photo.',
     'Use to classify primary trade, level, years of experience, specialty skills, and field capability.',
-    'Optional information to assist emergency responders.',
+    //'Optional information to assist emergency responders.',
     'Use to collect recent projects, type of work performed, role held, and reference-ready experience.',
+    'Use to collect start date, schedule, travel radius, pay preference, and deployment expectations.',
     'Use to collect proof of OSHA, lift, PIT, CPR, and related safety training relevant to interiors work.',
     'Use to capture emergency contact details and signed acknowledgments required before activation.'
   ]
