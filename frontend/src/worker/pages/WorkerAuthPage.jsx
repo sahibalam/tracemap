@@ -423,7 +423,7 @@ import { formatPhoneNumber } from '../../common/utils/validation'
 // Eye icon component
 function IconEye(props) {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" {...props}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" {...props}>
       <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
     </svg>
   )
@@ -431,7 +431,7 @@ function IconEye(props) {
 
 function IconEyeOff(props) {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" {...props}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" {...props}>
       <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="currentColor"/>
     </svg>
   )
@@ -745,12 +745,12 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   const customStyles = `
     .auth-date-picker .react-datepicker__input-container input {
       width: 100%;
-      height: 40px;
-      padding: 0 10px;
-      padding-right: 32px;
+      height: 44px;
+      padding: 0 12px;
+      padding-right: 36px;
       border: 1px solid rgba(18, 38, 63, 0.12);
-      border-radius: 8px;
-      font-size: 13px;
+      border-radius: 10px;
+      font-size: 14px;
       outline: none;
       background: white;
       color: #17263a;
@@ -914,10 +914,10 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     .auth-date-picker .react-datepicker__input-container::after {
       content: '📅';
       position: absolute;
-      right: 10px;
+      right: 12px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 14px;
+      font-size: 16px;
       pointer-events: none;
       opacity: 0.6;
     }
@@ -937,9 +937,9 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       display: flex;
       align-items: center;
       width: 100%;
-      height: 40px;
+      height: 44px;
       border: 1px solid rgba(18, 38, 63, 0.12);
-      border-radius: 8px;
+      border-radius: 10px;
       background: white;
       transition: all 0.2s ease;
       box-sizing: border-box;
@@ -959,15 +959,15 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 8px;
+      padding: 0 10px;
       color: rgba(23, 38, 58, 0.4);
       flex-shrink: 0;
-      min-width: 34px;
+      min-width: 38px;
     }
 
     .password-input-icon svg {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
 
     .password-input-field {
@@ -976,7 +976,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       border: none;
       outline: none;
       padding: 0 4px;
-      font-size: 13px;
+      font-size: 14px;
       color: #17263a;
       background: transparent;
       font-family: inherit;
@@ -992,7 +992,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 8px;
+      padding: 0 10px;
       background: none;
       border: none;
       cursor: pointer;
@@ -1000,7 +1000,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       transition: color 0.2s ease;
       flex-shrink: 0;
       height: 100%;
-      min-width: 34px;
+      min-width: 38px;
     }
 
     .password-eye-btn:hover {
@@ -1012,14 +1012,14 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
 
     .password-eye-btn svg {
-      width: 16px;
-      height: 16px;
+      width: 18px;
+      height: 18px;
     }
 
     .formGrid2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 10px;
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
@@ -1035,7 +1035,9 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     .authCardCompact {
       max-width: 100%;
       overflow: hidden;
-      padding: 12px 16px 16px 16px;
+      padding: 16px 20px 20px 20px;
+      max-height: 90vh;
+      overflow-y: auto;
     }
 
     .authCard {
@@ -1045,53 +1047,28 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
 
     .authMain {
       max-width: 100%;
-      padding: 16px;
+      padding: 20px;
       box-sizing: border-box;
     }
 
     .password-strength-container {
       margin-top: 2px;
-      margin-bottom: 2px;
+      margin-bottom: 4px;
       padding: 0 2px;
     }
 
     .password-strength-bar {
-      height: 2px;
-      border-radius: 2px;
+      height: 3px;
+      border-radius: 3px;
       transition: width 0.3s ease;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
     }
 
-    /* Button styles - matching tab height */
     .btn {
+      margin-top: 4px;
       width: 100%;
-      padding: 6px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      height: 36px;
-      line-height: 1.5;
-    }
-
-    .btnSuccess {
-      background: #2fb463;
-      color: white;
-    }
-
-    .btnSuccess:hover {
-      background: #259c54;
-    }
-
-    .btnPrimary {
-      background: #0f4ea9;
-      color: white;
-    }
-
-    .btnPrimary:hover {
-      background: #0b3f90;
+      padding: 10px;
+      font-size: 14px;
     }
 
     .field {
@@ -1111,76 +1088,28 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
 
     .authBrand {
-      margin-bottom: 8px;
+      margin-bottom: 12px;
       text-align: center;
     }
 
     .authBrand .authLogo {
-      max-height: 80px;
+      max-height: 120px;
       width: auto;
     }
 
     .tabs {
-      margin-bottom: 8px;
-      display: flex;
-      border-radius: 8px;
-      overflow: hidden;
-      background: rgba(18, 38, 63, 0.06);
+      margin-bottom: 12px;
     }
 
     .tab {
-      flex: 1;
-      padding: 6px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      border: none;
-      background: transparent;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: center;
-      height: 36px;
-      line-height: 1.5;
-    }
-
-    .tabActive {
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-      color: #0f4ea9;
-    }
-
-    .tabIndicator {
-      display: none;
+      padding: 8px 20px;
+      font-size: 14px;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-    }
-
-    .auth-date-picker .react-datepicker__input-container input {
-      height: 40px;
-      font-size: 13px;
-    }
-
-    .field .fieldControl .fieldInput {
-      height: 40px;
-      font-size: 13px;
-    }
-
-    .field .fieldControl .fieldSelect {
-      height: 40px;
-      font-size: 13px;
-    }
-
-    .field .fieldIcon {
-      padding: 0 10px;
-    }
-
-    .field .fieldIcon svg {
-      width: 16px;
-      height: 16px;
+      gap: 6px;
     }
   `
 
@@ -1197,6 +1126,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
           <div className={`tabs ${mode}`}>
             <button className={`tab ${mode === 'login' ? 'tabActive' : ''}`} onClick={() => navigate('/login')}>Log in</button>
             <button className={`tab ${mode === 'register' ? 'tabActive' : ''}`} onClick={() => navigate('/register')}>Register</button>
+            <div className={`tabIndicator ${mode === 'login' ? 'tabLeft' : 'tabRight'}`} />
           </div>
           
           <form onSubmit={onSubmit}>
@@ -1268,9 +1198,9 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 
                 <div className="formGrid2">
                   <div style={{ width: '100%' }}>
-                    <div style={{ display: 'flex', border: '1px solid rgba(18,38,63,0.12)', borderRadius: '8px', height: '40px', background: 'white', width: '100%' }}>
+                    <div style={{ display: 'flex', border: '1px solid rgba(18,38,63,0.12)', borderRadius: '10px', height: '44px', background: 'white', width: '100%' }}>
                       <span style={{ 
-                        padding: '0 8px', display: 'flex', alignItems: 'center', fontWeight: 600, fontSize: '12px',
+                        padding: '0 10px', display: 'flex', alignItems: 'center', fontWeight: 600, fontSize: '13px',
                         borderRight: '1px solid rgba(18,38,63,0.12)', color: '#17263a'
                       }}>
                         +1
@@ -1278,7 +1208,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                       <input 
                         type="tel" placeholder="555-555-5555" value={phoneNumber}
                         onChange={(e) => handlePhoneChange(e.target.value)} maxLength={12}
-                        style={{ flex: 1, border: 'none', outline: 'none', padding: '0 8px', borderRadius: '8px', fontSize: '13px' }}
+                        style={{ flex: 1, border: 'none', outline: 'none', padding: '0 10px', borderRadius: '10px', fontSize: '14px' }}
                       />
                     </div>
                     {phoneError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{phoneError}</div>}
@@ -1321,13 +1251,13 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                     <span style={{ fontSize: '11px', color: getStrengthColor(), fontWeight: 600 }}>
                       {passwordStrength} password
                     </span>
-                    <span style={{ fontSize: '10px', color: 'rgba(23,38,58,0.5)', marginLeft: '6px' }}>
+                    <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', marginLeft: '8px' }}>
                       (min 8 chars, letters & numbers)
                     </span>
                   </div>
                 )}
                 
-                {passwordError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{passwordError}</div>}
+                {passwordError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '2px' }}>{passwordError}</div>}
                 
                 <button type="submit" className="btn btnSuccess">Create account</button>
               </>
