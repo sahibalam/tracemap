@@ -742,7 +742,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     return formatDateToMMDDYYYY(dob)
   }
 
-  // Custom styles for date picker and password fields
   const customStyles = `
     .auth-date-picker .react-datepicker__input-container input {
       width: 100%;
@@ -927,7 +926,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       z-index: 9999 !important;
     }
 
-    /* Password Input Styles */
     .password-input-wrapper {
       width: 100%;
       max-width: 100%;
@@ -1018,7 +1016,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       height: 20px;
     }
 
-    /* Form Grid */
     .formGrid2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1026,6 +1023,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
+      margin-bottom: 4px;
     }
 
     .formGrid2 > * {
@@ -1034,11 +1032,10 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       box-sizing: border-box;
     }
 
-    /* Auth Card */
     .authCardCompact {
       max-width: 100%;
       overflow: hidden;
-      padding: 24px 28px;
+      padding: 20px 24px;
     }
 
     .authCard {
@@ -1052,21 +1049,39 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       box-sizing: border-box;
     }
 
-    /* Password strength indicator */
     .password-strength-container {
-      margin-top: 4px;
-      margin-bottom: 4px;
+      margin-top: 2px;
+      margin-bottom: 6px;
+      padding: 0 2px;
     }
 
     .password-strength-bar {
       height: 3px;
       border-radius: 3px;
       transition: width 0.3s ease;
+      margin-bottom: 2px;
     }
 
     .btn {
-      margin-top: 8px;
+      margin-top: 4px;
       width: 100%;
+      padding: 12px;
+    }
+
+    .field {
+      margin-bottom: 0 !important;
+    }
+
+    .formGrid2 .field {
+      margin-bottom: 0 !important;
+    }
+
+    .auth-date-picker {
+      margin-bottom: 0;
+    }
+
+    .auth-date-picker .react-datepicker__input-container input {
+      margin-bottom: 0;
     }
   `
 
@@ -1102,13 +1117,11 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
               </>
             ) : (
               <>
-                {/* First Name + Last Name Row */}
                 <div className="formGrid2">
                   <TextField placeholder="First name" icon={<IconUser />} value={firstName} onChange={setFirstName} />
                   <TextField placeholder="Last name" icon={<IconUser />} value={lastName} onChange={setLastName} />
                 </div>
                 
-                {/* Email + Date of Birth Row */}
                 <div className="formGrid2">
                   <TextField placeholder="Email" icon={<IconMail />} value={email} onChange={setEmail} />
                   <div className="auth-date-picker">
@@ -1155,7 +1168,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                   </div>
                 </div>
                 
-                {/* Phone + Language Row */}
                 <div className="formGrid2">
                   <div style={{ width: '100%' }}>
                     <div style={{ display: 'flex', border: '1px solid rgba(18,38,63,0.12)', borderRadius: '12px', height: '48px', background: 'white', width: '100%' }}>
@@ -1180,7 +1192,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                   </SelectField>
                 </div>
                 
-                {/* Password + Confirm Password Row with Eye Icons */}
                 <div className="formGrid2">
                   <PasswordInput
                     placeholder="Password"
@@ -1200,7 +1211,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                   />
                 </div>
                 
-                {/* Password Strength - Moved inside a container with proper spacing */}
                 {registerPassword && (
                   <div className="password-strength-container">
                     <div 
@@ -1221,7 +1231,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 
                 {passwordError && <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '4px' }}>{passwordError}</div>}
                 
-                {/* Submit Button */}
                 <button type="submit" className="btn btnSuccess">Create account</button>
               </>
             )}
