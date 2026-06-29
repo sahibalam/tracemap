@@ -1454,12 +1454,15 @@ const US_STATES = [
 ]
 
 // State Dropdown Component
-// State Dropdown Component - Fixed to show placeholder
+// State Dropdown Component - Alternative approach
 function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
+  // Check if value is empty
+  const isEmpty = !value || value === '';
+  
   return (
     <div style={{ position: 'relative' }}>
       <select
-        value={value || ''}
+        value={isEmpty ? '' : value}
         onChange={(e) => onChange(e.target.value)}
         style={{
           width: '100%',
@@ -1471,7 +1474,7 @@ function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
           fontSize: '14px',
           outline: 'none',
           background: 'white',
-          color: value ? '#17263a' : 'rgba(23, 38, 58, 0.4)',
+          color: isEmpty ? 'rgba(23, 38, 58, 0.4)' : '#17263a',
           transition: 'all 0.2s ease',
           fontFamily: 'inherit',
           appearance: 'none',
@@ -1490,7 +1493,7 @@ function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
           e.target.style.boxShadow = 'none'
         }}
       >
-        <option value="" disabled>{placeholder}</option>
+        <option value="">{placeholder}</option>
         {US_STATES.map((state) => (
           <option key={state.code} value={state.code}>
             {state.name}
