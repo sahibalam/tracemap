@@ -15,10 +15,10 @@
   box-sizing: border-box;
 }
 
-html,
+/* html,
 body {
   height: 100%;
-}
+} */
 
 /* body {
   margin: 0;
@@ -27,12 +27,27 @@ body {
   color: var(--text);
   overflow: hidden;
 } */
- body {
+
+/* a {
+  color: inherit;
+} */
+
+/* .page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+} */
+html,
+body {
+  height: 100%;
+}
+
+body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "SF Pro Text", "Segoe UI",
     Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   color: var(--text);
-  overflow-y: auto;  /* Allow vertical scrolling */
+  overflow-y: auto;
   min-height: 100vh;
 }
 
@@ -40,18 +55,14 @@ a {
   color: inherit;
 }
 
-/* .page {
-  min-height: 100vh;
-  position: relative;
-  overflow: hidden;
-} */
 .page {
   min-height: 100vh;
   position: relative;
-  overflow: visible;  /* Change from hidden to visible */
+  overflow: visible;
   display: flex;
   flex-direction: column;
 }
+
 
 .bg {
   position: absolute;
