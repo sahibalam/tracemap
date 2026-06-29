@@ -754,7 +754,7 @@ a {
 }
 
 .tabs.register .tabIndicator {
-  background: linear-gradient(180deg, var(--green) 0%, #249c54 100%);
+  background: #0f5ae7;
   box-shadow: 0 12px 24px rgba(47, 180, 99, 0.2);
 }
 
