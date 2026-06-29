@@ -1457,7 +1457,7 @@ const US_STATES = [
 ]
 
 // Custom State Dropdown Component - Displays state name, stores state code
-function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
+function StateDropdown({ value, onChange, placeholder = 'State' }) {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
 
@@ -1980,7 +1980,7 @@ export function WizardStep1({ data, onChange, onNext }) {
                   <StateDropdown
                     value={data.stateCode || ''}
                     onChange={(v) => handleChange('stateCode', v)}
-                    placeholder="Select State"
+                    placeholder="State"
                   />
                 </div>
                 <TextField
@@ -2036,7 +2036,7 @@ export function WizardStep1({ data, onChange, onNext }) {
                   <StateDropdown
                     value={data.currentStateCode || ''}
                     onChange={(v) => handleChange('currentStateCode', v)}
-                    placeholder="Select State"
+                    placeholder="State"
                   />
                 </div>
                 <TextField
