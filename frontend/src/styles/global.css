@@ -48,7 +48,7 @@ a {
 .page {
   min-height: 100vh;
   position: relative;
-  overflow: hidden;  /* Keep this for the background effect, but... */
+  overflow: visible;  /* Change from hidden to visible */
   display: flex;
   flex-direction: column;
 }
