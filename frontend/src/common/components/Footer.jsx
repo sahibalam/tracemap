@@ -1,10 +1,6 @@
 import { Link } from 'react-router-dom'
 
 export function Footer() {
-  const handleContactClick = () => {
-    window.location.href = 'mailto:support@tradesmap.com?subject=Contact%20Enquiry';
-  };
-
   return (
     <footer className="homeFooter">
       <div className="footerContent">
@@ -26,13 +22,17 @@ export function Footer() {
             Terms & Conditions
           </Link>
           <span className="footerNavDivider">•</span>
-          <button 
+          <a 
             className="footerLink" 
-            onClick={handleContactClick}
-            style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
+            href="mailto:support@tradesmap.com?subject=Contact%20Enquiry"
+            onClick={(e) => {
+              // Let the default behavior happen
+              // Just log for debugging
+              console.log('Contact link clicked');
+            }}
           >
             Contact Us
-          </button>
+          </a>
         </nav>
       </div>
     </footer>
