@@ -1456,13 +1456,41 @@ const US_STATES = [
   { name: 'Wyoming', code: 'WY' },
 ]
 
-// State Dropdown Component - Fixed
+// Custom State Dropdown Component - Displays state name, stores state code
 function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef(null)
+
+  // Get the state name for a given code
+  const getStateName = (code) => {
+    if (!code) return ''
+    const state = US_STATES.find(s => s.code === code)
+    return state ? state.name : ''
+  }
+
+  // Get the display text for the dropdown
+  const getDisplayText = () => {
+    if (!value) return placeholder
+    const name = getStateName(value)
+    return name || placeholder
+  }
+
+  // Handle click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
   return (
-    <div style={{ position: 'relative' }}>
-      <select
-        value={value || ''}
-        onChange={(e) => onChange(e.target.value)}
+    <div ref={dropdownRef} style={{ position: 'relative' }}>
+      {/* Dropdown Button */}
+      <div
+        onClick={() => setIsOpen(!isOpen)}
         style={{
           width: '100%',
           height: '48px',
@@ -1476,29 +1504,118 @@ function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
           color: value ? '#17263a' : '#6b7280',
           transition: 'all 0.2s ease',
           fontFamily: 'inherit',
-          appearance: 'none',
           cursor: 'pointer',
-          backgroundColor: '#fff',
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2317263a' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
-          backgroundRepeat: 'no-repeat',
-          backgroundPosition: 'right 14px center',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          userSelect: 'none',
+          boxShadow: isOpen ? '0 0 0 3px rgba(15, 78, 169, 0.1)' : 'none',
+          borderColor: isOpen ? '#0f4ea9' : 'rgba(18, 38, 63, 0.12)',
         }}
-        onFocus={(e) => {
-          e.target.style.borderColor = '#0f4ea9'
-          e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+        onMouseEnter={(e) => {
+          if (!isOpen) {
+            e.currentTarget.style.borderColor = 'rgba(15, 78, 169, 0.4)'
+          }
         }}
-        onBlur={(e) => {
-          e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-          e.target.style.boxShadow = 'none'
+        onMouseLeave={(e) => {
+          if (!isOpen) {
+            e.currentTarget.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+          }
         }}
       >
-        <option value="">{placeholder}</option>
-        {US_STATES.map((state) => (
-          <option key={state.code} value={state.code}>
-            {state.name}
-          </option>
-        ))}
-      </select>
+        <span>{getDisplayText()}</span>
+        <svg 
+          width="12" 
+          height="12" 
+          viewBox="0 0 12 12" 
+          style={{
+            transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+            transition: 'transform 0.2s ease',
+            flexShrink: 0
+          }}
+        >
+          <path fill="#17263a" d="M6 8L1 3h10z" />
+        </svg>
+      </div>
+
+      {/* Dropdown Menu */}
+      {isOpen && (
+        <div
+          style={{
+            position: 'absolute',
+            top: 'calc(100% + 4px)',
+            left: 0,
+            right: 0,
+            maxHeight: '200px',
+            overflowY: 'auto',
+            background: 'white',
+            border: '1px solid rgba(18, 38, 63, 0.12)',
+            borderRadius: '12px',
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+            zIndex: 1000,
+            padding: '4px 0',
+          }}
+        >
+          {/* Placeholder option */}
+          <div
+            onClick={() => {
+              onChange('')
+              setIsOpen(false)
+            }}
+            style={{
+              padding: '10px 16px',
+              cursor: 'pointer',
+              fontSize: '14px',
+              color: '#6b7280',
+              transition: 'all 0.15s ease',
+              borderRadius: '8px',
+              margin: '2px 4px',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+            }}
+          >
+            {placeholder}
+          </div>
+
+          {/* State options */}
+          {US_STATES.map((state) => (
+            <div
+              key={state.code}
+              onClick={() => {
+                onChange(state.code)
+                setIsOpen(false)
+              }}
+              style={{
+                padding: '10px 16px',
+                cursor: 'pointer',
+                fontSize: '14px',
+                color: value === state.code ? '#0f4ea9' : '#17263a',
+                fontWeight: value === state.code ? '600' : '400',
+                background: value === state.code ? 'rgba(15, 78, 169, 0.08)' : 'transparent',
+                transition: 'all 0.15s ease',
+                borderRadius: '8px',
+                margin: '2px 4px',
+              }}
+              onMouseEnter={(e) => {
+                if (value !== state.code) {
+                  e.currentTarget.style.background = 'rgba(15, 78, 169, 0.05)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (value !== state.code) {
+                  e.currentTarget.style.background = 'transparent'
+                }
+              }}
+            >
+              {state.name}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
