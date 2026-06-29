@@ -97,7 +97,7 @@ a {
 .topbarInner {
   max-width: var(--pageMax);
   margin: 0 auto;
-  padding: 12px 22px;  /* Reduced */
+  padding: 4px 22px;  /* Reduced */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -107,7 +107,7 @@ a {
 .topbarSolid .topbarInner {
   max-width: none;
   margin: 0;
-  padding: 6px 22px;  /* Reduced */
+  padding: 4px 22px;  /* Reduced */
 }
 
 .topbarCenter {
