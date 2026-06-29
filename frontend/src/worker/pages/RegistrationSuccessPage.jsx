@@ -152,7 +152,7 @@ export function RegistrationSuccessPage() {
                   onClick={handleGoToProfile}
                   style={{
                     padding: '14px 48px',
-                    backgroundColor: '#0f172a',
+                    backgroundColor: '#0f5ae7',
                     color: 'white',
                     border: 'none',
                     borderRadius: '8px',
