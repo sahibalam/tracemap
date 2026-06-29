@@ -1189,15 +1189,15 @@ a {
 }
 
 .wizardTitle {
-  font-size: 18px;
-  font-weight: 900;
+  Font-size:16px;
+Font-weight:700;
   color: rgba(23, 38, 58, 0.92);
 }
 
 .wizardSubtitle {
   margin-top: 4px;
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 400;
   color: rgba(23, 38, 58, 0.62);
 }
 
@@ -1237,12 +1237,12 @@ a {
 }
 
 .wizardSectionBar {
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: linear-gradient(180deg, rgba(15, 78, 169, 0.95) 0%, rgba(11, 63, 144, 0.95) 100%);
-  color: rgba(255, 255, 255, 0.98);
-  font-weight: 900;
-  letter-spacing: 0.3px;
+    color: #0f5ae7;
+    letter-spacing: .3px;
+    background: white;
+    border-radius: 12px;
+    padding: 0px;
+    font-weight: 700;
 }
 
 .wizardGrid2 {
