@@ -1454,9 +1454,8 @@ const US_STATES = [
 ]
 
 // State Dropdown Component
-// State Dropdown Component - Alternative approach
+// State Dropdown Component - Highly visible placeholder
 function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
-  // Check if value is empty
   const isEmpty = !value || value === '';
   
   return (
@@ -1474,7 +1473,7 @@ function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
           fontSize: '14px',
           outline: 'none',
           background: 'white',
-          color: isEmpty ? 'rgba(23, 38, 58, 0.4)' : '#17263a',
+          color: isEmpty ? '#6b7280' : '#17263a', // More visible gray
           transition: 'all 0.2s ease',
           fontFamily: 'inherit',
           appearance: 'none',
@@ -1493,7 +1492,7 @@ function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
           e.target.style.boxShadow = 'none'
         }}
       >
-        <option value="">{placeholder}</option>
+        <option value="" disabled style={{ color: '#6b7280' }}>{placeholder}</option>
         {US_STATES.map((state) => (
           <option key={state.code} value={state.code}>
             {state.name}
