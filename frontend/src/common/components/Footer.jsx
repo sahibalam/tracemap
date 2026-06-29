@@ -25,11 +25,8 @@ export function Footer() {
           <a 
             className="footerLink" 
             href="mailto:support@tradesmap.com?subject=Contact%20Enquiry"
-            onClick={(e) => {
-              // Let the default behavior happen
-              // Just log for debugging
-              console.log('Contact link clicked');
-            }}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             Contact Us
           </a>
