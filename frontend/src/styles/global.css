@@ -2018,8 +2018,13 @@ Font-weight:700;
   }
 
   .brandLogo {
-    width: 170px;
-    height: 46px;
+    width: 170px !important;
+    height: 46px !important;
+  }
+  
+  .topbarSolid .brandLogo {
+    width: 170px !important;
+    height: 46px !important;
   }
 
   .appShellBody {
