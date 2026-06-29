@@ -498,16 +498,16 @@ a {
 }
 
 .brandLogo {
-  width: 352px;
-  height: 114px;
-  object-fit: contain;
-  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.22));
+    width: 268px;  /* Changed from 352px */
+    height: 54px;  /* Changed from 114px */
+    object-fit: contain;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.22));
 }
 
 .topbarSolid .brandLogo {
-  width: 268px;
-  height: 54px;
-  filter: drop-shadow(0 12px 20px rgba(18, 38, 63, 0.12)) brightness(1.02) contrast(1.02);
+    width: 268px;  /* Keep same as above */
+    height: 54px;  /* Keep same as above */
+    filter: drop-shadow(0 12px 20px rgba(18, 38, 63, 0.12)) brightness(1.02) contrast(1.02);
 }
 
 .topbarSolid .navLink {
