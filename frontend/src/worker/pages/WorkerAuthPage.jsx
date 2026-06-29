@@ -1019,7 +1019,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     .formGrid2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 7px;
       width: 100%;
       max-width: 100%;
       box-sizing: border-box;
@@ -1118,7 +1118,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     form {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 2px;
     }
   `
 
