@@ -1454,6 +1454,7 @@ const US_STATES = [
 ]
 
 // State Dropdown Component
+// State Dropdown Component - Fixed to show placeholder
 function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
   return (
     <div style={{ position: 'relative' }}>
@@ -1489,7 +1490,7 @@ function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
           e.target.style.boxShadow = 'none'
         }}
       >
-        <option value="" disabled selected>{placeholder}</option>
+        <option value="" disabled>{placeholder}</option>
         {US_STATES.map((state) => (
           <option key={state.code} value={state.code}>
             {state.name}
