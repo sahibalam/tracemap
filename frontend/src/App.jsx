@@ -108,8 +108,8 @@ function App() {
       
       {/* Legal Pages */}
       <Route path="/about" element={<AboutPage />} />
-      <Route path="/privacy" element={<PrivacyPage />} />
-      <Route path="/terms" element={<TermsPage />} />
+      <Route path="/privacy-policy" element={<PrivacyPage />} />
+      <Route path="/terms-conditions" element={<TermsPage />} />
       
       {/* Worker Routes */}
       <Route path="/" element={<HomePage />} />
