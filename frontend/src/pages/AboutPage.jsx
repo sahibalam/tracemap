@@ -4,8 +4,8 @@ import { Footer } from '../common/components/Footer'
 export function AboutPage() {
   return (
     <div className="page" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-      <div className="bg bgAuth" />
-      <div className="bgOverlay" />
+      {/* <div className="bg bgAuth" />
+      <div className="bgOverlay" /> */}
       <TopNav variant="solid" />
       <main style={{ flex: 1, padding: '40px 22px', maxWidth: 'var(--pageMax)', margin: '0 auto', width: '100%' }}>
         <div className="legalPage">
