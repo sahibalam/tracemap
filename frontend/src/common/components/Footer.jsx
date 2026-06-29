@@ -21,6 +21,14 @@ export function Footer() {
           <Link to="/terms" className="footerLink">
             Terms & Conditions
           </Link>
+          <span className="footerNavDivider">•</span>
+          <a 
+            href="mailto:support@tradesmap.com?subject=contact%20enquiry" 
+            className="footerLink"
+            target="_top"
+          >
+            Contact Us
+          </a>
         </nav>
       </div>
     </footer>
