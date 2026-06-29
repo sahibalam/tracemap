@@ -14,11 +14,11 @@ export function Footer() {
             About Us
           </Link>
           <span className="footerNavDivider">•</span>
-          <Link to="/privacy" className="footerLink">
+          <Link to="/privacy-policy" className="footerLink">
             Privacy Policy
           </Link>
           <span className="footerNavDivider">•</span>
-          <Link to="/terms" className="footerLink">
+          <Link to="/terms-conditions" className="footerLink">
             Terms & Conditions
           </Link>
           <span className="footerNavDivider">•</span>
