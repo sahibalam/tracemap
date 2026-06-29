@@ -2439,7 +2439,7 @@ Font-weight:700;
 }
 
 .btnSuccess {
-  background: linear-gradient(180deg, #2fb463 0%, #249c54 100%) !important;
+  background: #0f5ae7;
   height: 48px !important;
   border-radius: 12px !important;
   font-weight: 700 !important;
