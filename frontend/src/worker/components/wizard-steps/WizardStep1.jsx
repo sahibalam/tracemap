@@ -1392,6 +1392,9 @@
 // }
 
 
+
+
+
 // src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef } from 'react'
 import DatePicker from 'react-datepicker'
@@ -1453,15 +1456,22 @@ const US_STATES = [
   { name: 'Wyoming', code: 'WY' },
 ]
 
-// State Dropdown Component
-// State Dropdown Component - Highly visible placeholder
+// State Dropdown Component - Fixed to display state names
 function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
+  // Get the display name for the selected value
+  const getDisplayValue = (code) => {
+    if (!code) return ''
+    const state = US_STATES.find(s => s.code === code)
+    return state ? state.name : code
+  }
+
   const isEmpty = !value || value === '';
-  
+  const displayText = isEmpty ? placeholder : getDisplayValue(value);
+
   return (
     <div style={{ position: 'relative' }}>
       <select
-        value={isEmpty ? '' : value}
+        value={value || ''}
         onChange={(e) => onChange(e.target.value)}
         style={{
           width: '100%',
@@ -1473,7 +1483,7 @@ function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
           fontSize: '14px',
           outline: 'none',
           background: 'white',
-          color: isEmpty ? '#6b7280' : '#17263a', // More visible gray
+          color: isEmpty ? '#6b7280' : '#17263a',
           transition: 'all 0.2s ease',
           fontFamily: 'inherit',
           appearance: 'none',
