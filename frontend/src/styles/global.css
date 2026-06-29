@@ -498,8 +498,8 @@ a {
 }
 
 .brandLogo {
-  width: 252px;
-  height: 64px;
+  width: 352px;
+  height: 114px;
   object-fit: contain;
   filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.22));
 }
