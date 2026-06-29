@@ -20,22 +20,37 @@ body {
   height: 100%;
 }
 
-body {
+/* body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "SF Pro Text", "Segoe UI",
     Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   color: var(--text);
   overflow: hidden;
+} */
+ body {
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Inter", "SF Pro Display", "SF Pro Text", "Segoe UI",
+    Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--text);
+  overflow-y: auto;  /* Allow vertical scrolling */
+  min-height: 100vh;
 }
 
 a {
   color: inherit;
 }
 
-.page {
+/* .page {
   min-height: 100vh;
   position: relative;
   overflow: hidden;
+} */
+.page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;  /* Keep this for the background effect, but... */
+  display: flex;
+  flex-direction: column;
 }
 
 .bg {
@@ -578,13 +593,23 @@ a {
   overflow: hidden;
 }
 
-.homeMain {
+/* .homeMain {
   position: relative;
   z-index: 2;
   min-height: calc(100vh - 70px);
   display: grid;
   place-items: center;
   padding: 22px;
+} */
+.homeMain {
+  position: relative;
+  z-index: 2;
+  min-height: calc(100vh - 70px); /* Keep minimum height */
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  /* Remove any flex:1 if present, or add: */
+  flex: 1 0 auto; /* Allow it to grow but not shrink below min-height */
 }
 
 .wipCard {
