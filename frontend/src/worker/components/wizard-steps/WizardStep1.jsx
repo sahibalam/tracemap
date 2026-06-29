@@ -1396,7 +1396,7 @@
 
 
 // src/worker/components/wizard-steps/WizardStep1.jsx
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { TextField } from '../../../common/components/TextField'
@@ -1456,18 +1456,8 @@ const US_STATES = [
   { name: 'Wyoming', code: 'WY' },
 ]
 
-// State Dropdown Component - Fixed to display state names
+// State Dropdown Component - Fixed
 function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
-  // Get the display name for the selected value
-  const getDisplayValue = (code) => {
-    if (!code) return ''
-    const state = US_STATES.find(s => s.code === code)
-    return state ? state.name : code
-  }
-
-  const isEmpty = !value || value === '';
-  const displayText = isEmpty ? placeholder : getDisplayValue(value);
-
   return (
     <div style={{ position: 'relative' }}>
       <select
@@ -1483,7 +1473,7 @@ function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
           fontSize: '14px',
           outline: 'none',
           background: 'white',
-          color: isEmpty ? '#6b7280' : '#17263a',
+          color: value ? '#17263a' : '#6b7280',
           transition: 'all 0.2s ease',
           fontFamily: 'inherit',
           appearance: 'none',
@@ -1502,7 +1492,7 @@ function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
           e.target.style.boxShadow = 'none'
         }}
       >
-        <option value="" disabled style={{ color: '#6b7280' }}>{placeholder}</option>
+        <option value="">{placeholder}</option>
         {US_STATES.map((state) => (
           <option key={state.code} value={state.code}>
             {state.name}
@@ -1530,7 +1520,14 @@ export function WizardStep1({ data, onChange, onNext }) {
   const uploadRef = useRef(null)
   const datePickerRef = useRef(null)
   
+  // Debug logging to track state changes
+  useEffect(() => {
+    console.log('WizardStep1 - data.stateCode:', data.stateCode)
+    console.log('WizardStep1 - data.currentStateCode:', data.currentStateCode)
+  }, [data.stateCode, data.currentStateCode])
+  
   const handleChange = (field, value) => {
+    console.log(`Updating ${field} to:`, value)
     onChange({ ...data, [field]: value })
   }
 
