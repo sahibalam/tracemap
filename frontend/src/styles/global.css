@@ -2545,6 +2545,7 @@ a {
 
 .footerLink:hover {
   color: #0f4ea9;
+  text-decoration: underline;
 }
 
 .footerNavDivider {
@@ -2685,5 +2686,73 @@ a {
   
   .footerModalHeader h2 {
     font-size: 17px;
+  }
+}
+
+
+
+
+
+
+/* ========== LEGAL PAGES STYLES ========== */
+.legalPage {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 20px 0 40px;
+}
+
+.legalTitle {
+  font-size: 32px;
+  font-weight: 900;
+  color: rgba(23, 38, 58, 0.92);
+  margin: 0 0 24px 0;
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(18, 38, 63, 0.08);
+}
+
+.legalContent {
+  font-size: 15px;
+  line-height: 1.8;
+  color: rgba(23, 38, 58, 0.85);
+}
+
+.legalContent h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: rgba(23, 38, 58, 0.9);
+  margin: 28px 0 12px 0;
+}
+
+.legalContent h4 {
+  font-size: 15px;
+  font-weight: 700;
+  color: rgba(23, 38, 58, 0.85);
+  margin: 18px 0 8px 0;
+}
+
+.legalContent p {
+  margin: 0 0 12px 0;
+}
+
+.legalContent ul {
+  margin: 8px 0 16px 0;
+  padding-left: 24px;
+}
+
+.legalContent li {
+  margin-bottom: 4px;
+}
+
+.legalContent strong {
+  color: rgba(23, 38, 58, 0.9);
+}
+
+@media (max-width: 640px) {
+  .legalTitle {
+    font-size: 24px;
+  }
+  
+  .legalContent {
+    font-size: 14px;
   }
 }
