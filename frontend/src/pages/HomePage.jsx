@@ -24,11 +24,11 @@ import { Footer } from '../common/components/Footer'
 
 export function HomePage() {
   return (
-    <div className="page">
+    <div className="page" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <div className="bg bgAuth" />
       <div className="bgOverlay" />
       <TopNav variant="transparent" />
-      <main className="homeMain">
+      <main className="homeMain" style={{ flex: 1 }}>
         <div className="wipCard" role="status">
           Work in progress
         </div>
