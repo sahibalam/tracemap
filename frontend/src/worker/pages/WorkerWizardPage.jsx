@@ -1352,64 +1352,67 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const goNext = () => setStep((s) => Math.min(maxStep, s + 1))
   const goPrev = () => setStep((s) => Math.max(1, s - 1))
 
-  const finishWizard = () => {
-    navigate('/wizard/summary', {
-      state: {
-        basics: {
-          legalFirstName: wizardData.legalFirstName,
-          legalLastName: wizardData.legalLastName,
-          displayName: wizardData.displayName,
-          emailAddress: wizardData.emailAddress,
-          mobilePhone: wizardData.mobilePhone,
-          dob: wizardData.dob,
-          addressLine1: wizardData.addressLine1,
-          addressLine2: wizardData.addressLine2,
-          city: wizardData.city,
-          stateCode: wizardData.stateCode,
-          zip: wizardData.zip,
-          currentAddressLine1: wizardData.currentAddressLine1,
-          currentAddressLine2: wizardData.currentAddressLine2,
-          currentCity: wizardData.currentCity,
-          currentStateCode: wizardData.currentStateCode,
-          currentZip: wizardData.currentZip,
-        },
-        trade: {
-          primaryTrade: wizardData.primaryTrade,
-          workerLevel: wizardData.workerLevel,
-          yearOfExperience: wizardData.yearOfExperience,
-          skills: wizardData.skills,
-          additionalSkillsList: wizardData.additionalSkillsList,
-          additionalSkills: wizardData.additionalSkills,
-          travelRadiusMiles: wizardData.travelRadiusMiles,
-        },
-        workHistory: {
-          projects: wizardData.projects,
-          projectConditions: wizardData.projectConditions,
-          referenceName: wizardData.referenceName,
-          referenceTitle: wizardData.referenceTitle,
-          referencePhone: wizardData.referencePhone,
-        },
-        certifications: {
-          certChecklist: wizardData.certChecklist,
-          safetyFlags: wizardData.safetyFlags,
-        },
-        medical: {
-          emergencyMedicalInfo: wizardData.emergencyMedicalInfo,
-          bloodGroup: wizardData.bloodGroup,
-          emergencyMedicalFlags: wizardData.emergencyMedicalFlags,
-          emergencyInstructions: wizardData.emergencyInstructions,
-        },
-        acknowledgments: {
-          emergencyContactName: wizardData.emergencyContactName,
-          emergencyContactRelationship: wizardData.emergencyContactRelationship,
-          emergencyContactPhone: wizardData.emergencyContactPhone,
-          policyAcks: wizardData.policyAcks,
-          signatureWorkerName: wizardData.signatureWorkerName,
-          signatureDate: wizardData.signatureDate,
-        },
+ // In WorkerWizardPage.jsx
+
+const finishWizard = () => {
+  // Navigate to success page instead of summary
+  navigate('/registration-success', {
+    state: {
+      basics: {
+        legalFirstName: wizardData.legalFirstName,
+        legalLastName: wizardData.legalLastName,
+        displayName: wizardData.displayName,
+        emailAddress: wizardData.emailAddress,
+        mobilePhone: wizardData.mobilePhone,
+        dob: wizardData.dob,
+        addressLine1: wizardData.addressLine1,
+        addressLine2: wizardData.addressLine2,
+        city: wizardData.city,
+        stateCode: wizardData.stateCode,
+        zip: wizardData.zip,
+        currentAddressLine1: wizardData.currentAddressLine1,
+        currentAddressLine2: wizardData.currentAddressLine2,
+        currentCity: wizardData.currentCity,
+        currentStateCode: wizardData.currentStateCode,
+        currentZip: wizardData.currentZip,
       },
-    })
-  }
+      trade: {
+        primaryTrade: wizardData.primaryTrade,
+        workerLevel: wizardData.workerLevel,
+        yearOfExperience: wizardData.yearOfExperience,
+        skills: wizardData.skills,
+        additionalSkillsList: wizardData.additionalSkillsList,
+        additionalSkills: wizardData.additionalSkills,
+        travelRadiusMiles: wizardData.travelRadiusMiles,
+      },
+      workHistory: {
+        projects: wizardData.projects,
+        projectConditions: wizardData.projectConditions,
+        referenceName: wizardData.referenceName,
+        referenceTitle: wizardData.referenceTitle,
+        referencePhone: wizardData.referencePhone,
+      },
+      certifications: {
+        certChecklist: wizardData.certChecklist,
+        safetyFlags: wizardData.safetyFlags,
+      },
+      medical: {
+        emergencyMedicalInfo: wizardData.emergencyMedicalInfo,
+        bloodGroup: wizardData.bloodGroup,
+        emergencyMedicalFlags: wizardData.emergencyMedicalFlags,
+        emergencyInstructions: wizardData.emergencyInstructions,
+      },
+      acknowledgments: {
+        emergencyContactName: wizardData.emergencyContactName,
+        emergencyContactRelationship: wizardData.emergencyContactRelationship,
+        emergencyContactPhone: wizardData.emergencyContactPhone,
+        policyAcks: wizardData.policyAcks,
+        signatureWorkerName: wizardData.signatureWorkerName,
+        signatureDate: wizardData.signatureDate,
+      },
+    },
+  })
+}
 
   const wizardInner = (
     <div className="wizardPage">
