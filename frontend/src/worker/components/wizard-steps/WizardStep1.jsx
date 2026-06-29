@@ -1392,7 +1392,6 @@
 // }
 
 
-
 // src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef } from 'react'
 import DatePicker from 'react-datepicker'
@@ -1455,7 +1454,7 @@ const US_STATES = [
 ]
 
 // State Dropdown Component
-function StateDropdown({ value, onChange, placeholder = 'State' }) {
+function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
   return (
     <div style={{ position: 'relative' }}>
       <select
@@ -1471,7 +1470,7 @@ function StateDropdown({ value, onChange, placeholder = 'State' }) {
           fontSize: '14px',
           outline: 'none',
           background: 'white',
-          color: '#17263a',
+          color: value ? '#17263a' : 'rgba(23, 38, 58, 0.4)',
           transition: 'all 0.2s ease',
           fontFamily: 'inherit',
           appearance: 'none',
@@ -1490,7 +1489,7 @@ function StateDropdown({ value, onChange, placeholder = 'State' }) {
           e.target.style.boxShadow = 'none'
         }}
       >
-        <option value="" disabled>{placeholder}</option>
+        <option value="" disabled selected>{placeholder}</option>
         {US_STATES.map((state) => (
           <option key={state.code} value={state.code}>
             {state.name}
@@ -1854,7 +1853,7 @@ export function WizardStep1({ data, onChange, onNext }) {
                   <StateDropdown
                     value={data.stateCode || ''}
                     onChange={(v) => handleChange('stateCode', v)}
-                    placeholder="State"
+                    placeholder="Select State"
                   />
                 </div>
                 <TextField
@@ -1910,7 +1909,7 @@ export function WizardStep1({ data, onChange, onNext }) {
                   <StateDropdown
                     value={data.currentStateCode || ''}
                     onChange={(v) => handleChange('currentStateCode', v)}
-                    placeholder="State"
+                    placeholder="Select State"
                   />
                 </div>
                 <TextField
