@@ -277,16 +277,26 @@ export function TaxEditPage() {
         </aside>
 
         <main className="appContent">
-          <div style={{ padding: '24px', maxWidth: '900px', margin: '0 auto' }}>
+          <div style={{ 
+            padding: '24px', 
+            maxWidth: '900px', 
+            margin: '0 auto', 
+            height: 'calc(100vh - 120px)', 
+            display: 'flex', 
+            flexDirection: 'column' 
+          }}>
             
-            {/* Header with Back button */}
+            {/* Sticky Header with Back button */}
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
               gap: '16px',
-              marginBottom: '24px',
+              marginBottom: '16px',
               paddingBottom: '16px',
-              borderBottom: '1px solid rgba(18, 38, 63, 0.08)'
+              borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
+              flexShrink: 0,
+              background: 'white',
+              zIndex: 10,
             }}>
               <button
                 onClick={handleBack}
@@ -319,274 +329,285 @@ export function TaxEditPage() {
               </span>
             </div>
 
-            {/* Tax Form */}
+            {/* Scrollable Content Area */}
             <div style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '32px',
-              border: '1px solid rgba(18, 38, 63, 0.08)',
+              flex: 1,
+              overflowY: 'auto',
+              paddingBottom: '16px',
             }}>
-              
-              {/* Section 1: Classification Selection & Routing */}
-              <div style={{ marginBottom: '24px' }}>
-                <div style={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: '#17263a',
-                  marginBottom: '16px',
-                  paddingBottom: '8px',
-                  borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
-                }}>
-                  1. Classification Selection & Routing
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input
-                        type="radio"
-                        name="classificationPath"
-                        checked={taxData.classificationPath === 'employee'}
-                        onChange={() => handleChange('classificationPath', 'employee')}
-                      />
-                      <span style={{ fontSize: '14px', color: '#17263a' }}>Employee / W-2 path</span>
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input
-                        type="radio"
-                        name="classificationPath"
-                        checked={taxData.classificationPath === 'subcontractor'}
-                        onChange={() => handleChange('classificationPath', 'subcontractor')}
-                      />
-                      <span style={{ fontSize: '14px', color: '#17263a' }}>Subcontractor / 1099 / entity path</span>
-                    </label>
-                  </div>
-
-                  <div>
-                    <StateDropdown
-                      value={taxData.stateOfWork || ''}
-                      onChange={(v) => handleChange('stateOfWork', v)}
-                      placeholder="Select State of work"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Employee / W-2 Path Requirements */}
-              {taxData.classificationPath === 'employee' && (
-                <div style={{ marginBottom: '24px' }}>
-                  <div style={{
-                    fontSize: '16px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    marginBottom: '16px',
-                    paddingBottom: '8px',
-                    borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
-                  }}>
-                    2. Employee / W-2 Path Requirements
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
-                    <TextField
-                      placeholder="Legal tax name"
-                      icon={<IconUserIcon />}
-                      value={taxData.employeeTaxName || ''}
-                      onChange={(v) => handleChange('employeeTaxName', v)}
-                    />
-                    <TextField 
-                      placeholder="SSN" 
-                      icon={<IconSupportIcon />} 
-                      value={taxData.employeeSsn || ''} 
-                      onChange={(v) => handleChange('employeeSsn', v)} 
-                    />
-                    <TextField
-                      placeholder="Employee start date"
-                      icon={<IconSupportIcon />}
-                      value={taxData.employeeStartDate || ''}
-                      onChange={(v) => handleChange('employeeStartDate', v)}
-                    />
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '12px' }}>
-                    {[
-                      'Form I-9 completed',
-                      'Identity / work authorization reviewed',
-                      'Form W-4 completed',
-                      'New-hire reporting required / completed',
-                      "Workers' comp review required",
-                      'Official form edition used',
-                    ].map((k) => (
-                      <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input type="checkbox" checked={!!(taxData.employeeFlags?.[k] || false)} onChange={toggleMapValue(k, setEmployeeFlags)} />
-                        <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
-                      </label>
-                    ))}
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                    <TextField
-                      placeholder="Reviewer name"
-                      icon={<IconUserIcon />}
-                      value={taxData.reviewerName || ''}
-                      onChange={(v) => handleChange('reviewerName', v)}
-                    />
-                    <TextField
-                      placeholder="Compliance notes"
-                      icon={<IconSupportIcon />}
-                      value={taxData.complianceNotes || ''}
-                      onChange={(v) => handleChange('complianceNotes', v)}
-                    />
-                  </div>
-                </div>
-              )}
-
-              {/* Section 3: Subcontractor / 1099 / Entity Path Requirements */}
-              {taxData.classificationPath === 'subcontractor' && (
-                <div style={{ marginBottom: '24px' }}>
-                  <div style={{
-                    fontSize: '16px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    marginBottom: '16px',
-                    paddingBottom: '8px',
-                    borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
-                  }}>
-                    3. Subcontractor / 1099 / Entity Path Requirements
-                  </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
-                    <TextField
-                      placeholder="Legal entity name"
-                      icon={<IconSupportIcon />}
-                      value={taxData.entityLegalName || ''}
-                      onChange={(v) => handleChange('entityLegalName', v)}
-                    />
-                    <TextField 
-                      placeholder="EIN" 
-                      icon={<IconSupportIcon />} 
-                      value={taxData.entityEin || ''} 
-                      onChange={(v) => handleChange('entityEin', v)} 
-                    />
-                    <TextField
-                      placeholder="Entity type"
-                      icon={<IconSupportIcon />}
-                      value={taxData.entityType || ''}
-                      onChange={(v) => handleChange('entityType', v)}
-                    />
-                    <TextField
-                      placeholder="State of registration"
-                      icon={<IconLocationIcon />}
-                      value={taxData.entityStateRegistration || ''}
-                      onChange={(v) => handleChange('entityStateRegistration', v)}
-                    />
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
-                    <TextField
-                      placeholder="DBA / trade name"
-                      icon={<IconSupportIcon />}
-                      value={taxData.entityDbaName || ''}
-                      onChange={(v) => handleChange('entityDbaName', v)}
-                    />
-                    <TextField
-                      placeholder="Authorized signer"
-                      icon={<IconUserIcon />}
-                      value={taxData.entityAuthorizedSigner || ''}
-                      onChange={(v) => handleChange('entityAuthorizedSigner', v)}
-                    />
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-                    {[
-                      'Form W-9 completed',
-                      'TIN match verified where required',
-                      'Backup withholding flag reviewed',
-                      'Independent contractor reporting needed',
-                      'Contract / entity documentation reviewed',
-                    ].map((k) => (
-                      <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input type="checkbox" checked={!!(taxData.entityFlags?.[k] || false)} onChange={toggleMapValue(k, setEntityFlags)} />
-                        <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Section 4: State-Specific Flags */}
-              <div style={{ marginBottom: '24px' }}>
-                <div style={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: '#17263a',
-                  marginBottom: '16px',
-                  paddingBottom: '8px',
-                  borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
-                }}>
-                  4. State-Specific Flags
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-                  {['Florida worker or project', 'Texas worker or project', "Workers' comp review required"].map((k) => (
-                    <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input type="checkbox" checked={!!(taxData.stateSpecificFlags?.[k] || false)} onChange={toggleMapValue(k, setStateSpecificFlags)} />
-                      <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
-                    </label>
-                  ))}
-                </div>
-              </div>
-
-              {/* Save Button */}
+              {/* Tax Form */}
               <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                paddingTop: '20px',
-                borderTop: '1px solid rgba(18, 38, 63, 0.08)',
+                background: 'white',
+                borderRadius: '16px',
+                padding: '32px',
+                border: '1px solid rgba(18, 38, 63, 0.08)',
               }}>
-                <button
-                  onClick={handleBack}
-                  style={{
-                    padding: '10px 24px',
-                    borderRadius: '8px',
-                    background: 'transparent',
+                
+                {/* Section 1: Classification Selection & Routing */}
+                <div style={{ marginBottom: '24px' }}>
+                  <div style={{
+                    fontSize: '16px',
+                    fontWeight: 600,
                     color: '#17263a',
-                    border: '1px solid rgba(18, 38, 63, 0.12)',
-                    cursor: 'pointer',
+                    marginBottom: '16px',
+                    paddingBottom: '8px',
+                    borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+                  }}>
+                    1. Classification Selection & Routing
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input
+                          type="radio"
+                          name="classificationPath"
+                          checked={taxData.classificationPath === 'employee'}
+                          onChange={() => handleChange('classificationPath', 'employee')}
+                        />
+                        <span style={{ fontSize: '14px', color: '#17263a' }}>Employee / W-2 path</span>
+                      </label>
+                      <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input
+                          type="radio"
+                          name="classificationPath"
+                          checked={taxData.classificationPath === 'subcontractor'}
+                          onChange={() => handleChange('classificationPath', 'subcontractor')}
+                        />
+                        <span style={{ fontSize: '14px', color: '#17263a' }}>Subcontractor / 1099 / entity path</span>
+                      </label>
+                    </div>
+
+                    <div>
+                      <StateDropdown
+                        value={taxData.stateOfWork || ''}
+                        onChange={(v) => handleChange('stateOfWork', v)}
+                        placeholder="Select State of work"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 2: Employee / W-2 Path Requirements */}
+                {taxData.classificationPath === 'employee' && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <div style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      marginBottom: '16px',
+                      paddingBottom: '8px',
+                      borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+                    }}>
+                      2. Employee / W-2 Path Requirements
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                      <TextField
+                        placeholder="Legal tax name"
+                        icon={<IconUserIcon />}
+                        value={taxData.employeeTaxName || ''}
+                        onChange={(v) => handleChange('employeeTaxName', v)}
+                      />
+                      <TextField 
+                        placeholder="SSN" 
+                        icon={<IconSupportIcon />} 
+                        value={taxData.employeeSsn || ''} 
+                        onChange={(v) => handleChange('employeeSsn', v)} 
+                      />
+                      <TextField
+                        placeholder="Employee start date"
+                        icon={<IconSupportIcon />}
+                        value={taxData.employeeStartDate || ''}
+                        onChange={(v) => handleChange('employeeStartDate', v)}
+                      />
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '12px' }}>
+                      {[
+                        'Form I-9 completed',
+                        'Identity / work authorization reviewed',
+                        'Form W-4 completed',
+                        'New-hire reporting required / completed',
+                        "Workers' comp review required",
+                        'Official form edition used',
+                      ].map((k) => (
+                        <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input type="checkbox" checked={!!(taxData.employeeFlags?.[k] || false)} onChange={toggleMapValue(k, setEmployeeFlags)} />
+                          <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
+                        </label>
+                      ))}
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                      <TextField
+                        placeholder="Reviewer name"
+                        icon={<IconUserIcon />}
+                        value={taxData.reviewerName || ''}
+                        onChange={(v) => handleChange('reviewerName', v)}
+                      />
+                      <TextField
+                        placeholder="Compliance notes"
+                        icon={<IconSupportIcon />}
+                        value={taxData.complianceNotes || ''}
+                        onChange={(v) => handleChange('complianceNotes', v)}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Section 3: Subcontractor / 1099 / Entity Path Requirements */}
+                {taxData.classificationPath === 'subcontractor' && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <div style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      marginBottom: '16px',
+                      paddingBottom: '8px',
+                      borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+                    }}>
+                      3. Subcontractor / 1099 / Entity Path Requirements
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                      <TextField
+                        placeholder="Legal entity name"
+                        icon={<IconSupportIcon />}
+                        value={taxData.entityLegalName || ''}
+                        onChange={(v) => handleChange('entityLegalName', v)}
+                      />
+                      <TextField 
+                        placeholder="EIN" 
+                        icon={<IconSupportIcon />} 
+                        value={taxData.entityEin || ''} 
+                        onChange={(v) => handleChange('entityEin', v)} 
+                      />
+                      <TextField
+                        placeholder="Entity type"
+                        icon={<IconSupportIcon />}
+                        value={taxData.entityType || ''}
+                        onChange={(v) => handleChange('entityType', v)}
+                      />
+                      <TextField
+                        placeholder="State of registration"
+                        icon={<IconLocationIcon />}
+                        value={taxData.entityStateRegistration || ''}
+                        onChange={(v) => handleChange('entityStateRegistration', v)}
+                      />
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+                      <TextField
+                        placeholder="DBA / trade name"
+                        icon={<IconSupportIcon />}
+                        value={taxData.entityDbaName || ''}
+                        onChange={(v) => handleChange('entityDbaName', v)}
+                      />
+                      <TextField
+                        placeholder="Authorized signer"
+                        icon={<IconUserIcon />}
+                        value={taxData.entityAuthorizedSigner || ''}
+                        onChange={(v) => handleChange('entityAuthorizedSigner', v)}
+                      />
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                      {[
+                        'Form W-9 completed',
+                        'TIN match verified where required',
+                        'Backup withholding flag reviewed',
+                        'Independent contractor reporting needed',
+                        'Contract / entity documentation reviewed',
+                      ].map((k) => (
+                        <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input type="checkbox" checked={!!(taxData.entityFlags?.[k] || false)} onChange={toggleMapValue(k, setEntityFlags)} />
+                          <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Section 4: State-Specific Flags */}
+                <div style={{ marginBottom: '24px' }}>
+                  <div style={{
+                    fontSize: '16px',
                     fontWeight: 600,
-                    fontSize: '14px',
-                    transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  style={{
-                    padding: '10px 32px',
-                    borderRadius: '8px',
-                    background: isSaving ? '#94a3b8' : '#0f4ea9',
-                    color: 'white',
-                    border: 'none',
-                    cursor: isSaving ? 'not-allowed' : 'pointer',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    transition: 'all 0.2s',
-                    opacity: isSaving ? 0.7 : 1,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isSaving) {
-                      e.currentTarget.style.background = '#0b3f90'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSaving) {
-                      e.currentTarget.style.background = '#0f4ea9'
-                    }
-                  }}
-                >
-                  {isSaving ? 'Saving...' : 'Save Changes'}
-                </button>
+                    color: '#17263a',
+                    marginBottom: '16px',
+                    paddingBottom: '8px',
+                    borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+                  }}>
+                    4. State-Specific Flags
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                    {['Florida worker or project', 'Texas worker or project', "Workers' comp review required"].map((k) => (
+                      <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                        <input type="checkbox" checked={!!(taxData.stateSpecificFlags?.[k] || false)} onChange={toggleMapValue(k, setStateSpecificFlags)} />
+                        <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
               </div>
+            </div>
+
+            {/* Sticky Footer with Cancel and Save buttons */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '12px',
+              paddingTop: '16px',
+              paddingBottom: '8px',
+              borderTop: '1px solid rgba(18, 38, 63, 0.08)',
+              flexShrink: 0,
+              background: 'white',
+              zIndex: 10,
+            }}>
+              <button
+                onClick={handleBack}
+                style={{
+                  padding: '10px 24px',
+                  borderRadius: '8px',
+                  background: 'transparent',
+                  color: '#17263a',
+                  border: '1px solid rgba(18, 38, 63, 0.12)',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                style={{
+                  padding: '10px 32px',
+                  borderRadius: '8px',
+                  background: isSaving ? '#94a3b8' : '#0f4ea9',
+                  color: 'white',
+                  border: 'none',
+                  cursor: isSaving ? 'not-allowed' : 'pointer',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  transition: 'all 0.2s',
+                  opacity: isSaving ? 0.7 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#0b3f90'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#0f4ea9'
+                  }
+                }}
+              >
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
             </div>
           </div>
         </main>
