@@ -247,7 +247,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       width: 100%;
       height: 40px;
       padding: 0 12px;
-      padding-right: 32px;
+      padding-right: 12px;
       border: 1px solid rgba(18, 38, 63, 0.12);
       border-radius: 8px;
       font-size: 13px;
@@ -256,7 +256,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       color: #17263a;
       outline: none;
       transition: all 0.2s ease;
-      appearance: none;
       cursor: pointer;
       box-sizing: border-box;
     }
@@ -277,16 +276,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
 
     .trade-select-wrapper select option.placeholder-option {
       color: rgba(23, 38, 58, 0.4);
-    }
-
-    .trade-select-wrapper .select-arrow {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(23, 38, 58, 0.4);
-      pointer-events: none;
-      font-size: 10px;
     }
 
     .trade-select-wrapper .select-icon {
@@ -432,7 +421,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     ))}
                   </select>
                   <span className="select-icon"><IconSupport /></span>
-                  <span className="select-arrow">▼</span>
                 </div>
                 <TextField
                   placeholder="Role"
@@ -555,7 +543,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     ))}
                   </select>
                   <span className="select-icon"><IconSupport /></span>
-                  <span className="select-arrow">▼</span>
                 </div>
                 <TextField
                   placeholder="Role"
@@ -678,7 +665,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     ))}
                   </select>
                   <span className="select-icon"><IconSupport /></span>
-                  <span className="select-arrow">▼</span>
                 </div>
                 <TextField
                   placeholder="Role"
