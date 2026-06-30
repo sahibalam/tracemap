@@ -1006,8 +1006,6 @@
 //     </div>
 //   )
 // }
-
-
 // src/worker/pages/WorkerSummaryPage.jsx
 import { useState } from 'react'
 import { useNavigate, useLocation, NavLink } from 'react-router-dom'
@@ -1107,6 +1105,10 @@ export function WorkerSummaryPage() {
   const updatedPaymentData = location?.state?.paymentData || {}
   const hasUpdatedPayment = location?.state?.updatedPayment || false
 
+  // Check if we have updated availability data from the edit page
+  const updatedAvailabilityData = location?.state?.availabilityData || {}
+  const hasUpdatedAvailability = location?.state?.updatedAvailability || false
+
   // Initialize medical data from props or from updated data
   const [medicalData, setMedicalData] = useState({
     bloodGroup: hasUpdatedMedical ? updatedMedicalData.bloodGroup : (data.medical?.bloodGroup || ''),
@@ -1157,6 +1159,16 @@ export function WorkerSummaryPage() {
     mobileNumber: hasUpdatedPayment ? updatedPaymentData.mobileNumber : '',
   })
 
+  // Initialize availability data from props or from updated data
+  const [availabilityData, setAvailabilityData] = useState({
+    hourlyRate: hasUpdatedAvailability ? updatedAvailabilityData.hourlyRate : (data.availability?.hourlyRate || ''),
+    payPrefs: hasUpdatedAvailability ? updatedAvailabilityData.payPrefs : (data.availability?.payPrefs || {}),
+    travelRadius: hasUpdatedAvailability ? updatedAvailabilityData.travelRadius : (data.availability?.travelRadius || 50),
+    willingToTravel: hasUpdatedAvailability ? updatedAvailabilityData.willingToTravel : (data.availability?.willingToTravel || ''),
+    travelPrefs: hasUpdatedAvailability ? updatedAvailabilityData.travelPrefs : (data.availability?.travelPrefs || {}),
+    availability: hasUpdatedAvailability ? updatedAvailabilityData.availability : (data.availability?.availability || {}),
+  })
+
   const basics = data.basics ?? {}
   const trade = data.trade ?? {}
   const workHistory = data.workHistory ?? {}
@@ -1201,6 +1213,16 @@ export function WorkerSummaryPage() {
       return certs.join(', ')
     }
     return 'No certifications'
+  }
+
+  // Get availability display text
+  const getAvailabilityText = () => {
+    const avail = availabilityData.availability || availability.availability || {}
+    const days = Object.keys(avail).filter(key => avail[key])
+    if (days.length > 0) {
+      return days.map(day => day.charAt(0).toUpperCase() + day.slice(1)).join(', ')
+    }
+    return 'Not specified'
   }
 
   const fallbackProjects = [
@@ -1405,66 +1427,66 @@ export function WorkerSummaryPage() {
             {/* Row 3: Availability & Rate, Certifications & Safety, Tax Profile, Payment/Bank Details */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
               
-            {/* Availability & Rate Card - Updated with navigation */}
-<div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-    <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Availability & Rate</span>
-    <button 
-      type="button" 
-      onClick={() => {
-        // Navigate to availability edit page with current data
-        navigate('/availability/edit', { 
-          state: { 
-            availabilityData: {
-              hourlyRate: availability.hourlyRate || '',
-              payPrefs: availability.payPrefs || {},
-              travelRadius: availability.travelRadius || 50,
-              willingToTravel: availability.willingToTravel || '',
-              travelPrefs: availability.travelPrefs || {},
-              availability: availability.availability || {},
-            },
-            parentData: data // Pass the parent data to preserve it
-          } 
-        })
-      }}
-      style={{ 
-        background: 'none', 
-        border: 'none', 
-        color: '#0f4ea9', 
-        cursor: 'pointer',
-        padding: '4px 8px',
-        borderRadius: '6px',
-        transition: 'background 0.2s',
-      }}
-      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
-      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-    >
-      <IconPencil />
-    </button>
-  </div>
-  <div>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-        <span style={{ color: 'rgba(23,38,58,0.6)' }}>Hourly Rate</span>
-        <span style={{ color: '#17263a', fontWeight: 500 }}>
-          {displayValue(availability.hourlyRateRequested || availabilityData.hourlyRate ? `$${availability.hourlyRateRequested || availabilityData.hourlyRate}` : '—')}
-        </span>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-        <span style={{ color: 'rgba(23,38,58,0.6)' }}>Travel</span>
-        <span style={{ color: '#17263a', fontWeight: 500 }}>
-          {availabilityData.willingToTravel === 'yes' || trade.travelRadiusMiles ? 'Yes' : 'No'}
-        </span>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-        <span style={{ color: 'rgba(23,38,58,0.6)' }}>Available</span>
-        <span style={{ color: '#17263a', fontWeight: 500 }}>
-          {displayValue(availability.earliestStartDate || availabilityData.availability?.startDate, 'Immediate')}
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
+              {/* Availability & Rate Card - Updated with navigation */}
+              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Availability & Rate</span>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      // Navigate to availability edit page with current data
+                      navigate('/availability/edit', { 
+                        state: { 
+                          availabilityData: {
+                            hourlyRate: availabilityData.hourlyRate || availability.hourlyRate || '',
+                            payPrefs: availabilityData.payPrefs || availability.payPrefs || {},
+                            travelRadius: availabilityData.travelRadius || availability.travelRadius || 50,
+                            willingToTravel: availabilityData.willingToTravel || availability.willingToTravel || '',
+                            travelPrefs: availabilityData.travelPrefs || availability.travelPrefs || {},
+                            availability: availabilityData.availability || availability.availability || {},
+                          },
+                          parentData: data // Pass the parent data to preserve it
+                        } 
+                      })
+                    }}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      color: '#0f4ea9', 
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <IconPencil />
+                  </button>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Hourly Rate</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>
+                        {displayValue(availabilityData.hourlyRate || availability.hourlyRate || availability.hourlyRateRequested ? `$${availabilityData.hourlyRate || availability.hourlyRate || availability.hourlyRateRequested}` : '—')}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Travel</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>
+                        {availabilityData.willingToTravel === 'yes' || availability.willingToTravel === 'yes' || trade.travelRadiusMiles ? 'Yes' : 'No'}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Available</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>
+                        {getAvailabilityText() !== 'Not specified' ? getAvailabilityText() : 'Immediate'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               {/* Certifications & Safety Card - Updated with navigation */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
