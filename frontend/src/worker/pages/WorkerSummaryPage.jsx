@@ -1006,6 +1006,7 @@
 //     </div>
 //   )
 // }
+
 // src/worker/pages/WorkerSummaryPage.jsx
 import { useState } from 'react'
 import { useNavigate, useLocation, NavLink } from 'react-router-dom'
@@ -1089,6 +1090,10 @@ export function WorkerSummaryPage() {
   const location = useLocation()
   const data = location?.state ?? {}
 
+  // Check if we have updated basic data from the edit page
+  const updatedBasicData = location?.state?.basicData || {}
+  const hasUpdatedBasic = location?.state?.updatedBasic || false
+
   // Check if we have updated medical data from the edit page
   const updatedMedicalData = location?.state?.medicalData || {}
   const hasUpdatedMedical = location?.state?.updatedMedical || false
@@ -1108,6 +1113,43 @@ export function WorkerSummaryPage() {
   // Check if we have updated availability data from the edit page
   const updatedAvailabilityData = location?.state?.availabilityData || {}
   const hasUpdatedAvailability = location?.state?.updatedAvailability || false
+
+  // Check if we have updated work history data from the edit page
+  const updatedWorkHistoryData = location?.state?.workHistoryData || {}
+  const hasUpdatedWorkHistory = location?.state?.updatedWorkHistory || false
+
+  // Check if we have updated trade data from the edit page
+  const updatedTradeData = location?.state?.tradeData || {}
+  const hasUpdatedTrade = location?.state?.updatedTrade || false
+
+  // Initialize basic data from props or from updated data
+  const [basicData, setBasicData] = useState({
+    legalFirstName: hasUpdatedBasic ? updatedBasicData.legalFirstName : (data.basics?.legalFirstName || ''),
+    legalLastName: hasUpdatedBasic ? updatedBasicData.legalLastName : (data.basics?.legalLastName || ''),
+    emailAddress: hasUpdatedBasic ? updatedBasicData.emailAddress : (data.basics?.emailAddress || ''),
+    mobilePhone: hasUpdatedBasic ? updatedBasicData.mobilePhone : (data.basics?.mobilePhone || ''),
+    addressLine1: hasUpdatedBasic ? updatedBasicData.addressLine1 : (data.basics?.addressLine1 || ''),
+    addressLine2: hasUpdatedBasic ? updatedBasicData.addressLine2 : (data.basics?.addressLine2 || ''),
+    city: hasUpdatedBasic ? updatedBasicData.city : (data.basics?.city || ''),
+    stateCode: hasUpdatedBasic ? updatedBasicData.stateCode : (data.basics?.stateCode || ''),
+    zip: hasUpdatedBasic ? updatedBasicData.zip : (data.basics?.zip || ''),
+    currentAddressLine1: hasUpdatedBasic ? updatedBasicData.currentAddressLine1 : (data.basics?.currentAddressLine1 || ''),
+    currentAddressLine2: hasUpdatedBasic ? updatedBasicData.currentAddressLine2 : (data.basics?.currentAddressLine2 || ''),
+    currentCity: hasUpdatedBasic ? updatedBasicData.currentCity : (data.basics?.currentCity || ''),
+    currentStateCode: hasUpdatedBasic ? updatedBasicData.currentStateCode : (data.basics?.currentStateCode || ''),
+    currentZip: hasUpdatedBasic ? updatedBasicData.currentZip : (data.basics?.currentZip || ''),
+    sameAsAddress: hasUpdatedBasic ? updatedBasicData.sameAsAddress : (data.basics?.sameAsAddress || false),
+    dob: hasUpdatedBasic ? updatedBasicData.dob : (data.basics?.dob || ''),
+    english: hasUpdatedBasic ? updatedBasicData.english : (data.basics?.english || false),
+    englishSpanish: hasUpdatedBasic ? updatedBasicData.englishSpanish : (data.basics?.englishSpanish || false),
+    spanish: hasUpdatedBasic ? updatedBasicData.spanish : (data.basics?.spanish || false),
+    profilePreview: hasUpdatedBasic ? updatedBasicData.profilePreview : (data.basics?.profilePreview || ''),
+    profileImage: hasUpdatedBasic ? updatedBasicData.profileImage : (data.basics?.profileImage || null),
+    acceptTerms: hasUpdatedBasic ? updatedBasicData.acceptTerms : (data.basics?.acceptTerms || false),
+    acceptPrivacy: hasUpdatedBasic ? updatedBasicData.acceptPrivacy : (data.basics?.acceptPrivacy || false),
+    consentElectronic: hasUpdatedBasic ? updatedBasicData.consentElectronic : (data.basics?.consentElectronic || false),
+    certifyAccurate: hasUpdatedBasic ? updatedBasicData.certifyAccurate : (data.basics?.certifyAccurate || false),
+  })
 
   // Initialize medical data from props or from updated data
   const [medicalData, setMedicalData] = useState({
@@ -1167,6 +1209,51 @@ export function WorkerSummaryPage() {
     willingToTravel: hasUpdatedAvailability ? updatedAvailabilityData.willingToTravel : (data.availability?.willingToTravel || ''),
     travelPrefs: hasUpdatedAvailability ? updatedAvailabilityData.travelPrefs : (data.availability?.travelPrefs || {}),
     availability: hasUpdatedAvailability ? updatedAvailabilityData.availability : (data.availability?.availability || {}),
+  })
+
+  // Initialize work history data from props or from updated data
+  const [workHistoryData, setWorkHistoryData] = useState({
+    projects: hasUpdatedWorkHistory ? updatedWorkHistoryData.projects : (data.workHistory?.projects || [
+      { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+      { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+      { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+    ]),
+    projectConditions: hasUpdatedWorkHistory ? updatedWorkHistoryData.projectConditions : (data.workHistory?.projectConditions || {}),
+    referenceName: hasUpdatedWorkHistory ? updatedWorkHistoryData.referenceName : (data.workHistory?.referenceName || ''),
+    referenceTitle: hasUpdatedWorkHistory ? updatedWorkHistoryData.referenceTitle : (data.workHistory?.referenceTitle || ''),
+    referencePhone: hasUpdatedWorkHistory ? updatedWorkHistoryData.referencePhone : (data.workHistory?.referencePhone || ''),
+    reviewerNotes: hasUpdatedWorkHistory ? updatedWorkHistoryData.reviewerNotes : (data.workHistory?.reviewerNotes || ''),
+  })
+
+  // Initialize trade data from props or from updated data
+  const [tradeData, setTradeData] = useState({
+    primaryTrade: hasUpdatedTrade ? updatedTradeData.primaryTrade : (data.trade?.primaryTrade || ''),
+    primaryOtherTrade: hasUpdatedTrade ? updatedTradeData.primaryOtherTrade : (data.trade?.primaryOtherTrade || ''),
+    workerLevel: hasUpdatedTrade ? updatedTradeData.workerLevel : (data.trade?.workerLevel || ''),
+    yearOfExperience: hasUpdatedTrade ? updatedTradeData.yearOfExperience : (data.trade?.yearOfExperience || ''),
+    secondaryTrade: hasUpdatedTrade ? updatedTradeData.secondaryTrade : (data.trade?.secondaryTrade || ''),
+    secondaryOtherTrade: hasUpdatedTrade ? updatedTradeData.secondaryOtherTrade : (data.trade?.secondaryOtherTrade || ''),
+    secondaryWorkerLevel: hasUpdatedTrade ? updatedTradeData.secondaryWorkerLevel : (data.trade?.secondaryWorkerLevel || ''),
+    secondaryYearOfExperience: hasUpdatedTrade ? updatedTradeData.secondaryYearOfExperience : (data.trade?.secondaryYearOfExperience || ''),
+    leadForemanResponsibilities: hasUpdatedTrade ? updatedTradeData.leadForemanResponsibilities : (data.trade?.leadForemanResponsibilities || {}),
+    metalFramingSkills: hasUpdatedTrade ? updatedTradeData.metalFramingSkills : (data.trade?.metalFramingSkills || {}),
+    drywallHangingSkills: hasUpdatedTrade ? updatedTradeData.drywallHangingSkills : (data.trade?.drywallHangingSkills || {}),
+    tapingFinishingSkills: hasUpdatedTrade ? updatedTradeData.tapingFinishingSkills : (data.trade?.tapingFinishingSkills || {}),
+    acousticalCeilingsSkills: hasUpdatedTrade ? updatedTradeData.acousticalCeilingsSkills : (data.trade?.acousticalCeilingsSkills || {}),
+    interiorCarpentrySkills: hasUpdatedTrade ? updatedTradeData.interiorCarpentrySkills : (data.trade?.interiorCarpentrySkills || {}),
+    helpersLabourersSkills: hasUpdatedTrade ? updatedTradeData.helpersLabourersSkills : (data.trade?.helpersLabourersSkills || {}),
+    insulationSkills: hasUpdatedTrade ? updatedTradeData.insulationSkills : (data.trade?.insulationSkills || {}),
+    demolitionSkills: hasUpdatedTrade ? updatedTradeData.demolitionSkills : (data.trade?.demolitionSkills || {}),
+    secondaryLeadForemanResponsibilities: hasUpdatedTrade ? updatedTradeData.secondaryLeadForemanResponsibilities : (data.trade?.secondaryLeadForemanResponsibilities || {}),
+    secondaryMetalFramingSkills: hasUpdatedTrade ? updatedTradeData.secondaryMetalFramingSkills : (data.trade?.secondaryMetalFramingSkills || {}),
+    secondaryDrywallHangingSkills: hasUpdatedTrade ? updatedTradeData.secondaryDrywallHangingSkills : (data.trade?.secondaryDrywallHangingSkills || {}),
+    secondaryTapingFinishingSkills: hasUpdatedTrade ? updatedTradeData.secondaryTapingFinishingSkills : (data.trade?.secondaryTapingFinishingSkills || {}),
+    secondaryAcousticalCeilingsSkills: hasUpdatedTrade ? updatedTradeData.secondaryAcousticalCeilingsSkills : (data.trade?.secondaryAcousticalCeilingsSkills || {}),
+    secondaryInteriorCarpentrySkills: hasUpdatedTrade ? updatedTradeData.secondaryInteriorCarpentrySkills : (data.trade?.secondaryInteriorCarpentrySkills || {}),
+    secondaryHelpersLabourersSkills: hasUpdatedTrade ? updatedTradeData.secondaryHelpersLabourersSkills : (data.trade?.secondaryHelpersLabourersSkills || {}),
+    secondaryInsulationSkills: hasUpdatedTrade ? updatedTradeData.secondaryInsulationSkills : (data.trade?.secondaryInsulationSkills || {}),
+    secondaryDemolitionSkills: hasUpdatedTrade ? updatedTradeData.secondaryDemolitionSkills : (data.trade?.secondaryDemolitionSkills || {}),
+    additionalSkillsTools: hasUpdatedTrade ? updatedTradeData.additionalSkillsTools : (data.trade?.additionalSkillsTools || ''),
   })
 
   const basics = data.basics ?? {}
@@ -1290,11 +1377,58 @@ export function WorkerSummaryPage() {
             {/* Row 1: Basic Information, Trade Profile, Subscription & Rewards */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
               
-              {/* Basic Information Card */}
+              {/* Basic Information Card - Updated with navigation */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Basic Information</span>
-                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      navigate('/basic-info/edit', { 
+                        state: { 
+                          basicData: {
+                            legalFirstName: basicData.legalFirstName || basics.legalFirstName || '',
+                            legalLastName: basicData.legalLastName || basics.legalLastName || '',
+                            emailAddress: basicData.emailAddress || basics.emailAddress || '',
+                            mobilePhone: basicData.mobilePhone || basics.mobilePhone || '',
+                            addressLine1: basicData.addressLine1 || basics.addressLine1 || '',
+                            addressLine2: basicData.addressLine2 || basics.addressLine2 || '',
+                            city: basicData.city || basics.city || '',
+                            stateCode: basicData.stateCode || basics.stateCode || '',
+                            zip: basicData.zip || basics.zip || '',
+                            currentAddressLine1: basicData.currentAddressLine1 || basics.currentAddressLine1 || '',
+                            currentAddressLine2: basicData.currentAddressLine2 || basics.currentAddressLine2 || '',
+                            currentCity: basicData.currentCity || basics.currentCity || '',
+                            currentStateCode: basicData.currentStateCode || basics.currentStateCode || '',
+                            currentZip: basicData.currentZip || basics.currentZip || '',
+                            sameAsAddress: basicData.sameAsAddress || basics.sameAsAddress || false,
+                            dob: basicData.dob || basics.dob || '',
+                            english: basicData.english || basics.english || false,
+                            englishSpanish: basicData.englishSpanish || basics.englishSpanish || false,
+                            spanish: basicData.spanish || basics.spanish || false,
+                            profilePreview: basicData.profilePreview || basics.profilePreview || '',
+                            profileImage: basicData.profileImage || basics.profileImage || null,
+                            acceptTerms: basicData.acceptTerms || basics.acceptTerms || false,
+                            acceptPrivacy: basicData.acceptPrivacy || basics.acceptPrivacy || false,
+                            consentElectronic: basicData.consentElectronic || basics.consentElectronic || false,
+                            certifyAccurate: basicData.certifyAccurate || basics.certifyAccurate || false,
+                          },
+                          parentData: data
+                        } 
+                      })
+                    }}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      color: '#0f4ea9', 
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
                     <IconPencil />
                   </button>
                 </div>
@@ -1302,40 +1436,98 @@ export function WorkerSummaryPage() {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
                     <img src="/assets/worker.avif" alt="Worker" style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
                     <div>
-                      <div style={{ fontWeight: 600, fontSize: '16px', color: '#17263a' }}>{displayValue(`${basics.legalFirstName ?? ''} ${basics.legalLastName ?? ''}`.trim(), 'Marcus Webb')}</div>
+                      <div style={{ fontWeight: 600, fontSize: '16px', color: '#17263a' }}>
+                        {displayValue(`${basicData.legalFirstName || basics.legalFirstName ?? ''} ${basicData.legalLastName || basics.legalLastName ?? ''}`.trim(), 'Marcus Webb')}
+                      </div>
                       <span style={{ fontSize: '12px', color: '#2fb463', fontWeight: 500 }}>Active</span>
                     </div>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Date of Birth</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.dob)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basicData.dob || basics.dob)}</div>
                     </div>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Language</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.primaryLanguage)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>
+                        {basicData.english ? 'English' : ''}
+                        {basicData.english && basicData.spanish ? ' / ' : ''}
+                        {basicData.spanish ? 'Spanish' : ''}
+                        {!basicData.english && !basicData.spanish ? '—' : ''}
+                      </div>
                     </div>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Email</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.emailAddress)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basicData.emailAddress || basics.emailAddress)}</div>
                     </div>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Phone No.</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.mobilePhone)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basicData.mobilePhone || basics.mobilePhone)}</div>
                     </div>
                     <div style={{ gridColumn: '1 / -1' }}>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Address</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue([basics.addressLine1, basics.city, basics.stateCode, basics.zip].filter(Boolean).join(', '))}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>
+                        {displayValue([basicData.addressLine1 || basics.addressLine1, basicData.city || basics.city, basicData.stateCode || basics.stateCode, basicData.zip || basics.zip].filter(Boolean).join(', '))}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Trade Profile Card */}
+              {/* Trade Profile Card - Updated with navigation */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Trade Profile</span>
-                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      navigate('/trade-profile/edit', { 
+                        state: { 
+                          tradeData: {
+                            primaryTrade: tradeData.primaryTrade || trade.primaryTrade || '',
+                            primaryOtherTrade: tradeData.primaryOtherTrade || trade.primaryOtherTrade || '',
+                            workerLevel: tradeData.workerLevel || trade.workerLevel || '',
+                            yearOfExperience: tradeData.yearOfExperience || trade.yearOfExperience || '',
+                            secondaryTrade: tradeData.secondaryTrade || trade.secondaryTrade || '',
+                            secondaryOtherTrade: tradeData.secondaryOtherTrade || trade.secondaryOtherTrade || '',
+                            secondaryWorkerLevel: tradeData.secondaryWorkerLevel || trade.secondaryWorkerLevel || '',
+                            secondaryYearOfExperience: tradeData.secondaryYearOfExperience || trade.secondaryYearOfExperience || '',
+                            leadForemanResponsibilities: tradeData.leadForemanResponsibilities || trade.leadForemanResponsibilities || {},
+                            metalFramingSkills: tradeData.metalFramingSkills || trade.metalFramingSkills || {},
+                            drywallHangingSkills: tradeData.drywallHangingSkills || trade.drywallHangingSkills || {},
+                            tapingFinishingSkills: tradeData.tapingFinishingSkills || trade.tapingFinishingSkills || {},
+                            acousticalCeilingsSkills: tradeData.acousticalCeilingsSkills || trade.acousticalCeilingsSkills || {},
+                            interiorCarpentrySkills: tradeData.interiorCarpentrySkills || trade.interiorCarpentrySkills || {},
+                            helpersLabourersSkills: tradeData.helpersLabourersSkills || trade.helpersLabourersSkills || {},
+                            insulationSkills: tradeData.insulationSkills || trade.insulationSkills || {},
+                            demolitionSkills: tradeData.demolitionSkills || trade.demolitionSkills || {},
+                            secondaryLeadForemanResponsibilities: tradeData.secondaryLeadForemanResponsibilities || trade.secondaryLeadForemanResponsibilities || {},
+                            secondaryMetalFramingSkills: tradeData.secondaryMetalFramingSkills || trade.secondaryMetalFramingSkills || {},
+                            secondaryDrywallHangingSkills: tradeData.secondaryDrywallHangingSkills || trade.secondaryDrywallHangingSkills || {},
+                            secondaryTapingFinishingSkills: tradeData.secondaryTapingFinishingSkills || trade.secondaryTapingFinishingSkills || {},
+                            secondaryAcousticalCeilingsSkills: tradeData.secondaryAcousticalCeilingsSkills || trade.secondaryAcousticalCeilingsSkills || {},
+                            secondaryInteriorCarpentrySkills: tradeData.secondaryInteriorCarpentrySkills || trade.secondaryInteriorCarpentrySkills || {},
+                            secondaryHelpersLabourersSkills: tradeData.secondaryHelpersLabourersSkills || trade.secondaryHelpersLabourersSkills || {},
+                            secondaryInsulationSkills: tradeData.secondaryInsulationSkills || trade.secondaryInsulationSkills || {},
+                            secondaryDemolitionSkills: tradeData.secondaryDemolitionSkills || trade.secondaryDemolitionSkills || {},
+                            additionalSkillsTools: tradeData.additionalSkillsTools || trade.additionalSkillsTools || '',
+                          },
+                          parentData: data
+                        } 
+                      })
+                    }}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      color: '#0f4ea9', 
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
                     <IconPencil />
                   </button>
                 </div>
@@ -1343,15 +1535,21 @@ export function WorkerSummaryPage() {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Primary Trade</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(trade.primaryTrade)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>
+                        {displayValue(tradeData.primaryTrade || trade.primaryTrade)}
+                      </div>
                     </div>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Secondary Trade</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(trade.secondaryTrade || '—')}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>
+                        {displayValue(tradeData.secondaryTrade || trade.secondaryTrade || '—')}
+                      </div>
                     </div>
                     <div style={{ gridColumn: '1 / -1' }}>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Experience</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(trade.yearOfExperience || trade.yearsExperience)} years</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>
+                        {displayValue(tradeData.yearOfExperience || trade.yearOfExperience || trade.yearsExperience)} years
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -1396,23 +1594,53 @@ export function WorkerSummaryPage() {
               </div>
             </div>
 
-            {/* Row 2: Work History */}
+            {/* Row 2: Work History - Updated with navigation */}
             <div className="wizardSummaryWideCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', marginBottom: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Work History</span>
-                <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    navigate('/work-history/edit', { 
+                      state: { 
+                        workHistoryData: {
+                          projects: workHistoryData.projects || workHistory.projects || [
+                            { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+                            { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+                            { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+                          ],
+                          projectConditions: workHistoryData.projectConditions || workHistory.projectConditions || {},
+                          referenceName: workHistoryData.referenceName || workHistory.referenceName || '',
+                          referenceTitle: workHistoryData.referenceTitle || workHistory.referenceTitle || '',
+                          referencePhone: workHistoryData.referencePhone || workHistory.referencePhone || '',
+                          reviewerNotes: workHistoryData.reviewerNotes || workHistory.reviewerNotes || '',
+                        },
+                        parentData: data
+                      } 
+                    })
+                  }}
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    color: '#0f4ea9', 
+                    cursor: 'pointer',
+                    padding: '4px 8px',
+                    borderRadius: '6px',
+                    transition: 'background 0.2s',
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
                   <IconPencil />
                 </button>
               </div>
               <div>
-                {/* Table Header */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '8px 12px', borderBottom: '2px solid rgba(18,38,63,0.08)', fontWeight: 600, fontSize: '12px', color: 'rgba(23,38,58,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   <div>PROJECT</div>
                   <div>COMPANY</div>
                   <div>TRADE</div>
                   <div>ROLE</div>
                 </div>
-                {/* Table Rows */}
                 {(projects.length ? projects : fallbackProjects).map((p, idx) => (
                   <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
                     <div>{displayValue(p.name, 'ABC construct')}</div>
@@ -1434,7 +1662,6 @@ export function WorkerSummaryPage() {
                   <button 
                     type="button" 
                     onClick={() => {
-                      // Navigate to availability edit page with current data
                       navigate('/availability/edit', { 
                         state: { 
                           availabilityData: {
@@ -1445,7 +1672,7 @@ export function WorkerSummaryPage() {
                             travelPrefs: availabilityData.travelPrefs || availability.travelPrefs || {},
                             availability: availabilityData.availability || availability.availability || {},
                           },
-                          parentData: data // Pass the parent data to preserve it
+                          parentData: data
                         } 
                       })
                     }}
@@ -1495,7 +1722,6 @@ export function WorkerSummaryPage() {
                   <button 
                     type="button" 
                     onClick={() => {
-                      // Navigate to certification edit page with current data
                       navigate('/certification/edit', { 
                         state: { 
                           certData: {
@@ -1507,7 +1733,7 @@ export function WorkerSummaryPage() {
                             ],
                             safetyFlags: certData.safetyFlags || certifications.safetyFlags || {},
                           },
-                          parentData: data // Pass the parent data to preserve it
+                          parentData: data
                         } 
                       })
                     }}
@@ -1555,7 +1781,6 @@ export function WorkerSummaryPage() {
                   <button 
                     type="button" 
                     onClick={() => {
-                      // Navigate to tax edit page with current data
                       navigate('/tax/edit', { 
                         state: { 
                           taxData: {
@@ -1576,7 +1801,7 @@ export function WorkerSummaryPage() {
                             entityFlags: taxData.entityFlags || tax.entityFlags || {},
                             stateSpecificFlags: taxData.stateSpecificFlags || tax.stateSpecificFlags || {},
                           },
-                          parentData: data // Pass the parent data to preserve it
+                          parentData: data
                         } 
                       })
                     }}
@@ -1620,7 +1845,6 @@ export function WorkerSummaryPage() {
                   <button 
                     type="button" 
                     onClick={() => {
-                      // Navigate to payment edit page with current data
                       navigate('/payment/edit', { 
                         state: { 
                           paymentData: {
@@ -1632,7 +1856,7 @@ export function WorkerSummaryPage() {
                             emailId: paymentData.emailId || '',
                             mobileNumber: paymentData.mobileNumber || '',
                           },
-                          parentData: data // Pass the parent data to preserve it
+                          parentData: data
                         } 
                       })
                     }}
@@ -1680,7 +1904,6 @@ export function WorkerSummaryPage() {
                   <button 
                     type="button" 
                     onClick={() => {
-                      // Navigate to medical edit page with current data
                       navigate('/medical/edit', { 
                         state: { 
                           medicalData: {
@@ -1689,7 +1912,7 @@ export function WorkerSummaryPage() {
                             emergencyMedicalFlags: medicalData.emergencyMedicalFlags || medical.emergencyMedicalFlags || {},
                             emergencyInstructions: medicalData.emergencyInstructions || medical.emergencyInstructions || '',
                           },
-                          parentData: data // Pass the parent data to preserve it
+                          parentData: data
                         } 
                       })
                     }}

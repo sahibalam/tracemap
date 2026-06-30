@@ -99,11 +99,14 @@ import { MedicalEditPage } from './worker/pages/MedicalEditPage'
 import { TaxEditPage } from './worker/pages/TaxEditPage'
 import { CertificationEditPage } from './worker/pages/CertificationEditPage'
 import { PaymentEditPage } from './worker/pages/PaymentEditPage'
-import { AvailabilityEditPage } from './worker/pages/AvailabilityEditPage' // Add this import
+import { AvailabilityEditPage } from './worker/pages/AvailabilityEditPage'
+import { WorkHistoryEditPage } from './worker/pages/WorkHistoryEditPage' // Add this import
 import { CompanyAuthPage } from './company/pages/CompanyAuthPage'
 import { CompanyVerifyPage } from './company/pages/CompanyVerifyPage'
 import { CompanyWizardPage } from './company/pages/CompanyWizardPage'
 import { ProjectPage } from './projects/pages/ProjectPage'
+import { TradeProfileEditPage } from './worker/pages/TradeProfileEditPage'
+import { BasicInfoEditPage } from './worker/pages/BasicInfoEditPage'
 
 function App() {
   return (
@@ -128,8 +131,11 @@ function App() {
       <Route path="/tax/edit" element={<TaxEditPage />} />
       <Route path="/certification/edit" element={<CertificationEditPage />} />
       <Route path="/payment/edit" element={<PaymentEditPage />} />
-      <Route path="/availability/edit" element={<AvailabilityEditPage />} /> {/* Add this route */}
-      
+      <Route path="/availability/edit" element={<AvailabilityEditPage />} />
+      <Route path="/work-history/edit" element={<WorkHistoryEditPage />} /> {/* Add this route */}
+      <Route path="/trade-profile/edit" element={<TradeProfileEditPage />} />
+      <Route path="/basic-info/edit" element={<BasicInfoEditPage />} />
+
       {/* Company Routes */}
       <Route path="/company/login" element={<CompanyAuthPage initialMode="login" />} />
       <Route path="/company/register" element={<CompanyAuthPage initialMode="register" />} />
