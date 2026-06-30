@@ -1006,7 +1006,6 @@
 //     </div>
 //   )
 // }
-
 // src/worker/pages/WorkerSummaryPage.jsx
 import { useState } from 'react'
 import { useNavigate, useLocation, NavLink } from 'react-router-dom'
@@ -1351,11 +1350,12 @@ export function WorkerSummaryPage() {
                 <span className="sideIcon" aria-hidden="true"><IconGrid /></span>
                 <span className="sideText">Overview</span>
               </span>
-              <NavLink to="/projects" className={({ isActive }) => `sideItem ${isActive ? 'sideItemActive' : ''}`}>
+              {/* Projects - Disabled */}
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true"><IconFolder /></span>
                 <span className="sideText">Projects</span>
                 <span className="sideBadge" aria-label="12 projects">12</span>
-              </NavLink>
+              </span>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true"><IconChart /></span>
                 <span className="sideText">Revenues</span>
