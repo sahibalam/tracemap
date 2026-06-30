@@ -156,16 +156,26 @@ export function MedicalEditPage() {
         </aside>
 
         <main className="appContent">
-          <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
+          <div style={{ 
+            padding: '24px', 
+            maxWidth: '800px', 
+            margin: '0 auto', 
+            height: 'calc(100vh - 120px)', 
+            display: 'flex', 
+            flexDirection: 'column' 
+          }}>
             
-            {/* Header with Back button */}
+            {/* Sticky Header with Back button */}
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
               gap: '16px',
-              marginBottom: '24px',
+              marginBottom: '16px',
               paddingBottom: '16px',
-              borderBottom: '1px solid rgba(18, 38, 63, 0.08)'
+              borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
+              flexShrink: 0,
+              background: 'white',
+              zIndex: 10,
             }}>
               <button
                 onClick={handleBack}
@@ -198,100 +208,63 @@ export function MedicalEditPage() {
               </span>
             </div>
 
-            {/* Medical Form */}
+            {/* Scrollable Content Area */}
             <div style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '32px',
-              border: '1px solid rgba(18, 38, 63, 0.08)',
+              flex: 1,
+              overflowY: 'auto',
+              paddingBottom: '16px',
             }}>
-              {/* Blood Group */}
-              <div style={{ marginBottom: '24px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  color: '#17263a',
-                  marginBottom: '8px',
-                }}>
-                  Blood Group
-                </label>
-                <select
-                  value={medicalData.bloodGroup}
-                  onChange={(e) => handleChange('bloodGroup', e.target.value)}
-                  style={{
-                    width: '100%',
-                    height: '48px',
-                    padding: '0 16px',
-                    border: '1px solid rgba(18, 38, 63, 0.12)',
-                    borderRadius: '12px',
+              {/* Medical Form */}
+              <div style={{
+                background: 'white',
+                borderRadius: '16px',
+                padding: '32px',
+                border: '1px solid rgba(18, 38, 63, 0.08)',
+              }}>
+                {/* Blood Group */}
+                <div style={{ marginBottom: '24px' }}>
+                  <label style={{
+                    display: 'block',
                     fontSize: '14px',
-                    outline: 'none',
-                    background: 'white',
+                    fontWeight: 600,
                     color: '#17263a',
-                    transition: 'all 0.2s ease',
-                    fontFamily: 'inherit',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#0f4ea9'
-                    e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                    e.target.style.boxShadow = 'none'
-                  }}
-                >
-                  <option value="">Select blood group</option>
-                  {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((bg) => (
-                    <option key={bg} value={bg}>{bg}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Emergency Medical Info Radio */}
-              <div style={{ marginBottom: '24px' }}>
-                <div style={{
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  color: '#17263a',
-                  marginBottom: '12px',
-                }}>
-                  Do you have emergency medical information first aid personnel or emergency responders should know?
+                    marginBottom: '8px',
+                  }}>
+                    Blood Group
+                  </label>
+                  <select
+                    value={medicalData.bloodGroup}
+                    onChange={(e) => handleChange('bloodGroup', e.target.value)}
+                    style={{
+                      width: '100%',
+                      height: '48px',
+                      padding: '0 16px',
+                      border: '1px solid rgba(18, 38, 63, 0.12)',
+                      borderRadius: '12px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      background: 'white',
+                      color: '#17263a',
+                      transition: 'all 0.2s ease',
+                      fontFamily: 'inherit',
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#0f4ea9'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+                      e.target.style.boxShadow = 'none'
+                    }}
+                  >
+                    <option value="">Select blood group</option>
+                    {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((bg) => (
+                      <option key={bg} value={bg}>{bg}</option>
+                    ))}
+                  </select>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                    <input
-                      type="radio"
-                      name="emergencyMedicalInfo"
-                      checked={medicalData.emergencyMedicalInfo === 'none'}
-                      onChange={() => handleChange('emergencyMedicalInfo', 'none')}
-                    />
-                    <span style={{ fontSize: '14px', color: '#17263a' }}>No emergency medical information</span>
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                    <input
-                      type="radio"
-                      name="emergencyMedicalInfo"
-                      checked={medicalData.emergencyMedicalInfo === 'disclosure'}
-                      onChange={() => handleChange('emergencyMedicalInfo', 'disclosure')}
-                    />
-                    <span style={{ fontSize: '14px', color: '#17263a' }}>Yes, voluntary disclosure</span>
-                  </label>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                    <input
-                      type="radio"
-                      name="emergencyMedicalInfo"
-                      checked={medicalData.emergencyMedicalInfo === 'skip'}
-                      onChange={() => handleChange('emergencyMedicalInfo', 'skip')}
-                    />
-                    <span style={{ fontSize: '14px', color: '#17263a' }}>Skip for now</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Emergency Medical Flags - Only show when disclosure is selected */}
-              {medicalData.emergencyMedicalInfo === 'disclosure' && (
+                {/* Emergency Medical Info Radio */}
                 <div style={{ marginBottom: '24px' }}>
                   <div style={{
                     fontSize: '14px',
@@ -299,145 +272,193 @@ export function MedicalEditPage() {
                     color: '#17263a',
                     marginBottom: '12px',
                   }}>
-                    Medical Conditions
-                  </div>
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '8px',
-                  }}>
-                    {[
-                      'Severe allergy',
-                      'Diabetes / blood sugar risk',
-                      'Heart condition / device',
-                      'Mobility / communication limitation',
-                      'Asthma / respiratory risk',
-                      'Seizure condition',
-                      'Bleeding risk',
-                      'Emergency medication/device carried',
-                    ].map((condition) => (
-                      <label key={condition} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input
-                          type="checkbox"
-                          checked={!!(medicalData.emergencyMedicalFlags?.[condition] || false)}
-                          onChange={() => toggleFlag(condition)}
-                        />
-                        <span style={{ fontSize: '14px', color: '#17263a' }}>{condition}</span>
-                      </label>
-                    ))}
+                    Do you have emergency medical information first aid personnel or emergency responders should know?
                   </div>
 
-                  {/* Emergency Instructions */}
-                  <div style={{ marginTop: '16px' }}>
-                    <label style={{
-                      display: 'block',
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name="emergencyMedicalInfo"
+                        checked={medicalData.emergencyMedicalInfo === 'none'}
+                        onChange={() => handleChange('emergencyMedicalInfo', 'none')}
+                      />
+                      <span style={{ fontSize: '14px', color: '#17263a' }}>No emergency medical information</span>
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name="emergencyMedicalInfo"
+                        checked={medicalData.emergencyMedicalInfo === 'disclosure'}
+                        onChange={() => handleChange('emergencyMedicalInfo', 'disclosure')}
+                      />
+                      <span style={{ fontSize: '14px', color: '#17263a' }}>Yes, voluntary disclosure</span>
+                    </label>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                      <input
+                        type="radio"
+                        name="emergencyMedicalInfo"
+                        checked={medicalData.emergencyMedicalInfo === 'skip'}
+                        onChange={() => handleChange('emergencyMedicalInfo', 'skip')}
+                      />
+                      <span style={{ fontSize: '14px', color: '#17263a' }}>Skip for now</span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Emergency Medical Flags - Only show when disclosure is selected */}
+                {medicalData.emergencyMedicalInfo === 'disclosure' && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <div style={{
                       fontSize: '14px',
                       fontWeight: 600,
                       color: '#17263a',
-                      marginBottom: '6px',
+                      marginBottom: '12px',
                     }}>
-                      Important Emergency Instructions
-                    </label>
-                    <div style={{
-                      fontSize: '12px',
-                      color: 'rgba(23, 38, 58, 0.6)',
-                      marginBottom: '8px',
-                    }}>
-                      Do not include genetic or highly sensitive medical details.
+                      Medical Conditions
                     </div>
-                    <textarea
-                      value={medicalData.emergencyInstructions || ''}
-                      onChange={(e) => handleChange('emergencyInstructions', e.target.value)}
-                      placeholder="Enter instructions (max 1000 characters)"
-                      maxLength={1000}
-                      rows={4}
-                      style={{
-                        width: '100%',
-                        padding: '12px 16px',
-                        border: '1px solid rgba(18, 38, 63, 0.12)',
-                        borderRadius: '12px',
-                        fontSize: '14px',
-                        fontFamily: 'inherit',
-                        outline: 'none',
-                        resize: 'vertical',
-                        transition: 'all 0.2s ease',
-                      }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#0f4ea9'
-                        e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                        e.target.style.boxShadow = 'none'
-                      }}
-                    />
                     <div style={{
-                      fontSize: '12px',
-                      color: 'rgba(23, 38, 58, 0.4)',
-                      textAlign: 'right',
-                      marginTop: '4px',
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '8px',
                     }}>
-                      {medicalData.emergencyInstructions?.length || 0}/1000
+                      {[
+                        'Severe allergy',
+                        'Diabetes / blood sugar risk',
+                        'Heart condition / device',
+                        'Mobility / communication limitation',
+                        'Asthma / respiratory risk',
+                        'Seizure condition',
+                        'Bleeding risk',
+                        'Emergency medication/device carried',
+                      ].map((condition) => (
+                        <label key={condition} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input
+                            type="checkbox"
+                            checked={!!(medicalData.emergencyMedicalFlags?.[condition] || false)}
+                            onChange={() => toggleFlag(condition)}
+                          />
+                          <span style={{ fontSize: '14px', color: '#17263a' }}>{condition}</span>
+                        </label>
+                      ))}
+                    </div>
+
+                    {/* Emergency Instructions */}
+                    <div style={{ marginTop: '16px' }}>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: '#17263a',
+                        marginBottom: '6px',
+                      }}>
+                        Important Emergency Instructions
+                      </label>
+                      <div style={{
+                        fontSize: '12px',
+                        color: 'rgba(23, 38, 58, 0.6)',
+                        marginBottom: '8px',
+                      }}>
+                        Do not include genetic or highly sensitive medical details.
+                      </div>
+                      <textarea
+                        value={medicalData.emergencyInstructions || ''}
+                        onChange={(e) => handleChange('emergencyInstructions', e.target.value)}
+                        placeholder="Enter instructions (max 1000 characters)"
+                        maxLength={1000}
+                        rows={4}
+                        style={{
+                          width: '100%',
+                          padding: '12px 16px',
+                          border: '1px solid rgba(18, 38, 63, 0.12)',
+                          borderRadius: '12px',
+                          fontSize: '14px',
+                          fontFamily: 'inherit',
+                          outline: 'none',
+                          resize: 'vertical',
+                          transition: 'all 0.2s ease',
+                        }}
+                        onFocus={(e) => {
+                          e.target.style.borderColor = '#0f4ea9'
+                          e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+                          e.target.style.boxShadow = 'none'
+                        }}
+                      />
+                      <div style={{
+                        fontSize: '12px',
+                        color: 'rgba(23, 38, 58, 0.4)',
+                        textAlign: 'right',
+                        marginTop: '4px',
+                      }}>
+                        {medicalData.emergencyInstructions?.length || 0}/1000
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-
-              {/* Save Button */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                paddingTop: '20px',
-                borderTop: '1px solid rgba(18, 38, 63, 0.08)',
-              }}>
-                <button
-                  onClick={handleBack}
-                  style={{
-                    padding: '10px 24px',
-                    borderRadius: '8px',
-                    background: 'transparent',
-                    color: '#17263a',
-                    border: '1px solid rgba(18, 38, 63, 0.12)',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  style={{
-                    padding: '10px 32px',
-                    borderRadius: '8px',
-                    background: isSaving ? '#94a3b8' : '#0f4ea9',
-                    color: 'white',
-                    border: 'none',
-                    cursor: isSaving ? 'not-allowed' : 'pointer',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    transition: 'all 0.2s',
-                    opacity: isSaving ? 0.7 : 1,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isSaving) {
-                      e.currentTarget.style.background = '#0b3f90'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSaving) {
-                      e.currentTarget.style.background = '#0f4ea9'
-                    }
-                  }}
-                >
-                  {isSaving ? 'Saving...' : 'Save Changes'}
-                </button>
+                )}
               </div>
+            </div>
+
+            {/* Sticky Footer with Cancel and Save buttons */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '12px',
+              paddingTop: '16px',
+              paddingBottom: '8px',
+              borderTop: '1px solid rgba(18, 38, 63, 0.08)',
+              flexShrink: 0,
+              background: 'white',
+              zIndex: 10,
+            }}>
+              <button
+                onClick={handleBack}
+                style={{
+                  padding: '10px 24px',
+                  borderRadius: '8px',
+                  background: 'transparent',
+                  color: '#17263a',
+                  border: '1px solid rgba(18, 38, 63, 0.12)',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                style={{
+                  padding: '10px 32px',
+                  borderRadius: '8px',
+                  background: isSaving ? '#94a3b8' : '#0f4ea9',
+                  color: 'white',
+                  border: 'none',
+                  cursor: isSaving ? 'not-allowed' : 'pointer',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  transition: 'all 0.2s',
+                  opacity: isSaving ? 0.7 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#0b3f90'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#0f4ea9'
+                  }
+                }}
+              >
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
             </div>
           </div>
         </main>
