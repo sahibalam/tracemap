@@ -1103,6 +1103,10 @@ export function WorkerSummaryPage() {
   const updatedCertData = location?.state?.certData || {}
   const hasUpdatedCert = location?.state?.updatedCert || false
 
+  // Check if we have updated payment data from the edit page
+  const updatedPaymentData = location?.state?.paymentData || {}
+  const hasUpdatedPayment = location?.state?.updatedPayment || false
+
   // Initialize medical data from props or from updated data
   const [medicalData, setMedicalData] = useState({
     bloodGroup: hasUpdatedMedical ? updatedMedicalData.bloodGroup : (data.medical?.bloodGroup || ''),
@@ -1140,6 +1144,17 @@ export function WorkerSummaryPage() {
       { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
     ]),
     safetyFlags: hasUpdatedCert ? updatedCertData.safetyFlags : (data.certifications?.safetyFlags || {}),
+  })
+
+  // Initialize payment data from props or from updated data
+  const [paymentData, setPaymentData] = useState({
+    fullName: hasUpdatedPayment ? updatedPaymentData.fullName : '',
+    bankAccountNumber: hasUpdatedPayment ? updatedPaymentData.bankAccountNumber : '',
+    routingNumber: hasUpdatedPayment ? updatedPaymentData.routingNumber : '',
+    accountType: hasUpdatedPayment ? updatedPaymentData.accountType : '',
+    bankName: hasUpdatedPayment ? updatedPaymentData.bankName : 'Chase Bank',
+    emailId: hasUpdatedPayment ? updatedPaymentData.emailId : '',
+    mobileNumber: hasUpdatedPayment ? updatedPaymentData.mobileNumber : '',
   })
 
   const basics = data.basics ?? {}
@@ -1541,11 +1556,41 @@ export function WorkerSummaryPage() {
                 </div>
               </div>
 
-              {/* Payment/Bank Details Card */}
+              {/* Payment/Bank Details Card - Updated with navigation */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Payment / Bank Details</span>
-                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      // Navigate to payment edit page with current data
+                      navigate('/payment/edit', { 
+                        state: { 
+                          paymentData: {
+                            fullName: paymentData.fullName || '',
+                            bankAccountNumber: paymentData.bankAccountNumber || '',
+                            routingNumber: paymentData.routingNumber || '',
+                            accountType: paymentData.accountType || '',
+                            bankName: paymentData.bankName || 'Chase Bank',
+                            emailId: paymentData.emailId || '',
+                            mobileNumber: paymentData.mobileNumber || '',
+                          },
+                          parentData: data // Pass the parent data to preserve it
+                        } 
+                      })
+                    }}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      color: '#0f4ea9', 
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
                     <IconPencil />
                   </button>
                 </div>
@@ -1553,7 +1598,9 @@ export function WorkerSummaryPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Bank</span>
-                      <span style={{ color: '#17263a', fontWeight: 500 }}>Chase Bank</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>
+                        {displayValue(paymentData.bankName || 'Chase Bank')}
+                      </span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>ACH</span>

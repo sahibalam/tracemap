@@ -97,7 +97,8 @@ import { WorkerSummaryPage } from './worker/pages/WorkerSummaryPage'
 import { RegistrationSuccessPage } from './worker/pages/RegistrationSuccessPage'
 import { MedicalEditPage } from './worker/pages/MedicalEditPage'
 import { TaxEditPage } from './worker/pages/TaxEditPage'
-import { CertificationEditPage } from './worker/pages/CertificationEditPage' // Add this import
+import { CertificationEditPage } from './worker/pages/CertificationEditPage'
+import { PaymentEditPage } from './worker/pages/PaymentEditPage' // Add this import
 import { CompanyAuthPage } from './company/pages/CompanyAuthPage'
 import { CompanyVerifyPage } from './company/pages/CompanyVerifyPage'
 import { CompanyWizardPage } from './company/pages/CompanyWizardPage'
@@ -124,7 +125,8 @@ function App() {
       <Route path="/registration-success" element={<RegistrationSuccessPage />} />
       <Route path="/medical/edit" element={<MedicalEditPage />} />
       <Route path="/tax/edit" element={<TaxEditPage />} />
-      <Route path="/certification/edit" element={<CertificationEditPage />} /> {/* Add this route */}
+      <Route path="/certification/edit" element={<CertificationEditPage />} />
+      <Route path="/payment/edit" element={<PaymentEditPage />} /> {/* Add this route */}
       
       {/* Company Routes */}
       <Route path="/company/login" element={<CompanyAuthPage initialMode="login" />} />
