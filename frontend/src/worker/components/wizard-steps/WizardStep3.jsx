@@ -1,5 +1,5 @@
 // src/worker/components/wizard-steps/WizardStep3.jsx
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { TextField } from '../../../common/components/TextField'
@@ -236,13 +236,13 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       padding-right: 36px !important;
     }
 
-    /* Trade dropdown styles */
-    .trade-select-wrapper {
+    /* Trade dropdown styles - same as WizardStep2 */
+    .trade-dropdown-wrapper {
       position: relative;
       flex: 1;
     }
 
-    .trade-select-wrapper select {
+    .trade-dropdown-button {
       width: 100%;
       height: 40px;
       padding: 0 12px;
@@ -255,35 +255,84 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       color: #17263a;
       outline: none;
       transition: all 0.2s ease;
-      appearance: none;
       cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      box-sizing: border-box;
     }
 
-    .trade-select-wrapper select:hover {
+    .trade-dropdown-button:hover {
       border-color: rgba(15, 78, 169, 0.4);
     }
 
-    .trade-select-wrapper select:focus {
+    .trade-dropdown-button:focus {
       border-color: #0f4ea9;
       box-shadow: 0 0 0 3px rgba(15, 78, 169, 0.1);
     }
 
-    .trade-select-wrapper select:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .trade-select-wrapper .select-arrow {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
+    .trade-dropdown-button .placeholder-text {
       color: rgba(23, 38, 58, 0.4);
-      pointer-events: none;
-      font-size: 10px;
     }
 
-    .trade-select-wrapper .select-icon {
+    .trade-dropdown-button .selected-text {
+      color: #17263a;
+    }
+
+    .trade-dropdown-button .dropdown-arrow {
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .trade-dropdown-button .dropdown-arrow.open {
+      transform: rotate(180deg);
+    }
+
+    .trade-dropdown-menu {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      max-height: 200px;
+      overflow-y: auto;
+      background: white;
+      border: 1px solid rgba(18, 38, 63, 0.12);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      z-index: 1000;
+      padding: 4px 0;
+    }
+
+    .trade-dropdown-menu .dropdown-item {
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #17263a;
+      transition: all 0.15s ease;
+      border-radius: 6px;
+      margin: 2px 4px;
+    }
+
+    .trade-dropdown-menu .dropdown-item:hover {
+      background: rgba(15, 78, 169, 0.08);
+    }
+
+    .trade-dropdown-menu .dropdown-item.selected {
+      background: rgba(15, 78, 169, 0.08);
+      color: #0f4ea9;
+      font-weight: 600;
+    }
+
+    .trade-dropdown-menu .dropdown-item.placeholder-item {
+      color: rgba(23, 38, 58, 0.4);
+    }
+
+    .trade-dropdown-menu .dropdown-item.placeholder-item:hover {
+      background: transparent;
+    }
+
+    .trade-dropdown-wrapper .icon-wrapper {
       position: absolute;
       left: 12px;
       top: 50%;
@@ -291,53 +340,90 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       color: rgba(23, 38, 58, 0.4);
       pointer-events: none;
       font-size: 14px;
+      display: flex;
+      align-items: center;
     }
 
-    .trade-select-wrapper select.has-icon {
+    .trade-dropdown-wrapper .trade-dropdown-button.has-icon {
       padding-left: 36px;
-    }
-
-    .trade-select-wrapper select option {
-      padding: 8px 12px;
-      font-size: 13px;
-    }
-
-    /* Style for the placeholder option */
-    .trade-select-wrapper select option.placeholder-option {
-      color: rgba(23, 38, 58, 0.4);
-      display: none;
     }
   `
 
-  // Custom Trade Dropdown Component - similar to StateDropdown
+  // Custom Trade Dropdown Component - Same style as WizardStep2
   const TradeSelect = ({ value, onChange, icon }) => {
-    // Get the display text for the dropdown
+    const [isOpen, setIsOpen] = useState(false)
+    const dropdownRef = useRef(null)
+
+    // Handle click outside to close dropdown
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+          setIsOpen(false)
+        }
+      }
+      document.addEventListener('mousedown', handleClickOutside)
+      return () => document.removeEventListener('mousedown', handleClickOutside)
+    }, [])
+
+    // Get display text
     const getDisplayText = () => {
       if (!value) return 'Select Trade'
       return value
     }
 
+    const isPlaceholder = !value
+
     return (
-      <div className="trade-select-wrapper">
-        {icon && <span className="select-icon">{icon}</span>}
-        <select 
-          value={value || ''} 
-          onChange={(e) => onChange(e.target.value)}
-          className={icon ? 'has-icon' : ''}
+      <div ref={dropdownRef} className="trade-dropdown-wrapper">
+        {/* Dropdown Button */}
+        <div
+          className={`trade-dropdown-button ${icon ? 'has-icon' : ''}`}
+          onClick={() => setIsOpen(!isOpen)}
           style={{
-            color: value ? '#17263a' : '#6b7280',
+            borderColor: isOpen ? '#0f4ea9' : 'rgba(18, 38, 63, 0.12)',
+            boxShadow: isOpen ? '0 0 0 3px rgba(15, 78, 169, 0.1)' : 'none',
           }}
         >
-          <option value="" className="placeholder-option" disabled>
-            Select Trade
-          </option>
-          {tradeOptions.map((trade) => (
-            <option key={trade} value={trade}>
-              {trade}
-            </option>
-          ))}
-        </select>
-        <span className="select-arrow">▼</span>
+          {icon && <span className="icon-wrapper">{icon}</span>}
+          <span className={isPlaceholder ? 'placeholder-text' : 'selected-text'}>
+            {getDisplayText()}
+          </span>
+          <svg 
+            className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
+            width="10" 
+            height="10" 
+            viewBox="0 0 12 12"
+          >
+            <path fill="#17263a" d="M6 8L1 3h10z" />
+          </svg>
+        </div>
+
+        {/* Dropdown Menu */}
+        {isOpen && (
+          <div className="trade-dropdown-menu">
+            <div 
+              className="dropdown-item placeholder-item"
+              onClick={() => {
+                onChange('')
+                setIsOpen(false)
+              }}
+            >
+              Select Trade
+            </div>
+            {tradeOptions.map((trade) => (
+              <div
+                key={trade}
+                className={`dropdown-item ${value === trade ? 'selected' : ''}`}
+                onClick={() => {
+                  onChange(trade)
+                  setIsOpen(false)
+                }}
+              >
+                {trade}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     )
   }
