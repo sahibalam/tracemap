@@ -224,7 +224,7 @@ export function AvailabilityEditPage() {
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <IconArrowLeft />
-                Back
+                Back to Profile
               </button>
               <span style={{
                 fontSize: '16px',
@@ -306,7 +306,7 @@ export function AvailabilityEditPage() {
                 {/* Row 2: Travel Radius + Willingness to Travel */}
                 <div style={{ marginBottom: '24px' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'flex-start' }}>
-                    {/* Travel Radius - Custom Slider */}
+                    {/* Travel Radius - Custom Slider with 70% width */}
                     <div>
                       <div style={{
                         fontSize: '14px',
@@ -314,9 +314,9 @@ export function AvailabilityEditPage() {
                         color: '#17263a',
                         marginBottom: '8px',
                       }}>
-                        Travel Radius
+                        Work Radius
                       </div>
-                      <div>
+                      <div style={{ maxWidth: '70%' }}>
                         {/* Custom slider container */}
                         <div style={{ position: 'relative', padding: '8px 0' }}>
                           {/* Track background */}
