@@ -2552,14 +2552,23 @@ export function WizardStep1({ data, onChange, onNext }) {
 
     .date-picker-wrapper .calendar-icon {
       position: absolute;
-      right: 12px;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
-      color: rgba(23, 38, 58, 0.4);
+      color: rgba(23, 38, 58, 0.5);
       pointer-events: none;
-      font-size: 14px;
+      font-size: 16px;
       line-height: 1;
-      z-index: 1;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Override any default DatePicker styles that might affect positioning */
+    .date-picker-wrapper .react-datepicker-wrapper {
+      display: block;
+      width: 100%;
     }
 
     .custom-date-picker .react-datepicker {
