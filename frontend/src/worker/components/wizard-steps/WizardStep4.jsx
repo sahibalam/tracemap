@@ -89,10 +89,10 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
         {/* Row 2: Travel Radius + Willingness to Travel */}
         <div className="wizardSection">
           <div className="wizardGrid2" style={{ alignItems: 'flex-start' }}>
-            {/* Travel Radius - Custom Slider */}
+            {/* Travel Radius - Custom Slider with 70% width */}
             <div>
               <div className="wizardSectionBar">Travel Radius</div>
-              <div style={{ marginTop: '4px' }}>
+              <div style={{ marginTop: '4px', maxWidth: '70%' }}>
                 {/* Custom slider container */}
                 <div style={{ position: 'relative', padding: '8px 0' }}>
                   {/* Track background */}
