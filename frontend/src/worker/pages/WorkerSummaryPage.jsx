@@ -1008,7 +1008,6 @@
 // }
 
 
-
 // src/worker/pages/WorkerSummaryPage.jsx
 import { useState } from 'react'
 import { useNavigate, useLocation, NavLink } from 'react-router-dom'
@@ -1100,6 +1099,10 @@ export function WorkerSummaryPage() {
   const updatedTaxData = location?.state?.taxData || {}
   const hasUpdatedTax = location?.state?.updatedTax || false
 
+  // Check if we have updated certification data from the edit page
+  const updatedCertData = location?.state?.certData || {}
+  const hasUpdatedCert = location?.state?.updatedCert || false
+
   // Initialize medical data from props or from updated data
   const [medicalData, setMedicalData] = useState({
     bloodGroup: hasUpdatedMedical ? updatedMedicalData.bloodGroup : (data.medical?.bloodGroup || ''),
@@ -1126,6 +1129,17 @@ export function WorkerSummaryPage() {
     entityAuthorizedSigner: hasUpdatedTax ? updatedTaxData.entityAuthorizedSigner : (data.tax?.entityAuthorizedSigner || ''),
     entityFlags: hasUpdatedTax ? updatedTaxData.entityFlags : (data.tax?.entityFlags || {}),
     stateSpecificFlags: hasUpdatedTax ? updatedTaxData.stateSpecificFlags : (data.tax?.stateSpecificFlags || {}),
+  })
+
+  // Initialize certification data from props or from updated data
+  const [certData, setCertData] = useState({
+    certChecklist: hasUpdatedCert ? updatedCertData.certChecklist : (data.certifications?.certChecklist || {}),
+    certRows: hasUpdatedCert ? updatedCertData.certRows : (data.certifications?.certRows || [
+      { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+      { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+      { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+    ]),
+    safetyFlags: hasUpdatedCert ? updatedCertData.safetyFlags : (data.certifications?.safetyFlags || {}),
   })
 
   const basics = data.basics ?? {}
@@ -1162,6 +1176,16 @@ export function WorkerSummaryPage() {
     if (path === 'employee') return 'W2 Employee'
     if (path === 'subcontractor') return '1099 Contractor'
     return '—'
+  }
+
+  // Get certifications display text
+  const getCertificationsText = () => {
+    const checklist = certData.certChecklist || certifications.certChecklist || {}
+    const certs = Object.keys(checklist).filter(key => checklist[key])
+    if (certs.length > 0) {
+      return certs.join(', ')
+    }
+    return 'No certifications'
   }
 
   const fallbackProjects = [
@@ -1392,24 +1416,58 @@ export function WorkerSummaryPage() {
                 </div>
               </div>
 
-              {/* Certifications & Safety Card */}
+              {/* Certifications & Safety Card - Updated with navigation */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Certifications & Safety</span>
-                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      // Navigate to certification edit page with current data
+                      navigate('/certification/edit', { 
+                        state: { 
+                          certData: {
+                            certChecklist: certData.certChecklist || certifications.certChecklist || {},
+                            certRows: certData.certRows || certifications.certRows || [
+                              { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+                              { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+                              { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+                            ],
+                            safetyFlags: certData.safetyFlags || certifications.safetyFlags || {},
+                          },
+                          parentData: data // Pass the parent data to preserve it
+                        } 
+                      })
+                    }}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      color: '#0f4ea9', 
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
                     <IconPencil />
                   </button>
                 </div>
                 <div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>OSHA 30</span>
-                      <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Verified
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Certifications</span>
+                      <span style={{ color: '#17263a', fontWeight: 500, textAlign: 'right', maxWidth: '60%' }}>
+                        {getCertificationsText() !== 'No certifications' ? (
+                          <span style={{ fontSize: '12px' }}>{getCertificationsText()}</span>
+                        ) : (
+                          'No certifications'
+                        )}
                       </span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Forklift Certified</span>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Safety</span>
                       <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Verified
                       </span>
