@@ -54,8 +54,9 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
     'Other'
   ]
 
-  // Custom styles for date picker
-  const datePickerStyles = `
+  // Custom styles for date picker and trade select
+  const customStyles = `
+    /* Date picker styles */
     .custom-date-picker .react-datepicker__input-container input {
       width: 100%;
       height: 40px;
@@ -236,7 +237,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       padding-right: 36px !important;
     }
 
-    /* Trade select styles - matching WizardStep2 style */
+    /* Trade select styles - matching WizardStep2 exactly */
     .trade-select-wrapper {
       position: relative;
       flex: 1;
@@ -257,6 +258,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       transition: all 0.2s ease;
       appearance: none;
       cursor: pointer;
+      box-sizing: border-box;
     }
 
     .trade-select-wrapper select:hover {
@@ -266,6 +268,15 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
     .trade-select-wrapper select:focus {
       border-color: #0f4ea9;
       box-shadow: 0 0 0 3px rgba(15, 78, 169, 0.1);
+    }
+
+    .trade-select-wrapper select option {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .trade-select-wrapper select option.placeholder-option {
+      color: rgba(23, 38, 58, 0.4);
     }
 
     .trade-select-wrapper .select-arrow {
@@ -294,17 +305,8 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       padding-left: 36px;
     }
 
-    .trade-select-wrapper select option {
-      padding: 8px 12px;
-      font-size: 13px;
-    }
-
-    .trade-select-wrapper select option.placeholder-option {
-      color: rgba(23, 38, 58, 0.4);
-    }
-
     /* Label styles */
-    .trade-label {
+    .field-label {
       display: block;
       font-size: 12px;
       font-weight: 600;
@@ -312,36 +314,89 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       margin-bottom: 4px;
       letter-spacing: 0.3px;
     }
+
+    /* Textarea styles */
+    .wizard-textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid rgba(18, 38, 63, 0.12);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      resize: vertical;
+      outline: none;
+      transition: all 0.2s ease;
+      background: white;
+      color: #17263a;
+      min-height: 60px;
+      box-sizing: border-box;
+    }
+
+    .wizard-textarea:hover {
+      border-color: rgba(15, 78, 169, 0.4);
+    }
+
+    .wizard-textarea:focus {
+      border-color: #0f4ea9;
+      box-shadow: 0 0 0 3px rgba(15, 78, 169, 0.1);
+    }
+
+    .wizard-textarea::placeholder {
+      color: rgba(23, 38, 58, 0.4);
+    }
+
+    .character-count {
+      font-size: 10px;
+      color: rgba(23, 38, 58, 0.5);
+      margin-top: 2px;
+      text-align: right;
+    }
+
+    .project-card {
+      padding: 16px;
+      border: 1px solid rgba(18, 38, 63, 0.08);
+      border-radius: 12px;
+      background: white;
+    }
+
+    .project-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f4ea9;
+      margin-bottom: 12px;
+    }
+
+    .flex-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .flex-row > * {
+      flex: 1;
+    }
+
+    .grid-3-col {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 12px;
+    }
+
+    .mb-8 {
+      margin-bottom: 8px;
+    }
   `
 
   return (
     <div className="wizardStep">
-      <style>{datePickerStyles}</style>
+      <style>{customStyles}</style>
       
       <div className="wizardBody">
         <div className="wizardSection">
-          {/* Three project cards in a row */}
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(3, 1fr)', 
-            gap: '16px',
-            marginTop: '12px'
-          }}>
+          <div className="grid-3-col">
             {/* Project 1 */}
-            <div className="wizardProjectCard" style={{ 
-              padding: '16px', 
-              border: '1px solid rgba(18, 38, 63, 0.08)',
-              borderRadius: '12px',
-              background: 'white'
-            }}>
-              <div className="wizardProjectTitle" style={{ 
-                fontSize: '14px', 
-                fontWeight: 600, 
-                color: '#0f4ea9',
-                marginBottom: '12px'
-              }}>
-                Project 1
-              </div>
+            <div className="project-card">
+              <div className="project-title">Project 1</div>
               
               <TextField
                 placeholder="Project Name"
@@ -367,9 +422,9 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                 style={{ marginBottom: '8px' }}
               />
               
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <div className="trade-select-wrapper" style={{ flex: 1 }}>
-                  <label className="trade-label">Trade</label>
+              <div className="flex-row mb-8">
+                <div className="trade-select-wrapper">
+                  <label className="field-label">Trade</label>
                   <select 
                     value={projects[0]?.trade || ''} 
                     onChange={(e) => updateProjectField(0, 'trade')(e.target.value)}
@@ -395,13 +450,11 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                   icon={<IconUser />}
                   value={projects[0]?.role || ''}
                   onChange={updateProjectField(0, 'role')}
-                  style={{ flex: 1 }}
                 />
               </div>
               
-              {/* Start and End Date with Calendar Picker */}
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <div className="date-picker-wrapper custom-date-picker" style={{ flex: 1 }}>
+              <div className="flex-row mb-8">
+                <div className="date-picker-wrapper custom-date-picker">
                   <DatePicker
                     selected={parseDate(projects[0]?.start || '')}
                     onChange={handleDateChange(0, 'start')}
@@ -413,7 +466,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     dropdownMode="select"
                     yearDropdownItemNumber={100}
                     scrollableYearDropdown
-                    className="date-picker-input"
                     popperPlacement="bottom-start"
                     popperModifiers={[
                       {
@@ -426,7 +478,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                   />
                   <span className="calendar-icon">📅</span>
                 </div>
-                <div className="date-picker-wrapper custom-date-picker" style={{ flex: 1 }}>
+                <div className="date-picker-wrapper custom-date-picker">
                   <DatePicker
                     selected={parseDate(projects[0]?.end || '')}
                     onChange={handleDateChange(0, 'end')}
@@ -438,7 +490,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     dropdownMode="select"
                     yearDropdownItemNumber={100}
                     scrollableYearDropdown
-                    className="date-picker-input"
                     popperPlacement="bottom-start"
                     popperModifiers={[
                       {
@@ -453,64 +504,24 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                 </div>
               </div>
               
-              {/* Scope Summary as TextArea */}
-              <div style={{ marginBottom: '8px' }}>
-                <label className="trade-label" style={{ marginBottom: '4px' }}>Scope Summary</label>
+              <div>
+                <label className="field-label">Scope Summary</label>
                 <textarea
-                  className="wizardTextArea"
+                  className="wizard-textarea"
                   placeholder="Enter scope summary..."
                   value={projects[0]?.scope || ''}
                   onChange={(e) => updateProjectField(0, 'scope')(e.target.value)}
                   rows={3}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    border: '1px solid rgba(18, 38, 63, 0.12)',
-                    borderRadius: '8px',
-                    fontSize: '13px',
-                    fontFamily: 'inherit',
-                    resize: 'vertical',
-                    outline: 'none',
-                    transition: 'all 0.2s ease',
-                    background: 'white',
-                    color: '#17263a',
-                    minHeight: '60px',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#0f4ea9'
-                    e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                    e.target.style.boxShadow = 'none'
-                  }}
                 />
-                <div style={{ 
-                  fontSize: '10px', 
-                  color: 'rgba(23, 38, 58, 0.5)', 
-                  marginTop: '2px',
-                  textAlign: 'right'
-                }}>
+                <div className="character-count">
                   {(projects[0]?.scope?.length || 0)} characters
                 </div>
               </div>
             </div>
 
             {/* Project 2 */}
-            <div className="wizardProjectCard" style={{ 
-              padding: '16px', 
-              border: '1px solid rgba(18, 38, 63, 0.08)',
-              borderRadius: '12px',
-              background: 'white'
-            }}>
-              <div className="wizardProjectTitle" style={{ 
-                fontSize: '14px', 
-                fontWeight: 600, 
-                color: '#0f4ea9',
-                marginBottom: '12px'
-              }}>
-                Project 2
-              </div>
+            <div className="project-card">
+              <div className="project-title">Project 2</div>
               
               <TextField
                 placeholder="Project Name"
@@ -536,9 +547,9 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                 style={{ marginBottom: '8px' }}
               />
               
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <div className="trade-select-wrapper" style={{ flex: 1 }}>
-                  <label className="trade-label">Trade</label>
+              <div className="flex-row mb-8">
+                <div className="trade-select-wrapper">
+                  <label className="field-label">Trade</label>
                   <select 
                     value={projects[1]?.trade || ''} 
                     onChange={(e) => updateProjectField(1, 'trade')(e.target.value)}
@@ -564,12 +575,11 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                   icon={<IconUser />}
                   value={projects[1]?.role || ''}
                   onChange={updateProjectField(1, 'role')}
-                  style={{ flex: 1 }}
                 />
               </div>
               
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <div className="date-picker-wrapper custom-date-picker" style={{ flex: 1 }}>
+              <div className="flex-row mb-8">
+                <div className="date-picker-wrapper custom-date-picker">
                   <DatePicker
                     selected={parseDate(projects[1]?.start || '')}
                     onChange={handleDateChange(1, 'start')}
@@ -581,7 +591,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     dropdownMode="select"
                     yearDropdownItemNumber={100}
                     scrollableYearDropdown
-                    className="date-picker-input"
                     popperPlacement="bottom-start"
                     popperModifiers={[
                       {
@@ -594,7 +603,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                   />
                   <span className="calendar-icon">📅</span>
                 </div>
-                <div className="date-picker-wrapper custom-date-picker" style={{ flex: 1 }}>
+                <div className="date-picker-wrapper custom-date-picker">
                   <DatePicker
                     selected={parseDate(projects[1]?.end || '')}
                     onChange={handleDateChange(1, 'end')}
@@ -606,7 +615,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     dropdownMode="select"
                     yearDropdownItemNumber={100}
                     scrollableYearDropdown
-                    className="date-picker-input"
                     popperPlacement="bottom-start"
                     popperModifiers={[
                       {
@@ -621,63 +629,24 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                 </div>
               </div>
               
-              <div style={{ marginBottom: '8px' }}>
-                <label className="trade-label" style={{ marginBottom: '4px' }}>Scope Summary</label>
+              <div>
+                <label className="field-label">Scope Summary</label>
                 <textarea
-                  className="wizardTextArea"
+                  className="wizard-textarea"
                   placeholder="Enter scope summary..."
                   value={projects[1]?.scope || ''}
                   onChange={(e) => updateProjectField(1, 'scope')(e.target.value)}
                   rows={3}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    border: '1px solid rgba(18, 38, 63, 0.12)',
-                    borderRadius: '8px',
-                    fontSize: '13px',
-                    fontFamily: 'inherit',
-                    resize: 'vertical',
-                    outline: 'none',
-                    transition: 'all 0.2s ease',
-                    background: 'white',
-                    color: '#17263a',
-                    minHeight: '60px',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#0f4ea9'
-                    e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                    e.target.style.boxShadow = 'none'
-                  }}
                 />
-                <div style={{ 
-                  fontSize: '10px', 
-                  color: 'rgba(23, 38, 58, 0.5)', 
-                  marginTop: '2px',
-                  textAlign: 'right'
-                }}>
+                <div className="character-count">
                   {(projects[1]?.scope?.length || 0)} characters
                 </div>
               </div>
             </div>
 
             {/* Project 3 */}
-            <div className="wizardProjectCard" style={{ 
-              padding: '16px', 
-              border: '1px solid rgba(18, 38, 63, 0.08)',
-              borderRadius: '12px',
-              background: 'white'
-            }}>
-              <div className="wizardProjectTitle" style={{ 
-                fontSize: '14px', 
-                fontWeight: 600, 
-                color: '#0f4ea9',
-                marginBottom: '12px'
-              }}>
-                Project 3
-              </div>
+            <div className="project-card">
+              <div className="project-title">Project 3</div>
               
               <TextField
                 placeholder="Project Name"
@@ -703,9 +672,9 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                 style={{ marginBottom: '8px' }}
               />
               
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <div className="trade-select-wrapper" style={{ flex: 1 }}>
-                  <label className="trade-label">Trade</label>
+              <div className="flex-row mb-8">
+                <div className="trade-select-wrapper">
+                  <label className="field-label">Trade</label>
                   <select 
                     value={projects[2]?.trade || ''} 
                     onChange={(e) => updateProjectField(2, 'trade')(e.target.value)}
@@ -731,12 +700,11 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                   icon={<IconUser />}
                   value={projects[2]?.role || ''}
                   onChange={updateProjectField(2, 'role')}
-                  style={{ flex: 1 }}
                 />
               </div>
               
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <div className="date-picker-wrapper custom-date-picker" style={{ flex: 1 }}>
+              <div className="flex-row mb-8">
+                <div className="date-picker-wrapper custom-date-picker">
                   <DatePicker
                     selected={parseDate(projects[2]?.start || '')}
                     onChange={handleDateChange(2, 'start')}
@@ -748,7 +716,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     dropdownMode="select"
                     yearDropdownItemNumber={100}
                     scrollableYearDropdown
-                    className="date-picker-input"
                     popperPlacement="bottom-start"
                     popperModifiers={[
                       {
@@ -761,7 +728,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                   />
                   <span className="calendar-icon">📅</span>
                 </div>
-                <div className="date-picker-wrapper custom-date-picker" style={{ flex: 1 }}>
+                <div className="date-picker-wrapper custom-date-picker">
                   <DatePicker
                     selected={parseDate(projects[2]?.end || '')}
                     onChange={handleDateChange(2, 'end')}
@@ -773,7 +740,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     dropdownMode="select"
                     yearDropdownItemNumber={100}
                     scrollableYearDropdown
-                    className="date-picker-input"
                     popperPlacement="bottom-start"
                     popperModifiers={[
                       {
@@ -788,43 +754,16 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                 </div>
               </div>
               
-              <div style={{ marginBottom: '8px' }}>
-                <label className="trade-label" style={{ marginBottom: '4px' }}>Scope Summary</label>
+              <div>
+                <label className="field-label">Scope Summary</label>
                 <textarea
-                  className="wizardTextArea"
+                  className="wizard-textarea"
                   placeholder="Enter scope summary..."
                   value={projects[2]?.scope || ''}
                   onChange={(e) => updateProjectField(2, 'scope')(e.target.value)}
                   rows={3}
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    border: '1px solid rgba(18, 38, 63, 0.12)',
-                    borderRadius: '8px',
-                    fontSize: '13px',
-                    fontFamily: 'inherit',
-                    resize: 'vertical',
-                    outline: 'none',
-                    transition: 'all 0.2s ease',
-                    background: 'white',
-                    color: '#17263a',
-                    minHeight: '60px',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = '#0f4ea9'
-                    e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                    e.target.style.boxShadow = 'none'
-                  }}
                 />
-                <div style={{ 
-                  fontSize: '10px', 
-                  color: 'rgba(23, 38, 58, 0.5)', 
-                  marginTop: '2px',
-                  textAlign: 'right'
-                }}>
+                <div className="character-count">
                   {(projects[2]?.scope?.length || 0)} characters
                 </div>
               </div>
