@@ -1,5 +1,5 @@
 // src/worker/components/wizard-steps/WizardStep3.jsx
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { TextField } from '../../../common/components/TextField'
@@ -236,13 +236,13 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       padding-right: 36px !important;
     }
 
-    /* Trade dropdown styles - same as WizardStep2 */
-    .trade-dropdown-wrapper {
+    /* Trade select styles - matching WizardStep2 style */
+    .trade-select-wrapper {
       position: relative;
       flex: 1;
     }
 
-    .trade-dropdown-button {
+    .trade-select-wrapper select {
       width: 100%;
       height: 40px;
       padding: 0 12px;
@@ -255,84 +255,30 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       color: #17263a;
       outline: none;
       transition: all 0.2s ease;
+      appearance: none;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      user-select: none;
-      box-sizing: border-box;
     }
 
-    .trade-dropdown-button:hover {
+    .trade-select-wrapper select:hover {
       border-color: rgba(15, 78, 169, 0.4);
     }
 
-    .trade-dropdown-button:focus {
+    .trade-select-wrapper select:focus {
       border-color: #0f4ea9;
       box-shadow: 0 0 0 3px rgba(15, 78, 169, 0.1);
     }
 
-    .trade-dropdown-button .placeholder-text {
-      color: rgba(23, 38, 58, 0.4);
-    }
-
-    .trade-dropdown-button .selected-text {
-      color: #17263a;
-    }
-
-    .trade-dropdown-button .dropdown-arrow {
-      flex-shrink: 0;
-      transition: transform 0.2s ease;
-    }
-
-    .trade-dropdown-button .dropdown-arrow.open {
-      transform: rotate(180deg);
-    }
-
-    .trade-dropdown-menu {
+    .trade-select-wrapper .select-arrow {
       position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      right: 0;
-      max-height: 200px;
-      overflow-y: auto;
-      background: white;
-      border: 1px solid rgba(18, 38, 63, 0.12);
-      border-radius: 8px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-      z-index: 1000;
-      padding: 4px 0;
-    }
-
-    .trade-dropdown-menu .dropdown-item {
-      padding: 8px 12px;
-      cursor: pointer;
-      font-size: 13px;
-      color: #17263a;
-      transition: all 0.15s ease;
-      border-radius: 6px;
-      margin: 2px 4px;
-    }
-
-    .trade-dropdown-menu .dropdown-item:hover {
-      background: rgba(15, 78, 169, 0.08);
-    }
-
-    .trade-dropdown-menu .dropdown-item.selected {
-      background: rgba(15, 78, 169, 0.08);
-      color: #0f4ea9;
-      font-weight: 600;
-    }
-
-    .trade-dropdown-menu .dropdown-item.placeholder-item {
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
       color: rgba(23, 38, 58, 0.4);
+      pointer-events: none;
+      font-size: 10px;
     }
 
-    .trade-dropdown-menu .dropdown-item.placeholder-item:hover {
-      background: transparent;
-    }
-
-    .trade-dropdown-wrapper .icon-wrapper {
+    .trade-select-wrapper .select-icon {
       position: absolute;
       left: 12px;
       top: 50%;
@@ -344,89 +290,29 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       align-items: center;
     }
 
-    .trade-dropdown-wrapper .trade-dropdown-button.has-icon {
+    .trade-select-wrapper select.has-icon {
       padding-left: 36px;
     }
-  `
 
-  // Custom Trade Dropdown Component - Same style as WizardStep2
-  const TradeSelect = ({ value, onChange, icon }) => {
-    const [isOpen, setIsOpen] = useState(false)
-    const dropdownRef = useRef(null)
-
-    // Handle click outside to close dropdown
-    useEffect(() => {
-      const handleClickOutside = (event) => {
-        if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-          setIsOpen(false)
-        }
-      }
-      document.addEventListener('mousedown', handleClickOutside)
-      return () => document.removeEventListener('mousedown', handleClickOutside)
-    }, [])
-
-    // Get display text
-    const getDisplayText = () => {
-      if (!value) return 'Select Trade'
-      return value
+    .trade-select-wrapper select option {
+      padding: 8px 12px;
+      font-size: 13px;
     }
 
-    const isPlaceholder = !value
+    .trade-select-wrapper select option.placeholder-option {
+      color: rgba(23, 38, 58, 0.4);
+    }
 
-    return (
-      <div ref={dropdownRef} className="trade-dropdown-wrapper">
-        {/* Dropdown Button */}
-        <div
-          className={`trade-dropdown-button ${icon ? 'has-icon' : ''}`}
-          onClick={() => setIsOpen(!isOpen)}
-          style={{
-            borderColor: isOpen ? '#0f4ea9' : 'rgba(18, 38, 63, 0.12)',
-            boxShadow: isOpen ? '0 0 0 3px rgba(15, 78, 169, 0.1)' : 'none',
-          }}
-        >
-          {icon && <span className="icon-wrapper">{icon}</span>}
-          <span className={isPlaceholder ? 'placeholder-text' : 'selected-text'}>
-            {getDisplayText()}
-          </span>
-          <svg 
-            className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
-            width="10" 
-            height="10" 
-            viewBox="0 0 12 12"
-          >
-            <path fill="#17263a" d="M6 8L1 3h10z" />
-          </svg>
-        </div>
-
-        {/* Dropdown Menu */}
-        {isOpen && (
-          <div className="trade-dropdown-menu">
-            <div 
-              className="dropdown-item placeholder-item"
-              onClick={() => {
-                onChange('')
-                setIsOpen(false)
-              }}
-            >
-              Select Trade
-            </div>
-            {tradeOptions.map((trade) => (
-              <div
-                key={trade}
-                className={`dropdown-item ${value === trade ? 'selected' : ''}`}
-                onClick={() => {
-                  onChange(trade)
-                  setIsOpen(false)
-                }}
-              >
-                {trade}
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    )
-  }
+    /* Label styles */
+    .trade-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #17263a;
+      margin-bottom: 4px;
+      letter-spacing: 0.3px;
+    }
+  `
 
   return (
     <div className="wizardStep">
@@ -482,11 +368,28 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               />
               
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <TradeSelect
-                  value={projects[0]?.trade || ''}
-                  onChange={updateProjectField(0, 'trade')}
-                  icon={<IconSupport />}
-                />
+                <div className="trade-select-wrapper" style={{ flex: 1 }}>
+                  <label className="trade-label">Trade</label>
+                  <select 
+                    value={projects[0]?.trade || ''} 
+                    onChange={(e) => updateProjectField(0, 'trade')(e.target.value)}
+                    className="has-icon"
+                    style={{
+                      color: projects[0]?.trade ? '#17263a' : '#6b7280',
+                    }}
+                  >
+                    <option value="" className="placeholder-option" disabled>
+                      Select Trade
+                    </option>
+                    {tradeOptions.map((trade) => (
+                      <option key={trade} value={trade}>
+                        {trade}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="select-icon"><IconSupport /></span>
+                  <span className="select-arrow">▼</span>
+                </div>
                 <TextField
                   placeholder="Role"
                   icon={<IconUser />}
@@ -552,9 +455,10 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               
               {/* Scope Summary as TextArea */}
               <div style={{ marginBottom: '8px' }}>
+                <label className="trade-label" style={{ marginBottom: '4px' }}>Scope Summary</label>
                 <textarea
                   className="wizardTextArea"
-                  placeholder="Scope Summary"
+                  placeholder="Enter scope summary..."
                   value={projects[0]?.scope || ''}
                   onChange={(e) => updateProjectField(0, 'scope')(e.target.value)}
                   rows={3}
@@ -633,11 +537,28 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               />
               
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <TradeSelect
-                  value={projects[1]?.trade || ''}
-                  onChange={updateProjectField(1, 'trade')}
-                  icon={<IconSupport />}
-                />
+                <div className="trade-select-wrapper" style={{ flex: 1 }}>
+                  <label className="trade-label">Trade</label>
+                  <select 
+                    value={projects[1]?.trade || ''} 
+                    onChange={(e) => updateProjectField(1, 'trade')(e.target.value)}
+                    className="has-icon"
+                    style={{
+                      color: projects[1]?.trade ? '#17263a' : '#6b7280',
+                    }}
+                  >
+                    <option value="" className="placeholder-option" disabled>
+                      Select Trade
+                    </option>
+                    {tradeOptions.map((trade) => (
+                      <option key={trade} value={trade}>
+                        {trade}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="select-icon"><IconSupport /></span>
+                  <span className="select-arrow">▼</span>
+                </div>
                 <TextField
                   placeholder="Role"
                   icon={<IconUser />}
@@ -701,9 +622,10 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               </div>
               
               <div style={{ marginBottom: '8px' }}>
+                <label className="trade-label" style={{ marginBottom: '4px' }}>Scope Summary</label>
                 <textarea
                   className="wizardTextArea"
-                  placeholder="Scope Summary"
+                  placeholder="Enter scope summary..."
                   value={projects[1]?.scope || ''}
                   onChange={(e) => updateProjectField(1, 'scope')(e.target.value)}
                   rows={3}
@@ -782,11 +704,28 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               />
               
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <TradeSelect
-                  value={projects[2]?.trade || ''}
-                  onChange={updateProjectField(2, 'trade')}
-                  icon={<IconSupport />}
-                />
+                <div className="trade-select-wrapper" style={{ flex: 1 }}>
+                  <label className="trade-label">Trade</label>
+                  <select 
+                    value={projects[2]?.trade || ''} 
+                    onChange={(e) => updateProjectField(2, 'trade')(e.target.value)}
+                    className="has-icon"
+                    style={{
+                      color: projects[2]?.trade ? '#17263a' : '#6b7280',
+                    }}
+                  >
+                    <option value="" className="placeholder-option" disabled>
+                      Select Trade
+                    </option>
+                    {tradeOptions.map((trade) => (
+                      <option key={trade} value={trade}>
+                        {trade}
+                      </option>
+                    ))}
+                  </select>
+                  <span className="select-icon"><IconSupport /></span>
+                  <span className="select-arrow">▼</span>
+                </div>
                 <TextField
                   placeholder="Role"
                   icon={<IconUser />}
@@ -850,9 +789,10 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               </div>
               
               <div style={{ marginBottom: '8px' }}>
+                <label className="trade-label" style={{ marginBottom: '4px' }}>Scope Summary</label>
                 <textarea
                   className="wizardTextArea"
-                  placeholder="Scope Summary"
+                  placeholder="Enter scope summary..."
                   value={projects[2]?.scope || ''}
                   onChange={(e) => updateProjectField(2, 'scope')(e.target.value)}
                   rows={3}
