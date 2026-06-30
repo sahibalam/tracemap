@@ -1,55 +1,3 @@
-// // src/common/components/TopNav.jsx
-// import { Link, NavLink } from 'react-router-dom'
-// import { IconSearch, IconBell } from './Icons'
-
-// export function TopNav({ variant = 'transparent' }) {
-//   return (
-//     <header className={`topbar ${variant === 'solid' ? 'topbarSolid' : ''}`}>
-//       <div className="topbarInner">
-//         <Link to="/" className="brand brandLink" aria-label="TradesMap home">
-//           <img className="brandLogo" src="/assets/Logo_tradesmaps.png" alt="TradesMap" />
-//         </Link>
-
-//         {variant === 'transparent' ? (
-//           <nav className="navLinks" aria-label="Top navigation">
-//             <a href="#" className="navLink">Faqs</a>
-//             <a href="#" className="navLink">About</a>
-//             <a href="#" className="navLink">Contact</a>
-//           </nav>
-//         ) : null}
-
-//         {variant === 'solid' ? (
-//           <div className="topbarCenter" aria-label="Header search">
-//             <div className="topbarSearch">
-//               <span className="topbarSearchIcon" aria-hidden="true">
-//                 <IconSearch />
-//               </span>
-//               <input className="topbarSearchInput" type="search" placeholder="Search" />
-//             </div>
-//           </div>
-//         ) : null}
-
-//         <nav className="navActions" aria-label="Authentication navigation">
-//           {variant === 'solid' ? (
-//             <div className="navActionsSolid">
-//               <button type="button" className="navIconButton" aria-label="Notifications">
-//                 <IconBell />
-//                 <span className="navIconBadge" aria-hidden="true">7</span>
-//               </button>
-//               <img className="topbarAvatar" src="/assets/worker.avif" alt="Worker avatar" />
-//             </div>
-//           ) : (
-//             <NavLink to="/login" className={({ isActive }) => `navPill ${isActive ? 'navPillActive' : ''}`}>
-//               Login
-//             </NavLink>
-//           )}
-//         </nav>
-//       </div>
-//     </header>
-//   )
-// }
-
-
 // src/common/components/TopNav.jsx
 import { useState, useRef, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
@@ -82,7 +30,7 @@ export function TopNav({ variant = 'transparent' }) {
   }
 
   return (
-    <header className={`topbar ${variant === 'solid' ? 'topbarSolid' : ''}`}>
+    <header className={`topbar ${variant === 'solid' ? 'topbarSolid' : ''}`} style={{ position: 'relative', zIndex: 1000 }}>
       <div className="topbarInner">
         <Link to="/" className="brand brandLink" aria-label="TradesMap home">
           <img className="brandLogo" src="/assets/Logo_tradesmaps.png" alt="TradesMap" />
@@ -116,7 +64,7 @@ export function TopNav({ variant = 'transparent' }) {
               </button>
               
               {/* Avatar with Dropdown */}
-              <div ref={dropdownRef} style={{ position: 'relative' }}>
+              <div ref={dropdownRef} style={{ position: 'relative', zIndex: 9999 }}>
                 <button
                   type="button"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -154,7 +102,7 @@ export function TopNav({ variant = 'transparent' }) {
                       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
                       border: '1px solid rgba(18, 38, 63, 0.08)',
                       overflow: 'hidden',
-                      zIndex: 1000,
+                      zIndex: 99999,
                       padding: '4px 0',
                     }}
                   >
