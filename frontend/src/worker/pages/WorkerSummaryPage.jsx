@@ -1405,31 +1405,66 @@ export function WorkerSummaryPage() {
             {/* Row 3: Availability & Rate, Certifications & Safety, Tax Profile, Payment/Bank Details */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
               
-              {/* Availability & Rate Card */}
-              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Availability & Rate</span>
-                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
-                    <IconPencil />
-                  </button>
-                </div>
-                <div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Hourly Rate</span>
-                      <span style={{ color: '#17263a', fontWeight: 500 }}>{displayValue(availability.hourlyRateRequested ? `$${availability.hourlyRateRequested}` : '—')}</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Travel</span>
-                      <span style={{ color: '#17263a', fontWeight: 500 }}>{trade.travelRadiusMiles ? 'Yes' : 'No'}</span>
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Available</span>
-                      <span style={{ color: '#17263a', fontWeight: 500 }}>{displayValue(availability.earliestStartDate, 'Immediate')}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {/* Availability & Rate Card - Updated with navigation */}
+<div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+    <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Availability & Rate</span>
+    <button 
+      type="button" 
+      onClick={() => {
+        // Navigate to availability edit page with current data
+        navigate('/availability/edit', { 
+          state: { 
+            availabilityData: {
+              hourlyRate: availability.hourlyRate || '',
+              payPrefs: availability.payPrefs || {},
+              travelRadius: availability.travelRadius || 50,
+              willingToTravel: availability.willingToTravel || '',
+              travelPrefs: availability.travelPrefs || {},
+              availability: availability.availability || {},
+            },
+            parentData: data // Pass the parent data to preserve it
+          } 
+        })
+      }}
+      style={{ 
+        background: 'none', 
+        border: 'none', 
+        color: '#0f4ea9', 
+        cursor: 'pointer',
+        padding: '4px 8px',
+        borderRadius: '6px',
+        transition: 'background 0.2s',
+      }}
+      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+    >
+      <IconPencil />
+    </button>
+  </div>
+  <div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+        <span style={{ color: 'rgba(23,38,58,0.6)' }}>Hourly Rate</span>
+        <span style={{ color: '#17263a', fontWeight: 500 }}>
+          {displayValue(availability.hourlyRateRequested || availabilityData.hourlyRate ? `$${availability.hourlyRateRequested || availabilityData.hourlyRate}` : '—')}
+        </span>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+        <span style={{ color: 'rgba(23,38,58,0.6)' }}>Travel</span>
+        <span style={{ color: '#17263a', fontWeight: 500 }}>
+          {availabilityData.willingToTravel === 'yes' || trade.travelRadiusMiles ? 'Yes' : 'No'}
+        </span>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+        <span style={{ color: 'rgba(23,38,58,0.6)' }}>Available</span>
+        <span style={{ color: '#17263a', fontWeight: 500 }}>
+          {displayValue(availability.earliestStartDate || availabilityData.availability?.startDate, 'Immediate')}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
 
               {/* Certifications & Safety Card - Updated with navigation */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
