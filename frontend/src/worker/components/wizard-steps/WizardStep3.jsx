@@ -40,6 +40,19 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
     { name: '', client: '', city: '', state: '', role: '', trade: '', start: '', end: '', scope: '' },
   ]
 
+  // Trade options
+  const tradeOptions = [
+    'Metal Framing',
+    'Drywall Hanging',
+    'Taping/Finishing',
+    'Acoustical Ceilings',
+    'Interior Carpentry',
+    'Helpers/Labourers',
+    'Insulation',
+    'Demolition/Punch/Final Clean',
+    'Leads/Foremen'
+  ]
+
   // Custom styles for date picker
   const datePickerStyles = `
     .custom-date-picker .react-datepicker__input-container input {
@@ -221,7 +234,93 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
     .date-picker-wrapper .react-datepicker__input-container input {
       padding-right: 36px !important;
     }
+
+    /* Trade dropdown styles */
+    .trade-select-wrapper {
+      position: relative;
+      flex: 1;
+    }
+
+    .trade-select-wrapper select {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px;
+      padding-right: 32px;
+      border: 1px solid rgba(18, 38, 63, 0.12);
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      background: white;
+      color: #17263a;
+      outline: none;
+      transition: all 0.2s ease;
+      appearance: none;
+      cursor: pointer;
+    }
+
+    .trade-select-wrapper select:hover {
+      border-color: rgba(15, 78, 169, 0.4);
+    }
+
+    .trade-select-wrapper select:focus {
+      border-color: #0f4ea9;
+      box-shadow: 0 0 0 3px rgba(15, 78, 169, 0.1);
+    }
+
+    .trade-select-wrapper select:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .trade-select-wrapper .select-arrow {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(23, 38, 58, 0.4);
+      pointer-events: none;
+      font-size: 10px;
+    }
+
+    .trade-select-wrapper .select-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(23, 38, 58, 0.4);
+      pointer-events: none;
+      font-size: 14px;
+    }
+
+    .trade-select-wrapper select.has-icon {
+      padding-left: 36px;
+    }
+
+    .trade-select-wrapper select option {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
   `
+
+  // Trade dropdown component
+  const TradeSelect = ({ value, onChange, icon }) => (
+    <div className="trade-select-wrapper">
+      {icon && <span className="select-icon">{icon}</span>}
+      <select 
+        value={value || ''} 
+        onChange={(e) => onChange(e.target.value)}
+        className={icon ? 'has-icon' : ''}
+      >
+        <option value="">Select Trade</option>
+        {tradeOptions.map((trade) => (
+          <option key={trade} value={trade}>
+            {trade}
+          </option>
+        ))}
+      </select>
+      <span className="select-arrow">▼</span>
+    </div>
+  )
 
   return (
     <div className="wizardStep">
@@ -229,8 +328,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       
       <div className="wizardBody">
         <div className="wizardSection">
-          {/* ❌ REMOVED: Recent Projects (Last 3 to 5 Relevant Projects) bar */}
-          
           {/* Three project cards in a row */}
           <div style={{ 
             display: 'grid', 
@@ -279,12 +376,10 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               />
               
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <TextField
-                  placeholder="Trade"
-                  icon={<IconSupport />}
+                <TradeSelect
                   value={projects[0]?.trade || ''}
                   onChange={updateProjectField(0, 'trade')}
-                  style={{ flex: 1 }}
+                  icon={<IconSupport />}
                 />
                 <TextField
                   placeholder="Role"
@@ -432,12 +527,10 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               />
               
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <TextField
-                  placeholder="Trade"
-                  icon={<IconSupport />}
+                <TradeSelect
                   value={projects[1]?.trade || ''}
                   onChange={updateProjectField(1, 'trade')}
-                  style={{ flex: 1 }}
+                  icon={<IconSupport />}
                 />
                 <TextField
                   placeholder="Role"
@@ -583,12 +676,10 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               />
               
               <div style={{ display: 'flex', gap: '8px', marginBottom: '8px' }}>
-                <TextField
-                  placeholder="Trade"
-                  icon={<IconSupport />}
+                <TradeSelect
                   value={projects[2]?.trade || ''}
                   onChange={updateProjectField(2, 'trade')}
-                  style={{ flex: 1 }}
+                  icon={<IconSupport />}
                 />
                 <TextField
                   placeholder="Role"
