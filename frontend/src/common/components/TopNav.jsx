@@ -7,26 +7,48 @@ export function TopNav({ variant = 'transparent' }) {
   const navigate = useNavigate()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const dropdownRef = useRef(null)
+  const avatarRef = useRef(null)
+
+  console.log('TopNav rendered, variant:', variant)
+  console.log('isDropdownOpen:', isDropdownOpen)
 
   // Handle click outside to close dropdown
   useEffect(() => {
+    console.log('Setting up click outside listener')
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      console.log('Click outside detected:', event.target)
+      console.log('dropdownRef.current:', dropdownRef.current)
+      console.log('avatarRef.current:', avatarRef.current)
+      
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+          avatarRef.current && !avatarRef.current.contains(event.target)) {
+        console.log('Closing dropdown - clicked outside')
         setIsDropdownOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+    return () => {
+      console.log('Removing click outside listener')
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
   const handleProfileSettings = () => {
+    console.log('Profile Settings clicked')
     setIsDropdownOpen(false)
     navigate('/wizard/summary')
   }
 
   const handleLogout = () => {
+    console.log('Logout clicked')
     setIsDropdownOpen(false)
     navigate('/login')
+  }
+
+  const toggleDropdown = () => {
+    console.log('Avatar clicked, current state:', isDropdownOpen)
+    console.log('Avatar ref:', avatarRef.current)
+    setIsDropdownOpen(!isDropdownOpen)
   }
 
   return (
@@ -64,10 +86,11 @@ export function TopNav({ variant = 'transparent' }) {
               </button>
               
               {/* Avatar with Dropdown */}
-              <div ref={dropdownRef} style={{ position: 'relative' }}>
+              <div ref={dropdownRef} style={{ position: 'relative', zIndex: 99999 }}>
                 <button
+                  ref={avatarRef}
                   type="button"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  onClick={toggleDropdown}
                   style={{
                     background: 'none',
                     border: 'none',
@@ -103,7 +126,7 @@ export function TopNav({ variant = 'transparent' }) {
                       boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
                       border: '1px solid rgba(18, 38, 63, 0.08)',
                       overflow: 'hidden',
-                      zIndex: 99999,
+                      zIndex: 999999,
                       padding: '4px 0',
                     }}
                   >
