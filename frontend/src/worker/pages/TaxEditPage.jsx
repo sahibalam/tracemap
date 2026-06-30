@@ -5,6 +5,107 @@ import { TopNav } from '../../common/components/TopNav'
 import { TextField } from '../../common/components/TextField'
 import { IconUser, IconSupport, IconLocation } from '../../common/components/Icons'
 
+// US States data
+const US_STATES = [
+  { name: 'Alabama', code: 'AL' },
+  { name: 'Alaska', code: 'AK' },
+  { name: 'Arizona', code: 'AZ' },
+  { name: 'Arkansas', code: 'AR' },
+  { name: 'California', code: 'CA' },
+  { name: 'Colorado', code: 'CO' },
+  { name: 'Connecticut', code: 'CT' },
+  { name: 'Delaware', code: 'DE' },
+  { name: 'Florida', code: 'FL' },
+  { name: 'Georgia', code: 'GA' },
+  { name: 'Hawaii', code: 'HI' },
+  { name: 'Idaho', code: 'ID' },
+  { name: 'Illinois', code: 'IL' },
+  { name: 'Indiana', code: 'IN' },
+  { name: 'Iowa', code: 'IA' },
+  { name: 'Kansas', code: 'KS' },
+  { name: 'Kentucky', code: 'KY' },
+  { name: 'Louisiana', code: 'LA' },
+  { name: 'Maine', code: 'ME' },
+  { name: 'Maryland', code: 'MD' },
+  { name: 'Massachusetts', code: 'MA' },
+  { name: 'Michigan', code: 'MI' },
+  { name: 'Minnesota', code: 'MN' },
+  { name: 'Mississippi', code: 'MS' },
+  { name: 'Missouri', code: 'MO' },
+  { name: 'Montana', code: 'MT' },
+  { name: 'Nebraska', code: 'NE' },
+  { name: 'Nevada', code: 'NV' },
+  { name: 'New Hampshire', code: 'NH' },
+  { name: 'New Jersey', code: 'NJ' },
+  { name: 'New Mexico', code: 'NM' },
+  { name: 'New York', code: 'NY' },
+  { name: 'North Carolina', code: 'NC' },
+  { name: 'North Dakota', code: 'ND' },
+  { name: 'Ohio', code: 'OH' },
+  { name: 'Oklahoma', code: 'OK' },
+  { name: 'Oregon', code: 'OR' },
+  { name: 'Pennsylvania', code: 'PA' },
+  { name: 'Rhode Island', code: 'RI' },
+  { name: 'South Carolina', code: 'SC' },
+  { name: 'South Dakota', code: 'SD' },
+  { name: 'Tennessee', code: 'TN' },
+  { name: 'Texas', code: 'TX' },
+  { name: 'Utah', code: 'UT' },
+  { name: 'Vermont', code: 'VT' },
+  { name: 'Virginia', code: 'VA' },
+  { name: 'Washington', code: 'WA' },
+  { name: 'West Virginia', code: 'WV' },
+  { name: 'Wisconsin', code: 'WI' },
+  { name: 'Wyoming', code: 'WY' },
+]
+
+// State Dropdown Component
+function StateDropdown({ value, onChange, placeholder = 'Select State' }) {
+  return (
+    <div style={{ position: 'relative' }}>
+      <select
+        value={value || ''}
+        onChange={(e) => onChange(e.target.value)}
+        style={{
+          width: '100%',
+          height: '48px',
+          padding: '0 16px',
+          paddingRight: '40px',
+          border: '1px solid rgba(18, 38, 63, 0.12)',
+          borderRadius: '12px',
+          fontSize: '14px',
+          outline: 'none',
+          background: 'white',
+          color: value ? '#17263a' : '#6b7280',
+          transition: 'all 0.2s ease',
+          fontFamily: 'inherit',
+          appearance: 'none',
+          cursor: 'pointer',
+          backgroundColor: '#fff',
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2317263a' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 14px center',
+        }}
+        onFocus={(e) => {
+          e.target.style.borderColor = '#0f4ea9'
+          e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+        }}
+        onBlur={(e) => {
+          e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+          e.target.style.boxShadow = 'none'
+        }}
+      >
+        <option value="">{placeholder}</option>
+        {US_STATES.map((state) => (
+          <option key={state.code} value={state.code}>
+            {state.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  )
+}
+
 // Icons
 function IconGrid(props) {
   return (
@@ -260,12 +361,13 @@ export function TaxEditPage() {
                     </label>
                   </div>
 
-                  <TextField
-                    placeholder="State of work"
-                    icon={<IconLocationIcon />}
-                    value={taxData.stateOfWork || ''}
-                    onChange={(v) => handleChange('stateOfWork', v)}
-                  />
+                  <div>
+                    <StateDropdown
+                      value={taxData.stateOfWork || ''}
+                      onChange={(v) => handleChange('stateOfWork', v)}
+                      placeholder="Select State of work"
+                    />
+                  </div>
                 </div>
               </div>
 
