@@ -433,16 +433,19 @@ export function CertificationEditPage() {
         </aside>
 
         <main className="appContent">
-          <div style={{ padding: '24px', maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ padding: '24px', maxWidth: '1100px', margin: '0 auto', height: 'calc(100vh - 120px)', display: 'flex', flexDirection: 'column' }}>
             
-            {/* Header with Back button */}
+            {/* Sticky Header with Back button */}
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
               gap: '16px',
-              marginBottom: '24px',
+              marginBottom: '16px',
               paddingBottom: '16px',
-              borderBottom: '1px solid rgba(18, 38, 63, 0.08)'
+              borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
+              flexShrink: 0,
+              background: 'white',
+              zIndex: 10,
             }}>
               <button
                 onClick={handleBack}
@@ -475,333 +478,344 @@ export function CertificationEditPage() {
               </span>
             </div>
 
-            {/* Certification Form */}
+            {/* Scrollable Content Area */}
             <div style={{
-              background: 'white',
-              borderRadius: '16px',
-              padding: '32px',
-              border: '1px solid rgba(18, 38, 63, 0.08)',
+              flex: 1,
+              overflowY: 'auto',
+              paddingBottom: '16px',
             }}>
-              <style>{datePickerStyles}</style>
-              <style>{fileUploadStyles}</style>
-              
-              {/* Section 1: Certification Checklist */}
-              <div style={{ marginBottom: '32px' }}>
-                <div style={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: '#17263a',
-                  marginBottom: '16px',
-                  paddingBottom: '8px',
-                  borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
-                }}>
-                  1. Certification Checklist
-                </div>
-                <div style={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: '1fr 1fr 1fr', 
-                  gap: '16px'
-                }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {['OSHA 10', 'OSHA 30', 'Scissor lift'].map((k) => (
-                      <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input type="checkbox" checked={!!(certData.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
-                        <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
-                      </label>
-                    ))}
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {['Boom / aerial lift', 'Forklift / PIT', 'CPR / First Aid'].map((k) => (
-                      <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input type="checkbox" checked={!!(certData.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
-                        <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
-                      </label>
-                    ))}
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {['Fall protection', 'HazCom', 'Site-specific orientation'].map((k) => (
-                      <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                        <input type="checkbox" checked={!!(certData.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
-                        <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Section 2: Verification Data */}
-              <div style={{ marginBottom: '24px' }}>
-                <div style={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: '#17263a',
-                  marginBottom: '16px',
-                  paddingBottom: '8px',
-                  borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
-                }}>
-                  2. Verification Data
-                </div>
+              {/* Certification Form */}
+              <div style={{
+                background: 'white',
+                borderRadius: '16px',
+                padding: '32px',
+                border: '1px solid rgba(18, 38, 63, 0.08)',
+              }}>
+                <style>{datePickerStyles}</style>
+                <style>{fileUploadStyles}</style>
                 
-                {/* Table with fixed column widths */}
-                <div style={{ 
-                  width: '100%', 
-                  overflowX: 'auto',
-                  position: 'relative'
-                }}>
-                  {/* Header Row */}
+                {/* Section 1: Certification Checklist */}
+                <div style={{ marginBottom: '32px' }}>
+                  <div style={{
+                    fontSize: '16px',
+                    fontWeight: 600,
+                    color: '#17263a',
+                    marginBottom: '16px',
+                    paddingBottom: '8px',
+                    borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+                  }}>
+                    1. Certification Checklist
+                  </div>
                   <div style={{ 
                     display: 'grid', 
-                    gridTemplateColumns: '1.5fr 1.2fr 1fr 1fr 1.2fr',
-                    gap: '8px',
-                    padding: '8px 4px',
-                    borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
-                    fontWeight: 600,
-                    fontSize: '13px',
-                    color: '#17263a',
-                    minWidth: '700px'
+                    gridTemplateColumns: '1fr 1fr 1fr', 
+                    gap: '16px'
                   }}>
-                    <div>Certification / card name</div>
-                    <div>Card number / ID</div>
-                    <div>Issue date</div>
-                    <div>Expiration date</div>
-                    <div>Upload / file ref</div>
-                  </div>
-
-                  {/* Data Rows */}
-                  {certRows.map((row, idx) => (
-                    <div 
-                      key={idx} 
-                      style={{ 
-                        display: 'grid', 
-                        gridTemplateColumns: '1.5fr 1.2fr 1fr 1fr 1.2fr',
-                        gap: '8px',
-                        padding: '6px 4px',
-                        borderBottom: idx < certRows.length - 1 ? '1px solid rgba(18, 38, 63, 0.06)' : 'none',
-                        alignItems: 'center',
-                        minWidth: '700px'
-                      }}
-                    >
-                      {/* Certification / card name */}
-                      <input 
-                        value={row.name} 
-                        onChange={(e) => updateCertRow(idx, 'name')(e.target.value)}
-                        placeholder="e.g. OSHA 10"
-                        style={{
-                          width: '100%',
-                          padding: '6px 10px',
-                          border: '1px solid rgba(18, 38, 63, 0.12)',
-                          borderRadius: '6px',
-                          fontSize: '13px',
-                          outline: 'none',
-                          transition: 'all 0.2s ease',
-                          background: 'white',
-                          color: '#17263a',
-                          boxSizing: 'border-box'
-                        }}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = '#0f4ea9'
-                          e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                          e.target.style.boxShadow = 'none'
-                        }}
-                      />
-
-                      {/* Card number / ID */}
-                      <input 
-                        value={row.cardNumber} 
-                        onChange={(e) => updateCertRow(idx, 'cardNumber')(e.target.value)}
-                        placeholder="Card ID"
-                        style={{
-                          width: '100%',
-                          padding: '6px 10px',
-                          border: '1px solid rgba(18, 38, 63, 0.12)',
-                          borderRadius: '6px',
-                          fontSize: '13px',
-                          outline: 'none',
-                          transition: 'all 0.2s ease',
-                          background: 'white',
-                          color: '#17263a',
-                          boxSizing: 'border-box'
-                        }}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = '#0f4ea9'
-                          e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                          e.target.style.boxShadow = 'none'
-                        }}
-                      />
-
-                      {/* Issue date - Calendar Picker */}
-                      <div className="cert-date-picker" style={{ width: '100%', position: 'relative' }}>
-                        <DatePicker
-                          selected={parseDate(row.issueDate)}
-                          onChange={handleDateChange(idx, 'issueDate')}
-                          dateFormat="MM/dd/yyyy"
-                          placeholderText="MM/DD/YYYY"
-                          maxDate={new Date()}
-                          showYearDropdown
-                          showMonthDropdown
-                          dropdownMode="select"
-                          yearDropdownItemNumber={100}
-                          scrollableYearDropdown
-                          className="date-picker-input"
-                          popperPlacement="bottom-start"
-                          popperModifiers={[
-                            {
-                              name: 'offset',
-                              options: {
-                                offset: [0, 8],
-                              },
-                            },
-                            {
-                              name: 'preventOverflow',
-                              options: {
-                                boundariesElement: 'viewport',
-                              },
-                            },
-                            {
-                              name: 'flip',
-                              options: {
-                                fallbackPlacements: ['top-start', 'bottom-start'],
-                              },
-                            },
-                          ]}
-                          onCalendarOpen={() => setOpenDatePicker(`issue-${idx}`)}
-                          onCalendarClose={() => setOpenDatePicker(null)}
-                        />
-                      </div>
-
-                      {/* Expiration date - Calendar Picker */}
-                      <div className="cert-date-picker" style={{ width: '100%', position: 'relative' }}>
-                        <DatePicker
-                          selected={parseDate(row.expirationDate)}
-                          onChange={handleDateChange(idx, 'expirationDate')}
-                          dateFormat="MM/dd/yyyy"
-                          placeholderText="MM/DD/YYYY"
-                          showYearDropdown
-                          showMonthDropdown
-                          dropdownMode="select"
-                          yearDropdownItemNumber={100}
-                          scrollableYearDropdown
-                          className="date-picker-input"
-                          popperPlacement="bottom-start"
-                          popperModifiers={[
-                            {
-                              name: 'offset',
-                              options: {
-                                offset: [0, 8],
-                              },
-                            },
-                            {
-                              name: 'preventOverflow',
-                              options: {
-                                boundariesElement: 'viewport',
-                              },
-                            },
-                            {
-                              name: 'flip',
-                              options: {
-                                fallbackPlacements: ['top-start', 'bottom-start'],
-                              },
-                            },
-                          ]}
-                          onCalendarOpen={() => setOpenDatePicker(`exp-${idx}`)}
-                          onCalendarClose={() => setOpenDatePicker(null)}
-                        />
-                      </div>
-
-                      {/* Upload / file ref - File Upload Button */}
-                      <div>
-                        <input
-                          ref={(el) => (fileInputRefs.current[idx] = el)}
-                          type="file"
-                          accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
-                          onChange={handleFileUpload(idx)}
-                          style={{ display: 'none' }}
-                        />
-                        <button
-                          type="button"
-                          className={`file-upload-btn ${row.uploadRef ? 'has-file' : ''}`}
-                          onClick={triggerFileUpload(idx)}
-                          title={row.uploadRef || 'Upload file'}
-                        >
-                          {row.uploadRef ? (
-                            <>
-                              <span>📎</span>
-                              <span className="file-name">{row.uploadRef}</span>
-                            </>
-                          ) : (
-                            <>
-                              <span>📤</span>
-                              <span>Upload</span>
-                            </>
-                          )}
-                        </button>
-                      </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {['OSHA 10', 'OSHA 30', 'Scissor lift'].map((k) => (
+                        <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input type="checkbox" checked={!!(certData.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
+                          <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
+                        </label>
+                      ))}
                     </div>
-                  ))}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {['Boom / aerial lift', 'Forklift / PIT', 'CPR / First Aid'].map((k) => (
+                        <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input type="checkbox" checked={!!(certData.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
+                          <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {['Fall protection', 'HazCom', 'Site-specific orientation'].map((k) => (
+                        <label key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                          <input type="checkbox" checked={!!(certData.certChecklist?.[k] || false)} onChange={toggleMapValue(k, setCertChecklist)} />
+                          <span style={{ fontSize: '14px', color: '#17263a' }}>{k}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Section 2: Verification Data */}
+                <div style={{ marginBottom: '24px' }}>
+                  <div style={{
+                    fontSize: '16px',
+                    fontWeight: 600,
+                    color: '#17263a',
+                    marginBottom: '16px',
+                    paddingBottom: '8px',
+                    borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+                  }}>
+                    2. Verification Data
+                  </div>
+                  
+                  {/* Table with fixed column widths */}
+                  <div style={{ 
+                    width: '100%', 
+                    overflowX: 'auto',
+                    position: 'relative'
+                  }}>
+                    {/* Header Row */}
+                    <div style={{ 
+                      display: 'grid', 
+                      gridTemplateColumns: '1.5fr 1.2fr 1fr 1fr 1.2fr',
+                      gap: '8px',
+                      padding: '8px 4px',
+                      borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+                      fontWeight: 600,
+                      fontSize: '13px',
+                      color: '#17263a',
+                      minWidth: '700px'
+                    }}>
+                      <div>Certification / card name</div>
+                      <div>Card number / ID</div>
+                      <div>Issue date</div>
+                      <div>Expiration date</div>
+                      <div>Upload / file ref</div>
+                    </div>
+
+                    {/* Data Rows */}
+                    {certRows.map((row, idx) => (
+                      <div 
+                        key={idx} 
+                        style={{ 
+                          display: 'grid', 
+                          gridTemplateColumns: '1.5fr 1.2fr 1fr 1fr 1.2fr',
+                          gap: '8px',
+                          padding: '6px 4px',
+                          borderBottom: idx < certRows.length - 1 ? '1px solid rgba(18, 38, 63, 0.06)' : 'none',
+                          alignItems: 'center',
+                          minWidth: '700px'
+                        }}
+                      >
+                        {/* Certification / card name */}
+                        <input 
+                          value={row.name} 
+                          onChange={(e) => updateCertRow(idx, 'name')(e.target.value)}
+                          placeholder="e.g. OSHA 10"
+                          style={{
+                            width: '100%',
+                            padding: '6px 10px',
+                            border: '1px solid rgba(18, 38, 63, 0.12)',
+                            borderRadius: '6px',
+                            fontSize: '13px',
+                            outline: 'none',
+                            transition: 'all 0.2s ease',
+                            background: 'white',
+                            color: '#17263a',
+                            boxSizing: 'border-box'
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.borderColor = '#0f4ea9'
+                            e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+                            e.target.style.boxShadow = 'none'
+                          }}
+                        />
+
+                        {/* Card number / ID */}
+                        <input 
+                          value={row.cardNumber} 
+                          onChange={(e) => updateCertRow(idx, 'cardNumber')(e.target.value)}
+                          placeholder="Card ID"
+                          style={{
+                            width: '100%',
+                            padding: '6px 10px',
+                            border: '1px solid rgba(18, 38, 63, 0.12)',
+                            borderRadius: '6px',
+                            fontSize: '13px',
+                            outline: 'none',
+                            transition: 'all 0.2s ease',
+                            background: 'white',
+                            color: '#17263a',
+                            boxSizing: 'border-box'
+                          }}
+                          onFocus={(e) => {
+                            e.target.style.borderColor = '#0f4ea9'
+                            e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+                          }}
+                          onBlur={(e) => {
+                            e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+                            e.target.style.boxShadow = 'none'
+                          }}
+                        />
+
+                        {/* Issue date - Calendar Picker */}
+                        <div className="cert-date-picker" style={{ width: '100%', position: 'relative' }}>
+                          <DatePicker
+                            selected={parseDate(row.issueDate)}
+                            onChange={handleDateChange(idx, 'issueDate')}
+                            dateFormat="MM/dd/yyyy"
+                            placeholderText="MM/DD/YYYY"
+                            maxDate={new Date()}
+                            showYearDropdown
+                            showMonthDropdown
+                            dropdownMode="select"
+                            yearDropdownItemNumber={100}
+                            scrollableYearDropdown
+                            className="date-picker-input"
+                            popperPlacement="bottom-start"
+                            popperModifiers={[
+                              {
+                                name: 'offset',
+                                options: {
+                                  offset: [0, 8],
+                                },
+                              },
+                              {
+                                name: 'preventOverflow',
+                                options: {
+                                  boundariesElement: 'viewport',
+                                },
+                              },
+                              {
+                                name: 'flip',
+                                options: {
+                                  fallbackPlacements: ['top-start', 'bottom-start'],
+                                },
+                              },
+                            ]}
+                            onCalendarOpen={() => setOpenDatePicker(`issue-${idx}`)}
+                            onCalendarClose={() => setOpenDatePicker(null)}
+                          />
+                        </div>
+
+                        {/* Expiration date - Calendar Picker */}
+                        <div className="cert-date-picker" style={{ width: '100%', position: 'relative' }}>
+                          <DatePicker
+                            selected={parseDate(row.expirationDate)}
+                            onChange={handleDateChange(idx, 'expirationDate')}
+                            dateFormat="MM/dd/yyyy"
+                            placeholderText="MM/DD/YYYY"
+                            showYearDropdown
+                            showMonthDropdown
+                            dropdownMode="select"
+                            yearDropdownItemNumber={100}
+                            scrollableYearDropdown
+                            className="date-picker-input"
+                            popperPlacement="bottom-start"
+                            popperModifiers={[
+                              {
+                                name: 'offset',
+                                options: {
+                                  offset: [0, 8],
+                                },
+                              },
+                              {
+                                name: 'preventOverflow',
+                                options: {
+                                  boundariesElement: 'viewport',
+                                },
+                              },
+                              {
+                                name: 'flip',
+                                options: {
+                                  fallbackPlacements: ['top-start', 'bottom-start'],
+                                },
+                              },
+                            ]}
+                            onCalendarOpen={() => setOpenDatePicker(`exp-${idx}`)}
+                            onCalendarClose={() => setOpenDatePicker(null)}
+                          />
+                        </div>
+
+                        {/* Upload / file ref - File Upload Button */}
+                        <div>
+                          <input
+                            ref={(el) => (fileInputRefs.current[idx] = el)}
+                            type="file"
+                            accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+                            onChange={handleFileUpload(idx)}
+                            style={{ display: 'none' }}
+                          />
+                          <button
+                            type="button"
+                            className={`file-upload-btn ${row.uploadRef ? 'has-file' : ''}`}
+                            onClick={triggerFileUpload(idx)}
+                            title={row.uploadRef || 'Upload file'}
+                          >
+                            {row.uploadRef ? (
+                              <>
+                                <span>📎</span>
+                                <span className="file-name">{row.uploadRef}</span>
+                              </>
+                            ) : (
+                              <>
+                                <span>📤</span>
+                                <span>Upload</span>
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
+            </div>
 
-              {/* Save Button */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                gap: '12px',
-                paddingTop: '20px',
-                borderTop: '1px solid rgba(18, 38, 63, 0.08)',
-              }}>
-                <button
-                  onClick={handleBack}
-                  style={{
-                    padding: '10px 24px',
-                    borderRadius: '8px',
-                    background: 'transparent',
-                    color: '#17263a',
-                    border: '1px solid rgba(18, 38, 63, 0.12)',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    transition: 'all 0.2s',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={isSaving}
-                  style={{
-                    padding: '10px 32px',
-                    borderRadius: '8px',
-                    background: isSaving ? '#94a3b8' : '#0f4ea9',
-                    color: 'white',
-                    border: 'none',
-                    cursor: isSaving ? 'not-allowed' : 'pointer',
-                    fontWeight: 600,
-                    fontSize: '14px',
-                    transition: 'all 0.2s',
-                    opacity: isSaving ? 0.7 : 1,
-                  }}
-                  onMouseEnter={(e) => {
-                    if (!isSaving) {
-                      e.currentTarget.style.background = '#0b3f90'
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!isSaving) {
-                      e.currentTarget.style.background = '#0f4ea9'
-                    }
-                  }}
-                >
-                  {isSaving ? 'Saving...' : 'Save Changes'}
-                </button>
-              </div>
+            {/* Sticky Footer with Cancel and Save buttons */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              gap: '12px',
+              paddingTop: '16px',
+              paddingBottom: '8px',
+              borderTop: '1px solid rgba(18, 38, 63, 0.08)',
+              flexShrink: 0,
+              background: 'white',
+              zIndex: 10,
+            }}>
+              <button
+                onClick={handleBack}
+                style={{
+                  padding: '10px 24px',
+                  borderRadius: '8px',
+                  background: 'transparent',
+                  color: '#17263a',
+                  border: '1px solid rgba(18, 38, 63, 0.12)',
+                  cursor: 'pointer',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  transition: 'all 0.2s',
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
+                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                style={{
+                  padding: '10px 32px',
+                  borderRadius: '8px',
+                  background: isSaving ? '#94a3b8' : '#0f4ea9',
+                  color: 'white',
+                  border: 'none',
+                  cursor: isSaving ? 'not-allowed' : 'pointer',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  transition: 'all 0.2s',
+                  opacity: isSaving ? 0.7 : 1,
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#0b3f90'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#0f4ea9'
+                  }
+                }}
+              >
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
             </div>
           </div>
         </main>
