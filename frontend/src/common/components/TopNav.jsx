@@ -1,38 +1,23 @@
 // src/common/components/TopNav.jsx
 import { useState, useRef, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { createPortal } from 'react-dom'
 import { IconSearch, IconBell } from './Icons'
 
 export function TopNav({ variant = 'transparent' }) {
   const navigate = useNavigate()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
   const dropdownRef = useRef(null)
-  const avatarRef = useRef(null)
 
   // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
-          avatarRef.current && !avatarRef.current.contains(event.target)) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
-
-  // Update dropdown position when opened
-  useEffect(() => {
-    if (isDropdownOpen && avatarRef.current) {
-      const rect = avatarRef.current.getBoundingClientRect()
-      setDropdownPosition({
-        top: rect.bottom + 8,
-        right: window.innerWidth - rect.right,
-      })
-    }
-  }, [isDropdownOpen])
 
   const handleProfileSettings = () => {
     setIsDropdownOpen(false)
@@ -44,117 +29,8 @@ export function TopNav({ variant = 'transparent' }) {
     navigate('/login')
   }
 
-  // Dropdown menu component
-  const DropdownMenu = () => (
-    <div
-      ref={dropdownRef}
-      style={{
-        position: 'fixed',
-        top: `${dropdownPosition.top}px`,
-        right: `${dropdownPosition.right}px`,
-        minWidth: '200px',
-        background: 'white',
-        borderRadius: '12px',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
-        border: '1px solid rgba(18, 38, 63, 0.08)',
-        overflow: 'hidden',
-        zIndex: 999999,
-        padding: '4px 0',
-        animation: 'dropdownFadeIn 0.15s ease-out forwards',
-      }}
-    >
-      {/* Profile Settings */}
-      <button
-        onClick={handleProfileSettings}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          width: '100%',
-          padding: '10px 16px',
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          fontSize: '14px',
-          color: '#17263a',
-          transition: 'background 0.15s ease',
-          fontFamily: 'inherit',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(15, 78, 169, 0.06)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent'
-        }}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
-        </svg>
-        Profile Settings
-      </button>
-
-      {/* Divider */}
-      <div style={{
-        height: '1px',
-        background: 'rgba(18, 38, 63, 0.08)',
-        margin: '4px 8px',
-      }} />
-
-      {/* Logout */}
-      <button
-        onClick={handleLogout}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          width: '100%',
-          padding: '10px 16px',
-          background: 'transparent',
-          border: 'none',
-          cursor: 'pointer',
-          fontSize: '14px',
-          color: '#dc2626',
-          transition: 'background 0.15s ease',
-          fontFamily: 'inherit',
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = 'rgba(220, 38, 38, 0.06)'
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = 'transparent'
-        }}
-      >
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-          <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="#dc2626" />
-        </svg>
-        Logout
-      </button>
-    </div>
-  )
-
-  // Add animation styles
-  useEffect(() => {
-    const style = document.createElement('style')
-    style.textContent = `
-      @keyframes dropdownFadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-8px) scale(0.98);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0) scale(1);
-        }
-      }
-    `
-    document.head.appendChild(style)
-    return () => {
-      document.head.removeChild(style)
-    }
-  }, [])
-
   return (
-    <header className={`topbar ${variant === 'solid' ? 'topbarSolid' : ''}`} style={{ position: 'relative', zIndex: 1000 }}>
+    <header className={`topbar ${variant === 'solid' ? 'topbarSolid' : ''}`} style={{ position: 'relative', zIndex: 9999 }}>
       <div className="topbarInner">
         <Link to="/" className="brand brandLink" aria-label="TradesMap home">
           <img className="brandLogo" src="/assets/Logo_tradesmaps.png" alt="TradesMap" />
@@ -188,9 +64,8 @@ export function TopNav({ variant = 'transparent' }) {
               </button>
               
               {/* Avatar with Dropdown */}
-              <div style={{ position: 'relative' }}>
+              <div ref={dropdownRef} style={{ position: 'relative' }}>
                 <button
-                  ref={avatarRef}
                   type="button"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                   style={{
@@ -213,6 +88,93 @@ export function TopNav({ variant = 'transparent' }) {
                     }}
                   />
                 </button>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: '100%',
+                      right: 0,
+                      marginTop: '8px',
+                      minWidth: '200px',
+                      background: 'white',
+                      borderRadius: '12px',
+                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+                      border: '1px solid rgba(18, 38, 63, 0.08)',
+                      overflow: 'hidden',
+                      zIndex: 99999,
+                      padding: '4px 0',
+                    }}
+                  >
+                    {/* Profile Settings */}
+                    <button
+                      onClick={handleProfileSettings}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        width: '100%',
+                        padding: '10px 16px',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        color: '#17263a',
+                        transition: 'background 0.15s ease',
+                        fontFamily: 'inherit',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(15, 78, 169, 0.06)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent'
+                      }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
+                      </svg>
+                      Profile Settings
+                    </button>
+
+                    {/* Divider */}
+                    <div style={{
+                      height: '1px',
+                      background: 'rgba(18, 38, 63, 0.08)',
+                      margin: '4px 8px',
+                    }} />
+
+                    {/* Logout */}
+                    <button
+                      onClick={handleLogout}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        width: '100%',
+                        padding: '10px 16px',
+                        background: 'transparent',
+                        border: 'none',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        color: '#dc2626',
+                        transition: 'background 0.15s ease',
+                        fontFamily: 'inherit',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(220, 38, 38, 0.06)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent'
+                      }}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="#dc2626" />
+                      </svg>
+                      Logout
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           ) : (
@@ -222,9 +184,6 @@ export function TopNav({ variant = 'transparent' }) {
           )}
         </nav>
       </div>
-
-      {/* Render dropdown using portal */}
-      {isDropdownOpen && createPortal(<DropdownMenu />, document.body)}
     </header>
   )
 }
