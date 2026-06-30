@@ -1009,12 +1009,10 @@
 
 
 
-
 // src/worker/pages/WorkerSummaryPage.jsx
 import { useState } from 'react'
 import { useNavigate, useLocation, NavLink } from 'react-router-dom'
 import { TopNav } from '../../common/components/TopNav'
-import { MedicalInfoEdit } from '../components/MedicalInfoEdit'
 
 // Icons
 function IconGrid(props) {
@@ -1094,13 +1092,16 @@ export function WorkerSummaryPage() {
   const location = useLocation()
   const data = location?.state ?? {}
 
-  // State for medical info modal
-  const [showMedicalModal, setShowMedicalModal] = useState(false)
+  // Check if we have updated medical data from the edit page
+  const updatedMedicalData = location?.state?.medicalData || {}
+  const hasUpdatedMedical = location?.state?.updatedMedical || false
+
+  // Initialize medical data from props or from updated data
   const [medicalData, setMedicalData] = useState({
-    bloodGroup: data.medical?.bloodGroup || '',
-    emergencyMedicalInfo: data.medical?.emergencyMedicalInfo || 'none',
-    emergencyMedicalFlags: data.medical?.emergencyMedicalFlags || {},
-    emergencyInstructions: data.medical?.emergencyInstructions || '',
+    bloodGroup: hasUpdatedMedical ? updatedMedicalData.bloodGroup : (data.medical?.bloodGroup || ''),
+    emergencyMedicalInfo: hasUpdatedMedical ? updatedMedicalData.emergencyMedicalInfo : (data.medical?.emergencyMedicalInfo || 'none'),
+    emergencyMedicalFlags: hasUpdatedMedical ? updatedMedicalData.emergencyMedicalFlags : (data.medical?.emergencyMedicalFlags || {}),
+    emergencyInstructions: hasUpdatedMedical ? updatedMedicalData.emergencyInstructions : (data.medical?.emergencyInstructions || ''),
   })
 
   const basics = data.basics ?? {}
@@ -1119,13 +1120,6 @@ export function WorkerSummaryPage() {
     if (value === null || value === undefined) return fallback || '—'
     if (typeof value === 'string' && value.trim() === '') return fallback || '—'
     return value
-  }
-
-  const handleMedicalSave = (updatedData) => {
-    setMedicalData(updatedData)
-    // Optionally update the parent data
-    // You might want to save this to your backend or localStorage
-    console.log('Medical data saved:', updatedData)
   }
 
   // Get allergies display text
@@ -1444,13 +1438,26 @@ export function WorkerSummaryPage() {
             {/* Row 4: Medical Details & Emergency Contact */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
               
-              {/* Medical Details Card - Updated with click handler */}
+              {/* Medical Details Card - Navigates to medical edit page */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Medical Details</span>
                   <button 
                     type="button" 
-                    onClick={() => setShowMedicalModal(true)}
+                    onClick={() => {
+                      // Navigate to medical edit page with current data
+                      navigate('/medical/edit', { 
+                        state: { 
+                          medicalData: {
+                            bloodGroup: medicalData.bloodGroup || medical.bloodGroup || '',
+                            emergencyMedicalInfo: medicalData.emergencyMedicalInfo || medical.emergencyMedicalInfo || 'none',
+                            emergencyMedicalFlags: medicalData.emergencyMedicalFlags || medical.emergencyMedicalFlags || {},
+                            emergencyInstructions: medicalData.emergencyInstructions || medical.emergencyInstructions || '',
+                          },
+                          parentData: data // Pass the parent data to preserve it
+                        } 
+                      })
+                    }}
                     style={{ 
                       background: 'none', 
                       border: 'none', 
@@ -1523,15 +1530,6 @@ export function WorkerSummaryPage() {
           </div>
         </main>
       </div>
-
-      {/* Medical Edit Modal */}
-      {showMedicalModal && (
-        <MedicalInfoEdit
-          data={medicalData}
-          onSave={handleMedicalSave}
-          onClose={() => setShowMedicalModal(false)}
-        />
-      )}
     </div>
   )
 }

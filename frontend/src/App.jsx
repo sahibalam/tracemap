@@ -83,7 +83,6 @@
 
 // export default App
 
-
 // src/App.jsx
 import { Routes, Route } from 'react-router-dom'
 import { HomePage } from './pages/HomePage'
@@ -95,7 +94,8 @@ import WorkerAuthPage from './worker/pages/WorkerAuthPage'
 import { WorkerVerifyPage } from './worker/pages/WorkerVerifyPage'
 import { WorkerWizardPage } from './worker/pages/WorkerWizardPage'
 import { WorkerSummaryPage } from './worker/pages/WorkerSummaryPage'
-import { RegistrationSuccessPage } from './worker/pages/RegistrationSuccessPage' // Add this import
+import { RegistrationSuccessPage } from './worker/pages/RegistrationSuccessPage'
+import { MedicalEditPage } from './worker/pages/MedicalEditPage' // Add this import
 import { CompanyAuthPage } from './company/pages/CompanyAuthPage'
 import { CompanyVerifyPage } from './company/pages/CompanyVerifyPage'
 import { CompanyWizardPage } from './company/pages/CompanyWizardPage'
@@ -119,7 +119,8 @@ function App() {
       <Route path="/verify" element={<WorkerVerifyPage />} />
       <Route path="/wizard" element={<WorkerWizardPage />} />
       <Route path="/wizard/summary" element={<WorkerSummaryPage />} />
-      <Route path="/registration-success" element={<RegistrationSuccessPage />} /> {/* Add this route */}
+      <Route path="/registration-success" element={<RegistrationSuccessPage />} />
+      <Route path="/medical/edit" element={<MedicalEditPage />} /> {/* Add this route */}
       
       {/* Company Routes */}
       <Route path="/company/login" element={<CompanyAuthPage initialMode="login" />} />
