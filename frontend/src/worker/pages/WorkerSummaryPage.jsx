@@ -1122,6 +1122,10 @@ export function WorkerSummaryPage() {
   const updatedTradeData = location?.state?.tradeData || {}
   const hasUpdatedTrade = location?.state?.updatedTrade || false
 
+  // Check if we have updated emergency data from the edit page
+  const updatedEmergencyData = location?.state?.emergencyData || {}
+  const hasUpdatedEmergency = location?.state?.updatedEmergency || false
+
   // Initialize basic data from props or from updated data
   const [basicData, setBasicData] = useState({
     legalFirstName: hasUpdatedBasic ? updatedBasicData.legalFirstName : (data.basics?.legalFirstName || ''),
@@ -1254,6 +1258,13 @@ export function WorkerSummaryPage() {
     secondaryInsulationSkills: hasUpdatedTrade ? updatedTradeData.secondaryInsulationSkills : (data.trade?.secondaryInsulationSkills || {}),
     secondaryDemolitionSkills: hasUpdatedTrade ? updatedTradeData.secondaryDemolitionSkills : (data.trade?.secondaryDemolitionSkills || {}),
     additionalSkillsTools: hasUpdatedTrade ? updatedTradeData.additionalSkillsTools : (data.trade?.additionalSkillsTools || ''),
+  })
+
+  // Initialize emergency data from props or from updated data
+  const [emergencyData, setEmergencyData] = useState({
+    emergencyContactName: hasUpdatedEmergency ? updatedEmergencyData.emergencyContactName : (data.acknowledgments?.emergencyContactName || ''),
+    emergencyContactRelationship: hasUpdatedEmergency ? updatedEmergencyData.emergencyContactRelationship : (data.acknowledgments?.emergencyContactRelationship || ''),
+    emergencyContactPhone: hasUpdatedEmergency ? updatedEmergencyData.emergencyContactPhone : (data.acknowledgments?.emergencyContactPhone || ''),
   })
 
   const basics = data.basics ?? {}
@@ -1555,13 +1566,10 @@ export function WorkerSummaryPage() {
                 </div>
               </div>
 
-              {/* Subscription & Rewards Card */}
+              {/* Subscription & Rewards Card - Updated: removed pencil, Pro Field, and Skill-verified */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Subscription & Rewards</span>
-                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
-                    <IconPencil />
-                  </button>
                 </div>
                 <div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -1577,18 +1585,13 @@ export function WorkerSummaryPage() {
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Renews</span>
                       <span style={{ color: '#17263a', fontWeight: 500 }}>Dec 31, 2026</span>
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Pro Field</span>
-                      <span style={{ color: '#17263a', fontWeight: 500 }}>Drywall</span>
-                    </div>
                   </div>
                   <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(15,78,169,0.06)', borderRadius: '8px', textAlign: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                       <IconTrophy style={{ color: '#f59e0b' }} />
                       <span style={{ fontSize: '20px', fontWeight: 700, color: '#0f4ea9' }}>12</span>
-                      <span style={{ fontSize: '13px', color: 'rgba(23,38,58,0.6)' }}>Skill-verified by TradeOps</span>
+                      <span style={{ fontSize: '13px', color: 'rgba(23,38,58,0.6)' }}>Trade Points</span>
                     </div>
-                    <div style={{ fontSize: '12px', color: '#2fb463', fontWeight: 600, marginTop: '4px' }}>TRADE POINTS</div>
                   </div>
                 </div>
               </div>
@@ -1949,11 +1952,36 @@ export function WorkerSummaryPage() {
                 </div>
               </div>
 
-              {/* Emergency Contact Card */}
+              {/* Emergency Contact Card - Updated with navigation */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Emergency Contact</span>
-                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      navigate('/emergency-contact/edit', { 
+                        state: { 
+                          emergencyData: {
+                            emergencyContactName: emergencyData.emergencyContactName || acknowledgments.emergencyContactName || '',
+                            emergencyContactRelationship: emergencyData.emergencyContactRelationship || acknowledgments.emergencyContactRelationship || '',
+                            emergencyContactPhone: emergencyData.emergencyContactPhone || acknowledgments.emergencyContactPhone || '',
+                          },
+                          parentData: data
+                        } 
+                      })
+                    }}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      color: '#0f4ea9', 
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
                     <IconPencil />
                   </button>
                 </div>
@@ -1961,15 +1989,21 @@ export function WorkerSummaryPage() {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px 16px' }}>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Name</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactName)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>
+                        {displayValue(emergencyData.emergencyContactName || acknowledgments.emergencyContactName)}
+                      </div>
                     </div>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Relationship</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactRelationship)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>
+                        {displayValue(emergencyData.emergencyContactRelationship || acknowledgments.emergencyContactRelationship)}
+                      </div>
                     </div>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Phone</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactPhone)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>
+                        {displayValue(emergencyData.emergencyContactPhone || acknowledgments.emergencyContactPhone)}
+                      </div>
                     </div>
                   </div>
                 </div>

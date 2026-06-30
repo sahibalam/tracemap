@@ -107,6 +107,7 @@ import { CompanyWizardPage } from './company/pages/CompanyWizardPage'
 import { ProjectPage } from './projects/pages/ProjectPage'
 import { TradeProfileEditPage } from './worker/pages/TradeProfileEditPage'
 import { BasicInfoEditPage } from './worker/pages/BasicInfoEditPage'
+import { EmergencyContactEditPage } from './worker/pages/EmergencyContactEditPage'
 
 function App() {
   return (
@@ -135,6 +136,7 @@ function App() {
       <Route path="/work-history/edit" element={<WorkHistoryEditPage />} /> {/* Add this route */}
       <Route path="/trade-profile/edit" element={<TradeProfileEditPage />} />
       <Route path="/basic-info/edit" element={<BasicInfoEditPage />} />
+      <Route path="/emergency-contact/edit" element={<EmergencyContactEditPage />} />
 
       {/* Company Routes */}
       <Route path="/company/login" element={<CompanyAuthPage initialMode="login" />} />
