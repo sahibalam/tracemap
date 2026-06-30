@@ -237,7 +237,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       padding-right: 36px !important;
     }
 
-    /* Trade select styles - matching WizardStep2 exactly */
+    /* Trade select styles */
     .trade-select-wrapper {
       position: relative;
       flex: 1;
@@ -303,16 +303,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
 
     .trade-select-wrapper select.has-icon {
       padding-left: 36px;
-    }
-
-    /* Label styles */
-    .field-label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: #17263a;
-      margin-bottom: 4px;
-      letter-spacing: 0.3px;
     }
 
     /* Textarea styles */
@@ -424,7 +414,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               
               <div className="flex-row mb-8">
                 <div className="trade-select-wrapper">
-                  <label className="field-label">Trade</label>
                   <select 
                     value={projects[0]?.trade || ''} 
                     onChange={(e) => updateProjectField(0, 'trade')(e.target.value)}
@@ -434,7 +423,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     }}
                   >
                     <option value="" className="placeholder-option" disabled>
-                      Select Trade
+                      Trade
                     </option>
                     {tradeOptions.map((trade) => (
                       <option key={trade} value={trade}>
@@ -505,10 +494,9 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               </div>
               
               <div>
-                <label className="field-label">Scope Summary</label>
                 <textarea
                   className="wizard-textarea"
-                  placeholder="Enter scope summary..."
+                  placeholder="Scope Summary"
                   value={projects[0]?.scope || ''}
                   onChange={(e) => updateProjectField(0, 'scope')(e.target.value)}
                   rows={3}
@@ -549,7 +537,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               
               <div className="flex-row mb-8">
                 <div className="trade-select-wrapper">
-                  <label className="field-label">Trade</label>
                   <select 
                     value={projects[1]?.trade || ''} 
                     onChange={(e) => updateProjectField(1, 'trade')(e.target.value)}
@@ -559,7 +546,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     }}
                   >
                     <option value="" className="placeholder-option" disabled>
-                      Select Trade
+                      Trade
                     </option>
                     {tradeOptions.map((trade) => (
                       <option key={trade} value={trade}>
@@ -630,10 +617,9 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               </div>
               
               <div>
-                <label className="field-label">Scope Summary</label>
                 <textarea
                   className="wizard-textarea"
-                  placeholder="Enter scope summary..."
+                  placeholder="Scope Summary"
                   value={projects[1]?.scope || ''}
                   onChange={(e) => updateProjectField(1, 'scope')(e.target.value)}
                   rows={3}
@@ -674,7 +660,6 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               
               <div className="flex-row mb-8">
                 <div className="trade-select-wrapper">
-                  <label className="field-label">Trade</label>
                   <select 
                     value={projects[2]?.trade || ''} 
                     onChange={(e) => updateProjectField(2, 'trade')(e.target.value)}
@@ -684,7 +669,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                     }}
                   >
                     <option value="" className="placeholder-option" disabled>
-                      Select Trade
+                      Trade
                     </option>
                     {tradeOptions.map((trade) => (
                       <option key={trade} value={trade}>
@@ -755,10 +740,9 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
               </div>
               
               <div>
-                <label className="field-label">Scope Summary</label>
                 <textarea
                   className="wizard-textarea"
-                  placeholder="Enter scope summary..."
+                  placeholder="Scope Summary"
                   value={projects[2]?.scope || ''}
                   onChange={(e) => updateProjectField(2, 'scope')(e.target.value)}
                   rows={3}
