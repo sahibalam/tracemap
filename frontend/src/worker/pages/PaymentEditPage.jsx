@@ -231,7 +231,7 @@ export function PaymentEditPage() {
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <IconArrowLeft />
-                Back to Profile
+                Back
               </button>
               <span style={{
                 fontSize: '20px',
