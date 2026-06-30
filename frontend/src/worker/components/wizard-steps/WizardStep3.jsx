@@ -305,30 +305,42 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
     /* Style for the placeholder option */
     .trade-select-wrapper select option.placeholder-option {
       color: rgba(23, 38, 58, 0.4);
+      display: none;
     }
   `
 
-  // Trade dropdown component
-  const TradeSelect = ({ value, onChange, icon }) => (
-    <div className="trade-select-wrapper">
-      {icon && <span className="select-icon">{icon}</span>}
-      <select 
-        value={value || ''} 
-        onChange={(e) => onChange(e.target.value)}
-        className={icon ? 'has-icon' : ''}
-      >
-        <option value="" className="placeholder-option" disabled>
-          Select Trade
-        </option>
-        {tradeOptions.map((trade) => (
-          <option key={trade} value={trade}>
-            {trade}
+  // Custom Trade Dropdown Component - similar to StateDropdown
+  const TradeSelect = ({ value, onChange, icon }) => {
+    // Get the display text for the dropdown
+    const getDisplayText = () => {
+      if (!value) return 'Select Trade'
+      return value
+    }
+
+    return (
+      <div className="trade-select-wrapper">
+        {icon && <span className="select-icon">{icon}</span>}
+        <select 
+          value={value || ''} 
+          onChange={(e) => onChange(e.target.value)}
+          className={icon ? 'has-icon' : ''}
+          style={{
+            color: value ? '#17263a' : '#6b7280',
+          }}
+        >
+          <option value="" className="placeholder-option" disabled>
+            Select Trade
           </option>
-        ))}
-      </select>
-      <span className="select-arrow">▼</span>
-    </div>
-  )
+          {tradeOptions.map((trade) => (
+            <option key={trade} value={trade}>
+              {trade}
+            </option>
+          ))}
+        </select>
+        <span className="select-arrow">▼</span>
+      </div>
+    )
+  }
 
   return (
     <div className="wizardStep">
