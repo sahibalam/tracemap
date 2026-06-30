@@ -279,14 +279,14 @@ export function TaxEditPage() {
         <main className="appContent">
           <div style={{ 
             padding: '24px', 
-            maxWidth: '900px', 
+            maxWidth: '1100px', 
             margin: '0 auto', 
             height: 'calc(100vh - 120px)', 
             display: 'flex', 
             flexDirection: 'column' 
           }}>
             
-            {/* Sticky Header with Back button */}
+            {/* Sticky Header with Back button - Transparent background */}
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
@@ -295,7 +295,7 @@ export function TaxEditPage() {
               paddingBottom: '16px',
               borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
               flexShrink: 0,
-              background: 'white',
+              background: 'transparent',
               zIndex: 10,
             }}>
               <button
@@ -550,7 +550,7 @@ export function TaxEditPage() {
               </div>
             </div>
 
-            {/* Sticky Footer with Cancel and Save buttons */}
+            {/* Sticky Footer with Cancel and Save buttons - Transparent background */}
             <div style={{
               display: 'flex',
               justifyContent: 'flex-end',
@@ -559,7 +559,7 @@ export function TaxEditPage() {
               paddingBottom: '8px',
               borderTop: '1px solid rgba(18, 38, 63, 0.08)',
               flexShrink: 0,
-              background: 'white',
+              background: 'transparent',
               zIndex: 10,
             }}>
               <button
