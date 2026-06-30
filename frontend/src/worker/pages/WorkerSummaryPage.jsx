@@ -1437,7 +1437,7 @@ export function WorkerSummaryPage() {
                     <img src="/assets/worker.avif" alt="Worker" style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '16px', color: '#17263a' }}>
-                        {displayValue(`${basicData.legalFirstName || basics.legalFirstName ?? ''} ${basicData.legalLastName || basics.legalLastName ?? ''}`.trim(), 'Marcus Webb')}
+                        {displayValue(`${(basicData.legalFirstName || basics.legalFirstName) ?? ''} ${(basicData.legalLastName || basics.legalLastName) ?? ''}`.trim(), 'Marcus Webb')}
                       </div>
                       <span style={{ fontSize: '12px', color: '#2fb463', fontWeight: 500 }}>Active</span>
                     </div>
