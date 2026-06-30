@@ -2511,10 +2511,21 @@ export function WizardStep1({ data, onChange, onNext }) {
   // Custom styles for date picker matching WizardStep3
   const datePickerStyles = `
     /* Date picker styles - matching WizardStep3 */
-    .custom-date-picker .react-datepicker__input-container input {
+    .date-picker-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .date-picker-wrapper .react-datepicker__input-container {
+      display: block;
+      width: 100%;
+    }
+
+    .date-picker-wrapper .react-datepicker__input-container input {
       width: 100%;
       height: 40px;
       padding: 0 12px;
+      padding-right: 36px !important;
       border: 1px solid rgba(18, 38, 63, 0.12);
       border-radius: 8px;
       font-size: 13px;
@@ -2523,19 +2534,32 @@ export function WizardStep1({ data, onChange, onNext }) {
       color: #17263a;
       transition: all 0.2s ease;
       font-family: inherit;
+      box-sizing: border-box;
     }
 
-    .custom-date-picker .react-datepicker__input-container input:hover {
+    .date-picker-wrapper .react-datepicker__input-container input:hover {
       border-color: rgba(15, 78, 169, 0.4);
     }
 
-    .custom-date-picker .react-datepicker__input-container input:focus {
+    .date-picker-wrapper .react-datepicker__input-container input:focus {
       border-color: #0f4ea9;
       box-shadow: 0 0 0 3px rgba(15, 78, 169, 0.1);
     }
 
-    .custom-date-picker .react-datepicker__input-container input::placeholder {
+    .date-picker-wrapper .react-datepicker__input-container input::placeholder {
       color: rgba(23, 38, 58, 0.4);
+    }
+
+    .date-picker-wrapper .calendar-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(23, 38, 58, 0.4);
+      pointer-events: none;
+      font-size: 14px;
+      line-height: 1;
+      z-index: 1;
     }
 
     .custom-date-picker .react-datepicker {
@@ -2669,25 +2693,6 @@ export function WizardStep1({ data, onChange, onNext }) {
 
     .custom-date-picker .react-datepicker__day--weekend.react-datepicker__day--selected {
       color: white;
-    }
-
-    .date-picker-wrapper {
-      position: relative;
-    }
-
-    .date-picker-wrapper .calendar-icon {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(23, 38, 58, 0.4);
-      pointer-events: none;
-      font-size: 14px;
-      line-height: 1;
-    }
-
-    .date-picker-wrapper .react-datepicker__input-container input {
-      padding-right: 36px !important;
     }
 
     /* Month dropdown styling */
