@@ -158,7 +158,7 @@ export function EmergencyContactEditPage() {
         <main className="appContent">
           <div style={{ 
             padding: '24px', 
-            maxWidth: '800px', 
+            maxWidth: '1100px', 
             margin: '0 auto', 
             height: 'calc(100vh - 120px)', 
             display: 'flex', 
@@ -197,7 +197,7 @@ export function EmergencyContactEditPage() {
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <IconArrowLeft />
-                Back
+                Back to Profile
               </button>
               <span style={{
                 fontSize: '16px',

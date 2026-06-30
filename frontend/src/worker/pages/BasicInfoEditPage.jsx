@@ -302,10 +302,6 @@ export function BasicInfoEditPage() {
     spanish: false,
     profilePreview: '',
     profileImage: null,
-    acceptTerms: false,
-    acceptPrivacy: false,
-    consentElectronic: false,
-    certifyAccurate: false,
   }
 
   const [basicData, setBasicData] = useState(initialData)
@@ -681,7 +677,7 @@ export function BasicInfoEditPage() {
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <IconArrowLeft />
-                Back
+                Back to Profile
               </button>
               <span style={{
                 fontSize: '16px',
@@ -996,36 +992,6 @@ export function BasicInfoEditPage() {
                       onChange={handleFileUpload} 
                       style={{ display: 'none' }} 
                     />
-                  </div>
-                </div>
-
-                {/* Agreements Section */}
-                <div>
-                  <div style={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    marginBottom: '8px',
-                  }}>
-                    Agreements
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input type="checkbox" checked={basicData.acceptTerms || false} onChange={(e) => handleChange('acceptTerms', e.target.checked)} />
-                      <span style={{ fontSize: '14px', color: '#17263a' }}>I accept the bottomless terms of use</span>
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input type="checkbox" checked={basicData.acceptPrivacy || false} onChange={(e) => handleChange('acceptPrivacy', e.target.checked)} />
-                      <span style={{ fontSize: '14px', color: '#17263a' }}>I accept the privacy policy</span>
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input type="checkbox" checked={basicData.consentElectronic || false} onChange={(e) => handleChange('consentElectronic', e.target.checked)} />
-                      <span style={{ fontSize: '14px', color: '#17263a' }}>I consent to electronic records</span>
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                      <input type="checkbox" checked={basicData.certifyAccurate || false} onChange={(e) => handleChange('certifyAccurate', e.target.checked)} />
-                      <span style={{ fontSize: '14px', color: '#17263a' }}>I confirm the information entered is accurate</span>
-                    </label>
                   </div>
                 </div>
               </div>
