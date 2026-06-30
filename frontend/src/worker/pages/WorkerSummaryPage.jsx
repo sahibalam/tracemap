@@ -1096,12 +1096,36 @@ export function WorkerSummaryPage() {
   const updatedMedicalData = location?.state?.medicalData || {}
   const hasUpdatedMedical = location?.state?.updatedMedical || false
 
+  // Check if we have updated tax data from the edit page
+  const updatedTaxData = location?.state?.taxData || {}
+  const hasUpdatedTax = location?.state?.updatedTax || false
+
   // Initialize medical data from props or from updated data
   const [medicalData, setMedicalData] = useState({
     bloodGroup: hasUpdatedMedical ? updatedMedicalData.bloodGroup : (data.medical?.bloodGroup || ''),
     emergencyMedicalInfo: hasUpdatedMedical ? updatedMedicalData.emergencyMedicalInfo : (data.medical?.emergencyMedicalInfo || 'none'),
     emergencyMedicalFlags: hasUpdatedMedical ? updatedMedicalData.emergencyMedicalFlags : (data.medical?.emergencyMedicalFlags || {}),
     emergencyInstructions: hasUpdatedMedical ? updatedMedicalData.emergencyInstructions : (data.medical?.emergencyInstructions || ''),
+  })
+
+  // Initialize tax data from props or from updated data
+  const [taxData, setTaxData] = useState({
+    classificationPath: hasUpdatedTax ? updatedTaxData.classificationPath : (data.tax?.classificationPath || ''),
+    stateOfWork: hasUpdatedTax ? updatedTaxData.stateOfWork : (data.tax?.stateOfWork || ''),
+    employeeTaxName: hasUpdatedTax ? updatedTaxData.employeeTaxName : (data.tax?.employeeTaxName || ''),
+    employeeSsn: hasUpdatedTax ? updatedTaxData.employeeSsn : (data.tax?.employeeSsn || ''),
+    employeeStartDate: hasUpdatedTax ? updatedTaxData.employeeStartDate : (data.tax?.employeeStartDate || ''),
+    employeeFlags: hasUpdatedTax ? updatedTaxData.employeeFlags : (data.tax?.employeeFlags || {}),
+    reviewerName: hasUpdatedTax ? updatedTaxData.reviewerName : (data.tax?.reviewerName || ''),
+    complianceNotes: hasUpdatedTax ? updatedTaxData.complianceNotes : (data.tax?.complianceNotes || ''),
+    entityLegalName: hasUpdatedTax ? updatedTaxData.entityLegalName : (data.tax?.entityLegalName || ''),
+    entityEin: hasUpdatedTax ? updatedTaxData.entityEin : (data.tax?.entityEin || ''),
+    entityType: hasUpdatedTax ? updatedTaxData.entityType : (data.tax?.entityType || ''),
+    entityStateRegistration: hasUpdatedTax ? updatedTaxData.entityStateRegistration : (data.tax?.entityStateRegistration || ''),
+    entityDbaName: hasUpdatedTax ? updatedTaxData.entityDbaName : (data.tax?.entityDbaName || ''),
+    entityAuthorizedSigner: hasUpdatedTax ? updatedTaxData.entityAuthorizedSigner : (data.tax?.entityAuthorizedSigner || ''),
+    entityFlags: hasUpdatedTax ? updatedTaxData.entityFlags : (data.tax?.entityFlags || {}),
+    stateSpecificFlags: hasUpdatedTax ? updatedTaxData.stateSpecificFlags : (data.tax?.stateSpecificFlags || {}),
   })
 
   const basics = data.basics ?? {}
@@ -1130,6 +1154,14 @@ export function WorkerSummaryPage() {
       return allergies.join(', ')
     }
     return 'No allergies reported'
+  }
+
+  // Get tax classification display text
+  const getTaxClassificationText = () => {
+    const path = taxData.classificationPath || tax.classificationPath || ''
+    if (path === 'employee') return 'W2 Employee'
+    if (path === 'subcontractor') return '1099 Contractor'
+    return '—'
   }
 
   const fallbackProjects = [
@@ -1331,70 +1363,150 @@ export function WorkerSummaryPage() {
               </div>
             </div>
 
-       {/* Tax Profile Card - Updated with navigation */}
-<div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
-  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-    <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Tax Profile</span>
-    <button 
-      type="button" 
-      onClick={() => {
-        // Navigate to tax edit page with current data
-        navigate('/tax/edit', { 
-          state: { 
-            taxData: {
-              classificationPath: tax.classificationPath || '',
-              stateOfWork: tax.stateOfWork || '',
-              employeeTaxName: tax.employeeTaxName || '',
-              employeeSsn: tax.employeeSsn || '',
-              employeeStartDate: tax.employeeStartDate || '',
-              employeeFlags: tax.employeeFlags || {},
-              reviewerName: tax.reviewerName || '',
-              complianceNotes: tax.complianceNotes || '',
-              entityLegalName: tax.entityLegalName || '',
-              entityEin: tax.entityEin || '',
-              entityType: tax.entityType || '',
-              entityStateRegistration: tax.entityStateRegistration || '',
-              entityDbaName: tax.entityDbaName || '',
-              entityAuthorizedSigner: tax.entityAuthorizedSigner || '',
-              entityFlags: tax.entityFlags || {},
-              stateSpecificFlags: tax.stateSpecificFlags || {},
-            },
-            parentData: data // Pass the parent data to preserve it
-          } 
-        })
-      }}
-      style={{ 
-        background: 'none', 
-        border: 'none', 
-        color: '#0f4ea9', 
-        cursor: 'pointer',
-        padding: '4px 8px',
-        borderRadius: '6px',
-        transition: 'background 0.2s',
-      }}
-      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
-      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-    >
-      <IconPencil />
-    </button>
-  </div>
-  <div>
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-        <span style={{ color: 'rgba(23,38,58,0.6)' }}>Classification</span>
-        <span style={{ color: '#17263a', fontWeight: 500 }}>
-          {displayValue(tax.classificationPath === 'employee' ? 'W2 Employee' : tax.classificationPath === 'subcontractor' ? '1099 Contractor' : '—')}
-        </span>
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-        <span style={{ color: 'rgba(23,38,58,0.6)' }}>Tax Verified</span>
-        <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Verified
-        </span>
-      </div>
-    </div>
-  </div>
-</div>
+            {/* Row 3: Availability & Rate, Certifications & Safety, Tax Profile, Payment/Bank Details */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+              
+              {/* Availability & Rate Card */}
+              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Availability & Rate</span>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
+                    <IconPencil />
+                  </button>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Hourly Rate</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>{displayValue(availability.hourlyRateRequested ? `$${availability.hourlyRateRequested}` : '—')}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Travel</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>{trade.travelRadiusMiles ? 'Yes' : 'No'}</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Available</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>{displayValue(availability.earliestStartDate, 'Immediate')}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Certifications & Safety Card */}
+              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Certifications & Safety</span>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
+                    <IconPencil />
+                  </button>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>OSHA 30</span>
+                      <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Verified
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Forklift Certified</span>
+                      <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tax Profile Card - Updated with navigation */}
+              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Tax Profile</span>
+                  <button 
+                    type="button" 
+                    onClick={() => {
+                      // Navigate to tax edit page with current data
+                      navigate('/tax/edit', { 
+                        state: { 
+                          taxData: {
+                            classificationPath: taxData.classificationPath || tax.classificationPath || '',
+                            stateOfWork: taxData.stateOfWork || tax.stateOfWork || '',
+                            employeeTaxName: taxData.employeeTaxName || tax.employeeTaxName || '',
+                            employeeSsn: taxData.employeeSsn || tax.employeeSsn || '',
+                            employeeStartDate: taxData.employeeStartDate || tax.employeeStartDate || '',
+                            employeeFlags: taxData.employeeFlags || tax.employeeFlags || {},
+                            reviewerName: taxData.reviewerName || tax.reviewerName || '',
+                            complianceNotes: taxData.complianceNotes || tax.complianceNotes || '',
+                            entityLegalName: taxData.entityLegalName || tax.entityLegalName || '',
+                            entityEin: taxData.entityEin || tax.entityEin || '',
+                            entityType: taxData.entityType || tax.entityType || '',
+                            entityStateRegistration: taxData.entityStateRegistration || tax.entityStateRegistration || '',
+                            entityDbaName: taxData.entityDbaName || tax.entityDbaName || '',
+                            entityAuthorizedSigner: taxData.entityAuthorizedSigner || tax.entityAuthorizedSigner || '',
+                            entityFlags: taxData.entityFlags || tax.entityFlags || {},
+                            stateSpecificFlags: taxData.stateSpecificFlags || tax.stateSpecificFlags || {},
+                          },
+                          parentData: data // Pass the parent data to preserve it
+                        } 
+                      })
+                    }}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      color: '#0f4ea9', 
+                      cursor: 'pointer',
+                      padding: '4px 8px',
+                      borderRadius: '6px',
+                      transition: 'background 0.2s',
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                  >
+                    <IconPencil />
+                  </button>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Classification</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>
+                        {getTaxClassificationText()}
+                      </span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Tax Verified</span>
+                      <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Verified
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment/Bank Details Card */}
+              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Payment / Bank Details</span>
+                  <button type="button" disabled style={{ background: 'none', border: 'none', color: '#0f4ea9', cursor: 'pointer' }}>
+                    <IconPencil />
+                  </button>
+                </div>
+                <div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>Bank</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>Chase Bank</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                      <span style={{ color: 'rgba(23,38,58,0.6)' }}>ACH</span>
+                      <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Enabled
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             {/* Row 4: Medical Details & Emergency Contact */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
