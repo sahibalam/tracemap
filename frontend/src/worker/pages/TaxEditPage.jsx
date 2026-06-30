@@ -318,10 +318,10 @@ export function TaxEditPage() {
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <IconArrowLeft />
-                Back to Profile
+                Back
               </button>
               <span style={{
-                fontSize: '20px',
+                fontSize: '16px',
                 fontWeight: 600,
                 color: '#17263a',
               }}>
