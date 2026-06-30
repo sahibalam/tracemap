@@ -231,7 +231,7 @@ export function PaymentEditPage() {
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <IconArrowLeft />
-                Back
+                Back to Profile
               </button>
               <span style={{
                 fontSize: '20px',
@@ -255,7 +255,7 @@ export function PaymentEditPage() {
                 padding: '32px',
                 border: '1px solid rgba(18, 38, 63, 0.08)',
               }}>
-                {/* Full Name */}
+                {/* Full Name - Full width */}
                 <div style={{ marginBottom: '20px' }}>
                   <label style={{
                     display: 'block',
@@ -274,149 +274,149 @@ export function PaymentEditPage() {
                   />
                 </div>
 
-                {/* Bank Account Number */}
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    marginBottom: '6px',
-                  }}>
-                    Bank Account Number
-                  </label>
-                  <TextField
-                    placeholder="Enter bank account number"
-                    icon={<IconBank />}
-                    value={paymentData.bankAccountNumber || ''}
-                    onChange={(v) => handleChange('bankAccountNumber', v)}
-                  />
-                </div>
-
-                {/* Routing Number */}
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    marginBottom: '6px',
-                  }}>
-                    Routing Number
-                  </label>
-                  <TextField
-                    placeholder="Enter routing number"
-                    icon={<IconCreditCard />}
-                    value={paymentData.routingNumber || ''}
-                    onChange={(v) => handleChange('routingNumber', v)}
-                  />
-                  <div style={{
-                    fontSize: '12px',
-                    color: 'rgba(23, 38, 58, 0.5)',
-                    marginTop: '4px',
-                  }}>
-                    (ABA Routing Number)
+                {/* Bank Account Number & Routing Number - Side by side */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      marginBottom: '6px',
+                    }}>
+                      Bank Account Number
+                    </label>
+                    <TextField
+                      placeholder="Enter account number"
+                      icon={<IconBank />}
+                      value={paymentData.bankAccountNumber || ''}
+                      onChange={(v) => handleChange('bankAccountNumber', v)}
+                    />
+                  </div>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      marginBottom: '6px',
+                    }}>
+                      Routing Number
+                    </label>
+                    <TextField
+                      placeholder="Enter routing number"
+                      icon={<IconCreditCard />}
+                      value={paymentData.routingNumber || ''}
+                      onChange={(v) => handleChange('routingNumber', v)}
+                    />
+                    <div style={{
+                      fontSize: '11px',
+                      color: 'rgba(23, 38, 58, 0.5)',
+                      marginTop: '4px',
+                    }}>
+                      (ABA Routing Number)
+                    </div>
                   </div>
                 </div>
 
-                {/* Account Type */}
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    marginBottom: '6px',
-                  }}>
-                    Account Type
-                  </label>
-                  <select
-                    value={paymentData.accountType || ''}
-                    onChange={(e) => handleChange('accountType', e.target.value)}
-                    style={{
-                      width: '100%',
-                      height: '48px',
-                      padding: '0 16px',
-                      border: '1px solid rgba(18, 38, 63, 0.12)',
-                      borderRadius: '12px',
+                {/* Account Type & Bank Name - Side by side */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
                       fontSize: '14px',
-                      outline: 'none',
-                      background: 'white',
-                      color: paymentData.accountType ? '#17263a' : '#6b7280',
-                      transition: 'all 0.2s ease',
-                      fontFamily: 'inherit',
-                    }}
-                    onFocus={(e) => {
-                      e.target.style.borderColor = '#0f4ea9'
-                      e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-                    }}
-                    onBlur={(e) => {
-                      e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                      e.target.style.boxShadow = 'none'
-                    }}
-                  >
-                    <option value="">Select account type</option>
-                    <option value="checking">Checking</option>
-                    <option value="savings">Savings</option>
-                    <option value="business">Business</option>
-                  </select>
+                      fontWeight: 600,
+                      color: '#17263a',
+                      marginBottom: '6px',
+                    }}>
+                      Account Type
+                    </label>
+                    <select
+                      value={paymentData.accountType || ''}
+                      onChange={(e) => handleChange('accountType', e.target.value)}
+                      style={{
+                        width: '100%',
+                        height: '48px',
+                        padding: '0 16px',
+                        border: '1px solid rgba(18, 38, 63, 0.12)',
+                        borderRadius: '12px',
+                        fontSize: '14px',
+                        outline: 'none',
+                        background: 'white',
+                        color: paymentData.accountType ? '#17263a' : '#6b7280',
+                        transition: 'all 0.2s ease',
+                        fontFamily: 'inherit',
+                      }}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#0f4ea9'
+                        e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+                        e.target.style.boxShadow = 'none'
+                      }}
+                    >
+                      <option value="">Select account type</option>
+                      <option value="checking">Checking</option>
+                      <option value="savings">Savings</option>
+                      <option value="business">Business</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      marginBottom: '6px',
+                    }}>
+                      Bank Name
+                    </label>
+                    <TextField
+                      placeholder="Enter bank name"
+                      icon={<IconBank />}
+                      value={paymentData.bankName || ''}
+                      onChange={(v) => handleChange('bankName', v)}
+                    />
+                  </div>
                 </div>
 
-                {/* Bank Name */}
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    marginBottom: '6px',
-                  }}>
-                    Bank Name
-                  </label>
-                  <TextField
-                    placeholder="Enter bank name"
-                    icon={<IconBank />}
-                    value={paymentData.bankName || ''}
-                    onChange={(v) => handleChange('bankName', v)}
-                  />
-                </div>
-
-                {/* Email ID */}
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    marginBottom: '6px',
-                  }}>
-                    Email ID
-                  </label>
-                  <TextField
-                    placeholder="Enter email address"
-                    icon={<IconEmail />}
-                    value={paymentData.emailId || ''}
-                    onChange={(v) => handleChange('emailId', v)}
-                  />
-                </div>
-
-                {/* Mobile Number */}
-                <div style={{ marginBottom: '20px' }}>
-                  <label style={{
-                    display: 'block',
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    marginBottom: '6px',
-                  }}>
-                    Mobile Number
-                  </label>
-                  <TextField
-                    placeholder="Enter mobile number"
-                    icon={<IconMobile />}
-                    value={paymentData.mobileNumber || ''}
-                    onChange={(v) => handleChange('mobileNumber', v)}
-                  />
+                {/* Email ID & Mobile Number - Side by side */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      marginBottom: '6px',
+                    }}>
+                      Email ID
+                    </label>
+                    <TextField
+                      placeholder="Enter email address"
+                      icon={<IconEmail />}
+                      value={paymentData.emailId || ''}
+                      onChange={(v) => handleChange('emailId', v)}
+                    />
+                  </div>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      marginBottom: '6px',
+                    }}>
+                      Mobile Number
+                    </label>
+                    <TextField
+                      placeholder="Enter mobile number"
+                      icon={<IconMobile />}
+                      value={paymentData.mobileNumber || ''}
+                      onChange={(v) => handleChange('mobileNumber', v)}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

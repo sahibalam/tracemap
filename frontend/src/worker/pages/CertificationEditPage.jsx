@@ -470,7 +470,7 @@ export function CertificationEditPage() {
                 Back
               </button>
               <span style={{
-                fontSize: '20px',
+                fontSize: '16px',
                 fontWeight: 600,
                 color: '#17263a',
               }}>
