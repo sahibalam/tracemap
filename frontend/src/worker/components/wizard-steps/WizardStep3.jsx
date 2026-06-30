@@ -50,7 +50,8 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
     'Helpers/Labourers',
     'Insulation',
     'Demolition/Punch/Final Clean',
-    'Leads/Foremen'
+    'Leads/Foremen',
+    'Other'
   ]
 
   // Custom styles for date picker
@@ -300,6 +301,11 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
       padding: 8px 12px;
       font-size: 13px;
     }
+
+    /* Style for the placeholder option */
+    .trade-select-wrapper select option.placeholder-option {
+      color: rgba(23, 38, 58, 0.4);
+    }
   `
 
   // Trade dropdown component
@@ -311,7 +317,9 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
         onChange={(e) => onChange(e.target.value)}
         className={icon ? 'has-icon' : ''}
       >
-        <option value="">Select Trade</option>
+        <option value="" className="placeholder-option" disabled>
+          Select Trade
+        </option>
         {tradeOptions.map((trade) => (
           <option key={trade} value={trade}>
             {trade}
