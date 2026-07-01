@@ -43,8 +43,8 @@ import cors from "cors";
 // ============================================
 // 📦 Import Routes
 // ============================================
-import authRoutes from "./routes/authRoutes.js";
-import workerWizardRoutes from "./routes/workerWizardRoutes.js";
+import authRoutes from "./src/routes/authRoutes.js";
+import workerWizardRoutes from "./src/routes/workerWizardRoutes.js";
 
 const app = express();
 const PORT = process.env.PORT || 5001;
