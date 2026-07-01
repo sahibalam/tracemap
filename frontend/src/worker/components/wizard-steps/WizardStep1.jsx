@@ -2222,6 +2222,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { TextField } from '../../../common/components/TextField'
 import { IconUser, IconMail, IconPhone, IconLocation, IconUpload } from '../../../common/components/Icons'
+import wizardService from '../../../services/workerWizardService'
 
 // US States data
 const US_STATES = [
@@ -2469,19 +2470,47 @@ export function WizardStep1({ data, onChange, onNext }) {
     onChange({ ...data, [field]: value })
   }
 
-  const handleFileUpload = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setProfileImage(file)
-      const reader = new FileReader()
-      reader.onloadend = () => {
-        setProfilePreview(reader.result)
-        handleChange('profilePreview', reader.result)
-        handleChange('profileImage', file)
-      }
-      reader.readAsDataURL(file)
-    }
+// Update the handleFileUpload function
+const handleFileUpload = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+
+  // Validate file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    setUploadError('File size must be less than 5MB')
+    return
   }
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    setUploadError('Please upload an image file')
+    return
+  }
+
+  setIsUploading(true)
+  setUploadError('')
+
+  try {
+    // Get userId from localStorage or context
+    const userId = localStorage.getItem('userId') || 'temp-user'
+    
+    // Upload to S3 via presigned URL
+    const result = await wizardService.uploadProfileImage(userId, file)
+    
+    if (result.success) {
+      setProfilePreview(result.fileUrl)
+      handleChange('profilePreview', result.fileUrl)
+      handleChange('profileImageKey', result.fileKey)
+      handleChange('profileImageUrl', result.fileUrl)
+      console.log('✅ Profile image uploaded successfully')
+    }
+  } catch (error) {
+    console.error('Error uploading profile image:', error)
+    setUploadError('Failed to upload image. Please try again.')
+  } finally {
+    setIsUploading(false)
+  }
+}
 
   // Handle date change from react-datepicker
   const handleDateChange = (date) => {
