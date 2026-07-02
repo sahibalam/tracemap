@@ -1893,7 +1893,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
       console.log('✅ Wizard completed:', result)
       
       // Navigate to success page
-      navigate('/registration-success', {
+      navigate('/wizard/summary', {
         state: {
           basics: {
             legalFirstName: wizardData.legalFirstName,
