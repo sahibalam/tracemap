@@ -23,27 +23,33 @@ const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:3000",
   "http://localhost:5174",
+  "https://tradesmap.com",  // ✅ Add this explicitly
+  "http://172.31.43.234:5173", // ✅ Server IP
+  "http://127.0.0.1:5173",     // ✅ Localhost
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      if (
-        allowedOrigins.indexOf(origin) !== -1 ||
-        process.env.NODE_ENV === "development"
-      ) {
+app.use(cors({
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is allowed
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === "development") {
+      callback(null, true);
+    } else {
+      console.log(`❌ CORS blocked: ${origin}`);
+      // ✅ Allow any origin in development
+      if (process.env.NODE_ENV === "development") {
         callback(null, true);
       } else {
-        console.log(`❌ CORS blocked: ${origin}`);
         callback(new Error("Not allowed by CORS"));
       }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-  })
-);
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+}));
 
 // ============================================
 // 📊 Middleware
