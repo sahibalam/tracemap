@@ -475,12 +475,11 @@
 // }
 
 
-
 // src/common/components/TopNav.jsx
 import { useState, useRef, useEffect } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { createPortal } from 'react-dom'
-import { IconSearch, IconBell } from './Icons'  // ✅ Only these icons needed
+import { IconSearch, IconBell } from './Icons'
 
 export function TopNav({ variant = 'transparent' }) {
   const navigate = useNavigate()
@@ -489,15 +488,18 @@ export function TopNav({ variant = 'transparent' }) {
   const dropdownRef = useRef(null)
   const avatarRef = useRef(null)
 
-  // ✅ Get profile image from localStorage
+  // ✅ Initialize profile image from localStorage
   const [profileImage, setProfileImage] = useState(() => {
-    return localStorage.getItem('userProfileImage') || '/assets/worker.avif'
+    const saved = localStorage.getItem('userProfileImage')
+    console.log('🖼️ Initial profile image from localStorage:', saved)
+    return saved || '/assets/worker.avif'
   })
 
-  // ✅ Listen for storage changes (other tabs/windows)
+  // ✅ Listen for localStorage changes (cross-tab)
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === 'userProfileImage') {
+        console.log('🔄 Storage changed, updating avatar to:', e.newValue)
         setProfileImage(e.newValue || '/assets/worker.avif')
       }
     }
@@ -509,11 +511,21 @@ export function TopNav({ variant = 'transparent' }) {
   useEffect(() => {
     const handleProfileUpdate = (e) => {
       if (e.detail && e.detail.profileImage) {
+        console.log('🔄 Profile update event received:', e.detail.profileImage)
         setProfileImage(e.detail.profileImage)
       }
     }
     window.addEventListener('profileImageUpdated', handleProfileUpdate)
     return () => window.removeEventListener('profileImageUpdated', handleProfileUpdate)
+  }, [])
+
+  // ✅ Force re-render when component mounts
+  useEffect(() => {
+    const saved = localStorage.getItem('userProfileImage')
+    if (saved && saved !== profileImage) {
+      console.log('🔄 Syncing profile image on mount:', saved)
+      setProfileImage(saved)
+    }
   }, [])
 
   // Handle click outside to close dropdown
