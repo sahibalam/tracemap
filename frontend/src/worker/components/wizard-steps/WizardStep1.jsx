@@ -3091,7 +3091,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { TextField } from '../../../common/components/TextField'
 import { IconUser, IconMail, IconPhone, IconLocation, IconUpload } from '../../../common/components/Icons'
-import wizardService from '../../../services/workerWizardService'
+import wizardService from "../../services/workerWizardService"
 
 // US States data
 const US_STATES = [
