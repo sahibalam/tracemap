@@ -103,54 +103,69 @@ class WorkerWizardService {
    * @param {File} file - Image file to upload
    * @returns {Promise} Upload response with file URL
    */
-  async uploadProfileImage(userId, file) {
-    try {
-      if (!userId || !file) {
-        throw new Error('Missing required fields: userId, file')
-      }
+  // src/worker/services/workerWizardService.js
 
-      console.log(`📸 Uploading profile image for user: ${userId}`)
-
-      // Step 1: Get presigned URL from backend
-      const urlResponse = await api.post('/upload/profile', {
-        userId,
-        fileName: file.name,
-        fileType: file.type
-      })
-
-      if (!urlResponse.data.success) {
-        throw new Error(urlResponse.data.message || 'Failed to get upload URL')
-      }
-
-      const { uploadUrl, fileKey, fileUrl, viewUrl } = urlResponse.data.data
-
-      // Step 2: Upload file directly to S3 using presigned URL
-      const uploadResponse = await fetch(uploadUrl, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': file.type
-        }
-      })
-
-      if (!uploadResponse.ok) {
-        throw new Error(`Upload failed with status: ${uploadResponse.status}`)
-      }
-
-      console.log('✅ Profile image uploaded successfully')
-
-      return {
-        success: true,
-        fileKey,
-        fileUrl,
-        viewUrl
-      }
-
-    } catch (error) {
-      console.error('Error uploading profile image:', error)
-      throw error
+async uploadProfileImage(userId, file) {
+  try {
+    if (!userId || !file) {
+      throw new Error('Missing required fields: userId, file')
     }
+
+    console.log(`📸 Uploading profile image for user: ${userId}`)
+
+    // Step 1: Get presigned URL from backend
+    const urlResponse = await api.post('/upload/profile', {
+      userId,
+      fileName: file.name,
+      fileType: file.type
+    })
+
+    console.log('🔍 Full API Response:', urlResponse.data)
+
+    if (!urlResponse.data.success) {
+      throw new Error(urlResponse.data.message || 'Failed to get upload URL')
+    }
+
+    // ✅ Make sure we're accessing the data correctly
+    const responseData = urlResponse.data.data
+    
+    console.log('🔍 Response Data:', responseData)
+    console.log('🔍 Upload URL:', responseData.uploadUrl)
+
+    // ✅ Check if uploadUrl exists
+    if (!responseData.uploadUrl) {
+      console.error('❌ No uploadUrl in response:', responseData)
+      throw new Error('No upload URL received from server')
+    }
+
+    // Step 2: Upload file directly to S3 using presigned URL
+    const uploadResponse = await fetch(responseData.uploadUrl, {
+      method: 'PUT',
+      body: file,
+      headers: {
+        'Content-Type': file.type
+      }
+    })
+
+    if (!uploadResponse.ok) {
+      throw new Error(`Upload failed with status: ${uploadResponse.status}`)
+    }
+
+    console.log('✅ Profile image uploaded successfully')
+
+    return {
+      success: true,
+      uploadUrl: responseData.uploadUrl,
+      fileKey: responseData.fileKey,
+      fileUrl: responseData.fileUrl,
+      viewUrl: responseData.viewUrl
+    }
+
+  } catch (error) {
+    console.error('Error uploading profile image:', error)
+    throw error
   }
+}
 
   // ============================================
   // 📄 CERTIFICATE UPLOAD

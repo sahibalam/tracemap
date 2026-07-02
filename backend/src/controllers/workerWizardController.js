@@ -439,7 +439,6 @@
 // }
 
 
-
 import { docClient, WORKER_WIZARD_TABLE, WORKERS_TABLE } from '../config/aws.js'
 import { 
   PutCommand, 
@@ -474,7 +473,7 @@ export const saveWizardStep = async (req, res) => {
       stepNumber,
       data: stepData,
       updatedAt: timestamp,
-      ttl: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60) // 30 days TTL
+      ttl: Math.floor(Date.now() / 1000) + (30 * 24 * 60 * 60)
     }
 
     if (stepNumber === 1) {
@@ -486,7 +485,6 @@ export const saveWizardStep = async (req, res) => {
       Item: item
     }))
 
-    // Update wizard progress
     await updateWizardProgress(userId, stepNumber)
 
     res.status(200).json({
@@ -522,7 +520,6 @@ export const getWizardProgress = async (req, res) => {
 
     console.log(`📊 Getting wizard progress for user: ${userId}`)
 
-    // Get all wizard steps
     const result = await docClient.send(new QueryCommand({
       TableName: WORKER_WIZARD_TABLE,
       KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
@@ -532,7 +529,6 @@ export const getWizardProgress = async (req, res) => {
       }
     }))
 
-    // Get status
     const statusResult = await docClient.send(new GetCommand({
       TableName: WORKER_WIZARD_TABLE,
       Key: {
@@ -541,7 +537,6 @@ export const getWizardProgress = async (req, res) => {
       }
     }))
 
-    // Organize data
     const steps = {}
     let currentStep = 0
     let isComplete = false
@@ -618,7 +613,6 @@ export const completeWizard = async (req, res) => {
 
     console.log(`✅ Completing wizard for user: ${userId}`)
 
-    // Get all wizard data
     const result = await docClient.send(new QueryCommand({
       TableName: WORKER_WIZARD_TABLE,
       KeyConditionExpression: 'PK = :pk AND begins_with(SK, :sk)',
@@ -628,13 +622,11 @@ export const completeWizard = async (req, res) => {
       }
     }))
 
-    // Build production data
     const wizardSteps = {}
     result.Items.forEach(item => {
       wizardSteps[`step${item.stepNumber}`] = item.data
     })
 
-    // Validate all steps are complete
     for (let i = 1; i <= 5; i++) {
       if (!wizardSteps[`step${i}`]) {
         return res.status(400).json({
@@ -644,13 +636,9 @@ export const completeWizard = async (req, res) => {
       }
     }
 
-    // Transform to production format
     const workerData = transformToProductionData(wizardSteps, userId)
-
-    // Save to production table
     await saveToProductionTable(userId, workerData)
 
-    // Mark wizard as complete
     await docClient.send(new UpdateCommand({
       TableName: WORKER_WIZARD_TABLE,
       Key: {
@@ -778,16 +766,14 @@ const transformToProductionData = (wizardSteps, userId) => {
 }
 
 // ============================================
-// 💾 SAVE TO PRODUCTION TABLE (FIXED)
+// 💾 SAVE TO PRODUCTION TABLE (FIXED - Using BatchWriteCommand)
 // ============================================
 
 const saveToProductionTable = async (userId, workerData) => {
   const timestamp = new Date().toISOString()
   
-  // Create items for each section
   const items = []
   
-  // Helper to add item
   const addItem = (sk, data) => {
     items.push({
       PutRequest: {
@@ -801,7 +787,6 @@ const saveToProductionTable = async (userId, workerData) => {
     })
   }
 
-  // Add each section
   addItem('PROFILE', workerData.profile)
   addItem('TRADE', workerData.trade)
   addItem('WORK_HISTORY', workerData.workHistory)
@@ -810,7 +795,7 @@ const saveToProductionTable = async (userId, workerData) => {
   addItem('EMERGENCY_CONTACT', workerData.emergencyContact)
   addItem('POLICY_ACKS', workerData.policyAcks)
 
-  // Use BatchWrite instead of TransactWrite (more reliable)
+  // Use BatchWrite instead of TransactWrite
   for (let i = 0; i < items.length; i += 25) {
     const batch = items.slice(i, i + 25)
     
