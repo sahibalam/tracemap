@@ -2215,7 +2215,6 @@
 
 
 
-
 // src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef, useEffect } from 'react'
 import DatePicker from 'react-datepicker'
@@ -2455,6 +2454,8 @@ export function WizardStep1({ data, onChange, onNext }) {
   const [profilePreview, setProfilePreview] = useState(data.profilePreview || '')
   const [profileImage, setProfileImage] = useState(null)
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
   
   const uploadRef = useRef(null)
   const datePickerRef = useRef(null)
@@ -2470,47 +2471,57 @@ export function WizardStep1({ data, onChange, onNext }) {
     onChange({ ...data, [field]: value })
   }
 
-// Update the handleFileUpload function
-const handleFileUpload = async (e) => {
-  const file = e.target.files[0]
-  if (!file) return
+  // ✅ Updated file upload handler with navbar update
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
 
-  // Validate file size (max 5MB)
-  if (file.size > 5 * 1024 * 1024) {
-    setUploadError('File size must be less than 5MB')
-    return
-  }
-
-  // Validate file type
-  if (!file.type.startsWith('image/')) {
-    setUploadError('Please upload an image file')
-    return
-  }
-
-  setIsUploading(true)
-  setUploadError('')
-
-  try {
-    // Get userId from localStorage or context
-    const userId = localStorage.getItem('userId') || 'temp-user'
-    
-    // Upload to S3 via presigned URL
-    const result = await wizardService.uploadProfileImage(userId, file)
-    
-    if (result.success) {
-      setProfilePreview(result.fileUrl)
-      handleChange('profilePreview', result.fileUrl)
-      handleChange('profileImageKey', result.fileKey)
-      handleChange('profileImageUrl', result.fileUrl)
-      console.log('✅ Profile image uploaded successfully')
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('File size must be less than 5MB')
+      return
     }
-  } catch (error) {
-    console.error('Error uploading profile image:', error)
-    setUploadError('Failed to upload image. Please try again.')
-  } finally {
-    setIsUploading(false)
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Please upload an image file')
+      return
+    }
+
+    setIsUploading(true)
+    setUploadError('')
+
+    try {
+      // Get userId from localStorage
+      const userId = localStorage.getItem('userId') || 'temp-user'
+      
+      // Upload to S3 via presigned URL
+      const result = await wizardService.uploadProfileImage(userId, file)
+      
+      if (result.success) {
+        // ✅ 1. Update local state
+        setProfilePreview(result.fileUrl)
+        handleChange('profilePreview', result.fileUrl)
+        handleChange('profileImageKey', result.fileKey)
+        handleChange('profileImageUrl', result.fileUrl)
+        
+        // ✅ 2. Save to localStorage for navbar
+        localStorage.setItem('userProfileImage', result.fileUrl)
+        
+        // ✅ 3. Dispatch custom event for same-tab navbar update
+        window.dispatchEvent(new CustomEvent('profileImageUpdated', {
+          detail: { profileImage: result.fileUrl }
+        }))
+        
+        console.log('✅ Profile image uploaded and navbar updated!')
+      }
+    } catch (error) {
+      console.error('Error uploading profile image:', error)
+      setUploadError('Failed to upload image. Please try again.')
+    } finally {
+      setIsUploading(false)
+    }
   }
-}
 
   // Handle date change from react-datepicker
   const handleDateChange = (date) => {
@@ -2964,7 +2975,7 @@ const handleFileUpload = async (e) => {
           </div>
         </div>
 
-        {/* Profile Image Section */}
+        {/* Profile Image Section - Updated with upload state */}
         <div className="wizardSection">
           <div className="wizardSectionBar">Profile Image</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
@@ -2986,26 +2997,39 @@ const handleFileUpload = async (e) => {
               )}
             </div>
             
-            <button
-              type="button"
-              onClick={() => uploadRef.current?.click()}
-              style={{ 
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '6px',
-                padding: '8px 24px',
-                background: 'rgba(15,78,169,0.1)',
-                borderRadius: '25px',
-                cursor: 'pointer',
-                fontSize: '13px',
-                fontWeight: '600',
-                border: 'none',
-                color: '#0f4ea9'
-              }}
-            >
-              <IconUpload style={{ width: '14px', height: '14px' }} />
-              Upload
-            </button>
+            <div>
+              <button
+                type="button"
+                onClick={() => uploadRef.current?.click()}
+                disabled={isUploading}
+                style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '6px',
+                  padding: '8px 24px',
+                  background: isUploading ? 'rgba(15,78,169,0.05)' : 'rgba(15,78,169,0.1)',
+                  borderRadius: '25px',
+                  cursor: isUploading ? 'not-allowed' : 'pointer',
+                  fontSize: '13px',
+                  fontWeight: '600',
+                  border: 'none',
+                  color: isUploading ? '#94a3b8' : '#0f4ea9',
+                  opacity: isUploading ? 0.6 : 1
+                }}
+              >
+                {isUploading ? '⏳ Uploading...' : (
+                  <>
+                    <IconUpload style={{ width: '14px', height: '14px' }} />
+                    Upload
+                  </>
+                )}
+              </button>
+              {uploadError && (
+                <div style={{ color: '#e11d48', fontSize: '12px', marginTop: '4px' }}>
+                  {uploadError}
+                </div>
+              )}
+            </div>
             <input 
               ref={uploadRef}
               type="file" 
