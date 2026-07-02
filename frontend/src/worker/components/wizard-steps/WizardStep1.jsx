@@ -2471,6 +2471,7 @@ export function WizardStep1({ data, onChange, onNext }) {
 
 // In WizardStep1.jsx - Update handleFileUpload
 
+// In WizardStep1.jsx - Updated handleFileUpload
 const handleFileUpload = async (e) => {
   const file = e.target.files[0]
   if (!file) return
@@ -2491,11 +2492,11 @@ const handleFileUpload = async (e) => {
   try {
     const userId = localStorage.getItem('userId') || 'temp-user'
     
-    // Get upload URL from backend
+    // Step 1: Get upload URL from backend
     const result = await wizardService.uploadProfileImage(userId, file)
     
     if (result.success) {
-      // Upload file to S3 using PUT
+      // Step 2: Upload file to S3 using PUT
       const uploadResponse = await fetch(result.uploadUrl, {
         method: 'PUT',
         body: file,
@@ -2506,8 +2507,13 @@ const handleFileUpload = async (e) => {
         throw new Error(`Upload failed: ${uploadResponse.status}`)
       }
 
-      // ✅ Use the presigned view URL for display
-      const displayUrl = result.viewUrl || result.fileUrl
+      // ✅ Step 3: File uploaded successfully, now get view URL
+      const viewUrlResponse = await wizardService.getFileViewUrl(result.fileKey)
+      
+      let displayUrl = result.fileUrl
+      if (viewUrlResponse.success) {
+        displayUrl = viewUrlResponse.data.viewUrl
+      }
       
       // Update local state
       setProfilePreview(displayUrl)
@@ -2515,7 +2521,7 @@ const handleFileUpload = async (e) => {
       handleChange('profileImageKey', result.fileKey)
       handleChange('profileImageUrl', result.fileUrl)
       
-      // ✅ Save the presigned view URL to localStorage for navbar
+      // Save to localStorage for navbar
       localStorage.setItem('userProfileImage', displayUrl)
       
       // Dispatch event for navbar update
