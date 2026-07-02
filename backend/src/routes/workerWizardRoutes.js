@@ -1,4 +1,3 @@
-// backend/src/routes/workerWizardRoutes.js
 import express from 'express'
 import {
   saveWizardStep,
@@ -37,8 +36,21 @@ router.post('/upload/profile', getWorkerProfileUploadUrl)
 // Get presigned URL for certificate upload
 router.post('/upload/certificate', getWorkerCertificateUploadUrl)
 
-// Get view URL for a file
-router.get('/upload/view/:fileKey', getFileViewUrl)
+// ✅ FIX: Get view URL for a file with URL decoding
+router.get('/upload/view/:fileKey', (req, res, next) => {
+  // Decode the fileKey if it's URL encoded (handles #, %, etc.)
+  if (req.params.fileKey) {
+    try {
+      const decoded = decodeURIComponent(req.params.fileKey)
+      console.log(`🔗 Original fileKey: ${req.params.fileKey}`)
+      console.log(`🔗 Decoded fileKey: ${decoded}`)
+      req.params.fileKey = decoded
+    } catch (e) {
+      console.log(`⚠️ Could not decode: ${req.params.fileKey}`)
+    }
+  }
+  next()
+}, getFileViewUrl)
 
 // Delete a file from S3
 router.delete('/upload/:fileKey', deleteFileFromS3)

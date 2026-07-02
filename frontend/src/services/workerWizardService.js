@@ -1,4 +1,3 @@
-
 import api from './api'
 
 class WorkerWizardService {
@@ -44,7 +43,7 @@ class WorkerWizardService {
   // 📸 PROFILE IMAGE UPLOAD
   // ============================================
 
- async uploadProfileImage(userId, file) {
+  async uploadProfileImage(userId, file) {
     try {
       const urlResponse = await api.post('/upload/profile', {
         userId,
@@ -56,13 +55,12 @@ class WorkerWizardService {
         throw new Error(urlResponse.data.message || 'Failed to get upload URL')
       }
 
-      // ✅ Return both the upload URL and view URL
       return {
         success: true,
         uploadUrl: urlResponse.data.data.uploadUrl,
         fileKey: urlResponse.data.data.fileKey,
         fileUrl: urlResponse.data.data.fileUrl,
-        viewUrl: urlResponse.data.data.viewUrl  // ✅ Presigned view URL
+        viewUrl: urlResponse.data.data.viewUrl
       }
     } catch (error) {
       console.error('Error getting upload URL:', error)
@@ -93,7 +91,6 @@ class WorkerWizardService {
         fileKey: urlResponse.data.data.fileKey,
         fileUrl: urlResponse.data.data.fileUrl
       }
-
     } catch (error) {
       console.error('Error getting certificate upload URL:', error)
       throw error
@@ -101,12 +98,15 @@ class WorkerWizardService {
   }
 
   // ============================================
-  // 👁️ VIEW FILE
+  // 👁️ VIEW FILE - FIXED with URL encoding
   // ============================================
 
   async getFileViewUrl(fileKey) {
     try {
-      const response = await api.get(`/upload/view/${fileKey}`)
+      // ✅ URL encode the fileKey to handle special characters like #
+      const encodedFileKey = encodeURIComponent(fileKey)
+      console.log(`🔗 Encoded fileKey: ${encodedFileKey}`)
+      const response = await api.get(`/upload/view/${encodedFileKey}`)
       return response.data
     } catch (error) {
       console.error('Error getting view URL:', error)
