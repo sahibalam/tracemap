@@ -51,30 +51,38 @@ export const getWorkerProfileUploadUrl = async (req, res) => {
   }
 }
 
-// Helper: Update wizard with profile image
+// ✅ FIXED: Helper: Update wizard with profile image
 const updateWizardWithProfileImage = async (userId, fileKey, fileUrl) => {
   const timestamp = new Date().toISOString()
 
-  await docClient.send(new UpdateCommand({
-    TableName: WORKER_WIZARD_TABLE,
-    Key: {
-      PK: `WORKER#${userId}`,
-      SK: 'STEP#1'
-    },
-    UpdateExpression: `
-      SET data.profilePreview = :fileUrl,
-          data.profileImageKey = :fileKey,
-          data.profileImageUrl = :fileUrl,
-          updatedAt = :timestamp
-    `,
-    ExpressionAttributeValues: {
-      ':fileKey': fileKey,
-      ':fileUrl': fileUrl,
-      ':timestamp': timestamp
-    }
-  }))
+  try {
+    await docClient.send(new UpdateCommand({
+      TableName: WORKER_WIZARD_TABLE,
+      Key: {
+        PK: `WORKER#${userId}`,
+        SK: 'STEP#1'
+      },
+      UpdateExpression: `
+        SET #data.profilePreview = :fileUrl,
+            #data.profileImageKey = :fileKey,
+            #data.profileImageUrl = :fileUrl,
+            updatedAt = :timestamp
+      `,
+      ExpressionAttributeNames: {
+        '#data': 'data'  // ✅ Escape reserved keyword
+      },
+      ExpressionAttributeValues: {
+        ':fileKey': fileKey,
+        ':fileUrl': fileUrl,
+        ':timestamp': timestamp
+      }
+    }))
 
-  console.log(`✅ Profile image updated in wizard for user: ${userId}`)
+    console.log(`✅ Profile image updated in wizard for user: ${userId}`)
+  } catch (error) {
+    console.error('❌ Error updating wizard with profile image:', error)
+    throw error
+  }
 }
 
 // ============================================
@@ -124,45 +132,53 @@ export const getWorkerCertificateUploadUrl = async (req, res) => {
   }
 }
 
-// Helper: Update wizard with certificate
+// ✅ FIXED: Helper: Update wizard with certificate
 const updateWizardWithCertificate = async (userId, rowIndex, fileKey, fileUrl, fileName) => {
   const timestamp = new Date().toISOString()
 
-  // Get current step 5 data
-  const getResult = await docClient.send(new GetCommand({
-    TableName: WORKER_WIZARD_TABLE,
-    Key: {
-      PK: `WORKER#${userId}`,
-      SK: 'STEP#5'
-    }
-  }))
-
-  const stepData = getResult.Item?.data || {}
-  const certRows = stepData.certRows || []
-
-  if (certRows[rowIndex]) {
-    certRows[rowIndex] = {
-      ...certRows[rowIndex],
-      uploadRef: fileName,
-      fileKey: fileKey,
-      fileUrl: fileUrl,
-      uploadedAt: timestamp
-    }
-
-    await docClient.send(new UpdateCommand({
+  try {
+    // Get current step 5 data
+    const getResult = await docClient.send(new GetCommand({
       TableName: WORKER_WIZARD_TABLE,
       Key: {
         PK: `WORKER#${userId}`,
         SK: 'STEP#5'
-      },
-      UpdateExpression: 'SET data.certRows = :certRows, updatedAt = :timestamp',
-      ExpressionAttributeValues: {
-        ':certRows': certRows,
-        ':timestamp': timestamp
       }
     }))
 
-    console.log(`✅ Certificate updated in wizard for user: ${userId}, row: ${rowIndex}`)
+    const stepData = getResult.Item?.data || {}
+    const certRows = stepData.certRows || []
+
+    if (certRows[rowIndex]) {
+      certRows[rowIndex] = {
+        ...certRows[rowIndex],
+        uploadRef: fileName,
+        fileKey: fileKey,
+        fileUrl: fileUrl,
+        uploadedAt: timestamp
+      }
+
+      await docClient.send(new UpdateCommand({
+        TableName: WORKER_WIZARD_TABLE,
+        Key: {
+          PK: `WORKER#${userId}`,
+          SK: 'STEP#5'
+        },
+        UpdateExpression: 'SET #data.certRows = :certRows, updatedAt = :timestamp',
+        ExpressionAttributeNames: {
+          '#data': 'data'  // ✅ Escape reserved keyword
+        },
+        ExpressionAttributeValues: {
+          ':certRows': certRows,
+          ':timestamp': timestamp
+        }
+      }))
+
+      console.log(`✅ Certificate updated in wizard for user: ${userId}, row: ${rowIndex}`)
+    }
+  } catch (error) {
+    console.error('❌ Error updating wizard with certificate:', error)
+    throw error
   }
 }
 
