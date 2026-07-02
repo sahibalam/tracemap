@@ -1,4 +1,4 @@
-// frontend/src/services/workerWizardService.js
+src/services/workerWizardService.js
 import api from './api'
 
 class WorkerWizardService {
@@ -46,34 +46,27 @@ class WorkerWizardService {
 
   async uploadProfileImage(userId, file) {
     try {
-      // Step 1: Get upload URL
+      // Step 1: Get upload URL from backend
       const urlResponse = await api.post('/upload/profile', {
         userId,
         fileName: file.name,
         fileType: file.type
       })
 
-      // Step 2: Upload file directly to S3
-      const uploadResponse = await fetch(urlResponse.data.uploadUrl, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': file.type
-        }
-      })
-
-      if (!uploadResponse.ok) {
-        throw new Error(`Upload failed: ${uploadResponse.status}`)
+      if (!urlResponse.data.success) {
+        throw new Error(urlResponse.data.message || 'Failed to get upload URL')
       }
 
+      // ✅ Return the presigned URL info - actual upload happens in component
       return {
         success: true,
-        fileKey: urlResponse.data.fileKey,
-        fileUrl: urlResponse.data.fileUrl
+        uploadUrl: urlResponse.data.data.uploadUrl,
+        fileKey: urlResponse.data.data.fileKey,
+        fileUrl: urlResponse.data.data.fileUrl
       }
 
     } catch (error) {
-      console.error('Error uploading profile image:', error)
+      console.error('Error getting upload URL:', error)
       throw error
     }
   }
@@ -84,7 +77,6 @@ class WorkerWizardService {
 
   async uploadCertificate(userId, file, rowIndex = 0) {
     try {
-      // Step 1: Get upload URL
       const urlResponse = await api.post('/upload/certificate', {
         userId,
         fileName: file.name,
@@ -92,27 +84,19 @@ class WorkerWizardService {
         rowIndex
       })
 
-      // Step 2: Upload file directly to S3
-      const uploadResponse = await fetch(urlResponse.data.uploadUrl, {
-        method: 'PUT',
-        body: file,
-        headers: {
-          'Content-Type': file.type
-        }
-      })
-
-      if (!uploadResponse.ok) {
-        throw new Error(`Upload failed: ${uploadResponse.status}`)
+      if (!urlResponse.data.success) {
+        throw new Error(urlResponse.data.message || 'Failed to get upload URL')
       }
 
       return {
         success: true,
-        fileKey: urlResponse.data.fileKey,
-        fileUrl: urlResponse.data.fileUrl
+        uploadUrl: urlResponse.data.data.uploadUrl,
+        fileKey: urlResponse.data.data.fileKey,
+        fileUrl: urlResponse.data.data.fileUrl
       }
 
     } catch (error) {
-      console.error('Error uploading certificate:', error)
+      console.error('Error getting certificate upload URL:', error)
       throw error
     }
   }

@@ -2213,7 +2213,6 @@
 //   )
 // }
 
-
 // src/worker/components/wizard-steps/WizardStep1.jsx
 import { useState, useRef, useEffect } from 'react'
 import DatePicker from 'react-datepicker'
@@ -2276,23 +2275,26 @@ const US_STATES = [
   { name: 'Wyoming', code: 'WY' },
 ]
 
-// Custom State Dropdown Component
+// Custom State Dropdown Component - Displays state name, stores state code
 function StateDropdown({ value, onChange, placeholder = 'State' }) {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef(null)
 
+  // Get the state name for a given code
   const getStateName = (code) => {
     if (!code) return ''
     const state = US_STATES.find(s => s.code === code)
     return state ? state.name : ''
   }
 
+  // Get the display text for the dropdown
   const getDisplayText = () => {
     if (!value) return placeholder
     const name = getStateName(value)
     return name || placeholder
   }
 
+  // Handle click outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -2305,6 +2307,7 @@ function StateDropdown({ value, onChange, placeholder = 'State' }) {
 
   return (
     <div ref={dropdownRef} style={{ position: 'relative' }}>
+      {/* Dropdown Button */}
       <div
         onClick={() => setIsOpen(!isOpen)}
         style={{
@@ -2354,6 +2357,7 @@ function StateDropdown({ value, onChange, placeholder = 'State' }) {
         </svg>
       </div>
 
+      {/* Dropdown Menu */}
       {isOpen && (
         <div
           style={{
@@ -2371,6 +2375,7 @@ function StateDropdown({ value, onChange, placeholder = 'State' }) {
             padding: '4px 0',
           }}
         >
+          {/* Placeholder option */}
           <div
             onClick={() => {
               onChange('')
@@ -2395,6 +2400,7 @@ function StateDropdown({ value, onChange, placeholder = 'State' }) {
             {placeholder}
           </div>
 
+          {/* State options */}
           {US_STATES.map((state) => (
             <div
               key={state.code}
@@ -2443,13 +2449,11 @@ function IconSupport(props) {
 }
 
 export function WizardStep1({ data, onChange, onNext }) {
-  // ✅ ADDED: Missing state declarations
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadError, setUploadError] = useState('')
-  
   const [profilePreview, setProfilePreview] = useState(data.profilePreview || '')
   const [profileImage, setProfileImage] = useState(null)
   const [isDatePickerOpen, setIsDatePickerOpen] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadError, setUploadError] = useState('')
   
   const uploadRef = useRef(null)
   const datePickerRef = useRef(null)
@@ -2465,7 +2469,7 @@ export function WizardStep1({ data, onChange, onNext }) {
     onChange({ ...data, [field]: value })
   }
 
-  // ✅ Updated file upload handler with navbar update
+  // ✅ CORRECT FILE UPLOAD HANDLER WITH PUT METHOD
   const handleFileUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
@@ -2489,20 +2493,33 @@ export function WizardStep1({ data, onChange, onNext }) {
       // Get userId from localStorage
       const userId = localStorage.getItem('userId') || 'temp-user'
       
-      // Upload to S3 via presigned URL
+      // Step 1: Get presigned URL from backend
       const result = await wizardService.uploadProfileImage(userId, file)
       
       if (result.success) {
-        // ✅ 1. Update local state
+        // ✅ Step 2: Upload file to S3 using PUT method
+        const uploadResponse = await fetch(result.uploadUrl, {
+          method: 'PUT',  // ✅ Must be PUT, not POST
+          body: file,
+          headers: {
+            'Content-Type': file.type
+          }
+        })
+
+        if (!uploadResponse.ok) {
+          throw new Error(`Upload failed: ${uploadResponse.status}`)
+        }
+
+        // ✅ Step 3: Update local state
         setProfilePreview(result.fileUrl)
         handleChange('profilePreview', result.fileUrl)
         handleChange('profileImageKey', result.fileKey)
         handleChange('profileImageUrl', result.fileUrl)
         
-        // ✅ 2. Save to localStorage for navbar
+        // ✅ Step 4: Save to localStorage for navbar
         localStorage.setItem('userProfileImage', result.fileUrl)
         
-        // ✅ 3. Dispatch custom event for same-tab navbar update
+        // ✅ Step 5: Dispatch custom event for navbar update
         window.dispatchEvent(new CustomEvent('profileImageUpdated', {
           detail: { profileImage: result.fileUrl }
         }))
@@ -2511,7 +2528,7 @@ export function WizardStep1({ data, onChange, onNext }) {
       }
     } catch (error) {
       console.error('Error uploading profile image:', error)
-      setUploadError('Failed to upload image. Please try again.')
+      setUploadError(error.message || 'Failed to upload image. Please try again.')
     } finally {
       setIsUploading(false)
     }
@@ -2542,8 +2559,9 @@ export function WizardStep1({ data, onChange, onNext }) {
 
   const isValid = data.emailAddress && data.mobilePhone && data.legalFirstName && data.legalLastName && data.dob && data.city && data.stateCode && data.zip
 
-  // Custom styles for date picker
+  // Custom styles for date picker matching WizardStep3
   const datePickerStyles = `
+    /* Date picker styles - matching WizardStep3 */
     .date-picker-wrapper {
       position: relative;
       width: 100%;
@@ -2598,6 +2616,7 @@ export function WizardStep1({ data, onChange, onNext }) {
       justify-content: center;
     }
 
+    /* Override any default DatePicker styles that might affect positioning */
     .date-picker-wrapper .react-datepicker-wrapper {
       display: block;
       width: 100%;
@@ -2736,6 +2755,7 @@ export function WizardStep1({ data, onChange, onNext }) {
       color: white;
     }
 
+    /* Month dropdown styling */
     .custom-date-picker .react-datepicker__month-dropdown,
     .custom-date-picker .react-datepicker__year-dropdown {
       border-radius: 12px;
@@ -2767,6 +2787,7 @@ export function WizardStep1({ data, onChange, onNext }) {
 
   return (
     <div className="wizardStep">
+      {/* Inject custom styles */}
       <style>{datePickerStyles}</style>
       
       <div className="wizardBody">
@@ -2899,7 +2920,7 @@ export function WizardStep1({ data, onChange, onNext }) {
         {/* Details */}
         <div className="wizardSection">
           <div className="wizardGrid2">
-            {/* DOB */}
+            {/* DOB - React DatePicker matching WizardStep3 style */}
             <div>
               <div className="wizardSectionBar">Date of Birth</div>
               <div className="date-picker-wrapper custom-date-picker">
@@ -2965,7 +2986,7 @@ export function WizardStep1({ data, onChange, onNext }) {
           </div>
         </div>
 
-        {/* Profile Image Section - Updated */}
+        {/* Profile Image Section - Updated with upload state */}
         <div className="wizardSection">
           <div className="wizardSectionBar">Profile Image</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
