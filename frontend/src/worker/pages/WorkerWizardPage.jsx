@@ -1150,6 +1150,453 @@
 // }
 
 
+// // src/worker/pages/WorkerWizardPage.jsx
+// import { useState, useEffect } from 'react'
+// import { useNavigate, useLocation } from 'react-router-dom'
+// import { TopNav } from '../../common/components/TopNav'
+// import { WizardStep1 } from '../components/wizard-steps/WizardStep1'
+// import { WizardStep2 } from '../components/wizard-steps/WizardStep2'
+// import { WizardStep3 } from '../components/wizard-steps/WizardStep3'
+// import { WizardStep4 } from '../components/wizard-steps/WizardStep4'
+// import { WizardStep5 } from '../components/wizard-steps/WizardStep5'
+
+// export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
+//   const navigate = useNavigate()
+//   const location = useLocation()
+
+//   const [step, setStep] = useState(1)
+//   const maxStep = 5
+
+//   // ✅ Initialize state with data from localStorage
+//   const [wizardData, setWizardData] = useState(() => {
+//     // Read from localStorage
+//     const pendingFirstName = localStorage.getItem('pendingFirstName') || ''
+//     const pendingLastName = localStorage.getItem('pendingLastName') || ''
+//     const pendingEmail = localStorage.getItem('pendingEmail') || ''
+//     const pendingPhoneNumber = localStorage.getItem('pendingPhoneNumber') || ''
+//     const pendingDob = localStorage.getItem('pendingDob') || ''
+//     const pendingCity = localStorage.getItem('pendingCity') || ''
+//     const pendingState = localStorage.getItem('pendingState') || ''
+//     const pendingZip = localStorage.getItem('pendingZip') || ''
+//     const pendingLanguage = localStorage.getItem('pendingLanguage') || ''
+
+//     // Format DOB from YYYY-MM-DD to MM/DD/YYYY
+//     let formattedDob = ''
+//     if (pendingDob) {
+//       const parts = pendingDob.split('-')
+//       if (parts.length === 3) {
+//         formattedDob = `${parts[1]}/${parts[2]}/${parts[0]}`
+//       }
+//     }
+
+//     // Convert language
+//     let language = ''
+//     if (pendingLanguage === 'es') {
+//       language = 'Spanish'
+//     } else if (pendingLanguage === 'en') {
+//       language = 'English'
+//     }
+
+//     return {
+//       // Step 1 - Auto-filled from localStorage
+//       emailAddress: pendingEmail,
+//       mobilePhone: pendingPhoneNumber,
+//       tempPassword: '',
+//       smsCodeVerified: '',
+//       emailVerified: '',
+//       legalFirstName: pendingFirstName,
+//       legalLastName: pendingLastName,
+//       displayName: '',
+//       dob: formattedDob,
+//       addressLine1: '',
+//       addressLine2: '',
+//       city: pendingCity,
+//       stateCode: pendingState,
+//       zip: pendingZip,
+//       currentAddressLine1: '',
+//       currentAddressLine2: '',
+//       currentCity: '',
+//       currentStateCode: '',
+//       currentZip: '',
+//       profilePhotoRef: '',
+//       primaryLanguage: language,
+//       additionalLanguages: '',
+//       currentCityMarket: '',
+//       acceptTerms: false,
+//       acceptPrivacy: false,
+//       consentElectronic: false,
+//       certifyAccurate: false,
+      
+//       // Step 2 - Emergency Medical
+//       bloodGroup: '',
+//       emergencyMedicalInfo: 'none',
+//       emergencyMedicalFlags: {},
+//       emergencyInstructions: '',
+      
+//       // Step 3 - Trade Profile & Skill Matrix
+//       primaryTrade: '',
+//       workerLevel: '',
+//       yearOfExperience: '',
+//       skills: {},
+//       fieldReadiness: {},
+//       additionalSkillsList: {},
+//       additionalSkills: '',
+//       travelRadiusMiles: '',
+//       languages: '',
+      
+//       // Step 4 - Work History
+//       projects: [
+//         { 
+//           name: '', 
+//           client: '', 
+//           phone: '',
+//           trade: '', 
+//           role: '', 
+//           start: '', 
+//           end: '', 
+//           scope: '' 
+//         },
+//         { 
+//           name: '', 
+//           client: '', 
+//           phone: '',
+//           trade: '', 
+//           role: '', 
+//           start: '', 
+//           end: '', 
+//           scope: '' 
+//         },
+//         { 
+//           name: '', 
+//           client: '', 
+//           phone: '',
+//           trade: '', 
+//           role: '', 
+//           start: '', 
+//           end: '', 
+//           scope: '' 
+//         },
+//       ],
+//       projectConditions: {},
+//       referenceName: '',
+//       referenceTitle: '',
+//       referencePhone: '',
+//       reviewerNotes: '',
+      
+//       // Step 5 - Certifications
+//       certChecklist: {},
+//       certRows: [
+//         { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+//         { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+//         { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
+//       ],
+//       safetyFlags: {},
+      
+//       // Step 6 - Emergency Contact & Acknowledgments
+//       emergencyContactName: '',
+//       emergencyContactRelationship: '',
+//       emergencyContactPhone: '',
+//       policyAcks: {},
+//       signatureWorkerName: '',
+//       signatureDate: '',
+//       signatureToken: '',
+//     }
+//   })
+
+//   // ✅ Clear localStorage AFTER data is loaded into state
+//   useEffect(() => {
+//     // Only clear if we have data in localStorage
+//     const hasPendingData = localStorage.getItem('pendingFirstName') || 
+//                           localStorage.getItem('pendingEmail') ||
+//                           localStorage.getItem('pendingPhoneNumber')
+    
+//     if (hasPendingData) {
+//       // Clear pending data after it's been loaded into state
+//       const itemsToRemove = [
+//         'pendingFirstName', 'pendingLastName', 'pendingEmail', 'pendingPhoneNumber',
+//         'pendingDob', 'pendingCity', 'pendingState', 'pendingZip', 'pendingLanguage',
+//         'pendingPassword'
+//       ]
+//       itemsToRemove.forEach(item => localStorage.removeItem(item))
+//       console.log('✅ Cleared pending registration data from localStorage')
+//     }
+//   }, [])
+
+//   useEffect(() => {
+//     const requested = initialStepOverride ?? location?.state?.initialStep
+//     if (typeof requested === 'number' && Number.isFinite(requested)) {
+//       setStep((prev) => (prev === requested ? prev : Math.min(maxStep, Math.max(1, requested))))
+//     }
+//   }, [initialStepOverride, location?.state?.initialStep])
+
+//   const stepTitles = [
+//     'Worker Account & Identity Intake',
+//     'Trade Profile & Skill Matrix',
+//     //'Emergency Medical Information',
+//     'Work History & Project Experience',
+//     'Availability, Travel, Pay & Assignment Preferences',
+//    // 'Certifications, Safety & Equipment Qualifications',
+//     'Emergency Contact, Policies & Acknowledgments'
+//   ]
+
+//   const stepSubtitles = [
+//     'Use for initial account creation, identity basics, contact data, and public profile photo.',
+//     'Use to classify primary trade, level, years of experience, specialty skills, and field capability.',
+//     //'Optional information to assist emergency responders.',
+//     'Use to collect recent projects, type of work performed, role held, and reference-ready experience.',
+//     'Use to collect start date, schedule, travel radius, pay preference, and deployment expectations.',
+//    // 'Use to collect proof of OSHA, lift, PIT, CPR, and related safety training relevant to interiors work.',
+//     'Use to capture emergency contact details and signed acknowledgments required before activation.'
+//   ]
+
+//   const goNext = () => setStep((s) => Math.min(maxStep, s + 1))
+//   const goPrev = () => setStep((s) => Math.max(1, s - 1))
+
+//  // In WorkerWizardPage.jsx
+
+// const finishWizard = () => {
+//   // Navigate to success page instead of summary
+//   navigate('/registration-success', {
+//     state: {
+//       basics: {
+//         legalFirstName: wizardData.legalFirstName,
+//         legalLastName: wizardData.legalLastName,
+//         displayName: wizardData.displayName,
+//         emailAddress: wizardData.emailAddress,
+//         mobilePhone: wizardData.mobilePhone,
+//         dob: wizardData.dob,
+//         addressLine1: wizardData.addressLine1,
+//         addressLine2: wizardData.addressLine2,
+//         city: wizardData.city,
+//         stateCode: wizardData.stateCode,
+//         zip: wizardData.zip,
+//         currentAddressLine1: wizardData.currentAddressLine1,
+//         currentAddressLine2: wizardData.currentAddressLine2,
+//         currentCity: wizardData.currentCity,
+//         currentStateCode: wizardData.currentStateCode,
+//         currentZip: wizardData.currentZip,
+//       },
+//       trade: {
+//         primaryTrade: wizardData.primaryTrade,
+//         workerLevel: wizardData.workerLevel,
+//         yearOfExperience: wizardData.yearOfExperience,
+//         skills: wizardData.skills,
+//         additionalSkillsList: wizardData.additionalSkillsList,
+//         additionalSkills: wizardData.additionalSkills,
+//         travelRadiusMiles: wizardData.travelRadiusMiles,
+//       },
+//       workHistory: {
+//         projects: wizardData.projects,
+//         projectConditions: wizardData.projectConditions,
+//         referenceName: wizardData.referenceName,
+//         referenceTitle: wizardData.referenceTitle,
+//         referencePhone: wizardData.referencePhone,
+//       },
+//       certifications: {
+//         certChecklist: wizardData.certChecklist,
+//         safetyFlags: wizardData.safetyFlags,
+//       },
+//       medical: {
+//         emergencyMedicalInfo: wizardData.emergencyMedicalInfo,
+//         bloodGroup: wizardData.bloodGroup,
+//         emergencyMedicalFlags: wizardData.emergencyMedicalFlags,
+//         emergencyInstructions: wizardData.emergencyInstructions,
+//       },
+//       acknowledgments: {
+//         emergencyContactName: wizardData.emergencyContactName,
+//         emergencyContactRelationship: wizardData.emergencyContactRelationship,
+//         emergencyContactPhone: wizardData.emergencyContactPhone,
+//         policyAcks: wizardData.policyAcks,
+//         signatureWorkerName: wizardData.signatureWorkerName,
+//         signatureDate: wizardData.signatureDate,
+//       },
+//     },
+//   })
+// }
+
+//   const wizardInner = (
+//     <div className="wizardPage">
+//       <div className="wizardCard">
+//         {/* ✅ Sticky Header */}
+//         <div className="wizardHeader" style={{
+//           position: 'sticky',
+//           top: 0,
+//           zIndex: 10,
+//           background: 'white',
+//           padding: '16px 24px',
+//           borderBottom: '1px solid rgba(18, 38, 63, 0.06)',
+//           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
+//         }}>
+//           <div>
+//             <div className="wizardTitle">{stepTitles[step - 1]}</div>
+//             <div className="wizardSubtitle">{stepSubtitles[step - 1]}</div>
+//           </div>
+
+//           <div className="wizardStepPills" aria-label="Wizard steps">
+//             {Array.from({ length: maxStep }).map((_, idx) => {
+//               const n = idx + 1
+//               return (
+//                 <button
+//                   key={n}
+//                   type="button"
+//                   className={`wizardStepPill ${step === n ? 'wizardStepPillActive' : ''}`}
+//                   onClick={() => setStep(n)}
+//                 >
+//                   {n}
+//                 </button>
+//               )
+//             })}
+//           </div>
+//         </div>
+
+//         {/* ✅ Scrollable Content */}
+//         <div className="wizardBody" style={{
+//           maxHeight: 'calc(100vh - 280px)',
+//           overflowY: 'auto',
+//           padding: '20px 24px',
+//           scrollBehavior: 'smooth'
+//         }}>
+//           {step === 1 && <WizardStep1 data={wizardData} onChange={setWizardData} onNext={goNext} />}
+//           {step === 2 && <WizardStep2 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
+//           {step === 3 && <WizardStep3 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
+//           {step === 4 && <WizardStep4 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
+//           {step === 5 && <WizardStep5 data={wizardData} onChange={setWizardData} onFinish={finishWizard} onBack={goPrev} />}
+//         </div>
+
+//         {/* ✅ Sticky Footer */}
+//         <div className="wizardFooter" style={{
+//           position: 'sticky',
+//           bottom: 0,
+//           zIndex: 10,
+//           background: 'white',
+//           padding: '12px 24px',
+//           borderTop: '1px solid rgba(18, 38, 63, 0.06)',
+//           boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
+//           display: 'flex',
+//           justifyContent: 'space-between',
+//           alignItems: 'center'
+//         }}>
+//           <button 
+//             type="button" 
+//             className="wizardPillBtn" 
+//             onClick={step === 1 ? () => navigate('/verify') : goPrev}
+//             disabled={step === 1}
+//             style={{
+//               opacity: step === 1 ? 0.4 : 1,
+//               cursor: step === 1 ? 'not-allowed' : 'pointer'
+//             }}
+//           >
+//             <span className="wizardPillBtnLabel">Back</span>
+//             <span className="wizardPillBtnIcon">←</span>
+//           </button>
+
+//           <div className="wizardFooterRight">
+//             {step < maxStep ? (
+//               <button 
+//                 type="button" 
+//                 className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
+//                 onClick={goNext}
+//               >
+//                 <span className="wizardPillBtnLabel">Next</span>
+//                 <span className="wizardPillBtnIcon">→</span>
+//               </button>
+//             ) : (
+//               <button 
+//                 type="button" 
+//                 className="wizardPillBtn wizardPillBtnSuccess" 
+//                 onClick={finishWizard}
+//               >
+//                 <span className="wizardPillBtnLabel">Finish</span>
+//                 <span className="wizardPillBtnIcon">✓</span>
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   )
+
+//   if (embedded) {
+//     return <div className="wizardEmbedded">{wizardInner}</div>
+//   }
+
+//   return (
+//     <div className="appShell">
+//       <TopNav variant="solid" />
+
+//       <div className="appShellBody appShellBodyVerify">
+//         <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
+
+//           <div className="sideNavMain">
+//             <div className="sideGroupLabel">WORKSPACE</div>
+//             <nav className="sideGroup" aria-label="Workspace">
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Overview</span>
+//               </span>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Projects</span>
+//                 <span className="sideBadge">12</span>
+//               </span>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Revenues</span>
+//               </span>
+//               <a className="sideItem sideItemActive" href="#">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Profile</span>
+//               </a>
+//             </nav>
+//           </div>
+
+//           <div className="sideNavBottom">
+//             <div className="sideGroupLabel">GENERAL</div>
+//             <nav className="sideGroup" aria-label="General">
+//               <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Sign out</span>
+//               </button>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.9-6.4h1.8V17h-1.8v-1.4zm1.8-2.2h-1.8c0-2.6 3-2.3 3-4.4 0-1.1-.9-1.8-2.1-1.8-1.1 0-2 .7-2.1 1.8H8.1c.1-2.1 1.9-3.6 4-3.6 2.3 0 3.9 1.4 3.9 3.5 0 2.7-3 2.7-3 4.5z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Support</span>
+//               </span>
+//             </nav>
+//           </div>
+//         </aside>
+
+//         <main className="appContent">{wizardInner}</main>
+//       </div>
+//     </div>
+//   )
+// }
+
+
+
 // src/worker/pages/WorkerWizardPage.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -1159,6 +1606,8 @@ import { WizardStep2 } from '../components/wizard-steps/WizardStep2'
 import { WizardStep3 } from '../components/wizard-steps/WizardStep3'
 import { WizardStep4 } from '../components/wizard-steps/WizardStep4'
 import { WizardStep5 } from '../components/wizard-steps/WizardStep5'
+import wizardService from '../services/workerWizardService'
+import { auth } from '../../firebase/config'
 
 export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const navigate = useNavigate()
@@ -1166,6 +1615,8 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
 
   const [step, setStep] = useState(1)
   const maxStep = 5
+  const [error, setError] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
 
   // ✅ Initialize state with data from localStorage
   const [wizardData, setWizardData] = useState(() => {
@@ -1175,9 +1626,6 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     const pendingEmail = localStorage.getItem('pendingEmail') || ''
     const pendingPhoneNumber = localStorage.getItem('pendingPhoneNumber') || ''
     const pendingDob = localStorage.getItem('pendingDob') || ''
-    const pendingCity = localStorage.getItem('pendingCity') || ''
-    const pendingState = localStorage.getItem('pendingState') || ''
-    const pendingZip = localStorage.getItem('pendingZip') || ''
     const pendingLanguage = localStorage.getItem('pendingLanguage') || ''
 
     // Format DOB from YYYY-MM-DD to MM/DD/YYYY
@@ -1189,133 +1637,149 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
       }
     }
 
-    // Convert language
-    let language = ''
-    if (pendingLanguage === 'es') {
-      language = 'Spanish'
-    } else if (pendingLanguage === 'en') {
-      language = 'English'
-    }
-
     return {
-      // Step 1 - Auto-filled from localStorage
-      emailAddress: pendingEmail,
-      mobilePhone: pendingPhoneNumber,
-      tempPassword: '',
-      smsCodeVerified: '',
-      emailVerified: '',
+      // Step 1: Personal Information
       legalFirstName: pendingFirstName,
       legalLastName: pendingLastName,
-      displayName: '',
+      emailAddress: pendingEmail,
+      mobilePhone: pendingPhoneNumber,
       dob: formattedDob,
       addressLine1: '',
       addressLine2: '',
-      city: pendingCity,
-      stateCode: pendingState,
-      zip: pendingZip,
+      city: '',
+      stateCode: '',
+      zip: '',
       currentAddressLine1: '',
       currentAddressLine2: '',
       currentCity: '',
       currentStateCode: '',
       currentZip: '',
-      profilePhotoRef: '',
-      primaryLanguage: language,
-      additionalLanguages: '',
-      currentCityMarket: '',
+      sameAsAddress: false,
+      english: false,
+      englishSpanish: false,
+      spanish: false,
+      profilePreview: '',
+      profileImageKey: '',
+      profileImageUrl: '',
       acceptTerms: false,
       acceptPrivacy: false,
       consentElectronic: false,
       certifyAccurate: false,
-      
-      // Step 2 - Emergency Medical
-      bloodGroup: '',
-      emergencyMedicalInfo: 'none',
-      emergencyMedicalFlags: {},
-      emergencyInstructions: '',
-      
-      // Step 3 - Trade Profile & Skill Matrix
+
+      // Step 2: Trade Profile
       primaryTrade: '',
+      primaryOtherTrade: '',
       workerLevel: '',
       yearOfExperience: '',
-      skills: {},
-      fieldReadiness: {},
-      additionalSkillsList: {},
-      additionalSkills: '',
-      travelRadiusMiles: '',
-      languages: '',
-      
-      // Step 4 - Work History
+      secondaryTrade: '',
+      secondaryOtherTrade: '',
+      secondaryWorkerLevel: '',
+      secondaryYearOfExperience: '',
+      leadForemanResponsibilities: {},
+      metalFramingSkills: {},
+      drywallHangingSkills: {},
+      tapingFinishingSkills: {},
+      acousticalCeilingsSkills: {},
+      interiorCarpentrySkills: {},
+      helpersLabourersSkills: {},
+      insulationSkills: {},
+      demolitionSkills: {},
+      secondaryLeadForemanResponsibilities: {},
+      secondaryMetalFramingSkills: {},
+      secondaryDrywallHangingSkills: {},
+      secondaryTapingFinishingSkills: {},
+      secondaryAcousticalCeilingsSkills: {},
+      secondaryInteriorCarpentrySkills: {},
+      secondaryHelpersLabourersSkills: {},
+      secondaryInsulationSkills: {},
+      secondaryDemolitionSkills: {},
+      additionalSkillsTools: '',
+
+      // Step 3: Work History
       projects: [
-        { 
-          name: '', 
-          client: '', 
-          phone: '',
-          trade: '', 
-          role: '', 
-          start: '', 
-          end: '', 
-          scope: '' 
-        },
-        { 
-          name: '', 
-          client: '', 
-          phone: '',
-          trade: '', 
-          role: '', 
-          start: '', 
-          end: '', 
-          scope: '' 
-        },
-        { 
-          name: '', 
-          client: '', 
-          phone: '',
-          trade: '', 
-          role: '', 
-          start: '', 
-          end: '', 
-          scope: '' 
-        },
+        { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+        { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+        { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
       ],
-      projectConditions: {},
-      referenceName: '',
-      referenceTitle: '',
-      referencePhone: '',
-      reviewerNotes: '',
-      
-      // Step 5 - Certifications
-      certChecklist: {},
-      certRows: [
-        { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
-        { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
-        { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '' },
-      ],
-      safetyFlags: {},
-      
-      // Step 6 - Emergency Contact & Acknowledgments
+
+      // Step 4: Availability
+      hourlyRate: '',
+      payPrefs: {},
+      travelRadius: 50,
+      willingToTravel: '',
+      travelPrefs: {},
+      availability: {},
+
+      // Step 5: Emergency Contact
       emergencyContactName: '',
       emergencyContactRelationship: '',
       emergencyContactPhone: '',
       policyAcks: {},
-      signatureWorkerName: '',
-      signatureDate: '',
-      signatureToken: '',
     }
   })
 
+  // ✅ Load saved wizard progress from backend
+  useEffect(() => {
+    const loadSavedProgress = async () => {
+      try {
+        // Get userId from Firebase or localStorage
+        let userId = localStorage.getItem('userId')
+        if (!userId) {
+          const user = auth.currentUser
+          if (user) {
+            userId = user.uid
+            localStorage.setItem('userId', userId)
+          }
+        }
+
+        if (!userId) {
+          console.log('No userId found, starting fresh wizard')
+          return
+        }
+
+        const result = await wizardService.getProgress(userId)
+        if (result.success && result.data) {
+          const { steps, currentStep } = result.data
+          
+          // Merge saved data with current state
+          const savedData = {}
+          Object.keys(steps).forEach(key => {
+            const stepNum = parseInt(key.replace('step', ''))
+            savedData[`step${stepNum}`] = steps[key]
+          })
+
+          setWizardData(prev => ({
+            ...prev,
+            ...savedData.step1 || {},
+            ...savedData.step2 || {},
+            ...savedData.step3 || {},
+            ...savedData.step4 || {},
+            ...savedData.step5 || {},
+          }))
+
+          // Set current step to the last saved step
+          if (currentStep > 1) {
+            setStep(currentStep)
+          }
+        }
+      } catch (error) {
+        console.error('Error loading wizard progress:', error)
+      }
+    }
+
+    loadSavedProgress()
+  }, [])
+
   // ✅ Clear localStorage AFTER data is loaded into state
   useEffect(() => {
-    // Only clear if we have data in localStorage
     const hasPendingData = localStorage.getItem('pendingFirstName') || 
                           localStorage.getItem('pendingEmail') ||
                           localStorage.getItem('pendingPhoneNumber')
     
     if (hasPendingData) {
-      // Clear pending data after it's been loaded into state
       const itemsToRemove = [
         'pendingFirstName', 'pendingLastName', 'pendingEmail', 'pendingPhoneNumber',
-        'pendingDob', 'pendingCity', 'pendingState', 'pendingZip', 'pendingLanguage',
-        'pendingPassword'
+        'pendingDob', 'pendingLanguage'
       ]
       itemsToRemove.forEach(item => localStorage.removeItem(item))
       console.log('✅ Cleared pending registration data from localStorage')
@@ -1329,95 +1793,196 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     }
   }, [initialStepOverride, location?.state?.initialStep])
 
+  // ✅ FIX: Handle data updates properly - MERGE not REPLACE
+  const handleDataChange = (newData) => {
+    setWizardData(prev => {
+      // If newData is a function, call it with current state
+      if (typeof newData === 'function') {
+        const result = newData(prev)
+        return { ...prev, ...result }
+      }
+      
+      // Deep merge for nested objects
+      const merged = { ...prev }
+      Object.keys(newData).forEach(key => {
+        if (typeof newData[key] === 'object' && newData[key] !== null && !Array.isArray(newData[key])) {
+          // Merge nested objects
+          merged[key] = { ...prev[key], ...newData[key] }
+        } else {
+          // Direct assignment for primitives and arrays
+          merged[key] = newData[key]
+        }
+      })
+      
+      return merged
+    })
+  }
+
+  // ✅ Save current step to backend
+  const saveCurrentStep = async () => {
+    try {
+      let userId = localStorage.getItem('userId')
+      if (!userId) {
+        const user = auth.currentUser
+        if (user) {
+          userId = user.uid
+          localStorage.setItem('userId', userId)
+        }
+      }
+      
+      if (!userId) {
+        console.warn('No userId found, skipping save')
+        return
+      }
+      
+      setIsSaving(true)
+      await wizardService.saveStep(userId, step, wizardData)
+      console.log(`✅ Step ${step} saved to backend`)
+    } catch (error) {
+      console.error('Error saving step:', error)
+      setError(error.message || 'Failed to save step')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   const stepTitles = [
-    'Worker Account & Identity Intake',
+    'Personal Information',
     'Trade Profile & Skill Matrix',
-    //'Emergency Medical Information',
     'Work History & Project Experience',
-    'Availability, Travel, Pay & Assignment Preferences',
-   // 'Certifications, Safety & Equipment Qualifications',
-    'Emergency Contact, Policies & Acknowledgments'
+    'Availability, Travel & Pay Preferences',
+    'Emergency Contact & Acknowledgments'
   ]
 
   const stepSubtitles = [
-    'Use for initial account creation, identity basics, contact data, and public profile photo.',
-    'Use to classify primary trade, level, years of experience, specialty skills, and field capability.',
-    //'Optional information to assist emergency responders.',
-    'Use to collect recent projects, type of work performed, role held, and reference-ready experience.',
-    'Use to collect start date, schedule, travel radius, pay preference, and deployment expectations.',
-   // 'Use to collect proof of OSHA, lift, PIT, CPR, and related safety training relevant to interiors work.',
-    'Use to capture emergency contact details and signed acknowledgments required before activation.'
+    'Basic personal information, contact details, and address.',
+    'Primary and secondary trade, skill levels, and experience.',
+    'Recent projects, roles, and reference information.',
+    'Work radius, availability, pay rates, and travel preferences.',
+    'Emergency contact information and policy acknowledgments.'
   ]
 
-  const goNext = () => setStep((s) => Math.min(maxStep, s + 1))
-  const goPrev = () => setStep((s) => Math.max(1, s - 1))
+  // ✅ Save before navigating
+  const goNext = async () => {
+    await saveCurrentStep()
+    setStep((s) => Math.min(maxStep, s + 1))
+    window.scrollTo(0, 0)
+  }
 
- // In WorkerWizardPage.jsx
+  const goPrev = async () => {
+    await saveCurrentStep()
+    setStep((s) => Math.max(1, s - 1))
+    window.scrollTo(0, 0)
+  }
 
-const finishWizard = () => {
-  // Navigate to success page instead of summary
-  navigate('/registration-success', {
-    state: {
-      basics: {
-        legalFirstName: wizardData.legalFirstName,
-        legalLastName: wizardData.legalLastName,
-        displayName: wizardData.displayName,
-        emailAddress: wizardData.emailAddress,
-        mobilePhone: wizardData.mobilePhone,
-        dob: wizardData.dob,
-        addressLine1: wizardData.addressLine1,
-        addressLine2: wizardData.addressLine2,
-        city: wizardData.city,
-        stateCode: wizardData.stateCode,
-        zip: wizardData.zip,
-        currentAddressLine1: wizardData.currentAddressLine1,
-        currentAddressLine2: wizardData.currentAddressLine2,
-        currentCity: wizardData.currentCity,
-        currentStateCode: wizardData.currentStateCode,
-        currentZip: wizardData.currentZip,
-      },
-      trade: {
-        primaryTrade: wizardData.primaryTrade,
-        workerLevel: wizardData.workerLevel,
-        yearOfExperience: wizardData.yearOfExperience,
-        skills: wizardData.skills,
-        additionalSkillsList: wizardData.additionalSkillsList,
-        additionalSkills: wizardData.additionalSkills,
-        travelRadiusMiles: wizardData.travelRadiusMiles,
-      },
-      workHistory: {
-        projects: wizardData.projects,
-        projectConditions: wizardData.projectConditions,
-        referenceName: wizardData.referenceName,
-        referenceTitle: wizardData.referenceTitle,
-        referencePhone: wizardData.referencePhone,
-      },
-      certifications: {
-        certChecklist: wizardData.certChecklist,
-        safetyFlags: wizardData.safetyFlags,
-      },
-      medical: {
-        emergencyMedicalInfo: wizardData.emergencyMedicalInfo,
-        bloodGroup: wizardData.bloodGroup,
-        emergencyMedicalFlags: wizardData.emergencyMedicalFlags,
-        emergencyInstructions: wizardData.emergencyInstructions,
-      },
-      acknowledgments: {
-        emergencyContactName: wizardData.emergencyContactName,
-        emergencyContactRelationship: wizardData.emergencyContactRelationship,
-        emergencyContactPhone: wizardData.emergencyContactPhone,
-        policyAcks: wizardData.policyAcks,
-        signatureWorkerName: wizardData.signatureWorkerName,
-        signatureDate: wizardData.signatureDate,
-      },
-    },
-  })
-}
+  // ✅ Complete wizard
+  const finishWizard = async () => {
+    try {
+      const userId = localStorage.getItem('userId')
+      if (!userId) {
+        throw new Error('User ID not found')
+      }
+      
+      setIsSaving(true)
+      
+      // Save final step
+      await saveCurrentStep()
+      
+      // Complete wizard - Moves data to Workers Table
+      const result = await wizardService.completeWizard(userId)
+      console.log('✅ Wizard completed:', result)
+      
+      // Navigate to success page
+      navigate('/registration-success', {
+        state: {
+          basics: {
+            legalFirstName: wizardData.legalFirstName,
+            legalLastName: wizardData.legalLastName,
+            emailAddress: wizardData.emailAddress,
+            mobilePhone: wizardData.mobilePhone,
+            dob: wizardData.dob,
+            addressLine1: wizardData.addressLine1,
+            addressLine2: wizardData.addressLine2,
+            city: wizardData.city,
+            stateCode: wizardData.stateCode,
+            zip: wizardData.zip,
+            currentAddressLine1: wizardData.currentAddressLine1,
+            currentAddressLine2: wizardData.currentAddressLine2,
+            currentCity: wizardData.currentCity,
+            currentStateCode: wizardData.currentStateCode,
+            currentZip: wizardData.currentZip,
+            sameAsAddress: wizardData.sameAsAddress,
+            english: wizardData.english,
+            englishSpanish: wizardData.englishSpanish,
+            spanish: wizardData.spanish,
+            profilePreview: wizardData.profilePreview,
+            profileImageKey: wizardData.profileImageKey,
+            profileImageUrl: wizardData.profileImageUrl,
+            acceptTerms: wizardData.acceptTerms,
+            acceptPrivacy: wizardData.acceptPrivacy,
+            consentElectronic: wizardData.consentElectronic,
+            certifyAccurate: wizardData.certifyAccurate,
+          },
+          trade: {
+            primaryTrade: wizardData.primaryTrade,
+            primaryOtherTrade: wizardData.primaryOtherTrade,
+            workerLevel: wizardData.workerLevel,
+            yearOfExperience: wizardData.yearOfExperience,
+            secondaryTrade: wizardData.secondaryTrade,
+            secondaryOtherTrade: wizardData.secondaryOtherTrade,
+            secondaryWorkerLevel: wizardData.secondaryWorkerLevel,
+            secondaryYearOfExperience: wizardData.secondaryYearOfExperience,
+            leadForemanResponsibilities: wizardData.leadForemanResponsibilities,
+            metalFramingSkills: wizardData.metalFramingSkills,
+            drywallHangingSkills: wizardData.drywallHangingSkills,
+            tapingFinishingSkills: wizardData.tapingFinishingSkills,
+            acousticalCeilingsSkills: wizardData.acousticalCeilingsSkills,
+            interiorCarpentrySkills: wizardData.interiorCarpentrySkills,
+            helpersLabourersSkills: wizardData.helpersLabourersSkills,
+            insulationSkills: wizardData.insulationSkills,
+            demolitionSkills: wizardData.demolitionSkills,
+            secondaryLeadForemanResponsibilities: wizardData.secondaryLeadForemanResponsibilities,
+            secondaryMetalFramingSkills: wizardData.secondaryMetalFramingSkills,
+            secondaryDrywallHangingSkills: wizardData.secondaryDrywallHangingSkills,
+            secondaryTapingFinishingSkills: wizardData.secondaryTapingFinishingSkills,
+            secondaryAcousticalCeilingsSkills: wizardData.secondaryAcousticalCeilingsSkills,
+            secondaryInteriorCarpentrySkills: wizardData.secondaryInteriorCarpentrySkills,
+            secondaryHelpersLabourersSkills: wizardData.secondaryHelpersLabourersSkills,
+            secondaryInsulationSkills: wizardData.secondaryInsulationSkills,
+            secondaryDemolitionSkills: wizardData.secondaryDemolitionSkills,
+            additionalSkillsTools: wizardData.additionalSkillsTools,
+          },
+          workHistory: {
+            projects: wizardData.projects,
+          },
+          availability: {
+            hourlyRate: wizardData.hourlyRate,
+            payPrefs: wizardData.payPrefs,
+            travelRadius: wizardData.travelRadius,
+            willingToTravel: wizardData.willingToTravel,
+            travelPrefs: wizardData.travelPrefs,
+            availability: wizardData.availability,
+          },
+          acknowledgments: {
+            emergencyContactName: wizardData.emergencyContactName,
+            emergencyContactRelationship: wizardData.emergencyContactRelationship,
+            emergencyContactPhone: wizardData.emergencyContactPhone,
+            policyAcks: wizardData.policyAcks,
+          }
+        }
+      })
+    } catch (error) {
+      console.error('Error completing wizard:', error)
+      setError(error.message || 'Failed to complete wizard')
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   const wizardInner = (
     <div className="wizardPage">
       <div className="wizardCard">
-        {/* ✅ Sticky Header */}
+        {/* Sticky Header */}
         <div className="wizardHeader" style={{
           position: 'sticky',
           top: 0,
@@ -1449,21 +2014,47 @@ const finishWizard = () => {
           </div>
         </div>
 
-        {/* ✅ Scrollable Content */}
+        {/* Error Display */}
+        {error && (
+          <div style={{
+            padding: '12px 20px',
+            background: '#fee2e2',
+            color: '#dc2626',
+            borderBottom: '1px solid #fecaca',
+            fontSize: '14px'
+          }}>
+            ❌ {error}
+            <button
+              onClick={() => setError('')}
+              style={{
+                float: 'right',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: '#dc2626',
+                fontWeight: 'bold'
+              }}
+            >
+              ×
+            </button>
+          </div>
+        )}
+
+        {/* Scrollable Content */}
         <div className="wizardBody" style={{
-          maxHeight: 'calc(100vh - 280px)',
+          maxHeight: 'calc(100vh - 320px)',
           overflowY: 'auto',
           padding: '20px 24px',
           scrollBehavior: 'smooth'
         }}>
-          {step === 1 && <WizardStep1 data={wizardData} onChange={setWizardData} onNext={goNext} />}
-          {step === 2 && <WizardStep2 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-          {step === 3 && <WizardStep3 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-          {step === 4 && <WizardStep4 data={wizardData} onChange={setWizardData} onNext={goNext} onBack={goPrev} />}
-          {step === 5 && <WizardStep5 data={wizardData} onChange={setWizardData} onFinish={finishWizard} onBack={goPrev} />}
+          {step === 1 && <WizardStep1 data={wizardData} onChange={handleDataChange} onNext={goNext} />}
+          {step === 2 && <WizardStep2 data={wizardData} onChange={handleDataChange} onNext={goNext} onBack={goPrev} />}
+          {step === 3 && <WizardStep3 data={wizardData} onChange={handleDataChange} onNext={goNext} onBack={goPrev} />}
+          {step === 4 && <WizardStep4 data={wizardData} onChange={handleDataChange} onNext={goNext} onBack={goPrev} />}
+          {step === 5 && <WizardStep5 data={wizardData} onChange={handleDataChange} onFinish={finishWizard} onBack={goPrev} />}
         </div>
 
-        {/* ✅ Sticky Footer */}
+        {/* Sticky Footer */}
         <div className="wizardFooter" style={{
           position: 'sticky',
           bottom: 0,
@@ -1480,7 +2071,7 @@ const finishWizard = () => {
             type="button" 
             className="wizardPillBtn" 
             onClick={step === 1 ? () => navigate('/verify') : goPrev}
-            disabled={step === 1}
+            disabled={step === 1 || isSaving}
             style={{
               opacity: step === 1 ? 0.4 : 1,
               cursor: step === 1 ? 'not-allowed' : 'pointer'
@@ -1496,8 +2087,9 @@ const finishWizard = () => {
                 type="button" 
                 className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
                 onClick={goNext}
+                disabled={isSaving}
               >
-                <span className="wizardPillBtnLabel">Next</span>
+                <span className="wizardPillBtnLabel">{isSaving ? 'Saving...' : 'Next'}</span>
                 <span className="wizardPillBtnIcon">→</span>
               </button>
             ) : (
@@ -1505,8 +2097,9 @@ const finishWizard = () => {
                 type="button" 
                 className="wizardPillBtn wizardPillBtnSuccess" 
                 onClick={finishWizard}
+                disabled={isSaving}
               >
-                <span className="wizardPillBtnLabel">Finish</span>
+                <span className="wizardPillBtnLabel">{isSaving ? 'Saving...' : 'Finish'}</span>
                 <span className="wizardPillBtnIcon">✓</span>
               </button>
             )}
@@ -1526,7 +2119,6 @@ const finishWizard = () => {
 
       <div className="appShellBody appShellBodyVerify">
         <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
-
           <div className="sideNavMain">
             <div className="sideGroupLabel">WORKSPACE</div>
             <nav className="sideGroup" aria-label="Workspace">
