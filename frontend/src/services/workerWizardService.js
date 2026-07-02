@@ -1,4 +1,4 @@
-src/services/workerWizardService.js
+
 import api from './api'
 
 class WorkerWizardService {
