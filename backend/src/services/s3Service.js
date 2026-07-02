@@ -1,3 +1,4 @@
+
 import { 
   PutObjectCommand, 
   GetObjectCommand, 
@@ -30,7 +31,6 @@ export const generateWorkerProfileUploadUrl = async (userId, fileName, fileType)
 
   const fileKey = generateS3Key('profile', 'worker', `WORKER#${userId}`, fileName)
 
-  // ✅ Keep objects PRIVATE
   const command = new PutObjectCommand({
     Bucket: S3_BUCKET,
     Key: fileKey,
@@ -44,9 +44,7 @@ export const generateWorkerProfileUploadUrl = async (userId, fileName, fileType)
     }
   })
 
-  const uploadUrl = await getSignedUrl(s3Client, command, { 
-    expiresIn: 3600 
-  })
+  const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
 
   return {
     uploadUrl,
@@ -57,7 +55,7 @@ export const generateWorkerProfileUploadUrl = async (userId, fileName, fileType)
 }
 
 // ============================================
-// ✅ NEW: Generate presigned URL for viewing profile image
+// ✅ Generate presigned URL WITHOUT existence check
 // ============================================
 
 export const generateProfileViewUrl = async (fileKey, userId) => {
@@ -65,33 +63,13 @@ export const generateProfileViewUrl = async (fileKey, userId) => {
     throw new Error('Missing fileKey')
   }
 
-  try {
-    // Verify file exists
-    const headResult = await s3Client.send(new HeadObjectCommand({
-      Bucket: S3_BUCKET,
-      Key: fileKey
-    }))
-    
-    console.log(`✅ File found: ${fileKey}, Size: ${headResult.ContentLength}`)
-  } catch (error) {
-    console.error(`❌ File not found: ${fileKey}`, error)
-    if (error.name === 'NotFound') {
-      throw new Error('File not found')
-    }
-    throw error
-  }
-
-  // Generate presigned URL for viewing (valid for 1 hour)
   const command = new GetObjectCommand({
     Bucket: S3_BUCKET,
     Key: fileKey,
     ResponseContentDisposition: 'inline',
   })
 
-  const viewUrl = await getSignedUrl(s3Client, command, { 
-    expiresIn: 3600 
-  })
-
+  const viewUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
   console.log(`✅ Presigned view URL generated for: ${fileKey}`)
   return viewUrl
 }
@@ -107,11 +85,12 @@ export const generateWorkerCertificateUploadUrl = async (userId, fileName, fileT
 
   const allowedTypes = [
     'application/pdf',
-    'image/jpeg', 
+    'image/jpeg',
     'image/png',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
   ]
+
   if (!allowedTypes.includes(fileType)) {
     throw new Error('Invalid file type. Allowed: PDF, JPEG, PNG, DOC, DOCX')
   }
@@ -132,9 +111,7 @@ export const generateWorkerCertificateUploadUrl = async (userId, fileName, fileT
     }
   })
 
-  const uploadUrl = await getSignedUrl(s3Client, command, { 
-    expiresIn: 3600 
-  })
+  const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
 
   return {
     uploadUrl,
@@ -153,29 +130,13 @@ export const generateViewUrl = async (fileKey, expiresIn = 3600) => {
     throw new Error('Missing fileKey')
   }
 
-  try {
-    await s3Client.send(new HeadObjectCommand({
-      Bucket: S3_BUCKET,
-      Key: fileKey
-    }))
-  } catch (error) {
-    if (error.name === 'NotFound') {
-      throw new Error('File not found')
-    }
-    throw error
-  }
-
   const command = new GetObjectCommand({
     Bucket: S3_BUCKET,
     Key: fileKey,
     ResponseContentDisposition: 'inline',
   })
 
-  const viewUrl = await getSignedUrl(s3Client, command, { 
-    expiresIn 
-  })
-
-  return viewUrl
+  return await getSignedUrl(s3Client, command, { expiresIn })
 }
 
 // ============================================
@@ -189,11 +150,7 @@ export const generateDownloadUrl = async (fileKey, expiresIn = 3600) => {
     ResponseContentDisposition: 'attachment',
   })
 
-  const downloadUrl = await getSignedUrl(s3Client, command, { 
-    expiresIn 
-  })
-
-  return downloadUrl
+  return await getSignedUrl(s3Client, command, { expiresIn })
 }
 
 // ============================================

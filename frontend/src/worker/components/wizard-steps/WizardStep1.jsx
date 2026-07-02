@@ -2468,9 +2468,6 @@ export function WizardStep1({ data, onChange, onNext }) {
     console.log(`Updating ${field} to:`, value)
     onChange({ ...data, [field]: value })
   }
-
-// In WizardStep1.jsx - Update handleFileUpload
-
 // In WizardStep1.jsx - Updated handleFileUpload
 const handleFileUpload = async (e) => {
   const file = e.target.files[0]
@@ -2508,7 +2505,9 @@ const handleFileUpload = async (e) => {
       }
 
       // ✅ Step 3: File uploaded successfully, now get view URL
-      const viewUrlResponse = await wizardService.getFileViewUrl(result.fileKey)
+      // ✅ Encode the fileKey to handle special characters
+      const encodedFileKey = encodeURIComponent(result.fileKey)
+      const viewUrlResponse = await wizardService.getFileViewUrl(encodedFileKey)
       
       let displayUrl = result.fileUrl
       if (viewUrlResponse.success) {
