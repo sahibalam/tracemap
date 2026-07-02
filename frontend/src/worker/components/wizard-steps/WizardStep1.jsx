@@ -2469,70 +2469,69 @@ export function WizardStep1({ data, onChange, onNext }) {
     onChange({ ...data, [field]: value })
   }
 
-  // ✅ CORRECT FILE UPLOAD HANDLER WITH PUT METHOD
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
+// In WizardStep1.jsx - Update handleFileUpload
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setUploadError('File size must be less than 5MB')
-      return
-    }
+const handleFileUpload = async (e) => {
+  const file = e.target.files[0]
+  if (!file) return
 
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      setUploadError('Please upload an image file')
-      return
-    }
-
-    setIsUploading(true)
-    setUploadError('')
-
-    try {
-      // Get userId from localStorage
-      const userId = localStorage.getItem('userId') || 'temp-user'
-      
-      // Step 1: Get presigned URL from backend
-      const result = await wizardService.uploadProfileImage(userId, file)
-      
-      if (result.success) {
-        // ✅ Step 2: Upload file to S3 using PUT method
-        const uploadResponse = await fetch(result.uploadUrl, {
-          method: 'PUT',  // ✅ Must be PUT, not POST
-          body: file,
-          headers: {
-            'Content-Type': file.type
-          }
-        })
-
-        if (!uploadResponse.ok) {
-          throw new Error(`Upload failed: ${uploadResponse.status}`)
-        }
-
-        // ✅ Step 3: Update local state
-        setProfilePreview(result.fileUrl)
-        handleChange('profilePreview', result.fileUrl)
-        handleChange('profileImageKey', result.fileKey)
-        handleChange('profileImageUrl', result.fileUrl)
-        
-        // ✅ Step 4: Save to localStorage for navbar
-        localStorage.setItem('userProfileImage', result.fileUrl)
-        
-        // ✅ Step 5: Dispatch custom event for navbar update
-        window.dispatchEvent(new CustomEvent('profileImageUpdated', {
-          detail: { profileImage: result.fileUrl }
-        }))
-        
-        console.log('✅ Profile image uploaded and navbar updated!')
-      }
-    } catch (error) {
-      console.error('Error uploading profile image:', error)
-      setUploadError(error.message || 'Failed to upload image. Please try again.')
-    } finally {
-      setIsUploading(false)
-    }
+  // Validate file
+  if (file.size > 5 * 1024 * 1024) {
+    setUploadError('File size must be less than 5MB')
+    return
   }
+  if (!file.type.startsWith('image/')) {
+    setUploadError('Please upload an image file')
+    return
+  }
+
+  setIsUploading(true)
+  setUploadError('')
+
+  try {
+    const userId = localStorage.getItem('userId') || 'temp-user'
+    
+    // Get upload URL from backend
+    const result = await wizardService.uploadProfileImage(userId, file)
+    
+    if (result.success) {
+      // Upload file to S3 using PUT
+      const uploadResponse = await fetch(result.uploadUrl, {
+        method: 'PUT',
+        body: file,
+        headers: { 'Content-Type': file.type }
+      })
+
+      if (!uploadResponse.ok) {
+        throw new Error(`Upload failed: ${uploadResponse.status}`)
+      }
+
+      // ✅ Use the presigned view URL for display
+      const displayUrl = result.viewUrl || result.fileUrl
+      
+      // Update local state
+      setProfilePreview(displayUrl)
+      handleChange('profilePreview', displayUrl)
+      handleChange('profileImageKey', result.fileKey)
+      handleChange('profileImageUrl', result.fileUrl)
+      
+      // ✅ Save the presigned view URL to localStorage for navbar
+      localStorage.setItem('userProfileImage', displayUrl)
+      
+      // Dispatch event for navbar update
+      window.dispatchEvent(new CustomEvent('profileImageUpdated', {
+        detail: { profileImage: displayUrl }
+      }))
+      
+      console.log('✅ Profile image uploaded and navbar updated!')
+    }
+  } catch (error) {
+    console.error('Error uploading profile image:', error)
+    setUploadError(error.message || 'Failed to upload image. Please try again.')
+  } finally {
+    setIsUploading(false)
+  }
+}
 
   // Handle date change from react-datepicker
   const handleDateChange = (date) => {
