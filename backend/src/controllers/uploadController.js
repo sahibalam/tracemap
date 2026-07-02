@@ -262,7 +262,7 @@ import {
   generateViewUrl,
   generateDownloadUrl,
   deleteFile,
-  generateProfileViewUrl
+  generateProfileViewUrl  // ✅ Make sure this is imported
 } from '../services/s3Service.js'
 import { docClient, WORKER_WIZARD_TABLE } from '../config/aws.js'
 import { UpdateCommand, GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb'

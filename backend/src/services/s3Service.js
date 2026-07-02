@@ -35,7 +35,7 @@ export const generateWorkerProfileUploadUrl = async (userId, fileName, fileType)
     Bucket: S3_BUCKET,
     Key: fileKey,
     ContentType: fileType,
-    ACL: 'private',  // ✅ Private bucket
+    ACL: 'private',
     Metadata: {
       userId: userId,
       type: 'profile',
@@ -56,7 +56,10 @@ export const generateWorkerProfileUploadUrl = async (userId, fileName, fileType)
   }
 }
 
+// ============================================
 // ✅ NEW: Generate presigned URL for viewing profile image
+// ============================================
+
 export const generateProfileViewUrl = async (fileKey, userId) => {
   if (!fileKey) {
     throw new Error('Missing fileKey')
@@ -64,11 +67,14 @@ export const generateProfileViewUrl = async (fileKey, userId) => {
 
   try {
     // Verify file exists
-    await s3Client.send(new HeadObjectCommand({
+    const headResult = await s3Client.send(new HeadObjectCommand({
       Bucket: S3_BUCKET,
       Key: fileKey
     }))
+    
+    console.log(`✅ File found: ${fileKey}, Size: ${headResult.ContentLength}`)
   } catch (error) {
+    console.error(`❌ File not found: ${fileKey}`, error)
     if (error.name === 'NotFound') {
       throw new Error('File not found')
     }
@@ -86,6 +92,7 @@ export const generateProfileViewUrl = async (fileKey, userId) => {
     expiresIn: 3600 
   })
 
+  console.log(`✅ Presigned view URL generated for: ${fileKey}`)
   return viewUrl
 }
 
@@ -138,7 +145,7 @@ export const generateWorkerCertificateUploadUrl = async (userId, fileName, fileT
 }
 
 // ============================================
-// 👁️ GENERATE VIEW URL
+// 👁️ GENERATE VIEW URL (Generic)
 // ============================================
 
 export const generateViewUrl = async (fileKey, expiresIn = 3600) => {
