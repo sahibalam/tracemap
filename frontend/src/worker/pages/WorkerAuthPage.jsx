@@ -1310,6 +1310,7 @@ import { formatPhoneNumber } from '../../common/utils/validation'
 import { auth } from '../../firebase/config'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import workerService from '../services/workerService'
+import authService from '../../services/authService'
 
 // Eye icon component
 function IconEye(props) {
@@ -1422,70 +1423,36 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   // ============================================================
   
   const handleLogin = async (e) => {
-    e.preventDefault()
-    
-    if (!loginUsername || !loginPassword) {
-      setLoginError('Please enter both email and password')
-      return
-    }
-
-    setLoginLoading(true)
-    setLoginError('')
-
-    try {
-      console.log('🔐 Attempting login for:', loginUsername)
-      
-      // ✅ Firebase login
-      const userCredential = await signInWithEmailAndPassword(auth, loginUsername, loginPassword)
-      const user = userCredential.user
-      
-      console.log('✅ Login successful for user:', user.uid)
-      
-      // ✅ Store userId in localStorage
-      localStorage.setItem('userId', user.uid)
-      
-      // ✅ Check if user has a profile
-      try {
-        const profile = await workerService.getWorkerProfile(user.uid)
-        if (profile.success && profile.data) {
-          console.log('✅ Profile found, navigating to summary')
-          navigate('/wizard/summary', { replace: true })
-        } else {
-          console.log('⚠️ No profile found, navigating to wizard')
-          navigate('/wizard', { replace: true })
-        }
-      } catch (profileError) {
-        console.log('⚠️ Error fetching profile, navigating to wizard')
-        navigate('/wizard', { replace: true })
-      }
-      
-    } catch (error) {
-      console.error('❌ Login error:', error)
-      
-      // ✅ Handle specific Firebase errors
-      switch (error.code) {
-        case 'auth/user-not-found':
-          setLoginError('No account found with this email')
-          break
-        case 'auth/wrong-password':
-          setLoginError('Incorrect password')
-          break
-        case 'auth/invalid-email':
-          setLoginError('Invalid email address')
-          break
-        case 'auth/user-disabled':
-          setLoginError('This account has been disabled')
-          break
-        case 'auth/too-many-requests':
-          setLoginError('Too many failed attempts. Please try again later')
-          break
-        default:
-          setLoginError(error.message || 'Login failed. Please try again.')
-      }
-    } finally {
-      setLoginLoading(false)
-    }
+  e.preventDefault()
+  
+  if (!loginUsername || !loginPassword) {
+    setLoginError('Please enter both email and password')
+    return
   }
+
+  setLoginLoading(true)
+  setLoginError('')
+
+  try {
+    console.log('🔐 Attempting login for:', loginUsername)
+    
+    // ✅ Use custom auth service (not Firebase)
+    const result = await authService.login(loginUsername, loginPassword)
+    
+    if (result.success) {
+      console.log('✅ Login successful')
+      
+      // ✅ Navigate to summary page
+      navigate('/wizard/summary', { replace: true })
+    }
+    
+  } catch (error) {
+    console.error('❌ Login error:', error)
+    setLoginError(error.message || 'Login failed. Please try again.')
+  } finally {
+    setLoginLoading(false)
+  }
+}
 
   // ============================================================
   // REGISTER HANDLER

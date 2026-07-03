@@ -40,7 +40,7 @@
 // };
 
 
-
+// backend/src/services/emailService.js
 import { SendEmailCommand } from "@aws-sdk/client-ses";
 import { sesClient } from "../config/aws.js";
 
