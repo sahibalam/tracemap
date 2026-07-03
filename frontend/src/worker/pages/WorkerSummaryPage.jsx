@@ -5529,7 +5529,7 @@ export function WorkerSummaryPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Safety</span>
                       <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Verified
+                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> --
                       </span>
                     </div>
                   </div>
@@ -5567,7 +5567,7 @@ export function WorkerSummaryPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Tax Verified</span>
                       <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Verified
+                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> --
                       </span>
                     </div>
                   </div>
@@ -5710,14 +5710,6 @@ export function WorkerSummaryPage() {
             {/* ============================================================
             Footer Buttons
             ============================================================ */}
-            <div className="wizardSummaryFooter" style={{ display: 'flex', justifyContent: 'center', gap: '16px', paddingTop: '20px', borderTop: '1px solid rgba(18,38,58,0.08)' }}>
-              <button type="button" className="btn btnPrimary" onClick={() => navigate('/wizard')} style={{ padding: '10px 24px', borderRadius: '8px', background: '#0f4ea9', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
-                Back to wizard
-              </button>
-              <button type="button" className="btn btnSuccess" onClick={() => navigate('/')} style={{ padding: '10px 24px', borderRadius: '8px', background: '#2fb463', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
-                Go to Home
-              </button>
-            </div>
           </div>
         </main>
       </div>
