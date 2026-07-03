@@ -496,7 +496,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { TopNav } from '../../common/components/TopNav'
 import { TextField } from '../../common/components/TextField'
-import workerService from "../../services/workerService";
+import workerService from '../services/workerService'
 
 // ============================================================
 // ICONS
