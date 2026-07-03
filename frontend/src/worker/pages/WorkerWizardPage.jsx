@@ -1597,6 +1597,600 @@
 
 
 
+// // src/worker/pages/WorkerWizardPage.jsx
+// import { useState, useEffect } from 'react'
+// import { useNavigate, useLocation } from 'react-router-dom'
+// import { TopNav } from '../../common/components/TopNav'
+// import { WizardStep1 } from '../components/wizard-steps/WizardStep1'
+// import { WizardStep2 } from '../components/wizard-steps/WizardStep2'
+// import { WizardStep3 } from '../components/wizard-steps/WizardStep3'
+// import { WizardStep4 } from '../components/wizard-steps/WizardStep4'
+// import { WizardStep5 } from '../components/wizard-steps/WizardStep5'
+// import wizardService from '../services/workerWizardService'
+// import { auth } from '../../firebase/config'
+
+// export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
+//   const navigate = useNavigate()
+//   const location = useLocation()
+
+//   const [step, setStep] = useState(1)
+//   const maxStep = 5
+//   const [error, setError] = useState('')
+//   const [isSaving, setIsSaving] = useState(false)
+
+//   // ✅ Initialize state with data from localStorage
+//   const [wizardData, setWizardData] = useState(() => {
+//     // Read from localStorage
+//     const pendingFirstName = localStorage.getItem('pendingFirstName') || ''
+//     const pendingLastName = localStorage.getItem('pendingLastName') || ''
+//     const pendingEmail = localStorage.getItem('pendingEmail') || ''
+//     const pendingPhoneNumber = localStorage.getItem('pendingPhoneNumber') || ''
+//     const pendingDob = localStorage.getItem('pendingDob') || ''
+//     const pendingLanguage = localStorage.getItem('pendingLanguage') || ''
+
+//     // Format DOB from YYYY-MM-DD to MM/DD/YYYY
+//     let formattedDob = ''
+//     if (pendingDob) {
+//       const parts = pendingDob.split('-')
+//       if (parts.length === 3) {
+//         formattedDob = `${parts[1]}/${parts[2]}/${parts[0]}`
+//       }
+//     }
+
+//     return {
+//       // Step 1: Personal Information
+//       legalFirstName: pendingFirstName,
+//       legalLastName: pendingLastName,
+//       emailAddress: pendingEmail,
+//       mobilePhone: pendingPhoneNumber,
+//       dob: formattedDob,
+//       addressLine1: '',
+//       addressLine2: '',
+//       city: '',
+//       stateCode: '',
+//       zip: '',
+//       currentAddressLine1: '',
+//       currentAddressLine2: '',
+//       currentCity: '',
+//       currentStateCode: '',
+//       currentZip: '',
+//       sameAsAddress: false,
+//       english: false,
+//       englishSpanish: false,
+//       spanish: false,
+//       profilePreview: '',
+//       profileImageKey: '',
+//       profileImageUrl: '',
+//       acceptTerms: false,
+//       acceptPrivacy: false,
+//       consentElectronic: false,
+//       certifyAccurate: false,
+
+//       // Step 2: Trade Profile
+//       primaryTrade: '',
+//       primaryOtherTrade: '',
+//       workerLevel: '',
+//       yearOfExperience: '',
+//       secondaryTrade: '',
+//       secondaryOtherTrade: '',
+//       secondaryWorkerLevel: '',
+//       secondaryYearOfExperience: '',
+//       leadForemanResponsibilities: {},
+//       metalFramingSkills: {},
+//       drywallHangingSkills: {},
+//       tapingFinishingSkills: {},
+//       acousticalCeilingsSkills: {},
+//       interiorCarpentrySkills: {},
+//       helpersLabourersSkills: {},
+//       insulationSkills: {},
+//       demolitionSkills: {},
+//       secondaryLeadForemanResponsibilities: {},
+//       secondaryMetalFramingSkills: {},
+//       secondaryDrywallHangingSkills: {},
+//       secondaryTapingFinishingSkills: {},
+//       secondaryAcousticalCeilingsSkills: {},
+//       secondaryInteriorCarpentrySkills: {},
+//       secondaryHelpersLabourersSkills: {},
+//       secondaryInsulationSkills: {},
+//       secondaryDemolitionSkills: {},
+//       additionalSkillsTools: '',
+
+//       // Step 3: Work History
+//       projects: [
+//         { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+//         { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+//         { name: '', client: '', phone: '', trade: '', role: '', start: '', end: '', scope: '' },
+//       ],
+
+//       // Step 4: Availability
+//       hourlyRate: '',
+//       payPrefs: {},
+//       travelRadius: 50,
+//       willingToTravel: '',
+//       travelPrefs: {},
+//       availability: {},
+
+//       // Step 5: Emergency Contact
+//       emergencyContactName: '',
+//       emergencyContactRelationship: '',
+//       emergencyContactPhone: '',
+//       policyAcks: {},
+//     }
+//   })
+
+//   // ✅ Load saved wizard progress from backend
+//   useEffect(() => {
+//     const loadSavedProgress = async () => {
+//       try {
+//         // Get userId from Firebase or localStorage
+//         let userId = localStorage.getItem('userId')
+//         if (!userId) {
+//           const user = auth.currentUser
+//           if (user) {
+//             userId = user.uid
+//             localStorage.setItem('userId', userId)
+//           }
+//         }
+
+//         if (!userId) {
+//           console.log('No userId found, starting fresh wizard')
+//           return
+//         }
+
+//         const result = await wizardService.getProgress(userId)
+//         if (result.success && result.data) {
+//           const { steps, currentStep } = result.data
+          
+//           // Merge saved data with current state
+//           const savedData = {}
+//           Object.keys(steps).forEach(key => {
+//             const stepNum = parseInt(key.replace('step', ''))
+//             savedData[`step${stepNum}`] = steps[key]
+//           })
+
+//           setWizardData(prev => ({
+//             ...prev,
+//             ...savedData.step1 || {},
+//             ...savedData.step2 || {},
+//             ...savedData.step3 || {},
+//             ...savedData.step4 || {},
+//             ...savedData.step5 || {},
+//           }))
+
+//           // Set current step to the last saved step
+//           if (currentStep > 1) {
+//             setStep(currentStep)
+//           }
+//         }
+//       } catch (error) {
+//         console.error('Error loading wizard progress:', error)
+//       }
+//     }
+
+//     loadSavedProgress()
+//   }, [])
+
+//   // ✅ Clear localStorage AFTER data is loaded into state
+//   useEffect(() => {
+//     const hasPendingData = localStorage.getItem('pendingFirstName') || 
+//                           localStorage.getItem('pendingEmail') ||
+//                           localStorage.getItem('pendingPhoneNumber')
+    
+//     if (hasPendingData) {
+//       const itemsToRemove = [
+//         'pendingFirstName', 'pendingLastName', 'pendingEmail', 'pendingPhoneNumber',
+//         'pendingDob', 'pendingLanguage'
+//       ]
+//       itemsToRemove.forEach(item => localStorage.removeItem(item))
+//       console.log('✅ Cleared pending registration data from localStorage')
+//     }
+//   }, [])
+
+//   useEffect(() => {
+//     const requested = initialStepOverride ?? location?.state?.initialStep
+//     if (typeof requested === 'number' && Number.isFinite(requested)) {
+//       setStep((prev) => (prev === requested ? prev : Math.min(maxStep, Math.max(1, requested))))
+//     }
+//   }, [initialStepOverride, location?.state?.initialStep])
+
+//   // ✅ FIX: Handle data updates properly - MERGE not REPLACE
+//   const handleDataChange = (newData) => {
+//     setWizardData(prev => {
+//       // If newData is a function, call it with current state
+//       if (typeof newData === 'function') {
+//         const result = newData(prev)
+//         return { ...prev, ...result }
+//       }
+      
+//       // Deep merge for nested objects
+//       const merged = { ...prev }
+//       Object.keys(newData).forEach(key => {
+//         if (typeof newData[key] === 'object' && newData[key] !== null && !Array.isArray(newData[key])) {
+//           // Merge nested objects
+//           merged[key] = { ...prev[key], ...newData[key] }
+//         } else {
+//           // Direct assignment for primitives and arrays
+//           merged[key] = newData[key]
+//         }
+//       })
+      
+//       return merged
+//     })
+//   }
+
+//   // ✅ Save current step to backend
+//   const saveCurrentStep = async () => {
+//     try {
+//       let userId = localStorage.getItem('userId')
+//       if (!userId) {
+//         const user = auth.currentUser
+//         if (user) {
+//           userId = user.uid
+//           localStorage.setItem('userId', userId)
+//         }
+//       }
+      
+//       if (!userId) {
+//         console.warn('No userId found, skipping save')
+//         return
+//       }
+      
+//       setIsSaving(true)
+//       await wizardService.saveStep(userId, step, wizardData)
+//       console.log(`✅ Step ${step} saved to backend`)
+//     } catch (error) {
+//       console.error('Error saving step:', error)
+//       setError(error.message || 'Failed to save step')
+//     } finally {
+//       setIsSaving(false)
+//     }
+//   }
+
+//   const stepTitles = [
+//     'Personal Information',
+//     'Trade Profile & Skill Matrix',
+//     'Work History & Project Experience',
+//     'Availability, Travel & Pay Preferences',
+//     'Emergency Contact & Acknowledgments'
+//   ]
+
+//   const stepSubtitles = [
+//     'Basic personal information, contact details, and address.',
+//     'Primary and secondary trade, skill levels, and experience.',
+//     'Recent projects, roles, and reference information.',
+//     'Work radius, availability, pay rates, and travel preferences.',
+//     'Emergency contact information and policy acknowledgments.'
+//   ]
+
+//   // ✅ Save before navigating
+//   const goNext = async () => {
+//     await saveCurrentStep()
+//     setStep((s) => Math.min(maxStep, s + 1))
+//     window.scrollTo(0, 0)
+//   }
+
+//   const goPrev = async () => {
+//     await saveCurrentStep()
+//     setStep((s) => Math.max(1, s - 1))
+//     window.scrollTo(0, 0)
+//   }
+
+//   // ✅ Complete wizard
+//   const finishWizard = async () => {
+//     try {
+//       const userId = localStorage.getItem('userId')
+//       if (!userId) {
+//         throw new Error('User ID not found')
+//       }
+      
+//       setIsSaving(true)
+      
+//       // Save final step
+//       await saveCurrentStep()
+      
+//       // Complete wizard - Moves data to Workers Table
+//       const result = await wizardService.completeWizard(userId)
+//       console.log('✅ Wizard completed:', result)
+      
+//       // Navigate to success page
+//       navigate('/wizard/summary', {
+//         state: {
+//           basics: {
+//             legalFirstName: wizardData.legalFirstName,
+//             legalLastName: wizardData.legalLastName,
+//             emailAddress: wizardData.emailAddress,
+//             mobilePhone: wizardData.mobilePhone,
+//             dob: wizardData.dob,
+//             addressLine1: wizardData.addressLine1,
+//             addressLine2: wizardData.addressLine2,
+//             city: wizardData.city,
+//             stateCode: wizardData.stateCode,
+//             zip: wizardData.zip,
+//             currentAddressLine1: wizardData.currentAddressLine1,
+//             currentAddressLine2: wizardData.currentAddressLine2,
+//             currentCity: wizardData.currentCity,
+//             currentStateCode: wizardData.currentStateCode,
+//             currentZip: wizardData.currentZip,
+//             sameAsAddress: wizardData.sameAsAddress,
+//             english: wizardData.english,
+//             englishSpanish: wizardData.englishSpanish,
+//             spanish: wizardData.spanish,
+//             profilePreview: wizardData.profilePreview,
+//             profileImageKey: wizardData.profileImageKey,
+//             profileImageUrl: wizardData.profileImageUrl,
+//             acceptTerms: wizardData.acceptTerms,
+//             acceptPrivacy: wizardData.acceptPrivacy,
+//             consentElectronic: wizardData.consentElectronic,
+//             certifyAccurate: wizardData.certifyAccurate,
+//           },
+//           trade: {
+//             primaryTrade: wizardData.primaryTrade,
+//             primaryOtherTrade: wizardData.primaryOtherTrade,
+//             workerLevel: wizardData.workerLevel,
+//             yearOfExperience: wizardData.yearOfExperience,
+//             secondaryTrade: wizardData.secondaryTrade,
+//             secondaryOtherTrade: wizardData.secondaryOtherTrade,
+//             secondaryWorkerLevel: wizardData.secondaryWorkerLevel,
+//             secondaryYearOfExperience: wizardData.secondaryYearOfExperience,
+//             leadForemanResponsibilities: wizardData.leadForemanResponsibilities,
+//             metalFramingSkills: wizardData.metalFramingSkills,
+//             drywallHangingSkills: wizardData.drywallHangingSkills,
+//             tapingFinishingSkills: wizardData.tapingFinishingSkills,
+//             acousticalCeilingsSkills: wizardData.acousticalCeilingsSkills,
+//             interiorCarpentrySkills: wizardData.interiorCarpentrySkills,
+//             helpersLabourersSkills: wizardData.helpersLabourersSkills,
+//             insulationSkills: wizardData.insulationSkills,
+//             demolitionSkills: wizardData.demolitionSkills,
+//             secondaryLeadForemanResponsibilities: wizardData.secondaryLeadForemanResponsibilities,
+//             secondaryMetalFramingSkills: wizardData.secondaryMetalFramingSkills,
+//             secondaryDrywallHangingSkills: wizardData.secondaryDrywallHangingSkills,
+//             secondaryTapingFinishingSkills: wizardData.secondaryTapingFinishingSkills,
+//             secondaryAcousticalCeilingsSkills: wizardData.secondaryAcousticalCeilingsSkills,
+//             secondaryInteriorCarpentrySkills: wizardData.secondaryInteriorCarpentrySkills,
+//             secondaryHelpersLabourersSkills: wizardData.secondaryHelpersLabourersSkills,
+//             secondaryInsulationSkills: wizardData.secondaryInsulationSkills,
+//             secondaryDemolitionSkills: wizardData.secondaryDemolitionSkills,
+//             additionalSkillsTools: wizardData.additionalSkillsTools,
+//           },
+//           workHistory: {
+//             projects: wizardData.projects,
+//           },
+//           availability: {
+//             hourlyRate: wizardData.hourlyRate,
+//             payPrefs: wizardData.payPrefs,
+//             travelRadius: wizardData.travelRadius,
+//             willingToTravel: wizardData.willingToTravel,
+//             travelPrefs: wizardData.travelPrefs,
+//             availability: wizardData.availability,
+//           },
+//           acknowledgments: {
+//             emergencyContactName: wizardData.emergencyContactName,
+//             emergencyContactRelationship: wizardData.emergencyContactRelationship,
+//             emergencyContactPhone: wizardData.emergencyContactPhone,
+//             policyAcks: wizardData.policyAcks,
+//           }
+//         }
+//       })
+//     } catch (error) {
+//       console.error('Error completing wizard:', error)
+//       setError(error.message || 'Failed to complete wizard')
+//     } finally {
+//       setIsSaving(false)
+//     }
+//   }
+
+//   const wizardInner = (
+//     <div className="wizardPage">
+//       <div className="wizardCard">
+//         {/* Sticky Header */}
+//         <div className="wizardHeader" style={{
+//           position: 'sticky',
+//           top: 0,
+//           zIndex: 10,
+//           background: 'white',
+//           padding: '16px 24px',
+//           borderBottom: '1px solid rgba(18, 38, 63, 0.06)',
+//           boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
+//         }}>
+//           <div>
+//             <div className="wizardTitle">{stepTitles[step - 1]}</div>
+//             <div className="wizardSubtitle">{stepSubtitles[step - 1]}</div>
+//           </div>
+
+//           <div className="wizardStepPills" aria-label="Wizard steps">
+//             {Array.from({ length: maxStep }).map((_, idx) => {
+//               const n = idx + 1
+//               return (
+//                 <button
+//                   key={n}
+//                   type="button"
+//                   className={`wizardStepPill ${step === n ? 'wizardStepPillActive' : ''}`}
+//                   onClick={() => setStep(n)}
+//                 >
+//                   {n}
+//                 </button>
+//               )
+//             })}
+//           </div>
+//         </div>
+
+//         {/* Error Display */}
+//         {error && (
+//           <div style={{
+//             padding: '12px 20px',
+//             background: '#fee2e2',
+//             color: '#dc2626',
+//             borderBottom: '1px solid #fecaca',
+//             fontSize: '14px'
+//           }}>
+//             ❌ {error}
+//             <button
+//               onClick={() => setError('')}
+//               style={{
+//                 float: 'right',
+//                 background: 'none',
+//                 border: 'none',
+//                 cursor: 'pointer',
+//                 color: '#dc2626',
+//                 fontWeight: 'bold'
+//               }}
+//             >
+//               ×
+//             </button>
+//           </div>
+//         )}
+
+//         {/* Scrollable Content */}
+//         <div className="wizardBody" style={{
+//           maxHeight: 'calc(100vh - 320px)',
+//           overflowY: 'auto',
+//           padding: '20px 24px',
+//           scrollBehavior: 'smooth'
+//         }}>
+//           {step === 1 && <WizardStep1 data={wizardData} onChange={handleDataChange} onNext={goNext} />}
+//           {step === 2 && <WizardStep2 data={wizardData} onChange={handleDataChange} onNext={goNext} onBack={goPrev} />}
+//           {step === 3 && <WizardStep3 data={wizardData} onChange={handleDataChange} onNext={goNext} onBack={goPrev} />}
+//           {step === 4 && <WizardStep4 data={wizardData} onChange={handleDataChange} onNext={goNext} onBack={goPrev} />}
+//           {step === 5 && <WizardStep5 data={wizardData} onChange={handleDataChange} onFinish={finishWizard} onBack={goPrev} />}
+//         </div>
+
+//         {/* Sticky Footer */}
+//         <div className="wizardFooter" style={{
+//           position: 'sticky',
+//           bottom: 0,
+//           zIndex: 10,
+//           background: 'white',
+//           padding: '12px 24px',
+//           borderTop: '1px solid rgba(18, 38, 63, 0.06)',
+//           boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
+//           display: 'flex',
+//           justifyContent: 'space-between',
+//           alignItems: 'center'
+//         }}>
+//           <button 
+//             type="button" 
+//             className="wizardPillBtn" 
+//             onClick={step === 1 ? () => navigate('/verify') : goPrev}
+//             disabled={step === 1 || isSaving}
+//             style={{
+//               opacity: step === 1 ? 0.4 : 1,
+//               cursor: step === 1 ? 'not-allowed' : 'pointer'
+//             }}
+//           >
+//             <span className="wizardPillBtnLabel">Back</span>
+//             <span className="wizardPillBtnIcon">←</span>
+//           </button>
+
+//           <div className="wizardFooterRight">
+//             {step < maxStep ? (
+//               <button 
+//                 type="button" 
+//                 className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
+//                 onClick={goNext}
+//                 disabled={isSaving}
+//               >
+//                 <span className="wizardPillBtnLabel">{isSaving ? 'Saving...' : 'Next'}</span>
+//                 <span className="wizardPillBtnIcon">→</span>
+//               </button>
+//             ) : (
+//               <button 
+//                 type="button" 
+//                 className="wizardPillBtn wizardPillBtnSuccess" 
+//                 onClick={finishWizard}
+//                 disabled={isSaving}
+//               >
+//                 <span className="wizardPillBtnLabel">{isSaving ? 'Saving...' : 'Finish'}</span>
+//                 <span className="wizardPillBtnIcon">✓</span>
+//               </button>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   )
+
+//   if (embedded) {
+//     return <div className="wizardEmbedded">{wizardInner}</div>
+//   }
+
+//   return (
+//     <div className="appShell">
+//       <TopNav variant="solid" />
+
+//       <div className="appShellBody appShellBodyVerify">
+//         <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
+//           <div className="sideNavMain">
+//             <div className="sideGroupLabel">WORKSPACE</div>
+//             <nav className="sideGroup" aria-label="Workspace">
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Overview</span>
+//               </span>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Projects</span>
+//                 <span className="sideBadge">12</span>
+//               </span>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Revenues</span>
+//               </span>
+//               <a className="sideItem sideItemActive" href="#">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Profile</span>
+//               </a>
+//             </nav>
+//           </div>
+
+//           <div className="sideNavBottom">
+//             <div className="sideGroupLabel">GENERAL</div>
+//             <nav className="sideGroup" aria-label="General">
+//               <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Sign out</span>
+//               </button>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon">
+//                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+//                     <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.9-6.4h1.8V17h-1.8v-1.4zm1.8-2.2h-1.8c0-2.6 3-2.3 3-4.4 0-1.1-.9-1.8-2.1-1.8-1.1 0-2 .7-2.1 1.8H8.1c.1-2.1 1.9-3.6 4-3.6 2.3 0 3.9 1.4 3.9 3.5 0 2.7-3 2.7-3 4.5z" fill="currentColor"/>
+//                   </svg>
+//                 </span>
+//                 <span className="sideText">Support</span>
+//               </span>
+//             </nav>
+//           </div>
+//         </aside>
+
+//         <main className="appContent">{wizardInner}</main>
+//       </div>
+//     </div>
+//   )
+// }
+
+
+
+
+
 // src/worker/pages/WorkerWizardPage.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -1607,43 +2201,81 @@ import { WizardStep3 } from '../components/wizard-steps/WizardStep3'
 import { WizardStep4 } from '../components/wizard-steps/WizardStep4'
 import { WizardStep5 } from '../components/wizard-steps/WizardStep5'
 import wizardService from '../services/workerWizardService'
+import workerService from '../services/workerService'
 import { auth } from '../../firebase/config'
+
+// Icons for sidebar
+function IconGrid(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconFolder(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconChart(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconLogout(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconSupport(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.9-6.4h1.8V17h-1.8v-1.4zm1.8-2.2h-1.8c0-2.6 3-2.3 3-4.4 0-1.1-.9-1.8-2.1-1.8-1.1 0-2 .7-2.1 1.8H8.1c.1-2.1 1.9-3.6 4-3.6 2.3 0 3.9 1.4 3.9 3.5 0 2.7-3 2.7-3 4.5z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconUser(props) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor" />
+    </svg>
+  )
+}
 
 export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   const navigate = useNavigate()
   const location = useLocation()
 
+  // ============================================================
+  // STATE MANAGEMENT
+  // ============================================================
+  
   const [step, setStep] = useState(1)
   const maxStep = 5
   const [error, setError] = useState('')
   const [isSaving, setIsSaving] = useState(false)
-
-  // ✅ Initialize state with data from localStorage
+  const [loading, setLoading] = useState(true)
+  const [isResuming, setIsResuming] = useState(false)
   const [wizardData, setWizardData] = useState(() => {
-    // Read from localStorage
-    const pendingFirstName = localStorage.getItem('pendingFirstName') || ''
-    const pendingLastName = localStorage.getItem('pendingLastName') || ''
-    const pendingEmail = localStorage.getItem('pendingEmail') || ''
-    const pendingPhoneNumber = localStorage.getItem('pendingPhoneNumber') || ''
-    const pendingDob = localStorage.getItem('pendingDob') || ''
-    const pendingLanguage = localStorage.getItem('pendingLanguage') || ''
-
-    // Format DOB from YYYY-MM-DD to MM/DD/YYYY
-    let formattedDob = ''
-    if (pendingDob) {
-      const parts = pendingDob.split('-')
-      if (parts.length === 3) {
-        formattedDob = `${parts[1]}/${parts[2]}/${parts[0]}`
-      }
-    }
-
+    // Initialize with default empty data
     return {
       // Step 1: Personal Information
-      legalFirstName: pendingFirstName,
-      legalLastName: pendingLastName,
-      emailAddress: pendingEmail,
-      mobilePhone: pendingPhoneNumber,
-      dob: formattedDob,
+      legalFirstName: '',
+      legalLastName: '',
+      emailAddress: '',
+      mobilePhone: '',
+      dob: '',
       addressLine1: '',
       addressLine2: '',
       city: '',
@@ -1710,19 +2342,29 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
       travelPrefs: {},
       availability: {},
 
-      // Step 5: Emergency Contact
+      // Step 5: Emergency Contact & Certifications
       emergencyContactName: '',
       emergencyContactRelationship: '',
       emergencyContactPhone: '',
       policyAcks: {},
+      certChecklist: {},
+      certRows: [
+        { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+        { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+        { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+      ],
+      safetyFlags: {},
     }
   })
 
-  // ✅ Load saved wizard progress from backend
+  // ============================================================
+  // LOAD WIZARD STATE - RESUME FEATURE
+  // ============================================================
+
   useEffect(() => {
-    const loadSavedProgress = async () => {
+    const loadWizardState = async () => {
       try {
-        // Get userId from Firebase or localStorage
+        // Get userId from localStorage or Firebase
         let userId = localStorage.getItem('userId')
         if (!userId) {
           const user = auth.currentUser
@@ -1734,58 +2376,87 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
 
         if (!userId) {
           console.log('No userId found, starting fresh wizard')
+          setLoading(false)
           return
         }
 
-        const result = await wizardService.getProgress(userId)
-        if (result.success && result.data) {
-          const { steps, currentStep } = result.data
+        // ✅ Check if wizard needs to resume
+        const resumeCheck = await wizardService.checkResume(userId)
+        
+        console.log('🔄 Resume check result:', resumeCheck)
+
+        if (resumeCheck.needsResume) {
+          // ✅ Resume from where user left off
+          setIsResuming(true)
+          const stepToResume = resumeCheck.step
           
-          // Merge saved data with current state
-          const savedData = {}
-          Object.keys(steps).forEach(key => {
-            const stepNum = parseInt(key.replace('step', ''))
-            savedData[`step${stepNum}`] = steps[key]
-          })
-
-          setWizardData(prev => ({
-            ...prev,
-            ...savedData.step1 || {},
-            ...savedData.step2 || {},
-            ...savedData.step3 || {},
-            ...savedData.step4 || {},
-            ...savedData.step5 || {},
-          }))
-
-          // Set current step to the last saved step
-          if (currentStep > 1) {
-            setStep(currentStep)
+          console.log(`🔄 Resuming wizard from step ${stepToResume}`)
+          
+          // Load saved data
+          const progress = await wizardService.getProgress(userId)
+          
+          if (progress.success && progress.data.steps) {
+            // Merge saved data with current state
+            const savedData = {}
+            Object.keys(progress.data.steps).forEach(key => {
+              const stepNum = parseInt(key.replace('step', ''))
+              const stepKey = `step${stepNum}`
+              savedData[stepKey] = progress.data.steps[key]
+            })
+            
+            // Also check if there's any data in the main profile
+            const profile = await workerService.getWorkerProfile(userId)
+            if (profile.success && profile.data) {
+              // Merge any additional data from profile
+              Object.keys(profile.data).forEach(key => {
+                if (!savedData[key] && typeof profile.data[key] === 'object') {
+                  savedData[key] = profile.data[key]
+                }
+              })
+            }
+            
+            setWizardData(prev => ({
+              ...prev,
+              ...savedData
+            }))
           }
+          
+          // Set step to resume
+          setStep(stepToResume)
+        } else {
+          // ✅ Start fresh from step 1
+          console.log('🔄 Starting fresh wizard from step 1')
+          
+          // Check if user has any existing data (maybe from registration)
+          try {
+            const profile = await workerService.getWorkerProfile(userId)
+            if (profile.success && profile.data?.basics) {
+              // Pre-fill with existing data
+              setWizardData(prev => ({
+                ...prev,
+                ...profile.data.basics,
+                ...profile.data
+              }))
+            }
+          } catch (e) {
+            // No existing data, use defaults
+          }
+          
+          setStep(1)
         }
+
       } catch (error) {
-        console.error('Error loading wizard progress:', error)
+        console.error('Error loading wizard state:', error)
+        setError(error.message || 'Failed to load wizard state')
+      } finally {
+        setLoading(false)
       }
     }
 
-    loadSavedProgress()
+    loadWizardState()
   }, [])
 
-  // ✅ Clear localStorage AFTER data is loaded into state
-  useEffect(() => {
-    const hasPendingData = localStorage.getItem('pendingFirstName') || 
-                          localStorage.getItem('pendingEmail') ||
-                          localStorage.getItem('pendingPhoneNumber')
-    
-    if (hasPendingData) {
-      const itemsToRemove = [
-        'pendingFirstName', 'pendingLastName', 'pendingEmail', 'pendingPhoneNumber',
-        'pendingDob', 'pendingLanguage'
-      ]
-      itemsToRemove.forEach(item => localStorage.removeItem(item))
-      console.log('✅ Cleared pending registration data from localStorage')
-    }
-  }, [])
-
+  // Handle initialStepOverride from location state
   useEffect(() => {
     const requested = initialStepOverride ?? location?.state?.initialStep
     if (typeof requested === 'number' && Number.isFinite(requested)) {
@@ -1793,7 +2464,14 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     }
   }, [initialStepOverride, location?.state?.initialStep])
 
-  // ✅ FIX: Handle data updates properly - MERGE not REPLACE
+  // ============================================================
+  // DATA HANDLERS
+  // ============================================================
+
+  /**
+   * ✅ Handle data changes from wizard steps
+   * Merges new data with existing state
+   */
   const handleDataChange = (newData) => {
     setWizardData(prev => {
       // If newData is a function, call it with current state
@@ -1818,7 +2496,9 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     })
   }
 
-  // ✅ Save current step to backend
+  /**
+   * ✅ Save current step to backend
+   */
   const saveCurrentStep = async () => {
     try {
       let userId = localStorage.getItem('userId')
@@ -1836,15 +2516,136 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
       }
       
       setIsSaving(true)
+      
+      // Validate step before saving
+      const validation = wizardService.validateStep(step, wizardData)
+      if (!validation.valid) {
+        throw new Error(validation.errors.join(', '))
+      }
+      
       await wizardService.saveStep(userId, step, wizardData)
-      console.log(`✅ Step ${step} saved to backend`)
+      console.log(`✅ Step ${step} saved successfully`)
+      
     } catch (error) {
       console.error('Error saving step:', error)
       setError(error.message || 'Failed to save step')
+      throw error
     } finally {
       setIsSaving(false)
     }
   }
+
+  // ============================================================
+  // NAVIGATION HANDLERS
+  // ============================================================
+
+  /**
+   * ✅ Go to next step
+   */
+  const goNext = async () => {
+    try {
+      await saveCurrentStep()
+      setStep((s) => Math.min(maxStep, s + 1))
+      window.scrollTo(0, 0)
+      setError('')
+    } catch (error) {
+      // Error is already set in saveCurrentStep
+    }
+  }
+
+  /**
+   * ✅ Go to previous step
+   */
+  const goPrev = async () => {
+    try {
+      await saveCurrentStep()
+      setStep((s) => Math.max(1, s - 1))
+      window.scrollTo(0, 0)
+      setError('')
+    } catch (error) {
+      // Error is already set in saveCurrentStep
+    }
+  }
+
+  /**
+   * ✅ Complete wizard
+   */
+  const finishWizard = async () => {
+    try {
+      const userId = localStorage.getItem('userId')
+      if (!userId) {
+        const user = auth.currentUser
+        if (user) {
+          userId = user.uid
+          localStorage.setItem('userId', userId)
+        }
+      }
+      
+      if (!userId) {
+        throw new Error('User ID not found')
+      }
+      
+      setIsSaving(true)
+      setError('')
+      
+      // Validate step 5
+      const validation = wizardService.validateStep(5, wizardData)
+      if (!validation.valid) {
+        throw new Error(validation.errors.join(', '))
+      }
+      
+      // Save final step
+      await wizardService.saveStep(userId, 5, wizardData)
+      
+      // Complete wizard
+      await wizardService.completeWizard(userId)
+      
+      console.log('✅ Wizard completed successfully')
+      
+      // Navigate to summary page with all data
+      navigate('/wizard/summary', {
+        state: {
+          ...wizardData,
+          wizardCompleted: true,
+          completedAt: new Date().toISOString()
+        },
+        replace: true
+      })
+      
+    } catch (error) {
+      console.error('Error completing wizard:', error)
+      setError(error.message || 'Failed to complete wizard')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  /**
+   * ✅ Cancel wizard
+   */
+  const cancelWizard = async () => {
+    try {
+      // Save current step before cancel
+      await saveCurrentStep()
+      
+      // Navigate to summary or home
+      navigate('/wizard/summary', {
+        state: {
+          ...wizardData,
+          wizardCancelled: true,
+          cancelledAt: new Date().toISOString()
+        },
+        replace: true
+      })
+    } catch (error) {
+      // Even if save fails, navigate to summary
+      navigate('/wizard/summary')
+    }
+  }
+
+  // ============================================================
+  // STEP CONFIGURATION
+  // ============================================================
 
   const stepTitles = [
     'Personal Information',
@@ -1862,124 +2663,52 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     'Emergency contact information and policy acknowledgments.'
   ]
 
-  // ✅ Save before navigating
-  const goNext = async () => {
-    await saveCurrentStep()
-    setStep((s) => Math.min(maxStep, s + 1))
-    window.scrollTo(0, 0)
-  }
+  // ============================================================
+  // RENDER FUNCTIONS
+  // ============================================================
 
-  const goPrev = async () => {
-    await saveCurrentStep()
-    setStep((s) => Math.max(1, s - 1))
-    window.scrollTo(0, 0)
-  }
-
-  // ✅ Complete wizard
-  const finishWizard = async () => {
-    try {
-      const userId = localStorage.getItem('userId')
-      if (!userId) {
-        throw new Error('User ID not found')
-      }
-      
-      setIsSaving(true)
-      
-      // Save final step
-      await saveCurrentStep()
-      
-      // Complete wizard - Moves data to Workers Table
-      const result = await wizardService.completeWizard(userId)
-      console.log('✅ Wizard completed:', result)
-      
-      // Navigate to success page
-      navigate('/wizard/summary', {
-        state: {
-          basics: {
-            legalFirstName: wizardData.legalFirstName,
-            legalLastName: wizardData.legalLastName,
-            emailAddress: wizardData.emailAddress,
-            mobilePhone: wizardData.mobilePhone,
-            dob: wizardData.dob,
-            addressLine1: wizardData.addressLine1,
-            addressLine2: wizardData.addressLine2,
-            city: wizardData.city,
-            stateCode: wizardData.stateCode,
-            zip: wizardData.zip,
-            currentAddressLine1: wizardData.currentAddressLine1,
-            currentAddressLine2: wizardData.currentAddressLine2,
-            currentCity: wizardData.currentCity,
-            currentStateCode: wizardData.currentStateCode,
-            currentZip: wizardData.currentZip,
-            sameAsAddress: wizardData.sameAsAddress,
-            english: wizardData.english,
-            englishSpanish: wizardData.englishSpanish,
-            spanish: wizardData.spanish,
-            profilePreview: wizardData.profilePreview,
-            profileImageKey: wizardData.profileImageKey,
-            profileImageUrl: wizardData.profileImageUrl,
-            acceptTerms: wizardData.acceptTerms,
-            acceptPrivacy: wizardData.acceptPrivacy,
-            consentElectronic: wizardData.consentElectronic,
-            certifyAccurate: wizardData.certifyAccurate,
-          },
-          trade: {
-            primaryTrade: wizardData.primaryTrade,
-            primaryOtherTrade: wizardData.primaryOtherTrade,
-            workerLevel: wizardData.workerLevel,
-            yearOfExperience: wizardData.yearOfExperience,
-            secondaryTrade: wizardData.secondaryTrade,
-            secondaryOtherTrade: wizardData.secondaryOtherTrade,
-            secondaryWorkerLevel: wizardData.secondaryWorkerLevel,
-            secondaryYearOfExperience: wizardData.secondaryYearOfExperience,
-            leadForemanResponsibilities: wizardData.leadForemanResponsibilities,
-            metalFramingSkills: wizardData.metalFramingSkills,
-            drywallHangingSkills: wizardData.drywallHangingSkills,
-            tapingFinishingSkills: wizardData.tapingFinishingSkills,
-            acousticalCeilingsSkills: wizardData.acousticalCeilingsSkills,
-            interiorCarpentrySkills: wizardData.interiorCarpentrySkills,
-            helpersLabourersSkills: wizardData.helpersLabourersSkills,
-            insulationSkills: wizardData.insulationSkills,
-            demolitionSkills: wizardData.demolitionSkills,
-            secondaryLeadForemanResponsibilities: wizardData.secondaryLeadForemanResponsibilities,
-            secondaryMetalFramingSkills: wizardData.secondaryMetalFramingSkills,
-            secondaryDrywallHangingSkills: wizardData.secondaryDrywallHangingSkills,
-            secondaryTapingFinishingSkills: wizardData.secondaryTapingFinishingSkills,
-            secondaryAcousticalCeilingsSkills: wizardData.secondaryAcousticalCeilingsSkills,
-            secondaryInteriorCarpentrySkills: wizardData.secondaryInteriorCarpentrySkills,
-            secondaryHelpersLabourersSkills: wizardData.secondaryHelpersLabourersSkills,
-            secondaryInsulationSkills: wizardData.secondaryInsulationSkills,
-            secondaryDemolitionSkills: wizardData.secondaryDemolitionSkills,
-            additionalSkillsTools: wizardData.additionalSkillsTools,
-          },
-          workHistory: {
-            projects: wizardData.projects,
-          },
-          availability: {
-            hourlyRate: wizardData.hourlyRate,
-            payPrefs: wizardData.payPrefs,
-            travelRadius: wizardData.travelRadius,
-            willingToTravel: wizardData.willingToTravel,
-            travelPrefs: wizardData.travelPrefs,
-            availability: wizardData.availability,
-          },
-          acknowledgments: {
-            emergencyContactName: wizardData.emergencyContactName,
-            emergencyContactRelationship: wizardData.emergencyContactRelationship,
-            emergencyContactPhone: wizardData.emergencyContactPhone,
-            policyAcks: wizardData.policyAcks,
+  /**
+   * ✅ Render loading state
+   */
+  if (loading) {
+    return (
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        height: '100vh',
+        flexDirection: 'column',
+        gap: '16px'
+      }}>
+        <div style={{ 
+          width: '48px', 
+          height: '48px', 
+          border: '4px solid rgba(15, 78, 169, 0.1)',
+          borderTop: '4px solid #0f4ea9',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite',
+        }} />
+        <p style={{ 
+          color: '#17263a', 
+          fontSize: '16px',
+          fontWeight: 500
+        }}>
+          {isResuming ? 'Resuming your wizard...' : 'Loading wizard...'}
+        </p>
+        <style>{`
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
           }
-        }
-      })
-    } catch (error) {
-      console.error('Error completing wizard:', error)
-      setError(error.message || 'Failed to complete wizard')
-    } finally {
-      setIsSaving(false)
-    }
+        `}</style>
+      </div>
+    )
   }
 
-  const wizardInner = (
+  /**
+   * ✅ Wizard content
+   */
+  const wizardContent = (
     <div className="wizardPage">
       <div className="wizardCard">
         {/* Sticky Header */}
@@ -1990,14 +2719,47 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
           background: 'white',
           padding: '16px 24px',
           borderBottom: '1px solid rgba(18, 38, 63, 0.06)',
-          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px'
         }}>
           <div>
-            <div className="wizardTitle">{stepTitles[step - 1]}</div>
-            <div className="wizardSubtitle">{stepSubtitles[step - 1]}</div>
+            <div className="wizardTitle" style={{
+              fontSize: '18px',
+              fontWeight: 700,
+              color: '#17263a'
+            }}>
+              {stepTitles[step - 1]}
+              {isResuming && step === 1 && (
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: 500,
+                  color: '#0f4ea9',
+                  marginLeft: '12px',
+                  background: 'rgba(15, 78, 169, 0.08)',
+                  padding: '2px 12px',
+                  borderRadius: '12px'
+                }}>
+                  Resumed
+                </span>
+              )}
+            </div>
+            <div className="wizardSubtitle" style={{
+              fontSize: '13px',
+              color: 'rgba(23, 38, 58, 0.6)',
+              marginTop: '4px'
+            }}>
+              {stepSubtitles[step - 1]}
+            </div>
           </div>
 
-          <div className="wizardStepPills" aria-label="Wizard steps">
+          <div className="wizardStepPills" aria-label="Wizard steps" style={{
+            display: 'flex',
+            gap: '8px'
+          }}>
             {Array.from({ length: maxStep }).map((_, idx) => {
               const n = idx + 1
               return (
@@ -2006,6 +2768,18 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
                   type="button"
                   className={`wizardStepPill ${step === n ? 'wizardStepPillActive' : ''}`}
                   onClick={() => setStep(n)}
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    border: step === n ? '2px solid #0f4ea9' : '1px solid rgba(18, 38, 63, 0.12)',
+                    background: step === n ? '#0f4ea9' : 'white',
+                    color: step === n ? 'white' : '#17263a',
+                    cursor: 'pointer',
+                    fontWeight: 600,
+                    fontSize: '13px',
+                    transition: 'all 0.2s ease'
+                  }}
                 >
                   {n}
                 </button>
@@ -2021,18 +2795,21 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
             background: '#fee2e2',
             color: '#dc2626',
             borderBottom: '1px solid #fecaca',
-            fontSize: '14px'
+            fontSize: '14px',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center'
           }}>
-            ❌ {error}
+            <span>❌ {error}</span>
             <button
               onClick={() => setError('')}
               style={{
-                float: 'right',
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
                 color: '#dc2626',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                fontSize: '18px'
               }}
             >
               ×
@@ -2047,11 +2824,45 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
           padding: '20px 24px',
           scrollBehavior: 'smooth'
         }}>
-          {step === 1 && <WizardStep1 data={wizardData} onChange={handleDataChange} onNext={goNext} />}
-          {step === 2 && <WizardStep2 data={wizardData} onChange={handleDataChange} onNext={goNext} onBack={goPrev} />}
-          {step === 3 && <WizardStep3 data={wizardData} onChange={handleDataChange} onNext={goNext} onBack={goPrev} />}
-          {step === 4 && <WizardStep4 data={wizardData} onChange={handleDataChange} onNext={goNext} onBack={goPrev} />}
-          {step === 5 && <WizardStep5 data={wizardData} onChange={handleDataChange} onFinish={finishWizard} onBack={goPrev} />}
+          {step === 1 && (
+            <WizardStep1 
+              data={wizardData} 
+              onChange={handleDataChange} 
+              onNext={goNext} 
+            />
+          )}
+          {step === 2 && (
+            <WizardStep2 
+              data={wizardData} 
+              onChange={handleDataChange} 
+              onNext={goNext} 
+              onBack={goPrev} 
+            />
+          )}
+          {step === 3 && (
+            <WizardStep3 
+              data={wizardData} 
+              onChange={handleDataChange} 
+              onNext={goNext} 
+              onBack={goPrev} 
+            />
+          )}
+          {step === 4 && (
+            <WizardStep4 
+              data={wizardData} 
+              onChange={handleDataChange} 
+              onNext={goNext} 
+              onBack={goPrev} 
+            />
+          )}
+          {step === 5 && (
+            <WizardStep5 
+              data={wizardData} 
+              onChange={handleDataChange} 
+              onFinish={finishWizard} 
+              onBack={goPrev} 
+            />
+          )}
         </div>
 
         {/* Sticky Footer */}
@@ -2067,19 +2878,39 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <button 
-            type="button" 
-            className="wizardPillBtn" 
-            onClick={step === 1 ? () => navigate('/verify') : goPrev}
-            disabled={step === 1 || isSaving}
-            style={{
-              opacity: step === 1 ? 0.4 : 1,
-              cursor: step === 1 ? 'not-allowed' : 'pointer'
-            }}
-          >
-            <span className="wizardPillBtnLabel">Back</span>
-            <span className="wizardPillBtnIcon">←</span>
-          </button>
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button 
+              type="button" 
+              className="wizardPillBtn" 
+              onClick={step === 1 ? cancelWizard : goPrev}
+              disabled={step === 1 && !isSaving}
+              style={{
+                padding: '8px 20px',
+                borderRadius: '8px',
+                background: 'transparent',
+                color: '#17263a',
+                border: '1px solid rgba(18, 38, 63, 0.12)',
+                cursor: (step === 1 && !isSaving) ? 'pointer' : 'pointer',
+                opacity: step === 1 ? 0.6 : 1,
+                fontWeight: 500,
+                fontSize: '14px',
+                transition: 'all 0.2s',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+              onMouseEnter={(e) => {
+                if (!(step === 1 && isSaving)) {
+                  e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+              }}
+            >
+              <span>{step === 1 ? 'Cancel' : 'Back'}</span>
+            </button>
+          </div>
 
           <div className="wizardFooterRight">
             {step < maxStep ? (
@@ -2088,9 +2919,34 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
                 className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
                 onClick={goNext}
                 disabled={isSaving}
+                style={{
+                  padding: '8px 24px',
+                  borderRadius: '8px',
+                  background: isSaving ? '#94a3b8' : '#0f4ea9',
+                  color: 'white',
+                  border: 'none',
+                  cursor: isSaving ? 'not-allowed' : 'pointer',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  opacity: isSaving ? 0.7 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#0b3f90'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#0f4ea9'
+                  }
+                }}
               >
-                <span className="wizardPillBtnLabel">{isSaving ? 'Saving...' : 'Next'}</span>
-                <span className="wizardPillBtnIcon">→</span>
+                <span>{isSaving ? 'Saving...' : 'Next'}</span>
+                <span>→</span>
               </button>
             ) : (
               <button 
@@ -2098,9 +2954,34 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
                 className="wizardPillBtn wizardPillBtnSuccess" 
                 onClick={finishWizard}
                 disabled={isSaving}
+                style={{
+                  padding: '8px 24px',
+                  borderRadius: '8px',
+                  background: isSaving ? '#94a3b8' : '#2fb463',
+                  color: 'white',
+                  border: 'none',
+                  cursor: isSaving ? 'not-allowed' : 'pointer',
+                  fontWeight: 600,
+                  fontSize: '14px',
+                  transition: 'all 0.2s',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  opacity: isSaving ? 0.7 : 1
+                }}
+                onMouseEnter={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#259c54'
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isSaving) {
+                    e.currentTarget.style.background = '#2fb463'
+                  }
+                }}
               >
-                <span className="wizardPillBtnLabel">{isSaving ? 'Saving...' : 'Finish'}</span>
-                <span className="wizardPillBtnIcon">✓</span>
+                <span>{isSaving ? 'Saving...' : 'Finish'}</span>
+                <span>✓</span>
               </button>
             )}
           </div>
@@ -2109,9 +2990,17 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     </div>
   )
 
+  // ============================================================
+  // EMBEDDED MODE (No sidebar)
+  // ============================================================
+
   if (embedded) {
-    return <div className="wizardEmbedded">{wizardInner}</div>
+    return <div className="wizardEmbedded">{wizardContent}</div>
   }
+
+  // ============================================================
+  // FULL PAGE WITH SIDEBAR
+  // ============================================================
 
   return (
     <div className="appShell">
@@ -2123,36 +3012,20 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
             <div className="sideGroupLabel">WORKSPACE</div>
             <nav className="sideGroup" aria-label="Workspace">
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor"/>
-                  </svg>
-                </span>
+                <span className="sideIcon" aria-hidden="true"><IconGrid /></span>
                 <span className="sideText">Overview</span>
               </span>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor"/>
-                  </svg>
-                </span>
+                <span className="sideIcon" aria-hidden="true"><IconFolder /></span>
                 <span className="sideText">Projects</span>
-                <span className="sideBadge">12</span>
+                <span className="sideBadge" aria-label="12 projects">12</span>
               </span>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor"/>
-                  </svg>
-                </span>
+                <span className="sideIcon" aria-hidden="true"><IconChart /></span>
                 <span className="sideText">Revenues</span>
               </span>
               <a className="sideItem sideItemActive" href="#">
-                <span className="sideIcon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor"/>
-                  </svg>
-                </span>
+                <span className="sideIcon" aria-hidden="true"><IconUser /></span>
                 <span className="sideText">Profile</span>
               </a>
             </nav>
@@ -2162,27 +3035,21 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
             <div className="sideGroupLabel">GENERAL</div>
             <nav className="sideGroup" aria-label="General">
               <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
-                <span className="sideIcon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor"/>
-                  </svg>
-                </span>
+                <span className="sideIcon" aria-hidden="true"><IconLogout /></span>
                 <span className="sideText">Sign out</span>
               </button>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.9-6.4h1.8V17h-1.8v-1.4zm1.8-2.2h-1.8c0-2.6 3-2.3 3-4.4 0-1.1-.9-1.8-2.1-1.8-1.1 0-2 .7-2.1 1.8H8.1c.1-2.1 1.9-3.6 4-3.6 2.3 0 3.9 1.4 3.9 3.5 0 2.7-3 2.7-3 4.5z" fill="currentColor"/>
-                  </svg>
-                </span>
+                <span className="sideIcon" aria-hidden="true"><IconSupport /></span>
                 <span className="sideText">Support</span>
               </span>
             </nav>
           </div>
         </aside>
 
-        <main className="appContent">{wizardInner}</main>
+        <main className="appContent">{wizardContent}</main>
       </div>
     </div>
   )
 }
+
+export default WorkerWizardPage
