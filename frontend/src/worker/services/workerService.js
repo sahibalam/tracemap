@@ -14,27 +14,25 @@ class WorkerService {
    * @param {string} userId - Firebase UID of the worker
    * @returns {Promise} Profile data from Workers Table
    */
-  async getWorkerProfile(userId) {
-    try {
-      if (!userId) {
-        throw new Error('User ID is required')
-      }
+ async getWorkerProfile(userId) {
+  try {
+    if (!userId) throw new Error('User ID is required')
 
-      console.log(`📊 Fetching profile for user: ${userId}`)
-      
-      const response = await api.get(`/worker/profile/${userId}`)
-      
-      if (response.data.success) {
-        console.log('✅ Profile fetched successfully')
-        return response.data
-      } else {
-        throw new Error(response.data.message || 'Failed to fetch profile')
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error)
-      throw error
+    console.log(`📊 Fetching profile for user: ${userId}`)
+    
+    const response = await api.get(`/worker/profile/${userId}`)
+    
+    if (response.data.success) {
+      console.log('✅ Profile fetched successfully')
+      return response.data
+    } else {
+      throw new Error(response.data.message || 'Failed to fetch profile')
     }
+  } catch (error) {
+    console.error('Error fetching profile:', error)
+    throw error
   }
+}
 
   /**
    * ✅ Create new worker profile (after registration)
