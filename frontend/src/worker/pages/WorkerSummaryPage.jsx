@@ -5529,7 +5529,7 @@ export function WorkerSummaryPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Safety</span>
                       <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> --
+                         --
                       </span>
                     </div>
                   </div>
@@ -5567,7 +5567,7 @@ export function WorkerSummaryPage() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Tax Verified</span>
                       <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> --
+                        --
                       </span>
                     </div>
                   </div>
