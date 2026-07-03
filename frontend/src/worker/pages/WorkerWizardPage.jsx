@@ -2572,7 +2572,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
    */
   const finishWizard = async () => {
     try {
-      const userId = localStorage.getItem('userId')
+      let userId = localStorage.getItem("userId");
       if (!userId) {
         const user = auth.currentUser
         if (user) {
