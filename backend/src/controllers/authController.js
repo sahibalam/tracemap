@@ -6,7 +6,7 @@
 
 
 // backend/src/controllers/authController.js
-
+import { sendVerificationEmail } from '../services/emailService.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { docClient, WORKERS_TABLE } from '../config/aws.js'
