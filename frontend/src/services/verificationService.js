@@ -298,7 +298,7 @@ export const sendPhoneOTP = async (phoneNumber, recaptchaVerifier) => {
     // If number already has +, use as is, otherwise add +1 for US
     let formattedPhone = phoneNumber.startsWith('+') 
       ? phoneNumber 
-      : `+91${digitsOnly}`  // ✅ Changed from +91 to +1 for US
+      : `+1${digitsOnly}`  // ✅ Changed from +91 to +1 for US
     
     console.log('Original Phone:', phoneNumber)
     console.log('Formatted Phone:', formattedPhone)
