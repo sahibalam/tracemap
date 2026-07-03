@@ -4339,17 +4339,19 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
       setIsSaving(true)
       setError('')
       
+      // ✅ Save final step
       await wizardService.saveStep(userId, 5, wizardData)
+      
+      // ✅ Complete wizard - This marks wizard as complete
       await wizardService.completeWizard(userId)
       
-      navigate('/wizard/summary', {
-        state: {
-          ...wizardData,
-          wizardCompleted: true,
-          completedAt: new Date().toISOString()
-        },
-        replace: true
+      console.log('✅ Wizard completed successfully')
+      
+      // ✅ Navigate to summary page (without state, it will fetch from DynamoDB)
+      navigate('/wizard/summary', { 
+        replace: true 
       })
+      
     } catch (error) {
       console.error('Error completing wizard:', error)
       setError(error.message || 'Failed to complete wizard')
@@ -4357,7 +4359,6 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
       setIsSaving(false)
     }
   }
-
   // ============================================================
   // RENDER
   // ============================================================
