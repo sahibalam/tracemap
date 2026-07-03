@@ -2845,38 +2845,88 @@ export function CertificationEditPage() {
                           }}
                         />
 
-                        {/* Issue date - Calendar Picker */}
-                        <div className="cert-date-picker" style={{ width: '100%', position: 'relative' }}>
-                          <DatePicker
-                            selected={parseDate(row.issueDate)}
-                            onChange={handleDateChange(idx, 'issueDate')}
-                            dateFormat="MM/dd/yyyy"
-                            placeholderText="MM/DD/YYYY"
-                            maxDate={new Date()}
-                            showYearDropdown
-                            showMonthDropdown
-                            dropdownMode="select"
-                            yearDropdownItemNumber={100}
-                            scrollableYearDropdown
-                            popperPlacement="bottom-start"
-                          />
-                        </div>
+                 {/* Issue date - Calendar Picker */}
+<div className="cert-date-picker" style={{ 
+  width: '100%', 
+  position: 'relative',
+  zIndex: 99999
+}}>
+  <DatePicker
+    selected={parseDate(row.issueDate)}
+    onChange={handleDateChange(idx, 'issueDate')}
+    dateFormat="MM/dd/yyyy"
+    placeholderText="MM/DD/YYYY"
+    maxDate={new Date()}
+    showYearDropdown
+    showMonthDropdown
+    dropdownMode="select"
+    yearDropdownItemNumber={100}
+    scrollableYearDropdown
+    popperPlacement="bottom-start"
+    popperModifiers={[
+      {
+        name: 'offset',
+        options: {
+          offset: [0, 10],
+        },
+      },
+      {
+        name: 'preventOverflow',
+        options: {
+          boundariesElement: 'viewport',
+        },
+      },
+      {
+        name: 'flip',
+        options: {
+          fallbackPlacements: ['top-start', 'bottom-start', 'right', 'left'],
+        },
+      },
+    ]}
+    portalId="root"
+  />
+</div>
 
-                        {/* Expiration date - Calendar Picker */}
-                        <div className="cert-date-picker" style={{ width: '100%', position: 'relative' }}>
-                          <DatePicker
-                            selected={parseDate(row.expirationDate)}
-                            onChange={handleDateChange(idx, 'expirationDate')}
-                            dateFormat="MM/dd/yyyy"
-                            placeholderText="MM/DD/YYYY"
-                            showYearDropdown
-                            showMonthDropdown
-                            dropdownMode="select"
-                            yearDropdownItemNumber={100}
-                            scrollableYearDropdown
-                            popperPlacement="bottom-start"
-                          />
-                        </div>
+{/* Expiration date - Calendar Picker */}
+<div className="cert-date-picker" style={{ 
+  width: '100%', 
+  position: 'relative',
+  zIndex: 99999
+}}>
+  <DatePicker
+    selected={parseDate(row.expirationDate)}
+    onChange={handleDateChange(idx, 'expirationDate')}
+    dateFormat="MM/dd/yyyy"
+    placeholderText="MM/DD/YYYY"
+    showYearDropdown
+    showMonthDropdown
+    dropdownMode="select"
+    yearDropdownItemNumber={100}
+    scrollableYearDropdown
+    popperPlacement="bottom-start"
+    popperModifiers={[
+      {
+        name: 'offset',
+        options: {
+          offset: [0, 10],
+        },
+      },
+      {
+        name: 'preventOverflow',
+        options: {
+          boundariesElement: 'viewport',
+        },
+      },
+      {
+        name: 'flip',
+        options: {
+          fallbackPlacements: ['top-start', 'bottom-start', 'right', 'left'],
+        },
+      },
+    ]}
+    portalId="root"
+  />
+</div>
 
                         {/* Upload / file ref - File Upload Button */}
                         <div>
