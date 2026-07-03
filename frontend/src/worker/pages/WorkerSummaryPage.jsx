@@ -2487,10 +2487,11 @@
 // }
 
 
-
-import { useState } from 'react'
+// src/worker/pages/WorkerSummaryPage.jsx
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation, NavLink } from 'react-router-dom'
 import { TopNav } from '../../common/components/TopNav'
+import workerService from '../services/workerService'
 
 // Icons
 function IconGrid(props) {
@@ -2568,19 +2569,80 @@ function IconTrophy(props) {
 export function WorkerSummaryPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const data = location?.state ?? {}
+  
+  // ============================================================
+  // STATE MANAGEMENT
+  // ============================================================
+  
+  const [profile, setProfile] = useState({})
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [isFromWizard, setIsFromWizard] = useState(false)
 
-  // Get data from the correct location
-  const basics = data.basics || {}
-  const trade = data.trade || {}
-  const workHistory = data.workHistory || {}
+  // ============================================================
+  // LOAD DATA FROM DYNAMODB
+  // ============================================================
+  
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        // ✅ Check if data is coming from wizard completion
+        if (location?.state && Object.keys(location.state).length > 0) {
+          console.log('📋 Loading summary from location.state (wizard completion)')
+          setProfile(location.state)
+          setIsFromWizard(true)
+          setLoading(false)
+          return
+        }
+
+        // ✅ Otherwise fetch from DynamoDB
+        const userId = localStorage.getItem('userId')
+        if (!userId) {
+          setError('User not logged in')
+          setLoading(false)
+          return
+        }
+
+        console.log('📊 Fetching profile from DynamoDB for user:', userId)
+        const result = await workerService.getWorkerProfile(userId)
+        
+        if (result.success && result.data) {
+          console.log('✅ Profile loaded from DynamoDB:', result.data)
+          setProfile(result.data)
+        } else {
+          setError('No profile data found')
+        }
+      } catch (error) {
+        console.error('❌ Error loading profile:', error)
+        setError(error.message || 'Failed to load profile')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadProfile()
+  }, [location?.state])
+
+  // ============================================================
+  // DATA EXTRACTION
+  // ============================================================
+  
+  // Get data from profile
+  const basics = profile.basics || {}
+  const trade = profile.trade || {}
+  const workHistory = profile.workHistory || {}
   const projects = workHistory.projects || []
-  const availability = data.availability || {}
-  const medical = data.medical || {}
-  const certifications = data.certifications || {}
-  const tax = data.tax || {}
-  const acknowledgments = data.acknowledgments || {}
+  const availability = profile.availability || {}
+  const medical = profile.medical || {}
+  const certifications = profile.certifications || {}
+  const tax = profile.tax || {}
+  const payment = profile.payment || {}
+  const emergency = profile.emergency || {}
 
+  // ============================================================
+  // HELPER FUNCTIONS
+  // ============================================================
+  
   const displayValue = (value, placeholder = '—') => {
     if (value === null || value === undefined || value === '') {
       return placeholder
@@ -2629,18 +2691,30 @@ export function WorkerSummaryPage() {
   const allergies = Object.keys(medicalFlags).filter(key => medicalFlags[key])
   const allergiesText = allergies.length > 0 ? allergies.join(', ') : 'No allergies reported'
 
-  // Fallback projects (only if no real projects)
+  // Get payment
+  const bankName = payment.bankName || 'Not set'
+  const achEnabled = payment.achEnabled ? 'Enabled' : 'Not enabled'
+
+  // Get emergency contact
+  const emergencyName = emergency.emergencyContactName || ''
+  const emergencyRelationship = emergency.emergencyContactRelationship || ''
+  const emergencyPhone = emergency.emergencyContactPhone || ''
+
+  // Fallback projects
   const fallbackProjects = [
     { name: 'ABC construct', client: 'XYZ Inc', role: 'Helper', trade: 'Drywall' },
     { name: 'DMC construct', client: 'DMX Inc', role: 'Helper', trade: 'Drywall' },
   ]
 
-  // Navigation handlers for edit buttons
+  // ============================================================
+  // NAVIGATION HANDLERS
+  // ============================================================
+  
   const handleEditBasic = () => {
     navigate('/basic-info/edit', {
       state: {
         basicData: basics,
-        parentData: data
+        parentData: profile
       }
     })
   }
@@ -2649,7 +2723,7 @@ export function WorkerSummaryPage() {
     navigate('/trade-profile/edit', {
       state: {
         tradeData: trade,
-        parentData: data
+        parentData: profile
       }
     })
   }
@@ -2658,7 +2732,7 @@ export function WorkerSummaryPage() {
     navigate('/work-history/edit', {
       state: {
         workHistoryData: workHistory,
-        parentData: data
+        parentData: profile
       }
     })
   }
@@ -2667,7 +2741,7 @@ export function WorkerSummaryPage() {
     navigate('/availability/edit', {
       state: {
         availabilityData: availability,
-        parentData: data
+        parentData: profile
       }
     })
   }
@@ -2676,7 +2750,7 @@ export function WorkerSummaryPage() {
     navigate('/certification/edit', {
       state: {
         certData: certifications,
-        parentData: data
+        parentData: profile
       }
     })
   }
@@ -2685,7 +2759,7 @@ export function WorkerSummaryPage() {
     navigate('/tax/edit', {
       state: {
         taxData: tax,
-        parentData: data
+        parentData: profile
       }
     })
   }
@@ -2693,8 +2767,8 @@ export function WorkerSummaryPage() {
   const handleEditPayment = () => {
     navigate('/payment/edit', {
       state: {
-        paymentData: {},
-        parentData: data
+        paymentData: payment,
+        parentData: profile
       }
     })
   }
@@ -2703,7 +2777,7 @@ export function WorkerSummaryPage() {
     navigate('/medical/edit', {
       state: {
         medicalData: medical,
-        parentData: data
+        parentData: profile
       }
     })
   }
@@ -2711,12 +2785,83 @@ export function WorkerSummaryPage() {
   const handleEditEmergency = () => {
     navigate('/emergency-contact/edit', {
       state: {
-        emergencyData: acknowledgments,
-        parentData: data
+        emergencyData: emergency,
+        parentData: profile
       }
     })
   }
 
+  // ============================================================
+  // LOADING AND ERROR STATES
+  // ============================================================
+  
+  if (loading) {
+    return (
+      <div className="appShell">
+        <TopNav variant="solid" />
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '80vh',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          <div style={{ 
+            width: '40px', 
+            height: '40px', 
+            border: '3px solid rgba(15, 78, 169, 0.1)',
+            borderTop: '3px solid #0f4ea9',
+            borderRadius: '50%',
+            animation: 'spin 1s linear infinite'
+          }} />
+          <p style={{ color: '#17263a' }}>Loading profile...</p>
+          <style>{`
+            @keyframes spin {
+              0% { transform: rotate(0deg); }
+              100% { transform: rotate(360deg); }
+            }
+          `}</style>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="appShell">
+        <TopNav variant="solid" />
+        <div style={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center', 
+          height: '80vh',
+          flexDirection: 'column',
+          gap: '16px'
+        }}>
+          <p style={{ color: '#dc2626', fontSize: '16px' }}>❌ {error}</p>
+          <button 
+            onClick={() => navigate('/wizard')}
+            style={{
+              padding: '10px 24px',
+              background: '#0f4ea9',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer'
+            }}
+          >
+            Go to Wizard
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  // ============================================================
+  // RENDER
+  // ============================================================
+  
   return (
     <div className="appShell">
       <TopNav variant="solid" />
@@ -2764,7 +2909,9 @@ export function WorkerSummaryPage() {
         <main className="appContent">
           <div className="wizardSummaryPage" style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
             
-            {/* Row 1: Basic Information, Trade Profile, Subscription & Rewards */}
+            {/* ============================================================
+            Row 1: Basic Information, Trade Profile, Subscription & Rewards
+            ============================================================ */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
               
               {/* Basic Information Card */}
@@ -2791,7 +2938,7 @@ export function WorkerSummaryPage() {
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                    <img src="/assets/worker.avif" alt="Worker" style={{ width: '48px', height: '48px', borderRadius: '50%' }} />
+                    <img src={basics.profilePreview || "/assets/worker.avif"} alt="Worker" style={{ width: '48px', height: '48px', borderRadius: '50%', objectFit: 'cover' }} />
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '16px', color: '#17263a' }}>{fullName}</div>
                       <span style={{ fontSize: '12px', color: '#2fb463', fontWeight: 500 }}>Active</span>
@@ -2893,7 +3040,9 @@ export function WorkerSummaryPage() {
               </div>
             </div>
 
-            {/* Row 2: Work History */}
+            {/* ============================================================
+            Row 2: Work History
+            ============================================================ */}
             <div className="wizardSummaryWideCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', marginBottom: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                 <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Work History</span>
@@ -2922,8 +3071,8 @@ export function WorkerSummaryPage() {
                   <div>TRADE</div>
                   <div>ROLE</div>
                 </div>
-                {(projects.length ? projects : fallbackProjects).map((p, idx) => (
-                  <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
+                {(projects.length > 0 ? projects : fallbackProjects).map((p, idx) => (
+                  <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length > 0 ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
                     <div>{displayValue(p.name, 'ABC construct')}</div>
                     <div>{displayValue(p.client, 'XYZ Inc')}</div>
                     <div>{displayValue(p.trade, 'Drywall')}</div>
@@ -2933,7 +3082,9 @@ export function WorkerSummaryPage() {
               </div>
             </div>
 
-            {/* Row 3: Availability & Rate, Certifications & Safety, Tax Profile, Payment/Bank Details */}
+            {/* ============================================================
+            Row 3: Availability & Rate, Certifications & Safety, Tax Profile, Payment/Bank Details
+            ============================================================ */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
               
               {/* Availability & Rate Card */}
@@ -3078,12 +3229,18 @@ export function WorkerSummaryPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>Bank</span>
-                      <span style={{ color: '#17263a', fontWeight: 500 }}>Chase Bank</span>
+                      <span style={{ color: '#17263a', fontWeight: 500 }}>{displayValue(bankName)}</span>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>ACH</span>
-                      <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                        <IconCheckCircle style={{ width: '16px', height: '16px' }} /> Enabled
+                      <span style={{ color: achEnabled === 'Enabled' ? '#2fb463' : 'rgba(23,38,58,0.6)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        {achEnabled === 'Enabled' ? (
+                          <>
+                            <IconCheckCircle style={{ width: '16px', height: '16px', color: '#2fb463' }} /> Enabled
+                          </>
+                        ) : (
+                          'Not enabled'
+                        )}
                       </span>
                     </div>
                   </div>
@@ -3091,7 +3248,9 @@ export function WorkerSummaryPage() {
               </div>
             </div>
 
-            {/* Row 4: Medical Details & Emergency Contact */}
+            {/* ============================================================
+            Row 4: Medical Details & Emergency Contact
+            ============================================================ */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
               
               {/* Medical Details Card */}
@@ -3156,22 +3315,24 @@ export function WorkerSummaryPage() {
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px 16px' }}>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Name</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactName)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(emergencyName)}</div>
                     </div>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Relationship</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(acknowledgments.emergencyContactRelationship)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(emergencyRelationship)}</div>
                     </div>
                     <div>
                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>Phone</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{formatPhone(acknowledgments.emergencyContactPhone)}</div>
+                      <div style={{ fontSize: '14px', color: '#17263a' }}>{formatPhone(emergencyPhone)}</div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Footer Buttons */}
+            {/* ============================================================
+            Footer Buttons
+            ============================================================ */}
             <div className="wizardSummaryFooter" style={{ display: 'flex', justifyContent: 'center', gap: '16px', paddingTop: '20px', borderTop: '1px solid rgba(18,38,58,0.08)' }}>
               <button type="button" className="btn btnPrimary" onClick={() => navigate('/wizard')} style={{ padding: '10px 24px', borderRadius: '8px', background: '#0f4ea9', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 600 }}>
                 Back to wizard
