@@ -1075,21 +1075,36 @@ export function WorkerVerifyPage() {
   }
 
   // ✅ FIXED: Proceed to wizard without clearing localStorage
-  const handleProceed = () => {
-    if (emailVerified && phoneVerified) {
-      // ✅ DO NOT clear localStorage here
-      // The wizard will handle clearing it after loading the data
-      
-      navigate('/wizard', { 
-        state: { 
-          email, 
-          phoneNumber,
-          isEmailVerified: emailVerified,
-          isPhoneVerified: phoneVerified
-        } 
-      })
-    }
+const handleProceed = () => {
+  if (emailVerified && phoneVerified) {
+    // ✅ Get data from sessionStorage (preferred) or location.state
+    const firstName = sessionStorage.getItem('wizardFirstName') || location?.state?.firstName || ''
+    const lastName = sessionStorage.getItem('wizardLastName') || location?.state?.lastName || ''
+    const dob = sessionStorage.getItem('wizardDob') || location?.state?.dob || ''
+    const language = sessionStorage.getItem('wizardLanguage') || ''
+    
+    // ✅ Clear sessionStorage data (we're done with it)
+    sessionStorage.removeItem('wizardFirstName')
+    sessionStorage.removeItem('wizardLastName')
+    sessionStorage.removeItem('wizardEmail')
+    sessionStorage.removeItem('wizardPhone')
+    sessionStorage.removeItem('wizardDob')
+    sessionStorage.removeItem('wizardLanguage')
+    sessionStorage.removeItem('wizardFromRegister')
+    
+    navigate('/wizard', { 
+      state: { 
+        email, 
+        phoneNumber,
+        firstName,
+        lastName,
+        dob,
+        language,
+        fromVerification: true
+      } 
+    })
   }
+}
 
   return (
     <div className="appShell">

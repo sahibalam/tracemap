@@ -673,60 +673,68 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
   }
 
-  const onSubmit = (e) => {
-    e.preventDefault()
-    
-    if (mode === 'login') {
-      console.log('Login:', loginUsername, loginPassword)
-      return
-    }
-    
-    const phoneDigits = phoneNumber.replace(/\D/g, '')
-    const isPhoneValid = phoneDigits.length === 10
-    const passwordValidation = validatePassword(registerPassword)
-    const isPasswordValid = passwordValidation.valid && registerPassword === confirmPassword
-    
-    // Validate DOB
-    const age = calculateAge(formatDateToYYYYMMDD(dob))
-    const isAgeValid = age >= 18
-    
-    if (!isAgeValid) {
-      setDobError('You must be at least 18 years old to register')
-    }
-    
-    if (!isPhoneValid) {
-      setPhoneError('Phone number must be 10 digits')
-    }
-    if (!passwordValidation.valid) {
-      setPasswordError(passwordValidation.message)
-    }
-    if (registerPassword !== confirmPassword) {
-      setPasswordError('Passwords do not match')
-    }
-    
-    if (isPhoneValid && isPasswordValid && isAgeValid) {
-      // Store data in localStorage for email verification callback
-      localStorage.setItem('pendingEmail', email)
-      localStorage.setItem('pendingPassword', registerPassword)
-      localStorage.setItem('pendingPhoneNumber', phoneNumber)
-      localStorage.setItem('pendingFirstName', firstName)
-      localStorage.setItem('pendingLastName', lastName)
-      localStorage.setItem('pendingDob', formatDateToYYYYMMDD(dob))
-      localStorage.setItem('pendingLanguage', language)
-      
-      navigate('/verify', { 
-        state: { 
-          email, 
-          phoneNumber, 
-          fullName: `${firstName} ${lastName}`,
-          firstName,
-          lastName,
-          registerPassword,
-          dob: formatDateToYYYYMMDD(dob)
-        } 
-      })
-    }
+ const onSubmit = (e) => {
+  e.preventDefault()
+  
+  if (mode === 'login') {
+    console.log('Login:', loginUsername, loginPassword)
+    return
   }
+  
+  const phoneDigits = phoneNumber.replace(/\D/g, '')
+  const isPhoneValid = phoneDigits.length === 10
+  const passwordValidation = validatePassword(registerPassword)
+  const isPasswordValid = passwordValidation.valid && registerPassword === confirmPassword
+  
+  const age = calculateAge(formatDateToYYYYMMDD(dob))
+  const isAgeValid = age >= 18
+  
+  if (!isAgeValid) {
+    setDobError('You must be at least 18 years old to register')
+  }
+  
+  if (!isPhoneValid) {
+    setPhoneError('Phone number must be 10 digits')
+  }
+  if (!passwordValidation.valid) {
+    setPasswordError(passwordValidation.message)
+  }
+  if (registerPassword !== confirmPassword) {
+    setPasswordError('Passwords do not match')
+  }
+  
+  if (isPhoneValid && isPasswordValid && isAgeValid) {
+    // ✅ Store in localStorage (for email verification callback)
+    localStorage.setItem('pendingEmail', email)
+    localStorage.setItem('pendingPassword', registerPassword)
+    localStorage.setItem('pendingPhoneNumber', phoneNumber)
+    localStorage.setItem('pendingFirstName', firstName)
+    localStorage.setItem('pendingLastName', lastName)
+    localStorage.setItem('pendingDob', formatDateToYYYYMMDD(dob))
+    localStorage.setItem('pendingLanguage', language)
+    
+    // ✅ ALSO store in sessionStorage (for wizard auto-populate)
+    sessionStorage.setItem('wizardFirstName', firstName)
+    sessionStorage.setItem('wizardLastName', lastName)
+    sessionStorage.setItem('wizardEmail', email)
+    sessionStorage.setItem('wizardPhone', phoneNumber)
+    sessionStorage.setItem('wizardDob', formatDateToYYYYMMDD(dob))
+    sessionStorage.setItem('wizardLanguage', language)
+    sessionStorage.setItem('wizardFromRegister', 'true')
+    
+    navigate('/verify', { 
+      state: { 
+        email, 
+        phoneNumber, 
+        fullName: `${firstName} ${lastName}`,
+        firstName,
+        lastName,
+        registerPassword,
+        dob: formatDateToYYYYMMDD(dob)
+      } 
+    })
+  }
+}
 
   const getStrengthColor = () => {
     switch(passwordStrength) {
