@@ -4,20 +4,24 @@
 
 
 
-
 // backend/src/controllers/authController.js
 import { sendVerificationEmail } from '../services/emailService.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { docClient, WORKERS_TABLE } from '../config/aws.js'
-import { GetCommand, ScanCommand } from '@aws-sdk/lib-dynamodb'
+import { 
+  GetCommand, 
+  ScanCommand, 
+  PutCommand, 
+  UpdateCommand 
+} from '@aws-sdk/lib-dynamodb'
 
 // ✅ Store verification tokens (temporary - use Redis in production)
 const verificationStore = {}
 const passwordResetStore = {}
 
 // ============================================================
-// 📧 EMAIL VERIFICATION (Already working with AWS SES)
+// 📧 EMAIL VERIFICATION
 // ============================================================
 
 export const sendEmailVerification = async (req, res) => {
@@ -68,7 +72,7 @@ export const verifyEmail = async (req, res) => {
 }
 
 // ============================================================
-// 🔐 LOGIN - NEW
+// 🔐 LOGIN
 // ============================================================
 
 export const login = async (req, res) => {
@@ -109,7 +113,7 @@ export const login = async (req, res) => {
 
     const user = users[0]
     
-    // ✅ Check if password is set and verified
+    // ✅ Check if password is set
     if (!user.passwordHash) {
       return res.status(401).json({
         success: false,
@@ -156,7 +160,7 @@ export const login = async (req, res) => {
 }
 
 // ============================================================
-// 📝 REGISTER - NEW
+// 📝 REGISTER
 // ============================================================
 
 export const register = async (req, res) => {
@@ -197,7 +201,7 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10)
     const passwordHash = await bcrypt.hash(password, salt)
 
-    // ✅ Create user ID (you can use Firebase UID or generate your own)
+    // ✅ Create user ID
     const userId = `USER_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
     // ✅ Create profile in DynamoDB
@@ -217,6 +221,7 @@ export const register = async (req, res) => {
       }
     }
 
+    // ✅ Save to DynamoDB
     await docClient.send(new PutCommand({
       TableName: WORKERS_TABLE,
       Item: {
@@ -265,7 +270,7 @@ export const register = async (req, res) => {
 }
 
 // ============================================================
-//🔑 PASSWORD RESET - NEW
+// 🔑 PASSWORD RESET
 // ============================================================
 
 export const forgotPassword = async (req, res) => {
