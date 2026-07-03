@@ -1800,7 +1800,7 @@ import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { TopNav } from '../../common/components/TopNav'
 import { TextField } from '../../common/components/TextField'
-import workerService from '../services/workerService'
+import workerService from "../../services/workerService";
 import wizardService from '../services/workerWizardService'
 
 // ============================================================
