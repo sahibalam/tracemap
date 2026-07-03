@@ -3935,7 +3935,6 @@
 
 
 
-
 // src/worker/pages/WorkerWizardPage.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -3948,6 +3947,19 @@ import { WizardStep5 } from '../components/wizard-steps/WizardStep5'
 import wizardService from '../services/workerWizardService'
 import workerService from '../services/workerService'
 import { auth } from '../../firebase/config'
+
+// ✅ Helper function to convert YYYY-MM-DD to MM/DD/YYYY
+const formatDateForDisplay = (dateStr) => {
+  if (!dateStr) return ''
+  // If already in MM/DD/YYYY format, return as is
+  if (dateStr.includes('/')) return dateStr
+  // Convert YYYY-MM-DD to MM/DD/YYYY
+  const parts = dateStr.split('-')
+  if (parts.length === 3) {
+    return `${parts[1]}/${parts[2]}/${parts[0]}`
+  }
+  return dateStr
+}
 
 // Icons for sidebar
 function IconGrid(props) {
@@ -4020,7 +4032,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
     const lastName = localStorage.getItem('pendingLastName') || ''
     const email = localStorage.getItem('pendingEmail') || ''
     const phone = localStorage.getItem('pendingPhoneNumber') || ''
-    const dob = localStorage.getItem('pendingDob') || ''
+    const dob = localStorage.getItem('pendingDob') || ''  // YYYY-MM-DD format
     const language = localStorage.getItem('pendingLanguage') || ''
     
     // Also check location.state (from verification page)
@@ -4033,7 +4045,9 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
       legalLastName: fromVerification ? (state.lastName || lastName) : lastName,
       emailAddress: fromVerification ? (state.email || email) : email,
       mobilePhone: fromVerification ? (state.phoneNumber || phone) : phone,
-      dob: fromVerification ? (state.dob || dob) : dob,
+      dob: fromVerification 
+        ? (formatDateForDisplay(state.dob) || formatDateForDisplay(dob))  // ✅ Convert
+        : formatDateForDisplay(dob),  // ✅ Convert
       addressLine1: '',
       addressLine2: '',
       city: '',
@@ -4134,7 +4148,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
             legalLastName: state.lastName || prev.legalLastName || '',
             emailAddress: state.email || prev.emailAddress || '',
             mobilePhone: state.phoneNumber || prev.mobilePhone || '',
-            dob: state.dob || prev.dob || '',
+            dob: formatDateForDisplay(state.dob) || prev.dob || '',  // ✅ Convert
             english: state.language === 'en' || prev.english || false,
             spanish: state.language === 'es' || prev.spanish || false,
           }))
@@ -4147,6 +4161,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
         // ✅ Check for existing data in localStorage
         const firstName = localStorage.getItem('pendingFirstName')
         const email = localStorage.getItem('pendingEmail')
+        const dob = localStorage.getItem('pendingDob')
         
         if (firstName || email) {
           console.log('✅ Loading wizard from localStorage')
@@ -4156,7 +4171,7 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
             legalLastName: localStorage.getItem('pendingLastName') || prev.legalLastName || '',
             emailAddress: email || prev.emailAddress || '',
             mobilePhone: localStorage.getItem('pendingPhoneNumber') || prev.mobilePhone || '',
-            dob: localStorage.getItem('pendingDob') || prev.dob || '',
+            dob: formatDateForDisplay(dob) || prev.dob || '',  // ✅ Convert
             english: localStorage.getItem('pendingLanguage') === 'en' || prev.english || false,
             spanish: localStorage.getItem('pendingLanguage') === 'es' || prev.spanish || false,
           }))
