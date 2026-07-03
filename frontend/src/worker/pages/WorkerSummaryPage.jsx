@@ -5312,7 +5312,7 @@ export function WorkerSummaryPage() {
                     />
                     <div>
                       <div style={{ fontWeight: 600, fontSize: '16px', color: '#17263a' }}>{fullName}</div>
-                      <span style={{ fontSize: '12px', color: '#2fb463', fontWeight: 500 }}>Active</span>
+                      <span style={{ fontSize: '12px', color: '#e0d616', fontWeight: 500 }}>Pending</span>
                     </div>
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>

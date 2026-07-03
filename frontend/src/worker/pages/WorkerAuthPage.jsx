@@ -2139,48 +2139,47 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 
                 <div className="formGrid2">
                   <TextField placeholder="Email" icon={<IconMail />} value={email} onChange={setEmail} />
-                  <div className="auth-date-picker">
-                    <DatePicker
-                      selected={parseDate(dob)}
-                      onChange={handleDateChange}
-                      dateFormat="MM/dd/yyyy"
-                      placeholderText="MM/DD/YYYY"
-                      maxDate={new Date()}
-                      showYearDropdown
-                      showMonthDropdown
-                      dropdownMode="select"
-                      yearDropdownItemNumber={100}
-                      scrollableYearDropdown
-                      className="date-picker-input"
-                      popperPlacement="bottom-start"
-                      popperModifiers={[
-                        {
-                          name: 'offset',
-                          options: {
-                            offset: [0, 8],
-                          },
-                        },
-                        {
-                          name: 'preventOverflow',
-                          options: {
-                            boundariesElement: 'viewport',
-                          },
-                        },
-                        {
-                          name: 'flip',
-                          options: {
-                            fallbackPlacements: ['top-start', 'bottom-start'],
-                          },
-                        },
-                      ]}
-                    />
-                    {dobError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{dobError}</div>}
-                    {!dobError && dob && calculateAge(formatDateToYYYYMMDD(dob)) >= 18 && (
-                      <div style={{ color: '#2fb463', fontSize: '11px', marginTop: '2px' }}>
-                        ✓ Age: {calculateAge(formatDateToYYYYMMDD(dob))} years
-                      </div>
-                    )}
-                  </div>
+                 <div className="auth-date-picker">
+  <DatePicker
+    selected={parseDate(dob)}
+    onChange={handleDateChange}
+    dateFormat="MM/dd/yyyy"
+    placeholderText="MM/DD/YYYY"
+    maxDate={new Date()}
+    showYearDropdown
+    showMonthDropdown
+    dropdownMode="select"
+    yearDropdownItemNumber={100}
+    scrollableYearDropdown
+    // ✅ CRITICAL FIX: Use "bottom-start" with proper modifiers
+    popperPlacement="bottom-start"
+    popperModifiers={[
+      {
+        name: 'offset',
+        options: {
+          offset: [0, 10],
+        },
+      },
+      {
+        name: 'preventOverflow',
+        options: {
+          boundariesElement: 'viewport',
+        },
+      },
+      {
+        name: 'flip',
+        options: {
+          fallbackPlacements: ['top-start', 'bottom-start', 'right', 'left'],
+        },
+      },
+    ]}
+    // ✅ Render the calendar in the body to avoid overflow issues
+    portalId="root"
+    // ✅ Add className for custom styling
+    wrapperClassName="auth-date-picker-wrapper"
+    className="auth-date-picker-input"
+  />
+</div>
                 </div>
                 
                 <div className="formGrid2">
