@@ -2265,7 +2265,6 @@
 
 
 
-
 // src/worker/pages/WorkerAuthPage.jsx
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -2403,7 +2402,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     try {
       console.log('🔐 Attempting login for:', loginUsername)
       
-      // ✅ Use custom auth service
       const result = await authService.login(loginUsername, loginPassword)
       
       if (result.success) {
@@ -2451,7 +2449,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     e.preventDefault()
     
     if (validateRegistration()) {
-      // ✅ Store in localStorage (for email verification callback)
       localStorage.setItem('pendingEmail', email)
       localStorage.setItem('pendingPassword', registerPassword)
       localStorage.setItem('pendingPhoneNumber', phoneNumber)
@@ -2460,7 +2457,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       localStorage.setItem('pendingDob', formatDateToYYYYMMDD(dob))
       localStorage.setItem('pendingLanguage', language)
       
-      // ✅ ALSO store in sessionStorage (for wizard auto-populate)
       sessionStorage.setItem('wizardFirstName', firstName)
       sessionStorage.setItem('wizardLastName', lastName)
       sessionStorage.setItem('wizardEmail', email)
@@ -2645,13 +2641,27 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   }
 
   // ============================================================
-  // STYLES - Complete with DatePicker Fix
+  // STYLES - Fixed Calendar Positioning
   // ============================================================
 
   const customStyles = `
     /* ============================================================
-       DATE PICKER - FIXED POSITIONING
+       DATE PICKER - COMPLETE FIX
     ============================================================ */
+    
+    /* ✅ Make sure calendar appears above everything */
+    .react-datepicker-popper {
+      z-index: 999999 !important;
+      position: fixed !important;
+    }
+
+    /* ✅ Calendar wrapper */
+    .react-datepicker-wrapper {
+      display: block !important;
+      width: 100% !important;
+    }
+
+    /* ✅ Input container */
     .auth-date-picker {
       position: relative;
       width: 100%;
@@ -2703,87 +2713,76 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       opacity: 0.6;
     }
 
-    /* ✅ CRITICAL FIX: Calendar popup positioning */
-    .auth-date-picker .react-datepicker-popper {
+    /* ✅ Calendar popup styles */
+    .react-datepicker {
+      font-family: inherit !important;
+      border-radius: 12px !important;
+      border: 1px solid rgba(18, 38, 63, 0.08) !important;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04) !important;
+      background: white !important;
+      padding: 8px !important;
+      overflow: hidden !important;
+      font-size: 13px !important;
       z-index: 999999 !important;
-      position: fixed !important;
-      inset: auto !important;
+      position: relative !important;
     }
 
-    .auth-date-picker .react-datepicker {
-      font-family: inherit;
-      border-radius: 12px;
-      border: 1px solid rgba(18, 38, 63, 0.08);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
-      background: white;
-      padding: 8px;
-      overflow: hidden;
-      font-size: 13px;
-      z-index: 999999;
-      position: relative;
+    .react-datepicker__header {
+      background: white !important;
+      border-bottom: 1px solid rgba(18, 38, 63, 0.06) !important;
+      padding: 10px 0 6px 0 !important;
+      border-radius: 12px 12px 0 0 !important;
     }
 
-    .auth-date-picker .react-datepicker__header {
-      background: white;
-      border-bottom: 1px solid rgba(18, 38, 63, 0.06);
-      padding: 10px 0 6px 0;
-      border-radius: 12px 12px 0 0;
+    .react-datepicker__current-month {
+      color: #17263a !important;
+      font-weight: 700 !important;
+      font-size: 14px !important;
+      padding-bottom: 4px !important;
     }
 
-    .auth-date-picker .react-datepicker__current-month {
-      color: #17263a;
-      font-weight: 700;
-      font-size: 14px;
-      padding-bottom: 4px;
+    .react-datepicker__day-name {
+      color: rgba(23, 38, 58, 0.5) !important;
+      font-weight: 600 !important;
+      font-size: 11px !important;
+      width: 32px !important;
+      margin: 2px !important;
     }
 
-    .auth-date-picker .react-datepicker__day-name {
-      color: rgba(23, 38, 58, 0.5);
-      font-weight: 600;
-      font-size: 11px;
-      width: 32px;
-      margin: 2px;
+    .react-datepicker__day {
+      width: 32px !important;
+      height: 32px !important;
+      line-height: 32px !important;
+      margin: 2px !important;
+      border-radius: 8px !important;
+      font-size: 13px !important;
+      color: #17263a !important;
+      transition: all 0.15s ease !important;
+      cursor: pointer !important;
     }
 
-    .auth-date-picker .react-datepicker__day {
-      width: 32px;
-      height: 32px;
-      line-height: 32px;
-      margin: 2px;
-      border-radius: 8px;
-      font-size: 13px;
-      color: #17263a;
-      transition: all 0.15s ease;
-      cursor: pointer;
+    .react-datepicker__day:hover {
+      background: rgba(15, 78, 169, 0.08) !important;
+      border-radius: 8px !important;
     }
 
-    .auth-date-picker .react-datepicker__day:hover {
-      background: rgba(15, 78, 169, 0.08);
-      border-radius: 8px;
-    }
-
-    .auth-date-picker .react-datepicker__day--selected {
+    .react-datepicker__day--selected {
       background: #0f4ea9 !important;
       color: white !important;
-      border-radius: 8px;
-      font-weight: 600;
+      border-radius: 8px !important;
+      font-weight: 600 !important;
     }
 
-    .auth-date-picker .react-datepicker__day--selected:hover {
+    .react-datepicker__day--selected:hover {
       background: #0b3f90 !important;
     }
 
-    .auth-date-picker .react-datepicker__day--keyboard-selected {
-      background: rgba(15, 78, 169, 0.15);
-      border-radius: 8px;
+    .react-datepicker__day--today {
+      font-weight: 700 !important;
+      color: #0f4ea9 !important;
     }
 
-    .auth-date-picker .react-datepicker__day--today {
-      font-weight: 700;
-      color: #0f4ea9;
-    }
-
-    .auth-date-picker .react-datepicker__day--today::after {
+    .react-datepicker__day--today::after {
       content: '';
       display: block;
       width: 4px;
@@ -2794,64 +2793,41 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       margin-top: -2px;
     }
 
-    .auth-date-picker .react-datepicker__day--disabled {
-      color: rgba(23, 38, 58, 0.2);
-      cursor: not-allowed;
+    .react-datepicker__navigation {
+      top: 12px !important;
+      background: transparent !important;
+      border: none !important;
+      cursor: pointer !important;
+      padding: 0 !important;
+      width: 28px !important;
+      height: 28px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      border-radius: 6px !important;
+      transition: all 0.15s ease !important;
     }
 
-    .auth-date-picker .react-datepicker__day--disabled:hover {
-      background: transparent;
-    }
-
-    .auth-date-picker .react-datepicker__day--outside-month {
-      color: rgba(23, 38, 58, 0.2);
-    }
-
-    .auth-date-picker .react-datepicker__navigation {
-      top: 12px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      transition: all 0.15s ease;
-    }
-
-    .auth-date-picker .react-datepicker__navigation:hover {
-      background: rgba(15, 78, 169, 0.08);
-    }
-
-    .auth-date-picker .react-datepicker__navigation-icon::before {
-      border-color: #17263a;
-      border-width: 2px 2px 0 0;
-      height: 7px;
-      width: 7px;
-    }
-
-    .auth-date-picker .react-datepicker__day--weekend {
-      color: #e11d48;
-    }
-
-    .auth-date-picker .react-datepicker__day--weekend.react-datepicker__day--selected {
-      color: white;
+    .react-datepicker__navigation:hover {
+      background: rgba(15, 78, 169, 0.08) !important;
     }
 
     /* ✅ Fix for popper positioning */
-    .react-datepicker-popper {
-      z-index: 999999 !important;
-    }
-
     .react-datepicker-popper[data-placement^="bottom"] {
       padding-top: 8px !important;
     }
 
     .react-datepicker-popper[data-placement^="top"] {
       padding-bottom: 8px !important;
+    }
+
+    /* ✅ Ensure calendar doesn't get clipped */
+    .authCardCompact {
+      max-width: 100% !important;
+      overflow: visible !important;
+      padding: 16px 20px 20px 20px !important;
+      max-height: 90vh !important;
+      overflow-y: auto !important;
     }
 
     /* ============================================================
@@ -2964,32 +2940,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       min-width: 0;
       max-width: 100%;
       box-sizing: border-box;
-    }
-
-    /* ============================================================
-       AUTH CARD - FIX OVERFLOW
-    ============================================================ */
-    .authCardCompact {
-      max-width: 100%;
-      overflow: visible !important; /* ✅ Changed from hidden to visible */
-      padding: 16px 20px 20px 20px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .authCard {
-      max-width: 100%;
-      box-sizing: border-box;
-      position: relative;
-      z-index: 1;
-    }
-
-    .authMain {
-      max-width: 100%;
-      padding: 20px;
-      box-sizing: border-box;
-      position: relative;
-      z-index: 1;
     }
 
     /* ============================================================
@@ -3143,7 +3093,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 <div className="formGrid2">
                   <TextField placeholder="Email" icon={<IconMail />} value={email} onChange={setEmail} />
                   
-                  {/* ✅ FIXED: DatePicker with proper configuration */}
+                  {/* ✅ FIXED: DatePicker with correct positioning */}
                   <div className="auth-date-picker">
                     <DatePicker
                       selected={parseDate(dob)}
@@ -3156,7 +3106,8 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                       dropdownMode="select"
                       yearDropdownItemNumber={100}
                       scrollableYearDropdown
-                      // ✅ CRITICAL FIX: Proper popper configuration
+                      // ✅ Remove portalId - let it render normally
+                      // ✅ Use correct popper placement
                       popperPlacement="bottom-start"
                       popperModifiers={[
                         {
@@ -3178,8 +3129,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                           },
                         },
                       ]}
-                      // ✅ Render in portal to avoid overflow
-                      portalId="root"
                     />
                     {dobError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{dobError}</div>}
                     {!dobError && dob && calculateAge(formatDateToYYYYMMDD(dob)) >= 18 && (
