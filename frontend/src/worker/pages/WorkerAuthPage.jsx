@@ -4180,7 +4180,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                   <TextField placeholder="Last name" icon={<IconUser />} value={lastName} onChange={setLastName} />
                 </div>
                 
-              <div className="formGrid2">
+<div className="formGrid2">
   {/* ✅ REPLACE THIS ENTIRE BLOCK */}
   <div className="field">
     <div className="fieldControl">
