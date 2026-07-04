@@ -3300,7 +3300,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [language, setLanguage] = useState('')
   
-  // ✅ Email validation states
+  // Email validation states
   const [emailError, setEmailError] = useState('')
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
   const [emailCheckTimeout, setEmailCheckTimeout] = useState(null)
@@ -3506,6 +3506,8 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   // ============================================================
   
   const checkEmailExists = async (emailToCheck) => {
+    console.log('🔍 checkEmailExists called with:', emailToCheck)
+    
     if (!emailToCheck || emailToCheck.length < 3) {
       setEmailError('')
       setEmailValid(false)
@@ -3524,17 +3526,19 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     setEmailValid(false)
 
     try {
-      console.log('🔍 Checking email:', emailToCheck)
+      console.log('🔍 Checking email via API:', emailToCheck)
       
       const response = await fetch(`/api/worker/email/${encodeURIComponent(emailToCheck)}`)
       const data = await response.json()
       console.log('📥 Email check response:', data)
 
       if (data.success && data.data && data.data.length > 0) {
+        console.log('❌ Email EXISTS:', emailToCheck)
         setEmailError('❌ This email is already registered. Please login instead.')
         setEmailValid(false)
         return true
       } else {
+        console.log('✅ Email AVAILABLE:', emailToCheck)
         setEmailError('')
         setEmailValid(true)
         return false
@@ -3549,7 +3553,9 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
   }
 
+  // ✅ FIXED: handleEmailChange now receives value directly
   const handleEmailChange = (value) => {
+    console.log('📝 handleEmailChange called with value:', value)
     setEmail(value)
     setEmailError('')
     setEmailValid(false)
@@ -3559,7 +3565,9 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
 
     if (value && value.length > 3) {
+      console.log('⏳ Scheduling email check for:', value)
       const timeout = setTimeout(() => {
+        console.log('⏰ Running email check for:', value)
         checkEmailExists(value)
       }, 500)
       setEmailCheckTimeout(timeout)
@@ -4169,11 +4177,12 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 </div>
                 
                 <div className="formGrid2">
+                  {/* ✅ FIXED: onChange passes value directly */}
                   <TextField 
                     placeholder="Email" 
                     icon={<IconMail />} 
                     value={email} 
-                    onChange={(e) => handleEmailChange(e)} 
+                    onChange={(value) => handleEmailChange(value)} 
                     type="email"
                   />
                   
