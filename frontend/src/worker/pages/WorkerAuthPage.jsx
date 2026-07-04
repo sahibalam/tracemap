@@ -4180,61 +4180,67 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                   <TextField placeholder="Last name" icon={<IconUser />} value={lastName} onChange={setLastName} />
                 </div>
                 
-                <div className="formGrid2">
-                  {/* ✅ Email field with proper onChange */}
-                  <TextField 
-                    placeholder="Email" 
-                    icon={<IconMail />} 
-                    value={email} 
-                    onChange={(value) => {
-                      console.log('🔥 TextField onChange triggered! Value:', value)
-                      handleEmailChange(value)
-                    }} 
-                    type="email"
-                  />
-                  
-                  <div className="auth-date-picker">
-                    <DatePicker
-                      selected={parseDate(dob)}
-                      onChange={handleDateChange}
-                      dateFormat="MM/dd/yyyy"
-                      placeholderText="MM/DD/YYYY"
-                      maxDate={new Date()}
-                      showYearDropdown
-                      showMonthDropdown
-                      dropdownMode="select"
-                      yearDropdownItemNumber={100}
-                      scrollableYearDropdown
-                      popperPlacement="bottom-start"
-                      popperModifiers={[
-                        {
-                          name: 'offset',
-                          options: {
-                            offset: [0, 10],
-                          },
-                        },
-                        {
-                          name: 'preventOverflow',
-                          options: {
-                            boundariesElement: 'viewport',
-                          },
-                        },
-                        {
-                          name: 'flip',
-                          options: {
-                            fallbackPlacements: ['top-start', 'bottom-start', 'right', 'left'],
-                          },
-                        },
-                      ]}
-                    />
-                    {dobError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{dobError}</div>}
-                    {!dobError && dob && calculateAge(formatDateToYYYYMMDD(dob)) >= 18 && (
-                      <div style={{ color: '#2fb463', fontSize: '11px', marginTop: '2px' }}>
-                        ✓ Age: {calculateAge(formatDateToYYYYMMDD(dob))} years
-                      </div>
-                    )}
-                  </div>
-                </div>
+              <div className="formGrid2">
+  {/* ✅ REPLACE THIS ENTIRE BLOCK */}
+  <div className="field">
+    <div className="fieldControl">
+      <span className="fieldIcon"><IconMail /></span>
+      <input
+        type="email"
+        className="fieldInput"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => {
+          const value = e.target.value
+          console.log('🔥🔥🔥 DIRECT INPUT CHANGED:', value)
+          handleEmailChange(value)
+        }}
+      />
+    </div>
+  </div>
+  
+  <div className="auth-date-picker">
+    <DatePicker
+      selected={parseDate(dob)}
+      onChange={handleDateChange}
+      dateFormat="MM/dd/yyyy"
+      placeholderText="MM/DD/YYYY"
+      maxDate={new Date()}
+      showYearDropdown
+      showMonthDropdown
+      dropdownMode="select"
+      yearDropdownItemNumber={100}
+      scrollableYearDropdown
+      popperPlacement="bottom-start"
+      popperModifiers={[
+        {
+          name: 'offset',
+          options: {
+            offset: [0, 10],
+          },
+        },
+        {
+          name: 'preventOverflow',
+          options: {
+            boundariesElement: 'viewport',
+          },
+        },
+        {
+          name: 'flip',
+          options: {
+            fallbackPlacements: ['top-start', 'bottom-start', 'right', 'left'],
+          },
+        },
+      ]}
+    />
+    {dobError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{dobError}</div>}
+    {!dobError && dob && calculateAge(formatDateToYYYYMMDD(dob)) >= 18 && (
+      <div style={{ color: '#2fb463', fontSize: '11px', marginTop: '2px' }}>
+        ✓ Age: {calculateAge(formatDateToYYYYMMDD(dob))} years
+      </div>
+    )}
+  </div>
+</div>
 
                 {/* ✅ Email validation status */}
                 <div style={{ marginTop: '-6px', marginBottom: '4px' }}>
