@@ -3355,74 +3355,93 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   // ✅ CHECK EMAIL EXISTS IN REAL-TIME - FIXED
   // ============================================================
   
-  const checkEmailExists = async (emailToCheck) => {
-    if (!emailToCheck || emailToCheck.length < 3) {
-      setEmailError('')
-      setEmailValid(false)
-      return false
-    }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(emailToCheck)) {
-      setEmailError('Please enter a valid email address')
-      setEmailValid(false)
-      return false
-    }
-
-    setIsCheckingEmail(true)
+const checkEmailExists = async (emailToCheck) => {
+  console.log('🔍 checkEmailExists called with:', emailToCheck)
+  
+  if (!emailToCheck || emailToCheck.length < 3) {
+    console.log('❌ Email too short, skipping check')
     setEmailError('')
     setEmailValid(false)
+    return false
+  }
 
-    try {
-      console.log('🔍 Checking email:', emailToCheck)
-      
-      // ✅ Use direct API call
-      const response = await fetch(`/api/worker/email/${encodeURIComponent(emailToCheck)}`)
-      const data = await response.json()
-      console.log('📥 Email check response:', data)
+  // Basic email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!emailRegex.test(emailToCheck)) {
+    console.log('❌ Invalid email format')
+    setEmailError('Please enter a valid email address')
+    setEmailValid(false)
+    return false
+  }
 
-      // ✅ Check if email exists - data.data is an array
-      if (data.success && data.data && data.data.length > 0) {
-        setEmailError('❌ This email is already registered. Please login instead.')
-        setEmailValid(false)
-        console.log('❌ Email exists:', emailToCheck)
-        return true
-      } else {
-        setEmailError('')
-        setEmailValid(true)
-        console.log('✅ Email available:', emailToCheck)
-        return false
+  setIsCheckingEmail(true)
+  setEmailError('')
+  setEmailValid(false)
+
+  try {
+    console.log('🔍 Checking email via API:', emailToCheck)
+    
+    // ✅ Use correct API endpoint with /api/ prefix
+    const response = await fetch(`/api/worker/email/${encodeURIComponent(emailToCheck)}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
       }
-    } catch (error) {
-      console.error('❌ Error checking email:', error)
+    })
+    
+    const data = await response.json()
+    console.log('📥 Email check API response:', data)
+    console.log('📥 Data.success:', data.success)
+    console.log('📥 Data.data:', data.data)
+    console.log('📥 Data.data.length:', data.data?.length)
+
+    // ✅ Check if email exists - data.data is an array
+    if (data.success && data.data && data.data.length > 0) {
+      console.log('❌ Email EXISTS:', emailToCheck)
+      setEmailError('❌ This email is already registered. Please login instead.')
+      setEmailValid(false)
+      return true
+    } else {
+      console.log('✅ Email AVAILABLE:', emailToCheck)
       setEmailError('')
       setEmailValid(true)
       return false
-    } finally {
-      setIsCheckingEmail(false)
     }
-  }
-
-  // ✅ Debounced email check
-  const handleEmailChange = (value) => {
-    setEmail(value)
+  } catch (error) {
+    console.error('❌ Error checking email:', error)
     setEmailError('')
-    setEmailValid(false)
-    
-    // Clear previous timeout
-    if (emailCheckTimeout) {
-      clearTimeout(emailCheckTimeout)
-    }
-
-    // Check email after 500ms of typing pause
-    if (value && value.length > 3) {
-      const timeout = setTimeout(() => {
-        checkEmailExists(value)
-      }, 500)
-      setEmailCheckTimeout(timeout)
-    }
+    setEmailValid(true)
+    return false
+  } finally {
+    setIsCheckingEmail(false)
   }
+}
+
+// ✅ Debounced email check
+const handleEmailChange = (value) => {
+  console.log('📝 handleEmailChange called with:', value)
+  setEmail(value)
+  setEmailError('')
+  setEmailValid(false)
+  
+  // Clear previous timeout
+  if (emailCheckTimeout) {
+    clearTimeout(emailCheckTimeout)
+  }
+
+  // Check email after 500ms of typing pause
+  if (value && value.length > 3) {
+    console.log('⏳ Scheduling email check for:', value)
+    const timeout = setTimeout(() => {
+      console.log('⏰ Running email check for:', value)
+      checkEmailExists(value)
+    }, 500)
+    setEmailCheckTimeout(timeout)
+  } else {
+    console.log('❌ Email too short, not checking')
+  }
+}
 
   // ============================================================
   // ✅ LOGIN HANDLER
