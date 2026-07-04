@@ -3225,6 +3225,9 @@
 
 
 
+
+
+
 // src/worker/pages/WorkerAuthPage.jsx
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -3233,8 +3236,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { TextField, SelectField } from '../../common/components/TextField'
 import { IconUser, IconMail, IconLock, IconPhone, IconGlobe } from '../../common/components/Icons'
 import { formatPhoneNumber } from '../../common/utils/validation'
-import { auth } from '../../firebase/config'
-import { signInWithEmailAndPassword } from 'firebase/auth'
 import workerService from '../services/workerService'
 import authService from '../../services/authService'
 
@@ -3300,10 +3301,11 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [language, setLanguage] = useState('')
   
-  // ✅ NEW: Email already registered error
+  // ✅ Email validation states
   const [emailError, setEmailError] = useState('')
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
   const [emailCheckTimeout, setEmailCheckTimeout] = useState(null)
+  const [emailValid, setEmailValid] = useState(false)
   
   // Password visibility states
   const [showLoginPassword, setShowLoginPassword] = useState(false)
@@ -3350,12 +3352,13 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   }, [location.pathname])
 
   // ============================================================
-  // ✅ CHECK EMAIL EXISTS IN REAL-TIME
+  // ✅ CHECK EMAIL EXISTS IN REAL-TIME - FIXED
   // ============================================================
   
   const checkEmailExists = async (emailToCheck) => {
     if (!emailToCheck || emailToCheck.length < 3) {
       setEmailError('')
+      setEmailValid(false)
       return false
     }
 
@@ -3363,27 +3366,38 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(emailToCheck)) {
       setEmailError('Please enter a valid email address')
+      setEmailValid(false)
       return false
     }
 
     setIsCheckingEmail(true)
     setEmailError('')
+    setEmailValid(false)
 
     try {
-      // ✅ Check if email exists in database
-      const result = await fetch(`/api/worker/email/${encodeURIComponent(emailToCheck)}`)
-      const data = await result.json()
+      console.log('🔍 Checking email:', emailToCheck)
+      
+      // ✅ Use direct API call
+      const response = await fetch(`/api/worker/email/${encodeURIComponent(emailToCheck)}`)
+      const data = await response.json()
+      console.log('📥 Email check response:', data)
 
+      // ✅ Check if email exists - data.data is an array
       if (data.success && data.data && data.data.length > 0) {
         setEmailError('❌ This email is already registered. Please login instead.')
+        setEmailValid(false)
+        console.log('❌ Email exists:', emailToCheck)
         return true
       } else {
         setEmailError('')
+        setEmailValid(true)
+        console.log('✅ Email available:', emailToCheck)
         return false
       }
     } catch (error) {
-      console.error('Error checking email:', error)
-      // Don't show error for network issues, just skip validation
+      console.error('❌ Error checking email:', error)
+      setEmailError('')
+      setEmailValid(true)
       return false
     } finally {
       setIsCheckingEmail(false)
@@ -3394,6 +3408,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   const handleEmailChange = (value) => {
     setEmail(value)
     setEmailError('')
+    setEmailValid(false)
     
     // Clear previous timeout
     if (emailCheckTimeout) {
@@ -3443,7 +3458,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   }
 
   // ============================================================
-  // REGISTER HANDLER - Updated with email check
+  // REGISTER HANDLER
   // ============================================================
   
   const validateRegistration = async () => {
@@ -3454,7 +3469,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     const age = calculateAge(formatDateToYYYYMMDD(dob))
     const isAgeValid = age >= 18
     
-    // ✅ Check if email already exists (if not already checked)
+    // ✅ Check if email already exists
     let isEmailAvailable = true
     if (email && !emailError) {
       const exists = await checkEmailExists(email)
@@ -3861,14 +3876,17 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       overflow-y: auto !important;
     }
 
-    /* Email error styles */
+    /* ✅ Email validation styles */
     .email-error {
       color: #dc2626;
       font-size: 12px;
       margin-top: 4px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
+      padding: 6px 10px;
+      background: #fee2e2;
+      border-radius: 6px;
     }
 
     .email-error a {
@@ -4162,7 +4180,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                     placeholder="Email" 
                     icon={<IconMail />} 
                     value={email} 
-                    onChange={(e) => handleEmailChange(e)} 
+                    onChange={(e) => handleEmailChange(e.target.value)} 
                     type="email"
                   />
                   
@@ -4224,7 +4242,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                       </a>
                     </div>
                   )}
-                  {email && !isCheckingEmail && !emailError && email.length > 3 && (
+                  {email && !isCheckingEmail && !emailError && emailValid && email.length > 3 && (
                     <div className="email-available">
                       <span>✓</span> Email is available
                     </div>
