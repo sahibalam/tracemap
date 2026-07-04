@@ -443,27 +443,27 @@ class WorkerService {
    * @param {string} email - Worker's email address
    * @returns {Promise} Worker data
    */
-  async getWorkerByEmail(email) {
-    try {
-      if (!email) {
-        throw new Error('Email is required')
-      }
-
-      console.log(`📧 Looking for worker with email: ${email}`)
-      
-      const response = await api.get(`/worker/email/${email}`)
-      
-      if (response.data.success) {
-        console.log('✅ Worker found')
-        return response.data
-      } else {
-        throw new Error(response.data.message || 'Worker not found')
-      }
-    } catch (error) {
-      console.error('Error fetching worker by email:', error)
-      throw error
+async getWorkerByEmail(email) {
+  try {
+    if (!email) {
+      throw new Error('Email is required')
     }
+
+    console.log(`📧 Looking for worker with email: ${email}`)
+    
+    const response = await api.get(`/worker/email/${email}`)
+    
+    if (response.data.success) {
+      console.log('✅ Worker found')
+      return response.data
+    } else {
+      throw new Error(response.data.message || 'Worker not found')
+    }
+  } catch (error) {
+    console.error('Error fetching worker by email:', error)
+    throw error
   }
+}
 
   /**
    * ✅ Get all workers (with pagination)
