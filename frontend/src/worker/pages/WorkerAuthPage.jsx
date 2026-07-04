@@ -3236,7 +3236,6 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { TextField, SelectField } from '../../common/components/TextField'
 import { IconUser, IconMail, IconLock, IconPhone, IconGlobe } from '../../common/components/Icons'
 import { formatPhoneNumber } from '../../common/utils/validation'
-import workerService from '../services/workerService'
 import authService from '../../services/authService'
 
 // Eye icon component
@@ -3350,215 +3349,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     const nextMode = location.pathname === '/register' ? 'register' : 'login'
     setMode(nextMode)
   }, [location.pathname])
-
-  // ============================================================
-  // ✅ CHECK EMAIL EXISTS IN REAL-TIME - FIXED
-  // ============================================================
-  
-const checkEmailExists = async (emailToCheck) => {
-  console.log('🔍 checkEmailExists called with:', emailToCheck)
-  
-  if (!emailToCheck || emailToCheck.length < 3) {
-    console.log('❌ Email too short, skipping check')
-    setEmailError('')
-    setEmailValid(false)
-    return false
-  }
-
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!emailRegex.test(emailToCheck)) {
-    console.log('❌ Invalid email format')
-    setEmailError('Please enter a valid email address')
-    setEmailValid(false)
-    return false
-  }
-
-  setIsCheckingEmail(true)
-  setEmailError('')
-  setEmailValid(false)
-
-  try {
-    console.log('🔍 Checking email via API:', emailToCheck)
-    
-    // ✅ Use correct API endpoint with /api/ prefix
-    const response = await fetch(`/api/worker/email/${encodeURIComponent(emailToCheck)}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    })
-    
-    const data = await response.json()
-    console.log('📥 Email check API response:', data)
-    console.log('📥 Data.success:', data.success)
-    console.log('📥 Data.data:', data.data)
-    console.log('📥 Data.data.length:', data.data?.length)
-
-    // ✅ Check if email exists - data.data is an array
-    if (data.success && data.data && data.data.length > 0) {
-      console.log('❌ Email EXISTS:', emailToCheck)
-      setEmailError('❌ This email is already registered. Please login instead.')
-      setEmailValid(false)
-      return true
-    } else {
-      console.log('✅ Email AVAILABLE:', emailToCheck)
-      setEmailError('')
-      setEmailValid(true)
-      return false
-    }
-  } catch (error) {
-    console.error('❌ Error checking email:', error)
-    setEmailError('')
-    setEmailValid(true)
-    return false
-  } finally {
-    setIsCheckingEmail(false)
-  }
-}
-
-// ✅ Debounced email check
-const handleEmailChange = (value) => {
-  console.log('📝 handleEmailChange called with:', value)
-  setEmail(value)
-  setEmailError('')
-  setEmailValid(false)
-  
-  // Clear previous timeout
-  if (emailCheckTimeout) {
-    clearTimeout(emailCheckTimeout)
-  }
-
-  // Check email after 500ms of typing pause
-  if (value && value.length > 3) {
-    console.log('⏳ Scheduling email check for:', value)
-    const timeout = setTimeout(() => {
-      console.log('⏰ Running email check for:', value)
-      checkEmailExists(value)
-    }, 500)
-    setEmailCheckTimeout(timeout)
-  } else {
-    console.log('❌ Email too short, not checking')
-  }
-}
-
-  // ============================================================
-  // ✅ LOGIN HANDLER
-  // ============================================================
-  
-  const handleLogin = async (e) => {
-    e.preventDefault()
-    
-    if (!loginUsername || !loginPassword) {
-      setLoginError('Please enter both email and password')
-      return
-    }
-
-    setLoginLoading(true)
-    setLoginError('')
-
-    try {
-      console.log('🔐 Attempting login for:', loginUsername)
-      
-      const result = await authService.login(loginUsername, loginPassword)
-      
-      if (result.success) {
-        console.log('✅ Login successful')
-        navigate('/wizard/summary', { replace: true })
-      }
-      
-    } catch (error) {
-      console.error('❌ Login error:', error)
-      setLoginError(error.message || 'Login failed. Please try again.')
-    } finally {
-      setLoginLoading(false)
-    }
-  }
-
-  // ============================================================
-  // REGISTER HANDLER
-  // ============================================================
-  
-  const validateRegistration = async () => {
-    const phoneDigits = phoneNumber.replace(/\D/g, '')
-    const isPhoneValid = phoneDigits.length === 10
-    const passwordValidation = validatePassword(registerPassword)
-    const isPasswordValid = passwordValidation.valid && registerPassword === confirmPassword
-    const age = calculateAge(formatDateToYYYYMMDD(dob))
-    const isAgeValid = age >= 18
-    
-    // ✅ Check if email already exists
-    let isEmailAvailable = true
-    if (email && !emailError) {
-      const exists = await checkEmailExists(email)
-      if (exists) {
-        isEmailAvailable = false
-        setEmailError('❌ This email is already registered. Please login instead.')
-      }
-    }
-    
-    if (!isAgeValid) {
-      setDobError('You must be at least 18 years old to register')
-    }
-    if (!isPhoneValid) {
-      setPhoneError('Phone number must be 10 digits')
-    }
-    if (!passwordValidation.valid) {
-      setPasswordError(passwordValidation.message)
-    }
-    if (registerPassword !== confirmPassword) {
-      setPasswordError('Passwords do not match')
-    }
-    
-    return isPhoneValid && isPasswordValid && isAgeValid && isEmailAvailable
-  }
-
-  const handleRegister = async (e) => {
-    e.preventDefault()
-    
-    const isValid = await validateRegistration()
-    
-    if (isValid) {
-      localStorage.setItem('pendingEmail', email)
-      localStorage.setItem('pendingPassword', registerPassword)
-      localStorage.setItem('pendingPhoneNumber', phoneNumber)
-      localStorage.setItem('pendingFirstName', firstName)
-      localStorage.setItem('pendingLastName', lastName)
-      localStorage.setItem('pendingDob', formatDateToYYYYMMDD(dob))
-      localStorage.setItem('pendingLanguage', language)
-      
-      sessionStorage.setItem('wizardFirstName', firstName)
-      sessionStorage.setItem('wizardLastName', lastName)
-      sessionStorage.setItem('wizardEmail', email)
-      sessionStorage.setItem('wizardPhone', phoneNumber)
-      sessionStorage.setItem('wizardDob', formatDateToYYYYMMDD(dob))
-      sessionStorage.setItem('wizardLanguage', language)
-      sessionStorage.setItem('wizardFromRegister', 'true')
-      
-      navigate('/verify', { 
-        state: { 
-          email, 
-          phoneNumber, 
-          fullName: `${firstName} ${lastName}`,
-          firstName,
-          lastName,
-          registerPassword,
-          dob: formatDateToYYYYMMDD(dob)
-        } 
-      })
-    }
-  }
-
-  const onSubmit = (e) => {
-    e.preventDefault()
-    
-    if (mode === 'login') {
-      handleLogin(e)
-    } else {
-      handleRegister(e)
-    }
-  }
 
   // ============================================================
   // HELPER FUNCTIONS
@@ -3708,6 +3498,190 @@ const handleEmailChange = (value) => {
       case 'Medium': return '#f59e0b'
       case 'Strong': return '#2fb463'
       default: return 'rgba(23,38,58,0.3)'
+    }
+  }
+
+  // ============================================================
+  // ✅ CHECK EMAIL EXISTS IN REAL-TIME
+  // ============================================================
+  
+  const checkEmailExists = async (emailToCheck) => {
+    if (!emailToCheck || emailToCheck.length < 3) {
+      setEmailError('')
+      setEmailValid(false)
+      return false
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(emailToCheck)) {
+      setEmailError('Please enter a valid email address')
+      setEmailValid(false)
+      return false
+    }
+
+    setIsCheckingEmail(true)
+    setEmailError('')
+    setEmailValid(false)
+
+    try {
+      console.log('🔍 Checking email:', emailToCheck)
+      
+      const response = await fetch(`/api/worker/email/${encodeURIComponent(emailToCheck)}`)
+      const data = await response.json()
+      console.log('📥 Email check response:', data)
+
+      if (data.success && data.data && data.data.length > 0) {
+        setEmailError('❌ This email is already registered. Please login instead.')
+        setEmailValid(false)
+        return true
+      } else {
+        setEmailError('')
+        setEmailValid(true)
+        return false
+      }
+    } catch (error) {
+      console.error('❌ Error checking email:', error)
+      setEmailError('')
+      setEmailValid(true)
+      return false
+    } finally {
+      setIsCheckingEmail(false)
+    }
+  }
+
+  const handleEmailChange = (value) => {
+    setEmail(value)
+    setEmailError('')
+    setEmailValid(false)
+    
+    if (emailCheckTimeout) {
+      clearTimeout(emailCheckTimeout)
+    }
+
+    if (value && value.length > 3) {
+      const timeout = setTimeout(() => {
+        checkEmailExists(value)
+      }, 500)
+      setEmailCheckTimeout(timeout)
+    }
+  }
+
+  // ============================================================
+  // ✅ LOGIN HANDLER
+  // ============================================================
+  
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    
+    if (!loginUsername || !loginPassword) {
+      setLoginError('Please enter both email and password')
+      return
+    }
+
+    setLoginLoading(true)
+    setLoginError('')
+
+    try {
+      console.log('🔐 Attempting login for:', loginUsername)
+      
+      const result = await authService.login(loginUsername, loginPassword)
+      
+      if (result.success) {
+        console.log('✅ Login successful')
+        navigate('/wizard/summary', { replace: true })
+      }
+      
+    } catch (error) {
+      console.error('❌ Login error:', error)
+      setLoginError(error.message || 'Login failed. Please try again.')
+    } finally {
+      setLoginLoading(false)
+    }
+  }
+
+  // ============================================================
+  // ✅ REGISTER HANDLER
+  // ============================================================
+  
+  const validateRegistration = async () => {
+    const phoneDigits = phoneNumber.replace(/\D/g, '')
+    const isPhoneValid = phoneDigits.length === 10
+    const passwordValidation = validatePassword(registerPassword)
+    const isPasswordValid = passwordValidation.valid && registerPassword === confirmPassword
+    const age = calculateAge(formatDateToYYYYMMDD(dob))
+    const isAgeValid = age >= 18
+    
+    let isEmailAvailable = true
+    if (email && !emailError) {
+      const exists = await checkEmailExists(email)
+      if (exists) {
+        isEmailAvailable = false
+      }
+    }
+    
+    if (!isAgeValid) {
+      setDobError('You must be at least 18 years old to register')
+    }
+    if (!isPhoneValid) {
+      setPhoneError('Phone number must be 10 digits')
+    }
+    if (!passwordValidation.valid) {
+      setPasswordError(passwordValidation.message)
+    }
+    if (registerPassword !== confirmPassword) {
+      setPasswordError('Passwords do not match')
+    }
+    
+    return isPhoneValid && isPasswordValid && isAgeValid && isEmailAvailable
+  }
+
+  const handleRegister = async (e) => {
+    e.preventDefault()
+    
+    const isValid = await validateRegistration()
+    
+    if (isValid) {
+      localStorage.setItem('pendingEmail', email)
+      localStorage.setItem('pendingPassword', registerPassword)
+      localStorage.setItem('pendingPhoneNumber', phoneNumber)
+      localStorage.setItem('pendingFirstName', firstName)
+      localStorage.setItem('pendingLastName', lastName)
+      localStorage.setItem('pendingDob', formatDateToYYYYMMDD(dob))
+      localStorage.setItem('pendingLanguage', language)
+      
+      sessionStorage.setItem('wizardFirstName', firstName)
+      sessionStorage.setItem('wizardLastName', lastName)
+      sessionStorage.setItem('wizardEmail', email)
+      sessionStorage.setItem('wizardPhone', phoneNumber)
+      sessionStorage.setItem('wizardDob', formatDateToYYYYMMDD(dob))
+      sessionStorage.setItem('wizardLanguage', language)
+      sessionStorage.setItem('wizardFromRegister', 'true')
+      
+      navigate('/verify', { 
+        state: { 
+          email, 
+          phoneNumber, 
+          fullName: `${firstName} ${lastName}`,
+          firstName,
+          lastName,
+          registerPassword,
+          dob: formatDateToYYYYMMDD(dob)
+        } 
+      })
+    }
+  }
+
+  // ============================================================
+  // ✅ SUBMIT HANDLER
+  // ============================================================
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+    
+    if (mode === 'login') {
+      handleLogin(e)
+    } else {
+      handleRegister(e)
     }
   }
 
@@ -3895,7 +3869,7 @@ const handleEmailChange = (value) => {
       overflow-y: auto !important;
     }
 
-    /* ✅ Email validation styles */
+    /* Email validation styles */
     .email-error {
       color: #dc2626;
       font-size: 12px;
@@ -4199,7 +4173,7 @@ const handleEmailChange = (value) => {
                     placeholder="Email" 
                     icon={<IconMail />} 
                     value={email} 
-                    onChange={(e) => handleEmailChange(e.target.value)} 
+                    onChange={(e) => handleEmailChange(e)} 
                     type="email"
                   />
                   
