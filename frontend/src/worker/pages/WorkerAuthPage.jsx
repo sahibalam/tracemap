@@ -3225,8 +3225,6 @@
 
 
 
-
-
 // src/worker/pages/WorkerAuthPage.jsx
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -3612,7 +3610,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   }
 
   // ============================================================
-  // ✅ REGISTER HANDLER
+  // ✅ REGISTER HANDLER - FIXED! Now Calls the API
   // ============================================================
   
   const validateRegistration = async () => {
@@ -3653,33 +3651,60 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     const isValid = await validateRegistration()
     
     if (isValid) {
-      localStorage.setItem('pendingEmail', email)
-      localStorage.setItem('pendingPassword', registerPassword)
-      localStorage.setItem('pendingPhoneNumber', phoneNumber)
-      localStorage.setItem('pendingFirstName', firstName)
-      localStorage.setItem('pendingLastName', lastName)
-      localStorage.setItem('pendingDob', formatDateToYYYYMMDD(dob))
-      localStorage.setItem('pendingLanguage', language)
-      
-      sessionStorage.setItem('wizardFirstName', firstName)
-      sessionStorage.setItem('wizardLastName', lastName)
-      sessionStorage.setItem('wizardEmail', email)
-      sessionStorage.setItem('wizardPhone', phoneNumber)
-      sessionStorage.setItem('wizardDob', formatDateToYYYYMMDD(dob))
-      sessionStorage.setItem('wizardLanguage', language)
-      sessionStorage.setItem('wizardFromRegister', 'true')
-      
-      navigate('/verify', { 
-        state: { 
-          email, 
-          phoneNumber, 
-          fullName: `${firstName} ${lastName}`,
+      try {
+        console.log('📝 Registering user via API...')
+        
+        // ✅ STEP 1: Call the register API to create user with passwordHash
+        const result = await authService.register({
+          email,
+          password: registerPassword,
           firstName,
           lastName,
-          registerPassword,
+          phoneNumber,
           dob: formatDateToYYYYMMDD(dob)
-        } 
-      })
+        })
+        
+        console.log('✅ Registration API response:', result)
+        
+        if (result.success) {
+          // ✅ STEP 2: Store data in localStorage for wizard
+          localStorage.setItem('pendingEmail', email)
+          localStorage.setItem('pendingPassword', registerPassword)
+          localStorage.setItem('pendingPhoneNumber', phoneNumber)
+          localStorage.setItem('pendingFirstName', firstName)
+          localStorage.setItem('pendingLastName', lastName)
+          localStorage.setItem('pendingDob', formatDateToYYYYMMDD(dob))
+          localStorage.setItem('pendingLanguage', language)
+          localStorage.setItem('userId', result.data.userId)
+          
+          sessionStorage.setItem('wizardFirstName', firstName)
+          sessionStorage.setItem('wizardLastName', lastName)
+          sessionStorage.setItem('wizardEmail', email)
+          sessionStorage.setItem('wizardPhone', phoneNumber)
+          sessionStorage.setItem('wizardDob', formatDateToYYYYMMDD(dob))
+          sessionStorage.setItem('wizardLanguage', language)
+          sessionStorage.setItem('wizardFromRegister', 'true')
+          
+          // ✅ STEP 3: Navigate to verify
+          navigate('/verify', { 
+            state: { 
+              email, 
+              phoneNumber, 
+              fullName: `${firstName} ${lastName}`,
+              firstName,
+              lastName,
+              registerPassword,
+              dob: formatDateToYYYYMMDD(dob)
+            } 
+          })
+        } else {
+          setLoginError(result.message || 'Registration failed. Please try again.')
+        }
+        
+      } catch (error) {
+        console.error('❌ Registration error:', error)
+        setLoginError(error.message || 'Registration failed. Please try again.')
+      }
     }
   }
 
@@ -4180,69 +4205,68 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                   <TextField placeholder="Last name" icon={<IconUser />} value={lastName} onChange={setLastName} />
                 </div>
                 
-<div className="formGrid2">
-  {/* ✅ REPLACE THIS ENTIRE BLOCK */}
-  <div className="field">
-    <div className="fieldControl">
-      <span className="fieldIcon"><IconMail /></span>
-      <input
-        type="email"
-        className="fieldInput"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => {
-          const value = e.target.value
-          console.log('🔥🔥🔥 DIRECT INPUT CHANGED:', value)
-          handleEmailChange(value)
-        }}
-      />
-    </div>
-  </div>
-  
-  <div className="auth-date-picker">
-    <DatePicker
-      selected={parseDate(dob)}
-      onChange={handleDateChange}
-      dateFormat="MM/dd/yyyy"
-      placeholderText="MM/DD/YYYY"
-      maxDate={new Date()}
-      showYearDropdown
-      showMonthDropdown
-      dropdownMode="select"
-      yearDropdownItemNumber={100}
-      scrollableYearDropdown
-      popperPlacement="bottom-start"
-      popperModifiers={[
-        {
-          name: 'offset',
-          options: {
-            offset: [0, 10],
-          },
-        },
-        {
-          name: 'preventOverflow',
-          options: {
-            boundariesElement: 'viewport',
-          },
-        },
-        {
-          name: 'flip',
-          options: {
-            fallbackPlacements: ['top-start', 'bottom-start', 'right', 'left'],
-          },
-        },
-      ]}
-    />
-    {dobError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{dobError}</div>}
-    {!dobError && dob && calculateAge(formatDateToYYYYMMDD(dob)) >= 18 && (
-      <div style={{ color: '#2fb463', fontSize: '11px', marginTop: '2px' }}>
-        ✓ Age: {calculateAge(formatDateToYYYYMMDD(dob))} years
-      </div>
-    )}
-  </div>
-</div>
+                <div className="formGrid2">
+                  <div className="field">
+                    <div className="fieldControl">
+                      <span className="fieldIcon"><IconMail /></span>
+                      <input
+                        type="email"
+                        className="fieldInput"
+                        placeholder="Email"
+                        value={email}
+                        onChange={(e) => {
+                          const value = e.target.value
+                          console.log('🔥🔥🔥 DIRECT INPUT CHANGED:', value)
+                          handleEmailChange(value)
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="auth-date-picker">
+                    <DatePicker
+                      selected={parseDate(dob)}
+                      onChange={handleDateChange}
+                      dateFormat="MM/dd/yyyy"
+                      placeholderText="MM/DD/YYYY"
+                      maxDate={new Date()}
+                      showYearDropdown
+                      showMonthDropdown
+                      dropdownMode="select"
+                      yearDropdownItemNumber={100}
+                      scrollableYearDropdown
+                      popperPlacement="bottom-start"
+                      popperModifiers={[
+                        {
+                          name: 'offset',
+                          options: {
+                            offset: [0, 10],
+                          },
+                        },
+                        {
+                          name: 'preventOverflow',
+                          options: {
+                            boundariesElement: 'viewport',
+                          },
+                        },
+                        {
+                          name: 'flip',
+                          options: {
+                            fallbackPlacements: ['top-start', 'bottom-start', 'right', 'left'],
+                          },
+                        },
+                      ]}
+                    />
+                    {dobError && <div style={{ color: '#e11d48', fontSize: '11px', marginTop: '2px' }}>{dobError}</div>}
+                    {!dobError && dob && calculateAge(formatDateToYYYYMMDD(dob)) >= 18 && (
+                      <div style={{ color: '#2fb463', fontSize: '11px', marginTop: '2px' }}>
+                        ✓ Age: {calculateAge(formatDateToYYYYMMDD(dob))} years
+                      </div>
+                    )}
+                  </div>
+                </div>
 
-                {/* ✅ Email validation status */}
+                {/* Email validation status */}
                 <div style={{ marginTop: '-6px', marginBottom: '4px' }}>
                   {isCheckingEmail && (
                     <div className="email-checking">
