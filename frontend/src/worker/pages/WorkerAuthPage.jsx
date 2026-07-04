@@ -3227,7 +3227,6 @@
 
 
 
-
 // src/worker/pages/WorkerAuthPage.jsx
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -3300,7 +3299,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [language, setLanguage] = useState('')
   
-  // Email validation states
+  // ✅ Email validation states
   const [emailError, setEmailError] = useState('')
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
   const [emailCheckTimeout, setEmailCheckTimeout] = useState(null)
@@ -3506,7 +3505,8 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   // ============================================================
   
   const checkEmailExists = async (emailToCheck) => {
-    console.log('🔍 checkEmailExists called with:', emailToCheck)
+    console.log('🔍🔍🔍 checkEmailExists called! 🔍🔍🔍')
+    console.log('📧 Email to check:', emailToCheck)
     
     if (!emailToCheck || emailToCheck.length < 3) {
       setEmailError('')
@@ -3526,25 +3526,28 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     setEmailValid(false)
 
     try {
-      console.log('🔍 Checking email via API:', emailToCheck)
+      const url = `/api/worker/email/${encodeURIComponent(emailToCheck)}`
+      console.log('🌐 Fetching URL:', url)
       
-      const response = await fetch(`/api/worker/email/${encodeURIComponent(emailToCheck)}`)
+      const response = await fetch(url)
+      console.log('📡 Response status:', response.status)
+      
       const data = await response.json()
-      console.log('📥 Email check response:', data)
+      console.log('📥 Response data:', data)
 
       if (data.success && data.data && data.data.length > 0) {
-        console.log('❌ Email EXISTS:', emailToCheck)
+        console.log('❌ EMAIL EXISTS!')
         setEmailError('❌ This email is already registered. Please login instead.')
         setEmailValid(false)
         return true
       } else {
-        console.log('✅ Email AVAILABLE:', emailToCheck)
+        console.log('✅ EMAIL AVAILABLE!')
         setEmailError('')
         setEmailValid(true)
         return false
       }
     } catch (error) {
-      console.error('❌ Error checking email:', error)
+      console.error('❌ Fetch error:', error)
       setEmailError('')
       setEmailValid(true)
       return false
@@ -3553,9 +3556,10 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     }
   }
 
-  // ✅ FIXED: handleEmailChange now receives value directly
   const handleEmailChange = (value) => {
-    console.log('📝 handleEmailChange called with value:', value)
+    console.log('📝📝📝 handleEmailChange called! 📝📝📝')
+    console.log('📝 Value:', value)
+    
     setEmail(value)
     setEmailError('')
     setEmailValid(false)
@@ -4177,12 +4181,15 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 </div>
                 
                 <div className="formGrid2">
-                  {/* ✅ FIXED: onChange passes value directly */}
+                  {/* ✅ Email field with proper onChange */}
                   <TextField 
                     placeholder="Email" 
                     icon={<IconMail />} 
                     value={email} 
-                    onChange={(value) => handleEmailChange(value)} 
+                    onChange={(value) => {
+                      console.log('🔥 TextField onChange triggered! Value:', value)
+                      handleEmailChange(value)
+                    }} 
                     type="email"
                   />
                   
