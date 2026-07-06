@@ -1118,7 +1118,6 @@
 
 
 
-
 // src/common/components/TopNav.jsx
 import { useState, useRef, useEffect } from 'react'
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
@@ -1143,6 +1142,7 @@ export function TopNav({ variant = 'transparent' }) {
   const shouldShowProfileSettings = () => {
     const path = location.pathname
     
+    // ✅ Hide during registration and verification
     const hiddenPaths = [
       '/register',
       '/login',
@@ -1153,9 +1153,18 @@ export function TopNav({ variant = 'transparent' }) {
       '/forgot-password'
     ]
     
-    if (hiddenPaths.includes(path)) return false
-    if (path.startsWith('/wizard')) return false
+    if (hiddenPaths.includes(path)) {
+      return false
+    }
     
+    // ✅ Hide wizard steps (1-5) but SHOW summary page
+    // /wizard/step1, /wizard/step2, /wizard/step3, /wizard/step4, /wizard/step5 → HIDE
+    // /wizard/summary → SHOW
+    if (path.startsWith('/wizard') && !path.startsWith('/wizard/summary')) {
+      return false
+    }
+    
+    // ✅ Show on summary page and all other pages
     return true
   }
 
@@ -1265,14 +1274,12 @@ export function TopNav({ variant = 'transparent' }) {
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
 
-  // ✅ Custom event listener for same-tab updates - CRITICAL for immediate update
+  // ✅ Custom event listener for same-tab updates
   useEffect(() => {
     const handleProfileUpdate = (e) => {
       if (e.detail && e.detail.profileImage) {
         console.log('🔄 TopNav: Profile update event received:', e.detail.profileImage)
-        // ✅ Immediately update the image
         setProfileImage(e.detail.profileImage)
-        // Also store in localStorage
         localStorage.setItem('userProfileImage', e.detail.profileImage)
       }
     }
@@ -1290,7 +1297,7 @@ export function TopNav({ variant = 'transparent' }) {
     return () => window.removeEventListener('popstate', handleNavigate)
   }, [profileImage])
 
-  // ✅ Also check for image updates on location change (page navigation)
+  // ✅ Also check for image updates on location change
   useEffect(() => {
     updateProfileImageFromStorage()
   }, [location.pathname])
@@ -1434,7 +1441,7 @@ export function TopNav({ variant = 'transparent' }) {
   }
 
   // ============================================================
-  // ✅ IMAGE ERROR HANDLER - FALLBACK TO DEFAULT
+  // ✅ IMAGE ERROR HANDLER
   // ============================================================
   
   const handleImageError = () => {
