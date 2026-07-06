@@ -5359,7 +5359,1344 @@
 
 
 
+// // src/worker/components/wizard-steps/WizardStep2.jsx
+// import { SelectField, TextField } from '../../../common/components/TextField'
+
+// const TRADE_LEVEL_MAP = {
+//   'Metal Framing': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Drywall Hanging': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Taping/Finishing': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Acoustical Ceilings': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Interior Carpentry': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Helpers/Labourers': [
+//     'Helper',
+//     'Lead Helper',
+//   ],
+//   'Insulation': [
+//     'Helper',
+//     'Mechanic',
+//     'Lead',
+//   ],
+//   'Demolition/Punch/Final Clean': [
+//     'Helper',
+//     'Mechanic',
+//   ],
+//   'Leads/Foremen': [
+//     'Lead/Foreman',
+//   ],
+//   'Other': [],
+// }
+
+// const LEAD_FOREMAN_RESPONSIBILITIES = [
+//   'Crew size managed',
+//   'Manpower planning',
+//   'Daily planning',
+//   'Daily enforcement',
+//   'Housekeeping enforcement',
+//   'Daily reporting',
+//   'Punch closeout',
+//   'Coordination with superintendent',
+// ]
+
+// const METAL_FRAMING_SKILLS = [
+//   'Layout',
+//   'Shaft walls',
+//   'Partition types',
+//   'Rated assemblies',
+//   'Stud/track gauge',
+//   'Bulkheads/softits',
+//   'Backing/blocking',
+//   'High-wall framing',
+//   'MEP Coordination',
+// ]
+
+// const DRYWALL_HANGING_SKILLS = [
+//   'Walls',
+//   'Ceiling',
+//   'Fire-rated board',
+//   'Abuse board',
+//   'Shaft-wall board',
+//   'High walls',
+//   'Production hanging',
+//   'Lift work',
+//   'Blueprint reading',
+// ]
+
+// const TAPING_FINISHING_SKILLS = [
+//   'Level 1-5 finish',
+//   'Skim coat',
+//   'Texture match',
+//   'Punch repair',
+//   'Corner bead systems',
+//   'Smooth finish',
+// ]
+
+// const ACOUSTICAL_CEILINGS_SKILLS = [
+//   'Standard grid',
+//   'Tegular',
+//   'Specialty ceilings',
+//   'Clouds/baffles',
+//   'Seismic requirements',
+//   'Light/HVAC/sprinkler coordination',
+// ]
+
+// const INTERIOR_CARPENTRY_SKILLS = [
+//   'Backing',
+//   'Blocking',
+//   'Doors/frames/hardware support',
+//   'Trim/carpentry',
+//   'Finish carpentry',
+// ]
+
+// const HELPERS_LABOURERS_SKILLS = [
+//   'Material movement',
+//   'Trade Assistance',
+//   'Cleanup',
+//   'Preparation work',
+// ]
+
+// const INSULATION_SKILLS = [
+//   'Wall Insulation',
+//   'Bat Insulation',
+//   'Sound Insulation',
+//   'Specialty Insulation',
+// ]
+
+// const DEMOLITION_SKILLS = [
+//   'Demolition',
+//   'Removal Support',
+//   'Clean up',
+//   'Punch work',
+//   'Final clean',
+//   'Closeout Support',
+// ]
+
+// export function WizardStep2({ data, onChange, onNext, onBack }) {
+//   // ✅ FIX: Handle change - only update specific field
+//   const handleChange = (field, value) => {
+//     onChange({ [field]: value })
+//   }
+
+//   // ✅ FIX: Trade change - reset all related fields
+//   const handleTradeChange = (value) => {
+//     onChange({
+//       primaryTrade: value,
+//       primaryOtherTrade: '',
+//       workerLevel: '',
+//       leadForemanResponsibilities: {},
+//       metalFramingSkills: {},
+//       drywallHangingSkills: {},
+//       tapingFinishingSkills: {},
+//       acousticalCeilingsSkills: {},
+//       interiorCarpentrySkills: {},
+//       helpersLabourersSkills: {},
+//       insulationSkills: {},
+//       demolitionSkills: {},
+//     })
+//   }
+
+//   // ✅ FIX: Secondary trade change
+//   const handleSecondaryTradeChange = (value) => {
+//     onChange({
+//       secondaryTrade: value,
+//       secondaryOtherTrade: '',
+//       secondaryWorkerLevel: '',
+//       secondaryLeadForemanResponsibilities: {},
+//       secondaryMetalFramingSkills: {},
+//       secondaryDrywallHangingSkills: {},
+//       secondaryTapingFinishingSkills: {},
+//       secondaryAcousticalCeilingsSkills: {},
+//       secondaryInteriorCarpentrySkills: {},
+//       secondaryHelpersLabourersSkills: {},
+//       secondaryInsulationSkills: {},
+//       secondaryDemolitionSkills: {},
+//     })
+//   }
+
+//   // ✅ FIX: Level change - reset skills
+//   const handleLevelChange = (value) => {
+//     onChange({
+//       workerLevel: value,
+//       leadForemanResponsibilities: {},
+//       metalFramingSkills: {},
+//       drywallHangingSkills: {},
+//       tapingFinishingSkills: {},
+//       acousticalCeilingsSkills: {},
+//       interiorCarpentrySkills: {},
+//       helpersLabourersSkills: {},
+//       insulationSkills: {},
+//       demolitionSkills: {},
+//     })
+//   }
+
+//   // ✅ FIX: Secondary level change
+//   const handleSecondaryLevelChange = (value) => {
+//     onChange({
+//       secondaryWorkerLevel: value,
+//       secondaryLeadForemanResponsibilities: {},
+//       secondaryMetalFramingSkills: {},
+//       secondaryDrywallHangingSkills: {},
+//       secondaryTapingFinishingSkills: {},
+//       secondaryAcousticalCeilingsSkills: {},
+//       secondaryInteriorCarpentrySkills: {},
+//       secondaryHelpersLabourersSkills: {},
+//       secondaryInsulationSkills: {},
+//       secondaryDemolitionSkills: {},
+//     })
+//   }
+
+//   // ✅ Helper function to check if level should show trade skills
+//   const shouldShowTradeSkills = (level) => {
+//     if (level === 'Lead' || level === 'Lead/Foreman') {
+//       return false
+//     }
+//     return true
+//   }
+
+//   // ✅ Primary toggle handlers
+//   const handlePrimaryResponsibilityToggle = (responsibility) => (e) => {
+//     const current = data.leadForemanResponsibilities || {}
+//     onChange({
+//       leadForemanResponsibilities: {
+//         ...current,
+//         [responsibility]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handlePrimaryMetalFramingToggle = (skill) => (e) => {
+//     const current = data.metalFramingSkills || {}
+//     onChange({
+//       metalFramingSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handlePrimaryDrywallHangingToggle = (skill) => (e) => {
+//     const current = data.drywallHangingSkills || {}
+//     onChange({
+//       drywallHangingSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handlePrimaryTapingFinishingToggle = (skill) => (e) => {
+//     const current = data.tapingFinishingSkills || {}
+//     onChange({
+//       tapingFinishingSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handlePrimaryAcousticalCeilingsToggle = (skill) => (e) => {
+//     const current = data.acousticalCeilingsSkills || {}
+//     onChange({
+//       acousticalCeilingsSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handlePrimaryInteriorCarpentryToggle = (skill) => (e) => {
+//     const current = data.interiorCarpentrySkills || {}
+//     onChange({
+//       interiorCarpentrySkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handlePrimaryHelpersLabourersToggle = (skill) => (e) => {
+//     const current = data.helpersLabourersSkills || {}
+//     onChange({
+//       helpersLabourersSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handlePrimaryInsulationToggle = (skill) => (e) => {
+//     const current = data.insulationSkills || {}
+//     onChange({
+//       insulationSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handlePrimaryDemolitionToggle = (skill) => (e) => {
+//     const current = data.demolitionSkills || {}
+//     onChange({
+//       demolitionSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   // ✅ Secondary toggle handlers
+//   const handleSecondaryResponsibilityToggle = (responsibility) => (e) => {
+//     const current = data.secondaryLeadForemanResponsibilities || {}
+//     onChange({
+//       secondaryLeadForemanResponsibilities: {
+//         ...current,
+//         [responsibility]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handleSecondaryMetalFramingToggle = (skill) => (e) => {
+//     const current = data.secondaryMetalFramingSkills || {}
+//     onChange({
+//       secondaryMetalFramingSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handleSecondaryDrywallHangingToggle = (skill) => (e) => {
+//     const current = data.secondaryDrywallHangingSkills || {}
+//     onChange({
+//       secondaryDrywallHangingSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handleSecondaryTapingFinishingToggle = (skill) => (e) => {
+//     const current = data.secondaryTapingFinishingSkills || {}
+//     onChange({
+//       secondaryTapingFinishingSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handleSecondaryAcousticalCeilingsToggle = (skill) => (e) => {
+//     const current = data.secondaryAcousticalCeilingsSkills || {}
+//     onChange({
+//       secondaryAcousticalCeilingsSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handleSecondaryInteriorCarpentryToggle = (skill) => (e) => {
+//     const current = data.secondaryInteriorCarpentrySkills || {}
+//     onChange({
+//       secondaryInteriorCarpentrySkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handleSecondaryHelpersLabourersToggle = (skill) => (e) => {
+//     const current = data.secondaryHelpersLabourersSkills || {}
+//     onChange({
+//       secondaryHelpersLabourersSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handleSecondaryInsulationToggle = (skill) => (e) => {
+//     const current = data.secondaryInsulationSkills || {}
+//     onChange({
+//       secondaryInsulationSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   const handleSecondaryDemolitionToggle = (skill) => (e) => {
+//     const current = data.secondaryDemolitionSkills || {}
+//     onChange({
+//       secondaryDemolitionSkills: {
+//         ...current,
+//         [skill]: e.target.checked,
+//       }
+//     })
+//   }
+
+//   // ✅ Additional skills change
+//   const handleAdditionalSkillsChange = (e) => {
+//     onChange({ additionalSkillsTools: e.target.value })
+//   }
+
+//   const workerLevels = TRADE_LEVEL_MAP[data.primaryTrade] || []
+//   const secondaryWorkerLevels = TRADE_LEVEL_MAP[data.secondaryTrade] || []
+  
+//   const isDuplicate = data.primaryTrade && data.secondaryTrade && 
+//                       data.workerLevel && data.secondaryWorkerLevel &&
+//                       data.primaryTrade === data.secondaryTrade && 
+//                       data.workerLevel === data.secondaryWorkerLevel
+
+//   const getSecondaryTradeOptions = () => {
+//     return Object.keys(TRADE_LEVEL_MAP)
+//   }
+
+//   const isPrimaryOther = data.primaryTrade === 'Other'
+//   const isSecondaryOther = data.secondaryTrade === 'Other'
+
+//   return (
+//     <div className="wizardStep">
+//       <div className="wizardBody">
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">Trade Profile & Skill Matrix</div>
+
+//           {/* Primary Trade Section */}
+//           <div style={{ marginBottom: 16 }}>
+//             <div style={{ fontSize: '14px', fontWeight: 600, color: '#17263a', marginBottom: 8 }}>
+//               Primary Trade
+//             </div>
+//             <div className="wizardGrid3">
+//               <SelectField
+//                 label=""
+//                 value={data.primaryTrade || ''}
+//                 onChange={handleTradeChange}
+//               >
+//                 <option value="">Select Trade</option>
+//                 {Object.keys(TRADE_LEVEL_MAP).map((trade) => (
+//                   <option key={trade} value={trade}>
+//                     {trade}
+//                   </option>
+//                 ))}
+//               </SelectField>
+
+//               {isPrimaryOther ? (
+//                 <TextField
+//                   label=""
+//                   value={data.primaryOtherTrade || ''}
+//                   onChange={(value) => handleChange('primaryOtherTrade', value)}
+//                   placeholder="Enter Primary Trade"
+//                 />
+//               ) : (
+//                 <SelectField
+//                   label=""
+//                   value={data.workerLevel || ''}
+//                   disabled={!data.primaryTrade}
+//                   onChange={handleLevelChange}
+//                 >
+//                   <option value="">Select Worker Level</option>
+//                   {workerLevels.map((level) => (
+//                     <option key={level} value={level}>
+//                       {level}
+//                     </option>
+//                   ))}
+//                 </SelectField>
+//               )}
+
+//               <TextField
+//                 label=""
+//                 type="number"
+//                 min="0"
+//                 value={data.yearOfExperience || ''}
+//                 onChange={(value) => handleChange('yearOfExperience', value)}
+//                 placeholder="Enter years"
+//               />
+//             </div>
+
+//             {/* Show custom trade input when Other is selected */}
+//             {isPrimaryOther && data.primaryOtherTrade && (
+//               <div style={{
+//                 marginTop: 8,
+//                 fontSize: '13px',
+//                 color: '#0f4ea9',
+//                 fontWeight: 500,
+//                 padding: '8px 12px',
+//                 background: 'rgba(15, 78, 169, 0.05)',
+//                 borderRadius: '8px',
+//                 border: '1px solid rgba(15, 78, 169, 0.1)',
+//               }}>
+//                 Custom Trade: {data.primaryOtherTrade}
+//               </div>
+//             )}
+
+//             {/* Primary Trade Skills */}
+//             {!isPrimaryOther && data.primaryTrade && data.workerLevel && shouldShowTradeSkills(data.workerLevel) && (
+//               <>
+//                 {/* Metal Framing Skills */}
+//                 {data.primaryTrade === 'Metal Framing' && 
+//                  (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Metal Framing ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {METAL_FRAMING_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.metalFramingSkills?.[skill] || false)}
+//                             onChange={handlePrimaryMetalFramingToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Drywall Hanging Skills */}
+//                 {data.primaryTrade === 'Drywall Hanging' && 
+//                  (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Drywall Hanging ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {DRYWALL_HANGING_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.drywallHangingSkills?.[skill] || false)}
+//                             onChange={handlePrimaryDrywallHangingToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Taping/Finishing Skills */}
+//                 {data.primaryTrade === 'Taping/Finishing' && 
+//                  (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Taping/Finishing ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {TAPING_FINISHING_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.tapingFinishingSkills?.[skill] || false)}
+//                             onChange={handlePrimaryTapingFinishingToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Acoustical Ceilings Skills */}
+//                 {data.primaryTrade === 'Acoustical Ceilings' && 
+//                  (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Acoustical Ceilings ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {ACOUSTICAL_CEILINGS_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.acousticalCeilingsSkills?.[skill] || false)}
+//                             onChange={handlePrimaryAcousticalCeilingsToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Interior Carpentry Skills */}
+//                 {data.primaryTrade === 'Interior Carpentry' && 
+//                  (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Interior Carpentry ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {INTERIOR_CARPENTRY_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.interiorCarpentrySkills?.[skill] || false)}
+//                             onChange={handlePrimaryInteriorCarpentryToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Helpers/Labourers Skills */}
+//                 {data.primaryTrade === 'Helpers/Labourers' && 
+//                  (data.workerLevel === 'Helper' || data.workerLevel === 'Lead Helper') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Helpers/Labourers ({data.workerLevel === 'Helper' ? 'H' : 'LH'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {HELPERS_LABOURERS_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.helpersLabourersSkills?.[skill] || false)}
+//                             onChange={handlePrimaryHelpersLabourersToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Insulation Skills */}
+//                 {data.primaryTrade === 'Insulation' && 
+//                  (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Insulation ({data.workerLevel === 'Helper' ? 'H' : 'M'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {INSULATION_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.insulationSkills?.[skill] || false)}
+//                             onChange={handlePrimaryInsulationToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Demolition/Punch/Final Clean Skills */}
+//                 {data.primaryTrade === 'Demolition/Punch/Final Clean' && 
+//                  (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Demolition/Punch/Final Clean ({data.workerLevel === 'Helper' ? 'H' : 'M'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {DEMOLITION_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.demolitionSkills?.[skill] || false)}
+//                             onChange={handlePrimaryDemolitionToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+//               </>
+//             )}
+
+//             {/* Primary Lead/Foreman Responsibilities */}
+//             {!isPrimaryOther && (data.workerLevel === 'Lead' || data.workerLevel === 'Lead/Foreman') && (
+//               <fieldset style={{
+//                 marginTop: 16,
+//                 padding: '16px 20px 20px 20px',
+//                 border: '1px solid rgba(15, 78, 169, 0.2)',
+//                 borderRadius: '12px',
+//                 background: 'rgba(15, 78, 169, 0.03)',
+//                 position: 'relative',
+//               }}>
+//                 <legend style={{
+//                   padding: '0 12px',
+//                   fontSize: '14px',
+//                   fontWeight: 600,
+//                   color: '#0f4ea9',
+//                   background: 'white',
+//                   borderRadius: '8px',
+//                   marginLeft: '8px',
+//                 }}>
+//                   {data.workerLevel === 'Lead' ? 'Lead Responsibilities' : 'Lead/Foreman Responsibilities'}
+//                 </legend>
+
+//                 <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                   {LEAD_FOREMAN_RESPONSIBILITIES.map((responsibility) => (
+//                     <label key={responsibility} className="wizardCheck">
+//                       <input
+//                         type="checkbox"
+//                         checked={!!(data.leadForemanResponsibilities?.[responsibility] || false)}
+//                         onChange={handlePrimaryResponsibilityToggle(responsibility)}
+//                       />
+//                       {responsibility}
+//                     </label>
+//                   ))}
+//                 </div>
+//               </fieldset>
+//             )}
+//           </div>
+
+//           {/* Secondary Trade Section */}
+//           <div style={{ marginTop: 16 }}>
+//             <div style={{ fontSize: '14px', fontWeight: 600, color: '#17263a', marginBottom: 8 }}>
+//               Secondary Trade
+//             </div>
+//             <div className="wizardGrid3">
+//               <SelectField
+//                 label=""
+//                 value={data.secondaryTrade || ''}
+//                 onChange={handleSecondaryTradeChange}
+//               >
+//                 <option value="">Select Trade</option>
+//                 {getSecondaryTradeOptions().map((trade) => (
+//                   <option key={trade} value={trade}>
+//                     {trade}
+//                   </option>
+//                 ))}
+//               </SelectField>
+
+//               {isSecondaryOther ? (
+//                 <TextField
+//                   label=""
+//                   value={data.secondaryOtherTrade || ''}
+//                   onChange={(value) => handleChange('secondaryOtherTrade', value)}
+//                   placeholder="Enter Secondary Trade"
+//                 />
+//               ) : (
+//                 <SelectField
+//                   label=""
+//                   value={data.secondaryWorkerLevel || ''}
+//                   disabled={!data.secondaryTrade}
+//                   onChange={handleSecondaryLevelChange}
+//                 >
+//                   <option value="">Select Worker Level</option>
+//                   {secondaryWorkerLevels.map((level) => (
+//                     <option key={level} value={level}>
+//                       {level}
+//                     </option>
+//                   ))}
+//                 </SelectField>
+//               )}
+
+//               <TextField
+//                 label=""
+//                 type="number"
+//                 min="0"
+//                 value={data.secondaryYearOfExperience || ''}
+//                 onChange={(value) => handleChange('secondaryYearOfExperience', value)}
+//                 placeholder="Enter years"
+//               />
+//             </div>
+
+//             {/* Show custom trade input when Other is selected */}
+//             {isSecondaryOther && data.secondaryOtherTrade && (
+//               <div style={{
+//                 marginTop: 8,
+//                 fontSize: '13px',
+//                 color: '#0f4ea9',
+//                 fontWeight: 500,
+//                 padding: '8px 12px',
+//                 background: 'rgba(15, 78, 169, 0.05)',
+//                 borderRadius: '8px',
+//                 border: '1px solid rgba(15, 78, 169, 0.1)',
+//               }}>
+//                 Custom Trade: {data.secondaryOtherTrade}
+//               </div>
+//             )}
+
+//             {/* Duplicate Validation Error */}
+//             {isDuplicate && (
+//               <div style={{
+//                 marginTop: 8,
+//                 padding: '10px 16px',
+//                 background: '#fee2e2',
+//                 border: '1px solid #fecaca',
+//                 borderRadius: '8px',
+//                 color: '#dc2626',
+//                 fontSize: '13px',
+//                 fontWeight: 500,
+//                 display: 'flex',
+//                 alignItems: 'center',
+//                 gap: '8px'
+//               }}>
+//                 <span style={{ fontSize: '18px' }}>⚠️</span>
+//                 Secondary Trade and Level cannot be the same as Primary Trade and Level. Please select different values.
+//               </div>
+//             )}
+
+//             {/* Secondary Trade Skills */}
+//             {!isDuplicate && !isSecondaryOther && data.secondaryTrade && data.secondaryWorkerLevel && shouldShowTradeSkills(data.secondaryWorkerLevel) && (
+//               <>
+//                 {/* Secondary Metal Framing Skills */}
+//                 {data.secondaryTrade === 'Metal Framing' && 
+//                  (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Metal Framing ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {METAL_FRAMING_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.secondaryMetalFramingSkills?.[skill] || false)}
+//                             onChange={handleSecondaryMetalFramingToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Secondary Drywall Hanging Skills */}
+//                 {data.secondaryTrade === 'Drywall Hanging' && 
+//                  (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Drywall Hanging ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {DRYWALL_HANGING_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.secondaryDrywallHangingSkills?.[skill] || false)}
+//                             onChange={handleSecondaryDrywallHangingToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Secondary Taping/Finishing Skills */}
+//                 {data.secondaryTrade === 'Taping/Finishing' && 
+//                  (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Taping/Finishing ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {TAPING_FINISHING_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.secondaryTapingFinishingSkills?.[skill] || false)}
+//                             onChange={handleSecondaryTapingFinishingToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Secondary Acoustical Ceilings Skills */}
+//                 {data.secondaryTrade === 'Acoustical Ceilings' && 
+//                  (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Acoustical Ceilings ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {ACOUSTICAL_CEILINGS_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.secondaryAcousticalCeilingsSkills?.[skill] || false)}
+//                             onChange={handleSecondaryAcousticalCeilingsToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Secondary Interior Carpentry Skills */}
+//                 {data.secondaryTrade === 'Interior Carpentry' && 
+//                  (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Interior Carpentry ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {INTERIOR_CARPENTRY_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.secondaryInteriorCarpentrySkills?.[skill] || false)}
+//                             onChange={handleSecondaryInteriorCarpentryToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Secondary Helpers/Labourers Skills */}
+//                 {data.secondaryTrade === 'Helpers/Labourers' && 
+//                  (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Lead Helper') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Helpers/Labourers ({data.secondaryWorkerLevel === 'Helper' ? 'H' : 'LH'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {HELPERS_LABOURERS_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.secondaryHelpersLabourersSkills?.[skill] || false)}
+//                             onChange={handleSecondaryHelpersLabourersToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Secondary Insulation Skills */}
+//                 {data.secondaryTrade === 'Insulation' && 
+//                  (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Insulation ({data.secondaryWorkerLevel === 'Helper' ? 'H' : 'M'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {INSULATION_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.secondaryInsulationSkills?.[skill] || false)}
+//                             onChange={handleSecondaryInsulationToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* Secondary Demolition/Punch/Final Clean Skills */}
+//                 {data.secondaryTrade === 'Demolition/Punch/Final Clean' && 
+//                  (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic') && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       Demolition/Punch/Final Clean ({data.secondaryWorkerLevel === 'Helper' ? 'H' : 'M'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {DEMOLITION_SKILLS.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(data.secondaryDemolitionSkills?.[skill] || false)}
+//                             onChange={handleSecondaryDemolitionToggle(skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+//               </>
+//             )}
+
+//             {/* Secondary Lead/Foreman Responsibilities */}
+//             {!isDuplicate && !isSecondaryOther && (data.secondaryWorkerLevel === 'Lead' || data.secondaryWorkerLevel === 'Lead/Foreman') && (
+//               <fieldset style={{
+//                 marginTop: 16,
+//                 padding: '16px 20px 20px 20px',
+//                 border: '1px solid rgba(15, 78, 169, 0.2)',
+//                 borderRadius: '12px',
+//                 background: 'rgba(15, 78, 169, 0.03)',
+//                 position: 'relative',
+//               }}>
+//                 <legend style={{
+//                   padding: '0 12px',
+//                   fontSize: '14px',
+//                   fontWeight: 600,
+//                   color: '#0f4ea9',
+//                   background: 'white',
+//                   borderRadius: '8px',
+//                   marginLeft: '8px',
+//                 }}>
+//                   {data.secondaryWorkerLevel === 'Lead' ? 'Lead Responsibilities' : 'Lead/Foreman Responsibilities'}
+//                 </legend>
+
+//                 <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                   {LEAD_FOREMAN_RESPONSIBILITIES.map((responsibility) => (
+//                     <label key={responsibility} className="wizardCheck">
+//                       <input
+//                         type="checkbox"
+//                         checked={!!(data.secondaryLeadForemanResponsibilities?.[responsibility] || false)}
+//                         onChange={handleSecondaryResponsibilityToggle(responsibility)}
+//                       />
+//                       {responsibility}
+//                     </label>
+//                   ))}
+//                 </div>
+//               </fieldset>
+//             )}
+
+//             {/* Additional Skills/Tools/Systems Text Area */}
+//             <div style={{ marginTop: 16 }}>
+//               <div style={{ 
+//                 fontSize: '14px', 
+//                 fontWeight: 600, 
+//                 color: '#17263a', 
+//                 marginBottom: 8 
+//               }}>
+//                 Additional Skills / Tools / Systems
+//               </div>
+//               <textarea
+//                 className="wizardTextArea"
+//                 value={data.additionalSkillsTools || ''}
+//                 onChange={handleAdditionalSkillsChange}
+//                 placeholder="Enter additional skills, tools, or systems you have experience with..."
+//                 rows={4}
+//                 style={{
+//                   width: '100%',
+//                   padding: '12px 16px',
+//                   border: '1px solid rgba(18, 38, 63, 0.12)',
+//                   borderRadius: '12px',
+//                   fontSize: '14px',
+//                   fontFamily: 'inherit',
+//                   resize: 'vertical',
+//                   outline: 'none',
+//                   transition: 'all 0.2s ease',
+//                   background: 'white',
+//                   color: '#17263a',
+//                   minHeight: '100px',
+//                 }}
+//                 onFocus={(e) => {
+//                   e.target.style.borderColor = '#0f4ea9'
+//                   e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+//                 }}
+//                 onBlur={(e) => {
+//                   e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+//                   e.target.style.boxShadow = 'none'
+//                 }}
+//               />
+//               <div style={{ 
+//                 fontSize: '11px', 
+//                 color: 'rgba(23, 38, 58, 0.5)', 
+//                 marginTop: '4px',
+//                 textAlign: 'right'
+//               }}>
+//                 {data.additionalSkillsTools?.length || 0} characters
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
+
+
+
+
+
+
 // src/worker/components/wizard-steps/WizardStep2.jsx
+import { useState } from 'react'
 import { SelectField, TextField } from '../../../common/components/TextField'
 
 const TRADE_LEVEL_MAP = {
@@ -5496,289 +6833,177 @@ const DEMOLITION_SKILLS = [
   'Closeout Support',
 ]
 
+// ✅ Helper function to get trade level options
+const getTradeLevels = (trade) => {
+  return TRADE_LEVEL_MAP[trade] || []
+}
+
+// ✅ Helper function to check if trade is "Other"
+const isOtherTrade = (trade) => {
+  return trade === 'Other'
+}
+
+// ✅ Helper function to check if level should show trade skills
+const shouldShowTradeSkills = (level) => {
+  if (level === 'Lead' || level === 'Lead/Foreman') {
+    return false
+  }
+  return true
+}
+
+// ✅ Helper function to get skill options for a trade
+const getTradeSkills = (trade) => {
+  const skillMap = {
+    'Metal Framing': METAL_FRAMING_SKILLS,
+    'Drywall Hanging': DRYWALL_HANGING_SKILLS,
+    'Taping/Finishing': TAPING_FINISHING_SKILLS,
+    'Acoustical Ceilings': ACOUSTICAL_CEILINGS_SKILLS,
+    'Interior Carpentry': INTERIOR_CARPENTRY_SKILLS,
+    'Helpers/Labourers': HELPERS_LABOURERS_SKILLS,
+    'Insulation': INSULATION_SKILLS,
+    'Demolition/Punch/Final Clean': DEMOLITION_SKILLS,
+  }
+  return skillMap[trade] || []
+}
+
+// ✅ Helper function to get responsibilities for Lead/Foreman
+const getLeadResponsibilities = (trade) => {
+  return LEAD_FOREMAN_RESPONSIBILITIES
+}
+
+// ✅ Create initial trade row
+const createInitialTradeRow = () => ({
+  id: Date.now().toString(),
+  trade: '',
+  otherTrade: '',
+  level: '',
+  experience: '',
+  skills: {},
+  responsibilities: {},
+})
+
 export function WizardStep2({ data, onChange, onNext, onBack }) {
-  // ✅ FIX: Handle change - only update specific field
-  const handleChange = (field, value) => {
-    onChange({ [field]: value })
-  }
-
-  // ✅ FIX: Trade change - reset all related fields
-  const handleTradeChange = (value) => {
-    onChange({
-      primaryTrade: value,
-      primaryOtherTrade: '',
-      workerLevel: '',
-      leadForemanResponsibilities: {},
-      metalFramingSkills: {},
-      drywallHangingSkills: {},
-      tapingFinishingSkills: {},
-      acousticalCeilingsSkills: {},
-      interiorCarpentrySkills: {},
-      helpersLabourersSkills: {},
-      insulationSkills: {},
-      demolitionSkills: {},
-    })
-  }
-
-  // ✅ FIX: Secondary trade change
-  const handleSecondaryTradeChange = (value) => {
-    onChange({
-      secondaryTrade: value,
-      secondaryOtherTrade: '',
-      secondaryWorkerLevel: '',
-      secondaryLeadForemanResponsibilities: {},
-      secondaryMetalFramingSkills: {},
-      secondaryDrywallHangingSkills: {},
-      secondaryTapingFinishingSkills: {},
-      secondaryAcousticalCeilingsSkills: {},
-      secondaryInteriorCarpentrySkills: {},
-      secondaryHelpersLabourersSkills: {},
-      secondaryInsulationSkills: {},
-      secondaryDemolitionSkills: {},
-    })
-  }
-
-  // ✅ FIX: Level change - reset skills
-  const handleLevelChange = (value) => {
-    onChange({
-      workerLevel: value,
-      leadForemanResponsibilities: {},
-      metalFramingSkills: {},
-      drywallHangingSkills: {},
-      tapingFinishingSkills: {},
-      acousticalCeilingsSkills: {},
-      interiorCarpentrySkills: {},
-      helpersLabourersSkills: {},
-      insulationSkills: {},
-      demolitionSkills: {},
-    })
-  }
-
-  // ✅ FIX: Secondary level change
-  const handleSecondaryLevelChange = (value) => {
-    onChange({
-      secondaryWorkerLevel: value,
-      secondaryLeadForemanResponsibilities: {},
-      secondaryMetalFramingSkills: {},
-      secondaryDrywallHangingSkills: {},
-      secondaryTapingFinishingSkills: {},
-      secondaryAcousticalCeilingsSkills: {},
-      secondaryInteriorCarpentrySkills: {},
-      secondaryHelpersLabourersSkills: {},
-      secondaryInsulationSkills: {},
-      secondaryDemolitionSkills: {},
-    })
-  }
-
-  // ✅ Helper function to check if level should show trade skills
-  const shouldShowTradeSkills = (level) => {
-    if (level === 'Lead' || level === 'Lead/Foreman') {
-      return false
+  // ✅ State for dynamic trade rows
+  const [tradeRows, setTradeRows] = useState(() => {
+    // If there's existing data, load it
+    if (data.tradeRows && data.tradeRows.length > 0) {
+      return data.tradeRows
     }
-    return true
-  }
+    // Otherwise, start with one empty row
+    return [createInitialTradeRow()]
+  })
 
-  // ✅ Primary toggle handlers
-  const handlePrimaryResponsibilityToggle = (responsibility) => (e) => {
-    const current = data.leadForemanResponsibilities || {}
-    onChange({
-      leadForemanResponsibilities: {
-        ...current,
-        [responsibility]: e.target.checked,
+  // ✅ Handle change for a specific trade row
+  const handleTradeRowChange = (rowId, field, value) => {
+    const updatedRows = tradeRows.map(row => {
+      if (row.id === rowId) {
+        // If trade changes, reset level, skills, and responsibilities
+        if (field === 'trade') {
+          return {
+            ...row,
+            trade: value,
+            otherTrade: '',
+            level: '',
+            skills: {},
+            responsibilities: {},
+          }
+        }
+        return { ...row, [field]: value }
       }
+      return row
     })
+    
+    setTradeRows(updatedRows)
+    // ✅ Update parent component's data
+    onChange({ tradeRows: updatedRows })
   }
 
-  const handlePrimaryMetalFramingToggle = (skill) => (e) => {
-    const current = data.metalFramingSkills || {}
-    onChange({
-      metalFramingSkills: {
-        ...current,
-        [skill]: e.target.checked,
+  // ✅ Handle skill toggle for a specific trade row
+  const handleSkillToggle = (rowId, skill) => (e) => {
+    const updatedRows = tradeRows.map(row => {
+      if (row.id === rowId) {
+        return {
+          ...row,
+          skills: {
+            ...row.skills,
+            [skill]: e.target.checked,
+          }
+        }
       }
+      return row
     })
+    
+    setTradeRows(updatedRows)
+    onChange({ tradeRows: updatedRows })
   }
 
-  const handlePrimaryDrywallHangingToggle = (skill) => (e) => {
-    const current = data.drywallHangingSkills || {}
-    onChange({
-      drywallHangingSkills: {
-        ...current,
-        [skill]: e.target.checked,
+  // ✅ Handle responsibility toggle for a specific trade row
+  const handleResponsibilityToggle = (rowId, responsibility) => (e) => {
+    const updatedRows = tradeRows.map(row => {
+      if (row.id === rowId) {
+        return {
+          ...row,
+          responsibilities: {
+            ...row.responsibilities,
+            [responsibility]: e.target.checked,
+          }
+        }
       }
+      return row
     })
+    
+    setTradeRows(updatedRows)
+    onChange({ tradeRows: updatedRows })
   }
 
-  const handlePrimaryTapingFinishingToggle = (skill) => (e) => {
-    const current = data.tapingFinishingSkills || {}
-    onChange({
-      tapingFinishingSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
+  // ✅ Add new trade row (max 40)
+  const addTradeRow = () => {
+    if (tradeRows.length < 40) {
+      const newRow = createInitialTradeRow()
+      const updatedRows = [...tradeRows, newRow]
+      setTradeRows(updatedRows)
+      onChange({ tradeRows: updatedRows })
+    }
   }
 
-  const handlePrimaryAcousticalCeilingsToggle = (skill) => (e) => {
-    const current = data.acousticalCeilingsSkills || {}
-    onChange({
-      acousticalCeilingsSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
+  // ✅ Remove trade row (minimum 1)
+  const removeTradeRow = (rowId) => {
+    if (tradeRows.length > 1) {
+      const updatedRows = tradeRows.filter(row => row.id !== rowId)
+      setTradeRows(updatedRows)
+      onChange({ tradeRows: updatedRows })
+    }
   }
 
-  const handlePrimaryInteriorCarpentryToggle = (skill) => (e) => {
-    const current = data.interiorCarpentrySkills || {}
-    onChange({
-      interiorCarpentrySkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handlePrimaryHelpersLabourersToggle = (skill) => (e) => {
-    const current = data.helpersLabourersSkills || {}
-    onChange({
-      helpersLabourersSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handlePrimaryInsulationToggle = (skill) => (e) => {
-    const current = data.insulationSkills || {}
-    onChange({
-      insulationSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handlePrimaryDemolitionToggle = (skill) => (e) => {
-    const current = data.demolitionSkills || {}
-    onChange({
-      demolitionSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  // ✅ Secondary toggle handlers
-  const handleSecondaryResponsibilityToggle = (responsibility) => (e) => {
-    const current = data.secondaryLeadForemanResponsibilities || {}
-    onChange({
-      secondaryLeadForemanResponsibilities: {
-        ...current,
-        [responsibility]: e.target.checked,
-      }
-    })
-  }
-
-  const handleSecondaryMetalFramingToggle = (skill) => (e) => {
-    const current = data.secondaryMetalFramingSkills || {}
-    onChange({
-      secondaryMetalFramingSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handleSecondaryDrywallHangingToggle = (skill) => (e) => {
-    const current = data.secondaryDrywallHangingSkills || {}
-    onChange({
-      secondaryDrywallHangingSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handleSecondaryTapingFinishingToggle = (skill) => (e) => {
-    const current = data.secondaryTapingFinishingSkills || {}
-    onChange({
-      secondaryTapingFinishingSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handleSecondaryAcousticalCeilingsToggle = (skill) => (e) => {
-    const current = data.secondaryAcousticalCeilingsSkills || {}
-    onChange({
-      secondaryAcousticalCeilingsSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handleSecondaryInteriorCarpentryToggle = (skill) => (e) => {
-    const current = data.secondaryInteriorCarpentrySkills || {}
-    onChange({
-      secondaryInteriorCarpentrySkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handleSecondaryHelpersLabourersToggle = (skill) => (e) => {
-    const current = data.secondaryHelpersLabourersSkills || {}
-    onChange({
-      secondaryHelpersLabourersSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handleSecondaryInsulationToggle = (skill) => (e) => {
-    const current = data.secondaryInsulationSkills || {}
-    onChange({
-      secondaryInsulationSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  const handleSecondaryDemolitionToggle = (skill) => (e) => {
-    const current = data.secondaryDemolitionSkills || {}
-    onChange({
-      secondaryDemolitionSkills: {
-        ...current,
-        [skill]: e.target.checked,
-      }
-    })
-  }
-
-  // ✅ Additional skills change
-  const handleAdditionalSkillsChange = (e) => {
-    onChange({ additionalSkillsTools: e.target.value })
-  }
-
-  const workerLevels = TRADE_LEVEL_MAP[data.primaryTrade] || []
-  const secondaryWorkerLevels = TRADE_LEVEL_MAP[data.secondaryTrade] || []
-  
-  const isDuplicate = data.primaryTrade && data.secondaryTrade && 
-                      data.workerLevel && data.secondaryWorkerLevel &&
-                      data.primaryTrade === data.secondaryTrade && 
-                      data.workerLevel === data.secondaryWorkerLevel
-
-  const getSecondaryTradeOptions = () => {
+  // ✅ Get all trade options
+  const getTradeOptions = () => {
     return Object.keys(TRADE_LEVEL_MAP)
   }
 
-  const isPrimaryOther = data.primaryTrade === 'Other'
-  const isSecondaryOther = data.secondaryTrade === 'Other'
+  // ✅ Get level options for a trade
+  const getLevelOptions = (trade) => {
+    return getTradeLevels(trade)
+  }
+
+  // ✅ Check if trade is "Other"
+  const isOther = (trade) => {
+    return isOtherTrade(trade)
+  }
+
+  // ✅ Get skills for a trade
+  const getSkills = (trade) => {
+    return getTradeSkills(trade)
+  }
+
+  // ✅ Check if level should show skills
+  const shouldShowSkills = (level) => {
+    return shouldShowTradeSkills(level)
+  }
+
+  // ✅ Get responsibilities for Lead/Foreman
+  const getResponsibilities = (trade) => {
+    return getLeadResponsibilities(trade)
+  }
 
   return (
     <div className="wizardStep">
@@ -5786,902 +7011,294 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
         <div className="wizardSection">
           <div className="wizardSectionBar">Trade Profile & Skill Matrix</div>
 
-          {/* Primary Trade Section */}
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: '#17263a', marginBottom: 8 }}>
-              Primary Trade
-            </div>
-            <div className="wizardGrid3">
-              <SelectField
-                label=""
-                value={data.primaryTrade || ''}
-                onChange={handleTradeChange}
-              >
-                <option value="">Select Trade</option>
-                {Object.keys(TRADE_LEVEL_MAP).map((trade) => (
-                  <option key={trade} value={trade}>
-                    {trade}
-                  </option>
-                ))}
-              </SelectField>
+          {/* ✅ Dynamic Trade Rows */}
+          {tradeRows.map((row, index) => {
+            const isOther = row.trade === 'Other'
+            const levels = getLevelOptions(row.trade)
+            const skills = getSkills(row.trade)
+            const showSkills = row.trade && row.level && shouldShowSkills(row.level)
+            const showResponsibilities = row.trade && (row.level === 'Lead' || row.level === 'Lead/Foreman')
+            const responsibilities = getResponsibilities(row.trade)
+            const rowNumber = index + 1
 
-              {isPrimaryOther ? (
-                <TextField
-                  label=""
-                  value={data.primaryOtherTrade || ''}
-                  onChange={(value) => handleChange('primaryOtherTrade', value)}
-                  placeholder="Enter Primary Trade"
-                />
-              ) : (
-                <SelectField
-                  label=""
-                  value={data.workerLevel || ''}
-                  disabled={!data.primaryTrade}
-                  onChange={handleLevelChange}
-                >
-                  <option value="">Select Worker Level</option>
-                  {workerLevels.map((level) => (
-                    <option key={level} value={level}>
-                      {level}
-                    </option>
-                  ))}
-                </SelectField>
-              )}
-
-              <TextField
-                label=""
-                type="number"
-                min="0"
-                value={data.yearOfExperience || ''}
-                onChange={(value) => handleChange('yearOfExperience', value)}
-                placeholder="Enter years"
-              />
-            </div>
-
-            {/* Show custom trade input when Other is selected */}
-            {isPrimaryOther && data.primaryOtherTrade && (
-              <div style={{
-                marginTop: 8,
-                fontSize: '13px',
-                color: '#0f4ea9',
-                fontWeight: 500,
-                padding: '8px 12px',
-                background: 'rgba(15, 78, 169, 0.05)',
-                borderRadius: '8px',
-                border: '1px solid rgba(15, 78, 169, 0.1)',
-              }}>
-                Custom Trade: {data.primaryOtherTrade}
-              </div>
-            )}
-
-            {/* Primary Trade Skills */}
-            {!isPrimaryOther && data.primaryTrade && data.workerLevel && shouldShowTradeSkills(data.workerLevel) && (
-              <>
-                {/* Metal Framing Skills */}
-                {data.primaryTrade === 'Metal Framing' && 
-                 (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Metal Framing ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {METAL_FRAMING_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.metalFramingSkills?.[skill] || false)}
-                            onChange={handlePrimaryMetalFramingToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Drywall Hanging Skills */}
-                {data.primaryTrade === 'Drywall Hanging' && 
-                 (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Drywall Hanging ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {DRYWALL_HANGING_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.drywallHangingSkills?.[skill] || false)}
-                            onChange={handlePrimaryDrywallHangingToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Taping/Finishing Skills */}
-                {data.primaryTrade === 'Taping/Finishing' && 
-                 (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Taping/Finishing ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {TAPING_FINISHING_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.tapingFinishingSkills?.[skill] || false)}
-                            onChange={handlePrimaryTapingFinishingToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Acoustical Ceilings Skills */}
-                {data.primaryTrade === 'Acoustical Ceilings' && 
-                 (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Acoustical Ceilings ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {ACOUSTICAL_CEILINGS_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.acousticalCeilingsSkills?.[skill] || false)}
-                            onChange={handlePrimaryAcousticalCeilingsToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Interior Carpentry Skills */}
-                {data.primaryTrade === 'Interior Carpentry' && 
-                 (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic' || data.workerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Interior Carpentry ({data.workerLevel === 'Helper' ? 'H' : data.workerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {INTERIOR_CARPENTRY_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.interiorCarpentrySkills?.[skill] || false)}
-                            onChange={handlePrimaryInteriorCarpentryToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Helpers/Labourers Skills */}
-                {data.primaryTrade === 'Helpers/Labourers' && 
-                 (data.workerLevel === 'Helper' || data.workerLevel === 'Lead Helper') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Helpers/Labourers ({data.workerLevel === 'Helper' ? 'H' : 'LH'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {HELPERS_LABOURERS_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.helpersLabourersSkills?.[skill] || false)}
-                            onChange={handlePrimaryHelpersLabourersToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Insulation Skills */}
-                {data.primaryTrade === 'Insulation' && 
-                 (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Insulation ({data.workerLevel === 'Helper' ? 'H' : 'M'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {INSULATION_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.insulationSkills?.[skill] || false)}
-                            onChange={handlePrimaryInsulationToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Demolition/Punch/Final Clean Skills */}
-                {data.primaryTrade === 'Demolition/Punch/Final Clean' && 
-                 (data.workerLevel === 'Helper' || data.workerLevel === 'Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Demolition/Punch/Final Clean ({data.workerLevel === 'Helper' ? 'H' : 'M'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {DEMOLITION_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.demolitionSkills?.[skill] || false)}
-                            onChange={handlePrimaryDemolitionToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-              </>
-            )}
-
-            {/* Primary Lead/Foreman Responsibilities */}
-            {!isPrimaryOther && (data.workerLevel === 'Lead' || data.workerLevel === 'Lead/Foreman') && (
-              <fieldset style={{
-                marginTop: 16,
-                padding: '16px 20px 20px 20px',
-                border: '1px solid rgba(15, 78, 169, 0.2)',
+            return (
+              <div key={row.id} style={{ 
+                marginBottom: index < tradeRows.length - 1 ? '32px' : '16px',
+                padding: '16px',
+                border: '1px solid rgba(18, 38, 63, 0.08)',
                 borderRadius: '12px',
-                background: 'rgba(15, 78, 169, 0.03)',
-                position: 'relative',
+                background: index % 2 === 0 ? 'rgba(15, 78, 169, 0.02)' : 'transparent',
+                position: 'relative'
               }}>
-                <legend style={{
-                  padding: '0 12px',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  color: '#0f4ea9',
-                  background: 'white',
-                  borderRadius: '8px',
-                  marginLeft: '8px',
+                {/* ✅ Row Header with Number and Delete Button */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '12px'
                 }}>
-                  {data.workerLevel === 'Lead' ? 'Lead Responsibilities' : 'Lead/Foreman Responsibilities'}
-                </legend>
-
-                <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                  {LEAD_FOREMAN_RESPONSIBILITIES.map((responsibility) => (
-                    <label key={responsibility} className="wizardCheck">
-                      <input
-                        type="checkbox"
-                        checked={!!(data.leadForemanResponsibilities?.[responsibility] || false)}
-                        onChange={handlePrimaryResponsibilityToggle(responsibility)}
-                      />
-                      {responsibility}
-                    </label>
-                  ))}
+                  <div style={{
+                    fontSize: '14px',
+                    fontWeight: 600,
+                    color: '#17263a',
+                  }}>
+                    Trade #{rowNumber}
+                  </div>
+                  {tradeRows.length > 1 && (
+                    <button
+                      type="button"
+                      onClick={() => removeTradeRow(row.id)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#dc2626',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        padding: '4px 12px',
+                        borderRadius: '6px',
+                        transition: 'background 0.2s',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(220, 38, 38, 0.08)'
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent'
+                      }}
+                    >
+                      ✕ Remove Trade
+                    </button>
+                  )}
                 </div>
-              </fieldset>
-            )}
-          </div>
 
-          {/* Secondary Trade Section */}
-          <div style={{ marginTop: 16 }}>
-            <div style={{ fontSize: '14px', fontWeight: 600, color: '#17263a', marginBottom: 8 }}>
-              Secondary Trade
-            </div>
-            <div className="wizardGrid3">
-              <SelectField
-                label=""
-                value={data.secondaryTrade || ''}
-                onChange={handleSecondaryTradeChange}
-              >
-                <option value="">Select Trade</option>
-                {getSecondaryTradeOptions().map((trade) => (
-                  <option key={trade} value={trade}>
-                    {trade}
-                  </option>
-                ))}
-              </SelectField>
+                {/* ✅ Trade Selection Row */}
+                <div className="wizardGrid3">
+                  <SelectField
+                    label=""
+                    value={row.trade || ''}
+                    onChange={(value) => handleTradeRowChange(row.id, 'trade', value)}
+                  >
+                    <option value="">Select Trade</option>
+                    {getTradeOptions().map((trade) => (
+                      <option key={trade} value={trade}>
+                        {trade}
+                      </option>
+                    ))}
+                  </SelectField>
 
-              {isSecondaryOther ? (
-                <TextField
-                  label=""
-                  value={data.secondaryOtherTrade || ''}
-                  onChange={(value) => handleChange('secondaryOtherTrade', value)}
-                  placeholder="Enter Secondary Trade"
-                />
-              ) : (
-                <SelectField
-                  label=""
-                  value={data.secondaryWorkerLevel || ''}
-                  disabled={!data.secondaryTrade}
-                  onChange={handleSecondaryLevelChange}
-                >
-                  <option value="">Select Worker Level</option>
-                  {secondaryWorkerLevels.map((level) => (
-                    <option key={level} value={level}>
-                      {level}
-                    </option>
-                  ))}
-                </SelectField>
-              )}
+                  {isOther ? (
+                    <TextField
+                      label=""
+                      value={row.otherTrade || ''}
+                      onChange={(value) => handleTradeRowChange(row.id, 'otherTrade', value)}
+                      placeholder="Enter Custom Trade"
+                    />
+                  ) : (
+                    <SelectField
+                      label=""
+                      value={row.level || ''}
+                      disabled={!row.trade}
+                      onChange={(value) => handleTradeRowChange(row.id, 'level', value)}
+                    >
+                      <option value="">Select Worker Level</option>
+                      {levels.map((level) => (
+                        <option key={level} value={level}>
+                          {level}
+                        </option>
+                      ))}
+                    </SelectField>
+                  )}
 
-              <TextField
-                label=""
-                type="number"
-                min="0"
-                value={data.secondaryYearOfExperience || ''}
-                onChange={(value) => handleChange('secondaryYearOfExperience', value)}
-                placeholder="Enter years"
-              />
-            </div>
+                  <TextField
+                    label=""
+                    type="number"
+                    min="0"
+                    value={row.experience || ''}
+                    onChange={(value) => handleTradeRowChange(row.id, 'experience', value)}
+                    placeholder="Enter years"
+                  />
+                </div>
 
-            {/* Show custom trade input when Other is selected */}
-            {isSecondaryOther && data.secondaryOtherTrade && (
-              <div style={{
-                marginTop: 8,
-                fontSize: '13px',
-                color: '#0f4ea9',
-                fontWeight: 500,
-                padding: '8px 12px',
-                background: 'rgba(15, 78, 169, 0.05)',
-                borderRadius: '8px',
-                border: '1px solid rgba(15, 78, 169, 0.1)',
-              }}>
-                Custom Trade: {data.secondaryOtherTrade}
+                {/* ✅ Show custom trade input when "Other" is selected */}
+                {isOther && row.otherTrade && (
+                  <div style={{
+                    marginTop: 8,
+                    fontSize: '13px',
+                    color: '#0f4ea9',
+                    fontWeight: 500,
+                    padding: '8px 12px',
+                    background: 'rgba(15, 78, 169, 0.05)',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(15, 78, 169, 0.1)',
+                  }}>
+                    Custom Trade: {row.otherTrade}
+                  </div>
+                )}
+
+                {/* ✅ Trade Skills */}
+                {showSkills && skills.length > 0 && (
+                  <fieldset style={{
+                    marginTop: 16,
+                    padding: '16px 20px 20px 20px',
+                    border: '1px solid rgba(15, 78, 169, 0.2)',
+                    borderRadius: '12px',
+                    background: 'rgba(15, 78, 169, 0.03)',
+                    position: 'relative',
+                  }}>
+                    <legend style={{
+                      padding: '0 12px',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#0f4ea9',
+                      background: 'white',
+                      borderRadius: '8px',
+                      marginLeft: '8px',
+                    }}>
+                      {row.trade} Skills ({row.level === 'Helper' ? 'H' : row.level === 'Mechanic' ? 'M' : 'A'})
+                    </legend>
+                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>
+                      Skills for {row.trade} - {row.level} Level
+                    </div>
+                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
+                      {skills.map((skill) => (
+                        <label key={skill} className="wizardCheck">
+                          <input
+                            type="checkbox"
+                            checked={!!(row.skills?.[skill] || false)}
+                            onChange={handleSkillToggle(row.id, skill)}
+                          />
+                          {skill}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                )}
+
+                {/* ✅ Lead/Foreman Responsibilities */}
+                {showResponsibilities && (
+                  <fieldset style={{
+                    marginTop: 16,
+                    padding: '16px 20px 20px 20px',
+                    border: '1px solid rgba(15, 78, 169, 0.2)',
+                    borderRadius: '12px',
+                    background: 'rgba(15, 78, 169, 0.03)',
+                    position: 'relative',
+                  }}>
+                    <legend style={{
+                      padding: '0 12px',
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#0f4ea9',
+                      background: 'white',
+                      borderRadius: '8px',
+                      marginLeft: '8px',
+                    }}>
+                      {row.level === 'Lead' ? 'Lead Responsibilities' : 'Lead/Foreman Responsibilities'}
+                    </legend>
+
+                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
+                      {responsibilities.map((responsibility) => (
+                        <label key={responsibility} className="wizardCheck">
+                          <input
+                            type="checkbox"
+                            checked={!!(row.responsibilities?.[responsibility] || false)}
+                            onChange={handleResponsibilityToggle(row.id, responsibility)}
+                          />
+                          {responsibility}
+                        </label>
+                      ))}
+                    </div>
+                  </fieldset>
+                )}
               </div>
-            )}
+            )
+          })}
 
-            {/* Duplicate Validation Error */}
-            {isDuplicate && (
-              <div style={{
-                marginTop: 8,
-                padding: '10px 16px',
-                background: '#fee2e2',
-                border: '1px solid #fecaca',
+          {/* ✅ Add Trade Button */}
+          <div style={{ 
+            marginTop: '16px',
+            display: 'flex',
+            justifyContent: 'center'
+          }}>
+            <button
+              type="button"
+              onClick={addTradeRow}
+              disabled={tradeRows.length >= 40}
+              style={{
+                padding: '10px 24px',
+                background: tradeRows.length >= 40 ? '#94a3b8' : 'rgba(15, 78, 169, 0.08)',
+                color: tradeRows.length >= 40 ? '#94a3b8' : '#0f4ea9',
+                border: `1px solid ${tradeRows.length >= 40 ? '#94a3b8' : 'rgba(15, 78, 169, 0.2)'}`,
                 borderRadius: '8px',
-                color: '#dc2626',
-                fontSize: '13px',
+                cursor: tradeRows.length >= 40 ? 'not-allowed' : 'pointer',
+                fontSize: '14px',
                 fontWeight: 500,
+                transition: 'all 0.2s',
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px'
-              }}>
-                <span style={{ fontSize: '18px' }}>⚠️</span>
-                Secondary Trade and Level cannot be the same as Primary Trade and Level. Please select different values.
-              </div>
-            )}
+              }}
+              onMouseEnter={(e) => {
+                if (tradeRows.length < 40) {
+                  e.currentTarget.style.background = 'rgba(15, 78, 169, 0.15)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (tradeRows.length < 40) {
+                  e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'
+                }
+              }}
+            >
+              <span style={{ fontSize: '18px' }}>+</span>
+              Add Trade {tradeRows.length >= 40 ? '(Max reached)' : `(${tradeRows.length}/40)`}
+            </button>
+          </div>
 
-            {/* Secondary Trade Skills */}
-            {!isDuplicate && !isSecondaryOther && data.secondaryTrade && data.secondaryWorkerLevel && shouldShowTradeSkills(data.secondaryWorkerLevel) && (
-              <>
-                {/* Secondary Metal Framing Skills */}
-                {data.secondaryTrade === 'Metal Framing' && 
-                 (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Metal Framing ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {METAL_FRAMING_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.secondaryMetalFramingSkills?.[skill] || false)}
-                            onChange={handleSecondaryMetalFramingToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Secondary Drywall Hanging Skills */}
-                {data.secondaryTrade === 'Drywall Hanging' && 
-                 (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Drywall Hanging ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {DRYWALL_HANGING_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.secondaryDrywallHangingSkills?.[skill] || false)}
-                            onChange={handleSecondaryDrywallHangingToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Secondary Taping/Finishing Skills */}
-                {data.secondaryTrade === 'Taping/Finishing' && 
-                 (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Taping/Finishing ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {TAPING_FINISHING_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.secondaryTapingFinishingSkills?.[skill] || false)}
-                            onChange={handleSecondaryTapingFinishingToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Secondary Acoustical Ceilings Skills */}
-                {data.secondaryTrade === 'Acoustical Ceilings' && 
-                 (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Acoustical Ceilings ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {ACOUSTICAL_CEILINGS_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.secondaryAcousticalCeilingsSkills?.[skill] || false)}
-                            onChange={handleSecondaryAcousticalCeilingsToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Secondary Interior Carpentry Skills */}
-                {data.secondaryTrade === 'Interior Carpentry' && 
-                 (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic' || data.secondaryWorkerLevel === 'Advanced Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Interior Carpentry ({data.secondaryWorkerLevel === 'Helper' ? 'H' : data.secondaryWorkerLevel === 'Mechanic' ? 'M' : 'A'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {INTERIOR_CARPENTRY_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.secondaryInteriorCarpentrySkills?.[skill] || false)}
-                            onChange={handleSecondaryInteriorCarpentryToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Secondary Helpers/Labourers Skills */}
-                {data.secondaryTrade === 'Helpers/Labourers' && 
-                 (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Lead Helper') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Helpers/Labourers ({data.secondaryWorkerLevel === 'Helper' ? 'H' : 'LH'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {HELPERS_LABOURERS_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.secondaryHelpersLabourersSkills?.[skill] || false)}
-                            onChange={handleSecondaryHelpersLabourersToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Secondary Insulation Skills */}
-                {data.secondaryTrade === 'Insulation' && 
-                 (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Insulation ({data.secondaryWorkerLevel === 'Helper' ? 'H' : 'M'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {INSULATION_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.secondaryInsulationSkills?.[skill] || false)}
-                            onChange={handleSecondaryInsulationToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-
-                {/* Secondary Demolition/Punch/Final Clean Skills */}
-                {data.secondaryTrade === 'Demolition/Punch/Final Clean' && 
-                 (data.secondaryWorkerLevel === 'Helper' || data.secondaryWorkerLevel === 'Mechanic') && (
-                  <fieldset style={{
-                    marginTop: 16,
-                    padding: '16px 20px 20px 20px',
-                    border: '1px solid rgba(15, 78, 169, 0.2)',
-                    borderRadius: '12px',
-                    background: 'rgba(15, 78, 169, 0.03)',
-                    position: 'relative',
-                  }}>
-                    <legend style={{
-                      padding: '0 12px',
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#0f4ea9',
-                      background: 'white',
-                      borderRadius: '8px',
-                      marginLeft: '8px',
-                    }}>
-                      Demolition/Punch/Final Clean ({data.secondaryWorkerLevel === 'Helper' ? 'H' : 'M'})
-                    </legend>
-                    <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>Skills</div>
-                    <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                      {DEMOLITION_SKILLS.map((skill) => (
-                        <label key={skill} className="wizardCheck">
-                          <input
-                            type="checkbox"
-                            checked={!!(data.secondaryDemolitionSkills?.[skill] || false)}
-                            onChange={handleSecondaryDemolitionToggle(skill)}
-                          />
-                          {skill}
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                )}
-              </>
-            )}
-
-            {/* Secondary Lead/Foreman Responsibilities */}
-            {!isDuplicate && !isSecondaryOther && (data.secondaryWorkerLevel === 'Lead' || data.secondaryWorkerLevel === 'Lead/Foreman') && (
-              <fieldset style={{
-                marginTop: 16,
-                padding: '16px 20px 20px 20px',
-                border: '1px solid rgba(15, 78, 169, 0.2)',
+          {/* ✅ Additional Skills/Tools/Systems Text Area */}
+          <div style={{ marginTop: '24px' }}>
+            <div style={{ 
+              fontSize: '14px', 
+              fontWeight: 600, 
+              color: '#17263a', 
+              marginBottom: 8 
+            }}>
+              Additional Skills / Tools / Systems
+            </div>
+            <textarea
+              className="wizardTextArea"
+              value={data.additionalSkillsTools || ''}
+              onChange={(e) => onChange({ additionalSkillsTools: e.target.value })}
+              placeholder="Enter additional skills, tools, or systems you have experience with..."
+              rows={4}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                border: '1px solid rgba(18, 38, 63, 0.12)',
                 borderRadius: '12px',
-                background: 'rgba(15, 78, 169, 0.03)',
-                position: 'relative',
-              }}>
-                <legend style={{
-                  padding: '0 12px',
-                  fontSize: '14px',
-                  fontWeight: 600,
-                  color: '#0f4ea9',
-                  background: 'white',
-                  borderRadius: '8px',
-                  marginLeft: '8px',
-                }}>
-                  {data.secondaryWorkerLevel === 'Lead' ? 'Lead Responsibilities' : 'Lead/Foreman Responsibilities'}
-                </legend>
-
-                <div className="wizardGrid2" style={{ marginTop: 4 }}>
-                  {LEAD_FOREMAN_RESPONSIBILITIES.map((responsibility) => (
-                    <label key={responsibility} className="wizardCheck">
-                      <input
-                        type="checkbox"
-                        checked={!!(data.secondaryLeadForemanResponsibilities?.[responsibility] || false)}
-                        onChange={handleSecondaryResponsibilityToggle(responsibility)}
-                      />
-                      {responsibility}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            )}
-
-            {/* Additional Skills/Tools/Systems Text Area */}
-            <div style={{ marginTop: 16 }}>
-              <div style={{ 
-                fontSize: '14px', 
-                fontWeight: 600, 
-                color: '#17263a', 
-                marginBottom: 8 
-              }}>
-                Additional Skills / Tools / Systems
-              </div>
-              <textarea
-                className="wizardTextArea"
-                value={data.additionalSkillsTools || ''}
-                onChange={handleAdditionalSkillsChange}
-                placeholder="Enter additional skills, tools, or systems you have experience with..."
-                rows={4}
-                style={{
-                  width: '100%',
-                  padding: '12px 16px',
-                  border: '1px solid rgba(18, 38, 63, 0.12)',
-                  borderRadius: '12px',
-                  fontSize: '14px',
-                  fontFamily: 'inherit',
-                  resize: 'vertical',
-                  outline: 'none',
-                  transition: 'all 0.2s ease',
-                  background: 'white',
-                  color: '#17263a',
-                  minHeight: '100px',
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#0f4ea9'
-                  e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                  e.target.style.boxShadow = 'none'
-                }}
-              />
-              <div style={{ 
-                fontSize: '11px', 
-                color: 'rgba(23, 38, 58, 0.5)', 
-                marginTop: '4px',
-                textAlign: 'right'
-              }}>
-                {data.additionalSkillsTools?.length || 0} characters
-              </div>
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                resize: 'vertical',
+                outline: 'none',
+                transition: 'all 0.2s ease',
+                background: 'white',
+                color: '#17263a',
+                minHeight: '100px',
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#0f4ea9'
+                e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+                e.target.style.boxShadow = 'none'
+              }}
+            />
+            <div style={{ 
+              fontSize: '11px', 
+              color: 'rgba(23, 38, 58, 0.5)', 
+              marginTop: '4px',
+              textAlign: 'right'
+            }}>
+              {data.additionalSkillsTools?.length || 0} characters
             </div>
           </div>
         </div>
