@@ -2804,7 +2804,7 @@ export function TradeProfileEditPage() {
                     }}
                   >
                     <span style={{ fontSize: '18px' }}>+</span>
-                    Add Trade {tradeRows.length >= 40 ? '(Max reached)' : `(${tradeRows.length}/40)`}
+                    Add Trade
                   </button>
                 </div>
 
