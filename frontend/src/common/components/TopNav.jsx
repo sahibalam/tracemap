@@ -1119,7 +1119,6 @@
 
 
 
-
 // src/common/components/TopNav.jsx
 import { useState, useRef, useEffect } from 'react'
 import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
@@ -1144,7 +1143,6 @@ export function TopNav({ variant = 'transparent' }) {
   const shouldShowProfileSettings = () => {
     const path = location.pathname
     
-    // ✅ Hide Profile Settings option during registration and wizard
     const hiddenPaths = [
       '/register',
       '/login',
@@ -1155,13 +1153,8 @@ export function TopNav({ variant = 'transparent' }) {
       '/forgot-password'
     ]
     
-    if (hiddenPaths.includes(path)) {
-      return false
-    }
-    
-    if (path.startsWith('/wizard')) {
-      return false
-    }
+    if (hiddenPaths.includes(path)) return false
+    if (path.startsWith('/wizard')) return false
     
     return true
   }
@@ -1235,6 +1228,18 @@ export function TopNav({ variant = 'transparent' }) {
   }
 
   // ============================================================
+  // ✅ IMMEDIATELY UPDATE IMAGE FROM LOCALSTORAGE
+  // ============================================================
+  
+  const updateProfileImageFromStorage = () => {
+    const saved = localStorage.getItem('userProfileImage')
+    if (saved && saved !== profileImage) {
+      console.log('🔄 TopNav: Updating profile image from localStorage:', saved)
+      setProfileImage(saved)
+    }
+  }
+
+  // ============================================================
   // ✅ INITIALIZE AND LOAD PROFILE IMAGE
   // ============================================================
   
@@ -1260,13 +1265,15 @@ export function TopNav({ variant = 'transparent' }) {
     return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
 
-  // ✅ Custom event listener for same-tab updates
+  // ✅ Custom event listener for same-tab updates - CRITICAL for immediate update
   useEffect(() => {
     const handleProfileUpdate = (e) => {
       if (e.detail && e.detail.profileImage) {
         console.log('🔄 TopNav: Profile update event received:', e.detail.profileImage)
+        // ✅ Immediately update the image
         setProfileImage(e.detail.profileImage)
-        loadProfileImage()
+        // Also store in localStorage
+        localStorage.setItem('userProfileImage', e.detail.profileImage)
       }
     }
     window.addEventListener('profileImageUpdated', handleProfileUpdate)
@@ -1276,15 +1283,17 @@ export function TopNav({ variant = 'transparent' }) {
   // ✅ Listen for navigation changes to refresh image
   useEffect(() => {
     const handleNavigate = () => {
-      const saved = localStorage.getItem('userProfileImage')
-      if (saved && saved !== profileImage) {
-        setProfileImage(saved)
-      }
+      updateProfileImageFromStorage()
     }
     
     window.addEventListener('popstate', handleNavigate)
     return () => window.removeEventListener('popstate', handleNavigate)
   }, [profileImage])
+
+  // ✅ Also check for image updates on location change (page navigation)
+  useEffect(() => {
+    updateProfileImageFromStorage()
+  }, [location.pathname])
 
   // Handle click outside to close dropdown
   useEffect(() => {
@@ -1328,7 +1337,7 @@ export function TopNav({ variant = 'transparent' }) {
   const showProfileSettings = shouldShowProfileSettings()
 
   // ============================================================
-  // ✅ DROPDOWN MENU - Conditionally hide Profile Settings option
+  // ✅ DROPDOWN MENU
   // ============================================================
   
   const DropdownMenu = () => {
@@ -1353,48 +1362,45 @@ export function TopNav({ variant = 'transparent' }) {
           display: 'block',
         }}
       >
-        {/* ✅ Profile Settings - Only show when on summary page or after wizard */}
         {showProfileSettings && (
-          <button
-            onClick={handleProfileSettings}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              width: '100%',
-              padding: '10px 16px',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              fontSize: '14px',
-              color: '#17263a',
-              transition: 'background 0.15s ease',
-              fontFamily: 'inherit',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(15, 78, 169, 0.06)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent'
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
-            </svg>
-            Profile Settings
-          </button>
+          <>
+            <button
+              onClick={handleProfileSettings}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                width: '100%',
+                padding: '10px 16px',
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '14px',
+                color: '#17263a',
+                transition: 'background 0.15s ease',
+                fontFamily: 'inherit',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(15, 78, 169, 0.06)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+              }}
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
+              </svg>
+              Profile Settings
+            </button>
+
+            <div style={{
+              height: '1px',
+              background: 'rgba(18, 38, 63, 0.08)',
+              margin: '4px 8px',
+            }} />
+          </>
         )}
 
-        {/* ✅ Divider - Only show if Profile Settings is visible */}
-        {showProfileSettings && (
-          <div style={{
-            height: '1px',
-            background: 'rgba(18, 38, 63, 0.08)',
-            margin: '4px 8px',
-          }} />
-        )}
-
-        {/* ✅ Logout - Always visible */}
         <button
           onClick={handleLogout}
           style={{
@@ -1471,7 +1477,7 @@ export function TopNav({ variant = 'transparent' }) {
                 <span className="navIconBadge" aria-hidden="true">7</span>
               </button>
               
-              {/* ✅ Avatar is ALWAYS visible */}
+              {/* ✅ Avatar with dynamic image and fallback */}
               <button
                 ref={avatarRef}
                 type="button"
@@ -1528,7 +1534,6 @@ export function TopNav({ variant = 'transparent' }) {
         </nav>
       </div>
 
-      {/* ✅ Dropdown - Always rendered, but Profile Settings option hidden conditionally */}
       {isDropdownOpen && createPortal(<DropdownMenu />, document.body)}
     </header>
   )
