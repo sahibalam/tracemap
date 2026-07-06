@@ -6511,50 +6511,63 @@ export function WorkerSummaryPage() {
             {/* ============================================================
             Row 2: Work History - FIXED TRADE COLUMN
             ============================================================ */}
-            <div className="wizardSummaryWideCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', marginBottom: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Work History</span>
-                <button 
-                  type="button" 
-                  onClick={handleEditWorkHistory}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    color: '#0f4ea9', 
-                    cursor: 'pointer',
-                    padding: '4px 8px',
-                    borderRadius: '6px',
-                    transition: 'background 0.2s',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                >
-                  <IconPencil />
-                </button>
-              </div>
-              <div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '8px 12px', borderBottom: '2px solid rgba(18,38,63,0.08)', fontWeight: 600, fontSize: '12px', color: 'rgba(23,38,58,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  <div>PROJECT</div>
-                  <div>COMPANY</div>
-                  <div>TRADE</div>
-                  <div>ROLE</div>
-                </div>
-                {(projects.length > 0 ? projects : fallbackProjects).map((p, idx) => {
-                  // ✅ FIX: Get trade from the project data
-                  // The trade field in WizardStep3 is at the root level of each project object
-                  const projectTrade = p.trade || p.projectTrade || p.primaryTrade || ''
-                  
-                  return (
-                    <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length > 0 ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
-                      <div>{displayValue(p.name)}</div>
-                      <div>{displayValue(p.client || p.company)}</div>
-                      <div>{displayValue(projectTrade)}</div>
-                      <div>{displayValue(p.role)}</div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
+          // In the WorkerSummaryPage, update the Work History section:
+
+{/* ============================================================
+Row 2: Work History - FIXED TRADE COLUMN WITH MORE ROBUST DATA EXTRACTION
+============================================================ */}
+<div className="wizardSummaryWideCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', marginBottom: '20px' }}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+    <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>Work History</span>
+    <button 
+      type="button" 
+      onClick={handleEditWorkHistory}
+      style={{ 
+        background: 'none', 
+        border: 'none', 
+        color: '#0f4ea9', 
+        cursor: 'pointer',
+        padding: '4px 8px',
+        borderRadius: '6px',
+        transition: 'background 0.2s',
+      }}
+      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+    >
+      <IconPencil />
+    </button>
+  </div>
+  <div>
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '8px 12px', borderBottom: '2px solid rgba(18,38,63,0.08)', fontWeight: 600, fontSize: '12px', color: 'rgba(23,38,58,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+      <div>PROJECT</div>
+      <div>COMPANY</div>
+      <div>TRADE</div>
+      <div>ROLE</div>
+    </div>
+    {(projects.length > 0 ? projects : fallbackProjects).map((p, idx) => {
+      // ✅ MORE ROBUST: Get trade from multiple possible locations
+      // The trade field in WizardStep3 and WorkHistoryEditPage is at the root level
+      const projectTrade = p.trade ||           // Direct field
+                          p.projectTrade ||      // Alternative field name
+                          p.primaryTrade ||      // Alternative field name
+                          p.tradeType ||         // Alternative field name
+                          (p.trade && p.trade.name) || // Nested object
+                          '' 
+      
+      // Also handle company/client field variations
+      const projectCompany = p.client || p.company || ''
+      
+      return (
+        <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length > 0 ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
+          <div>{displayValue(p.name)}</div>
+          <div>{displayValue(projectCompany)}</div>
+          <div>{displayValue(projectTrade)}</div>
+          <div>{displayValue(p.role)}</div>
+        </div>
+      )
+    })}
+  </div>
+</div>
 
             {/* ============================================================
             Row 3: Availability, Certifications, Tax, Payment
