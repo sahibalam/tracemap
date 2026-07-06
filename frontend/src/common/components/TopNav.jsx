@@ -1120,17 +1120,16 @@
 
 
 
-
 // src/common/components/TopNav.jsx
 import { useState, useRef, useEffect } from 'react'
-import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'  // ✅ ADD useLocation
+import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
 import { createPortal } from 'react-dom'
 import { IconSearch, IconBell } from './Icons'
 import api from '../../services/api'
 
 export function TopNav({ variant = 'transparent' }) {
   const navigate = useNavigate()
-  const location = useLocation()  // ✅ ADD THIS
+  const location = useLocation()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
   const [profileImage, setProfileImage] = useState('/assets/worker.avif')
@@ -1139,35 +1138,31 @@ export function TopNav({ variant = 'transparent' }) {
   const avatarRef = useRef(null)
 
   // ============================================================
-  // ✅ CHECK IF PROFILE SETTINGS SHOULD BE VISIBLE
+  // ✅ CHECK IF PROFILE SETTINGS SHOULD BE VISIBLE IN DROPDOWN
   // ============================================================
   
-  const isProfileSettingsVisible = () => {
+  const shouldShowProfileSettings = () => {
     const path = location.pathname
     
-    // ✅ Hide during registration and wizard flow
+    // ✅ Hide Profile Settings option during registration and wizard
     const hiddenPaths = [
       '/register',
       '/login',
       '/verify',
       '/verify-email',
-      '/wizard',
       '/verify-phone',
       '/reset-password',
       '/forgot-password'
     ]
     
-    // Check if current path is in hidden paths
     if (hiddenPaths.includes(path)) {
       return false
     }
     
-    // Also hide if path starts with /wizard (for wizard steps)
     if (path.startsWith('/wizard')) {
       return false
     }
     
-    // ✅ Show on summary page and other pages
     return true
   }
 
@@ -1330,10 +1325,12 @@ export function TopNav({ variant = 'transparent' }) {
     setIsDropdownOpen(!isDropdownOpen)
   }
 
-  // ✅ Determine if profile settings should be visible
-  const showProfileSettings = isProfileSettingsVisible()
+  const showProfileSettings = shouldShowProfileSettings()
 
-  // Dropdown menu component
+  // ============================================================
+  // ✅ DROPDOWN MENU - Conditionally hide Profile Settings option
+  // ============================================================
+  
   const DropdownMenu = () => {
     return (
       <div
@@ -1356,41 +1353,48 @@ export function TopNav({ variant = 'transparent' }) {
           display: 'block',
         }}
       >
-        <button
-          onClick={handleProfileSettings}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            width: '100%',
-            padding: '10px 16px',
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '14px',
-            color: '#17263a',
-            transition: 'background 0.15s ease',
-            fontFamily: 'inherit',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(15, 78, 169, 0.06)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent'
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
-          </svg>
-          Profile Settings
-        </button>
+        {/* ✅ Profile Settings - Only show when on summary page or after wizard */}
+        {showProfileSettings && (
+          <button
+            onClick={handleProfileSettings}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              width: '100%',
+              padding: '10px 16px',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              fontSize: '14px',
+              color: '#17263a',
+              transition: 'background 0.15s ease',
+              fontFamily: 'inherit',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(15, 78, 169, 0.06)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
+            </svg>
+            Profile Settings
+          </button>
+        )}
 
-        <div style={{
-          height: '1px',
-          background: 'rgba(18, 38, 63, 0.08)',
-          margin: '4px 8px',
-        }} />
+        {/* ✅ Divider - Only show if Profile Settings is visible */}
+        {showProfileSettings && (
+          <div style={{
+            height: '1px',
+            background: 'rgba(18, 38, 63, 0.08)',
+            margin: '4px 8px',
+          }} />
+        )}
 
+        {/* ✅ Logout - Always visible */}
         <button
           onClick={handleLogout}
           style={{
@@ -1467,59 +1471,54 @@ export function TopNav({ variant = 'transparent' }) {
                 <span className="navIconBadge" aria-hidden="true">7</span>
               </button>
               
-              {/* ✅ ONLY SHOW AVATAR + DROPDOWN when profile settings are visible */}
-              {showProfileSettings ? (
-                <button
-                  ref={avatarRef}
-                  type="button"
-                  onClick={toggleDropdown}
+              {/* ✅ Avatar is ALWAYS visible */}
+              <button
+                ref={avatarRef}
+                type="button"
+                onClick={toggleDropdown}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  position: 'relative',
+                }}
+              >
+                <img 
+                  className="topbarAvatar" 
+                  src={profileImage}
+                  alt="Worker avatar"
                   style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: 0,
+                    border: isDropdownOpen ? '2px solid #0f4ea9' : '2px solid transparent',
+                    borderRadius: '50%',
+                    transition: 'border 0.2s ease',
+                    width: '40px',
+                    height: '40px',
+                    objectFit: 'cover',
+                    background: '#f0f0f0',
+                  }}
+                  onError={handleImageError}
+                />
+                {imageLoading && (
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.7)',
                     display: 'flex',
                     alignItems: 'center',
-                    position: 'relative',
-                  }}
-                >
-                  <img 
-                    className="topbarAvatar" 
-                    src={profileImage}
-                    alt="Worker avatar"
-                    style={{
-                      border: isDropdownOpen ? '2px solid #0f4ea9' : '2px solid transparent',
-                      borderRadius: '50%',
-                      transition: 'border 0.2s ease',
-                      width: '40px',
-                      height: '40px',
-                      objectFit: 'cover',
-                      background: '#f0f0f0',
-                    }}
-                    onError={handleImageError}
-                  />
-                  {imageLoading && (
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      background: 'rgba(255,255,255,0.7)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '12px',
-                    }}>
-                      ⏳
-                    </div>
-                  )}
-                </button>
-              ) : (
-                // ✅ Show placeholder or nothing during registration/wizard
-                <div style={{ width: '40px', height: '40px' }} />
-              )}
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                  }}>
+                    ⏳
+                  </div>
+                )}
+              </button>
             </div>
           ) : (
             <NavLink to="/login" className={({ isActive }) => `navPill ${isActive ? 'navPillActive' : ''}`}>
@@ -1529,7 +1528,8 @@ export function TopNav({ variant = 'transparent' }) {
         </nav>
       </div>
 
-      {isDropdownOpen && showProfileSettings && createPortal(<DropdownMenu />, document.body)}
+      {/* ✅ Dropdown - Always rendered, but Profile Settings option hidden conditionally */}
+      {isDropdownOpen && createPortal(<DropdownMenu />, document.body)}
     </header>
   )
 }
