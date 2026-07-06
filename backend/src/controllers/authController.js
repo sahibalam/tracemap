@@ -1,8 +1,3 @@
-// backend/src/controllers/authController.js
-
-
-
-
 
 // backend/src/controllers/authController.js
 import { sendVerificationEmail } from '../services/emailService.js'

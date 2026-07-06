@@ -6511,7 +6511,7 @@ export function WorkerSummaryPage() {
             {/* ============================================================
             Row 2: Work History - FIXED TRADE COLUMN
             ============================================================ */}
-          // In the WorkerSummaryPage, update the Work History section:
+          
 
 {/* ============================================================
 Row 2: Work History - FIXED TRADE COLUMN WITH MORE ROBUST DATA EXTRACTION
