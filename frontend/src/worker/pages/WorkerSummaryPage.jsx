@@ -5724,8 +5724,6 @@
 
 
 
-
-
 // src/worker/pages/WorkerSummaryPage.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -6511,7 +6509,7 @@ export function WorkerSummaryPage() {
             </div>
 
             {/* ============================================================
-            Row 2: Work History
+            Row 2: Work History - FIXED TRADE COLUMN
             ============================================================ */}
             <div className="wizardSummaryWideCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', marginBottom: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -6541,14 +6539,20 @@ export function WorkerSummaryPage() {
                   <div>TRADE</div>
                   <div>ROLE</div>
                 </div>
-                {(projects.length > 0 ? projects : fallbackProjects).map((p, idx) => (
-                  <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length > 0 ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
-                    <div>{displayValue(p.name)}</div>
-                    <div>{displayValue(p.client)}</div>
-                    <div>{displayValue(p.trade)}</div>
-                    <div>{displayValue(p.role)}</div>
-                  </div>
-                ))}
+                {(projects.length > 0 ? projects : fallbackProjects).map((p, idx) => {
+                  // ✅ FIX: Get trade from the project data
+                  // The trade field in WizardStep3 is at the root level of each project object
+                  const projectTrade = p.trade || p.projectTrade || p.primaryTrade || ''
+                  
+                  return (
+                    <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length > 0 ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
+                      <div>{displayValue(p.name)}</div>
+                      <div>{displayValue(p.client || p.company)}</div>
+                      <div>{displayValue(projectTrade)}</div>
+                      <div>{displayValue(p.role)}</div>
+                    </div>
+                  )
+                })}
               </div>
             </div>
 
