@@ -108,13 +108,16 @@ import { ProjectPage } from './projects/pages/ProjectPage'
 import { TradeProfileEditPage } from './worker/pages/TradeProfileEditPage'
 import { BasicInfoEditPage } from './worker/pages/BasicInfoEditPage'
 import { EmergencyContactEditPage } from './worker/pages/EmergencyContactEditPage'
+import { ResetPasswordPage } from './pages/ResetPasswordPage'
 
 function App() {
   return (
     <Routes>
       {/* Email Verification Handler - MUST be before other routes */}
       <Route path="/verify-email" element={<EmailVerificationHandler />} />
-      
+
+      {/* Password Reset Page - ADD THIS */}
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       {/* Legal Pages */}
       <Route path="/about" element={<AboutPage />} />
       <Route path="/privacy-policy" element={<PrivacyPage />} />
