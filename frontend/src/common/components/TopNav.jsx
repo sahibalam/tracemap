@@ -1552,10 +1552,8 @@
 
 
 
-
-
 // src/common/components/TopNav.jsx
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher } from './LanguageSwitcher'
@@ -1585,15 +1583,64 @@ function IconUser(props) {
   )
 }
 
+function IconLogout(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4z" fill="currentColor" />
+    </svg>
+  )
+}
+
 export function TopNav({ variant = 'solid', hideNav = false }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [userName, setUserName] = useState('')
+  const [userInitial, setUserInitial] = useState('')
+  const [profileImage, setProfileImage] = useState('')
+  const menuRef = useRef(null)
 
   // Check if user is authenticated
   const isAuthenticated = !!localStorage.getItem('authToken')
+
+  // Get user info from localStorage
+  useEffect(() => {
+    // Get user name from various sources
+    const firstName = localStorage.getItem('pendingFirstName') || 
+                      sessionStorage.getItem('wizardFirstName') || 
+                      localStorage.getItem('userFirstName') ||
+                      'User'
+    const lastName = localStorage.getItem('pendingLastName') || 
+                     sessionStorage.getItem('wizardLastName') || 
+                     localStorage.getItem('userLastName') ||
+                     ''
+    
+    if (firstName) {
+      setUserName(`${firstName} ${lastName}`.trim())
+      setUserInitial(firstName.charAt(0).toUpperCase())
+    }
+
+    // Get profile image if available
+    const savedImage = localStorage.getItem('userProfileImage') || 
+                       sessionStorage.getItem('userProfileImage') ||
+                       ''
+    if (savedImage) {
+      setProfileImage(savedImage)
+    }
+
+    // Listen for profile image updates
+    const handleImageUpdate = (event) => {
+      if (event.detail?.profileImage) {
+        setProfileImage(event.detail.profileImage)
+        localStorage.setItem('userProfileImage', event.detail.profileImage)
+      }
+    }
+
+    window.addEventListener('profileImageUpdated', handleImageUpdate)
+    return () => window.removeEventListener('profileImageUpdated', handleImageUpdate)
+  }, [])
 
   // Handle scroll effect
   useEffect(() => {
@@ -1608,6 +1655,37 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
   useEffect(() => {
     setIsMobileMenuOpen(false)
   }, [location.pathname])
+
+  // Close mobile menu on outside click
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('userId')
+    localStorage.removeItem('pendingEmail')
+    localStorage.removeItem('pendingPassword')
+    localStorage.removeItem('pendingPhoneNumber')
+    localStorage.removeItem('pendingFirstName')
+    localStorage.removeItem('pendingLastName')
+    localStorage.removeItem('pendingDob')
+    localStorage.removeItem('pendingLanguage')
+    localStorage.removeItem('userFirstName')
+    localStorage.removeItem('userLastName')
+    localStorage.removeItem('userProfileImage')
+    
+    sessionStorage.clear()
+    
+    navigate('/login')
+    setIsMobileMenuOpen(false)
+  }
 
   const handleNavigate = (path) => {
     navigate(path)
@@ -1629,12 +1707,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
 
   const isSolid = variant === 'solid'
   const isTransparent = variant === 'transparent'
-
-  // Get user info for mobile menu
-  const firstName = localStorage.getItem('pendingFirstName') || 
-                    sessionStorage.getItem('wizardFirstName') || 
-                    'User'
-  const userInitial = firstName.charAt(0).toUpperCase()
 
   return (
     <>
@@ -1723,6 +1795,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             transition: all 0.2s ease;
             border: none;
             font-family: inherit;
+            text-decoration: none;
           }
 
           .topnav-user-btn:hover {
@@ -1741,12 +1814,25 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             font-size: 14px;
             font-weight: 600;
             flex-shrink: 0;
+            overflow: hidden;
+          }
+
+          .topnav-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          .topnav-avatar-text {
+            font-size: 14px;
+            font-weight: 600;
           }
 
           .topnav-user-name {
             font-size: 14px;
             font-weight: 500;
             color: #17263a;
+            white-space: nowrap;
           }
 
           .topnav-mobile-menu-btn {
@@ -1835,12 +1921,46 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             font-size: 16px;
             font-weight: 600;
             flex-shrink: 0;
+            overflow: hidden;
+          }
+
+          .topnav-mobile-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
           }
 
           .topnav-mobile-user-name {
             font-size: 15px;
             font-weight: 600;
             color: #17263a;
+          }
+
+          .topnav-mobile-user-email {
+            font-size: 13px;
+            color: #64748b;
+          }
+
+          .topnav-mobile-logout {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: #dc2626;
+            font-size: 15px;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            width: 100%;
+            text-align: left;
+          }
+
+          .topnav-mobile-logout:hover {
+            background: rgba(220, 38, 38, 0.06);
           }
 
           .topnav-language-wrapper {
@@ -1933,12 +2053,17 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
               <button 
                 className="topnav-user-btn"
                 onClick={() => navigate('/wizard/summary')}
+                title={userName || 'User'}
               >
                 <div className="topnav-avatar">
-                  {userInitial}
+                  {profileImage ? (
+                    <img src={profileImage} alt={userName || 'User'} />
+                  ) : (
+                    <span className="topnav-avatar-text">{userInitial || 'U'}</span>
+                  )}
                 </div>
                 <span className="topnav-user-name">
-                  {firstName}
+                  {userName || 'User'}
                 </span>
               </button>
             )}
@@ -1955,19 +2080,23 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`topnav-mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+        <div className={`topnav-mobile-menu ${isMobileMenuOpen ? 'open' : ''}`} ref={menuRef}>
           {/* User Info - Mobile (if logged in) */}
           {isAuthenticated && (
             <>
               <div className="topnav-mobile-user">
                 <div className="topnav-mobile-avatar">
-                  {userInitial}
+                  {profileImage ? (
+                    <img src={profileImage} alt={userName || 'User'} />
+                  ) : (
+                    userInitial || 'U'
+                  )}
                 </div>
                 <div>
                   <div className="topnav-mobile-user-name">
-                    {firstName}
+                    {userName || 'User'}
                   </div>
-                  <div style={{ fontSize: '13px', color: '#64748b' }}>
+                  <div className="topnav-mobile-user-email">
                     {localStorage.getItem('pendingEmail') || ''}
                   </div>
                 </div>
@@ -1989,7 +2118,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
                   fontWeight: 600
                 }}
               >
-                <span className="topnav-mobile-link-icon" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <IconUser />
                   {t('auth.login') || 'Log in'}
                 </span>
@@ -2020,6 +2149,13 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
                   <IconUser />
                   {t('nav.profile') || 'Profile'}
                 </span>
+              </button>
+              <button 
+                className="topnav-mobile-logout"
+                onClick={handleLogout}
+              >
+                <IconLogout />
+                {t('nav.logout') || 'Sign out'}
               </button>
               <hr className="topnav-mobile-divider" />
             </>
