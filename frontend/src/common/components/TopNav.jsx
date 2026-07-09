@@ -1118,430 +1118,1116 @@
 
 
 
-// src/common/components/TopNav.jsx
-import { useState, useRef, useEffect } from 'react'
-import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
-import { createPortal } from 'react-dom'
-import { IconSearch, IconBell } from './Icons'
-import api from '../../services/api'
+// // src/common/components/TopNav.jsx
+// import { useState, useRef, useEffect } from 'react'
+// import { Link, NavLink, useNavigate, useLocation } from 'react-router-dom'
+// import { createPortal } from 'react-dom'
+// import { IconSearch, IconBell } from './Icons'
+// import api from '../../services/api'
 
-export function TopNav({ variant = 'transparent' }) {
+// export function TopNav({ variant = 'transparent' }) {
+//   const navigate = useNavigate()
+//   const location = useLocation()
+//   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+//   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
+//   const [profileImage, setProfileImage] = useState('/assets/worker.avif')
+//   const [imageLoading, setImageLoading] = useState(false)
+//   const dropdownRef = useRef(null)
+//   const avatarRef = useRef(null)
+
+//   // ============================================================
+//   // ✅ CHECK IF PROFILE SETTINGS SHOULD BE VISIBLE IN DROPDOWN
+//   // ============================================================
+  
+//   const shouldShowProfileSettings = () => {
+//     const path = location.pathname
+    
+//     // ✅ Hide during registration and verification
+//     const hiddenPaths = [
+//       '/register',
+//       '/login',
+//       '/verify',
+//       '/verify-email',
+//       '/verify-phone',
+//       '/reset-password',
+//       '/forgot-password'
+//     ]
+    
+//     if (hiddenPaths.includes(path)) {
+//       return false
+//     }
+    
+//     // ✅ Hide wizard steps (1-5) but SHOW summary page
+//     // /wizard/step1, /wizard/step2, /wizard/step3, /wizard/step4, /wizard/step5 → HIDE
+//     // /wizard/summary → SHOW
+//     if (path.startsWith('/wizard') && !path.startsWith('/wizard/summary')) {
+//       return false
+//     }
+    
+//     // ✅ Show on summary page and all other pages
+//     return true
+//   }
+
+//   // ============================================================
+//   // ✅ GET FRESH PROFILE IMAGE URL
+//   // ============================================================
+  
+//   const getFreshProfileImage = async (fileKey) => {
+//     if (!fileKey) return null
+    
+//     try {
+//       console.log('🔄 TopNav: Getting fresh profile image URL for:', fileKey)
+//       setImageLoading(true)
+      
+//       const response = await api.get(`/upload/view/${encodeURIComponent(fileKey)}`)
+      
+//       if (response.data.success && response.data.data.viewUrl) {
+//         console.log('✅ TopNav: Fresh profile image URL generated')
+//         return response.data.data.viewUrl
+//       }
+//       return null
+//     } catch (error) {
+//       console.error('❌ TopNav: Error getting fresh profile image:', error)
+//       return null
+//     } finally {
+//       setImageLoading(false)
+//     }
+//   }
+
+//   // ============================================================
+//   // ✅ LOAD PROFILE IMAGE FROM DYNAMODB
+//   // ============================================================
+  
+//   const loadProfileImage = async () => {
+//     try {
+//       const userId = localStorage.getItem('userId')
+//       if (!userId) return
+
+//       console.log('📊 TopNav: Fetching profile for user:', userId)
+      
+//       const workerService = (await import('../../worker/services/workerService')).default
+//       const result = await workerService.getWorkerProfile(userId)
+      
+//       if (result.success && result.data) {
+//         const basics = result.data.basics || {}
+        
+//         if (basics.profileImageKey) {
+//           const freshUrl = await getFreshProfileImage(basics.profileImageKey)
+//           if (freshUrl) {
+//             setProfileImage(freshUrl)
+//             localStorage.setItem('userProfileImage', freshUrl)
+//             console.log('✅ TopNav: Profile image updated from DynamoDB')
+//             return
+//           }
+//         }
+        
+//         if (basics.profilePreview) {
+//           setProfileImage(basics.profilePreview)
+//           localStorage.setItem('userProfileImage', basics.profilePreview)
+//           console.log('✅ TopNav: Profile image loaded from stored URL')
+//           return
+//         }
+//       }
+      
+//       setProfileImage('/assets/worker.avif')
+      
+//     } catch (error) {
+//       console.error('❌ TopNav: Error loading profile image:', error)
+//     }
+//   }
+
+//   // ============================================================
+//   // ✅ IMMEDIATELY UPDATE IMAGE FROM LOCALSTORAGE
+//   // ============================================================
+  
+//   const updateProfileImageFromStorage = () => {
+//     const saved = localStorage.getItem('userProfileImage')
+//     if (saved && saved !== profileImage) {
+//       console.log('🔄 TopNav: Updating profile image from localStorage:', saved)
+//       setProfileImage(saved)
+//     }
+//   }
+
+//   // ============================================================
+//   // ✅ INITIALIZE AND LOAD PROFILE IMAGE
+//   // ============================================================
+  
+//   useEffect(() => {
+//     const saved = localStorage.getItem('userProfileImage')
+//     if (saved) {
+//       console.log('🖼️ TopNav: Initial profile image from localStorage:', saved)
+//       setProfileImage(saved)
+//     }
+    
+//     loadProfileImage()
+//   }, [])
+
+//   // ✅ Listen for localStorage changes (cross-tab)
+//   useEffect(() => {
+//     const handleStorageChange = (e) => {
+//       if (e.key === 'userProfileImage') {
+//         console.log('🔄 TopNav: Storage changed, updating avatar to:', e.newValue)
+//         setProfileImage(e.newValue || '/assets/worker.avif')
+//       }
+//     }
+//     window.addEventListener('storage', handleStorageChange)
+//     return () => window.removeEventListener('storage', handleStorageChange)
+//   }, [])
+
+//   // ✅ Custom event listener for same-tab updates
+//   useEffect(() => {
+//     const handleProfileUpdate = (e) => {
+//       if (e.detail && e.detail.profileImage) {
+//         console.log('🔄 TopNav: Profile update event received:', e.detail.profileImage)
+//         setProfileImage(e.detail.profileImage)
+//         localStorage.setItem('userProfileImage', e.detail.profileImage)
+//       }
+//     }
+//     window.addEventListener('profileImageUpdated', handleProfileUpdate)
+//     return () => window.removeEventListener('profileImageUpdated', handleProfileUpdate)
+//   }, [])
+
+//   // ✅ Listen for navigation changes to refresh image
+//   useEffect(() => {
+//     const handleNavigate = () => {
+//       updateProfileImageFromStorage()
+//     }
+    
+//     window.addEventListener('popstate', handleNavigate)
+//     return () => window.removeEventListener('popstate', handleNavigate)
+//   }, [profileImage])
+
+//   // ✅ Also check for image updates on location change
+//   useEffect(() => {
+//     updateProfileImageFromStorage()
+//   }, [location.pathname])
+
+//   // Handle click outside to close dropdown
+//   useEffect(() => {
+//     const handleClickOutside = (event) => {
+//       if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+//           avatarRef.current && !avatarRef.current.contains(event.target)) {
+//         setIsDropdownOpen(false)
+//       }
+//     }
+//     document.addEventListener('mousedown', handleClickOutside)
+//     return () => document.removeEventListener('mousedown', handleClickOutside)
+//   }, [])
+
+//   // Update dropdown position when opened
+//   useEffect(() => {
+//     if (isDropdownOpen && avatarRef.current) {
+//       const rect = avatarRef.current.getBoundingClientRect()
+//       setDropdownPosition({
+//         top: rect.bottom + 8,
+//         right: window.innerWidth - rect.right,
+//       })
+//     }
+//   }, [isDropdownOpen])
+
+//   const handleProfileSettings = () => {
+//     setIsDropdownOpen(false)
+//     navigate('/wizard/summary')
+//   }
+
+//   const handleLogout = () => {
+//     setIsDropdownOpen(false)
+//     localStorage.removeItem('userProfileImage')
+//     setProfileImage('/assets/worker.avif')
+//     navigate('/login')
+//   }
+
+//   const toggleDropdown = () => {
+//     setIsDropdownOpen(!isDropdownOpen)
+//   }
+
+//   const showProfileSettings = shouldShowProfileSettings()
+
+//   // ============================================================
+//   // ✅ DROPDOWN MENU
+//   // ============================================================
+  
+//   const DropdownMenu = () => {
+//     return (
+//       <div
+//         ref={dropdownRef}
+//         style={{
+//           position: 'fixed',
+//           top: `${dropdownPosition.top}px`,
+//           right: `${dropdownPosition.right}px`,
+//           minWidth: '200px',
+//           background: 'white',
+//           borderRadius: '12px',
+//           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
+//           border: '1px solid rgba(18, 38, 63, 0.08)',
+//           overflow: 'hidden',
+//           zIndex: 9999999,
+//           padding: '4px 0',
+//           opacity: 1,
+//           visibility: 'visible',
+//           pointerEvents: 'auto',
+//           display: 'block',
+//         }}
+//       >
+//         {showProfileSettings && (
+//           <>
+//             <button
+//               onClick={handleProfileSettings}
+//               style={{
+//                 display: 'flex',
+//                 alignItems: 'center',
+//                 gap: '12px',
+//                 width: '100%',
+//                 padding: '10px 16px',
+//                 background: 'transparent',
+//                 border: 'none',
+//                 cursor: 'pointer',
+//                 fontSize: '14px',
+//                 color: '#17263a',
+//                 transition: 'background 0.15s ease',
+//                 fontFamily: 'inherit',
+//               }}
+//               onMouseEnter={(e) => {
+//                 e.currentTarget.style.background = 'rgba(15, 78, 169, 0.06)'
+//               }}
+//               onMouseLeave={(e) => {
+//                 e.currentTarget.style.background = 'transparent'
+//               }}
+//             >
+//               <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+//                 <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
+//               </svg>
+//               Profile Settings
+//             </button>
+
+//             <div style={{
+//               height: '1px',
+//               background: 'rgba(18, 38, 63, 0.08)',
+//               margin: '4px 8px',
+//             }} />
+//           </>
+//         )}
+
+//         <button
+//           onClick={handleLogout}
+//           style={{
+//             display: 'flex',
+//             alignItems: 'center',
+//             gap: '12px',
+//             width: '100%',
+//             padding: '10px 16px',
+//             background: 'transparent',
+//             border: 'none',
+//             cursor: 'pointer',
+//             fontSize: '14px',
+//             color: '#dc2626',
+//             transition: 'background 0.15s ease',
+//             fontFamily: 'inherit',
+//           }}
+//           onMouseEnter={(e) => {
+//             e.currentTarget.style.background = 'rgba(220, 38, 38, 0.06)'
+//           }}
+//           onMouseLeave={(e) => {
+//             e.currentTarget.style.background = 'transparent'
+//           }}
+//         >
+//           <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+//             <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="#dc2626" />
+//           </svg>
+//           Logout
+//         </button>
+//       </div>
+//     )
+//   }
+
+//   // ============================================================
+//   // ✅ IMAGE ERROR HANDLER
+//   // ============================================================
+  
+//   const handleImageError = () => {
+//     console.warn('⚠️ TopNav: Profile image failed to load, using fallback')
+//     setProfileImage('/assets/worker.avif')
+//     localStorage.setItem('userProfileImage', '/assets/worker.avif')
+//   }
+
+//   return (
+//     <header className={`topbar ${variant === 'solid' ? 'topbarSolid' : ''}`} style={{ position: 'relative', zIndex: 9999 }}>
+//       <div className="topbarInner">
+//         <Link to="/" className="brand brandLink" aria-label="TradesMap home">
+//           <img className="brandLogo" src="/assets/Logo_tradesmaps.png" alt="TradesMap" />
+//         </Link>
+
+//         {variant === 'transparent' ? (
+//           <nav className="navLinks" aria-label="Top navigation">
+//             <a href="#" className="navLink">Faqs</a>
+//             <a href="#" className="navLink">About</a>
+//             <a href="#" className="navLink">Contact</a>
+//           </nav>
+//         ) : null}
+
+//         {variant === 'solid' ? (
+//           <div className="topbarCenter" aria-label="Header search">
+//             <div className="topbarSearch">
+//               <span className="topbarSearchIcon" aria-hidden="true">
+//                 <IconSearch />
+//               </span>
+//               <input className="topbarSearchInput" type="search" placeholder="Search" />
+//             </div>
+//           </div>
+//         ) : null}
+
+//         <nav className="navActions" aria-label="Authentication navigation">
+//           {variant === 'solid' ? (
+//             <div className="navActionsSolid">
+//               <button type="button" className="navIconButton" aria-label="Notifications">
+//                 <IconBell />
+//                 <span className="navIconBadge" aria-hidden="true">7</span>
+//               </button>
+              
+//               {/* ✅ Avatar with dynamic image and fallback */}
+//               <button
+//                 ref={avatarRef}
+//                 type="button"
+//                 onClick={toggleDropdown}
+//                 style={{
+//                   background: 'none',
+//                   border: 'none',
+//                   cursor: 'pointer',
+//                   padding: 0,
+//                   display: 'flex',
+//                   alignItems: 'center',
+//                   position: 'relative',
+//                 }}
+//               >
+//                 <img 
+//                   className="topbarAvatar" 
+//                   src={profileImage}
+//                   alt="Worker avatar"
+//                   style={{
+//                     border: isDropdownOpen ? '2px solid #0f4ea9' : '2px solid transparent',
+//                     borderRadius: '50%',
+//                     transition: 'border 0.2s ease',
+//                     width: '40px',
+//                     height: '40px',
+//                     objectFit: 'cover',
+//                     background: '#f0f0f0',
+//                   }}
+//                   onError={handleImageError}
+//                 />
+//                 {imageLoading && (
+//                   <div style={{
+//                     position: 'absolute',
+//                     top: 0,
+//                     left: 0,
+//                     width: '40px',
+//                     height: '40px',
+//                     borderRadius: '50%',
+//                     background: 'rgba(255,255,255,0.7)',
+//                     display: 'flex',
+//                     alignItems: 'center',
+//                     justifyContent: 'center',
+//                     fontSize: '12px',
+//                   }}>
+//                     ⏳
+//                   </div>
+//                 )}
+//               </button>
+//             </div>
+//           ) : (
+//             <NavLink to="/login" className={({ isActive }) => `navPill ${isActive ? 'navPillActive' : ''}`}>
+//               Login
+//             </NavLink>
+//           )}
+//         </nav>
+//       </div>
+
+//       {isDropdownOpen && createPortal(<DropdownMenu />, document.body)}
+//     </header>
+//   )
+// }
+
+
+
+
+
+
+
+
+
+
+
+// src/common/components/TopNav.jsx
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { LanguageSwitcher } from './LanguageSwitcher'
+
+// Icons
+function IconMenu(props) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconClose(props) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconUser(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconLogout(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconHome(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconProject(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconProfile(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconSupport(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.9-6.4h1.8V17h-1.8v-1.4zm1.8-2.2h-1.8c0-2.6 3-2.3 3-4.4 0-1.1-.9-1.8-2.1-1.8-1.1 0-2 .7-2.1 1.8H8.1c.1-2.1 1.9-3.6 4-3.6 2.3 0 3.9 1.4 3.9 3.5 0 2.7-3 2.7-3 4.5z" fill="currentColor" />
+    </svg>
+  )
+}
+
+function IconNotification(props) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="currentColor" />
+    </svg>
+  )
+}
+
+export function TopNav({ variant = 'solid', hideNav = false }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
-  const [profileImage, setProfileImage] = useState('/assets/worker.avif')
-  const [imageLoading, setImageLoading] = useState(false)
-  const dropdownRef = useRef(null)
-  const avatarRef = useRef(null)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [userName, setUserName] = useState('')
+  const [userInitial, setUserInitial] = useState('')
+  const menuRef = useRef(null)
 
-  // ============================================================
-  // ✅ CHECK IF PROFILE SETTINGS SHOULD BE VISIBLE IN DROPDOWN
-  // ============================================================
-  
-  const shouldShowProfileSettings = () => {
-    const path = location.pathname
-    
-    // ✅ Hide during registration and verification
-    const hiddenPaths = [
-      '/register',
-      '/login',
-      '/verify',
-      '/verify-email',
-      '/verify-phone',
-      '/reset-password',
-      '/forgot-password'
-    ]
-    
-    if (hiddenPaths.includes(path)) {
-      return false
-    }
-    
-    // ✅ Hide wizard steps (1-5) but SHOW summary page
-    // /wizard/step1, /wizard/step2, /wizard/step3, /wizard/step4, /wizard/step5 → HIDE
-    // /wizard/summary → SHOW
-    if (path.startsWith('/wizard') && !path.startsWith('/wizard/summary')) {
-      return false
-    }
-    
-    // ✅ Show on summary page and all other pages
-    return true
-  }
+  // Check if user is authenticated
+  const isAuthenticated = !!localStorage.getItem('authToken')
 
-  // ============================================================
-  // ✅ GET FRESH PROFILE IMAGE URL
-  // ============================================================
-  
-  const getFreshProfileImage = async (fileKey) => {
-    if (!fileKey) return null
-    
-    try {
-      console.log('🔄 TopNav: Getting fresh profile image URL for:', fileKey)
-      setImageLoading(true)
-      
-      const response = await api.get(`/upload/view/${encodeURIComponent(fileKey)}`)
-      
-      if (response.data.success && response.data.data.viewUrl) {
-        console.log('✅ TopNav: Fresh profile image URL generated')
-        return response.data.data.viewUrl
-      }
-      return null
-    } catch (error) {
-      console.error('❌ TopNav: Error getting fresh profile image:', error)
-      return null
-    } finally {
-      setImageLoading(false)
-    }
-  }
-
-  // ============================================================
-  // ✅ LOAD PROFILE IMAGE FROM DYNAMODB
-  // ============================================================
-  
-  const loadProfileImage = async () => {
-    try {
-      const userId = localStorage.getItem('userId')
-      if (!userId) return
-
-      console.log('📊 TopNav: Fetching profile for user:', userId)
-      
-      const workerService = (await import('../../worker/services/workerService')).default
-      const result = await workerService.getWorkerProfile(userId)
-      
-      if (result.success && result.data) {
-        const basics = result.data.basics || {}
-        
-        if (basics.profileImageKey) {
-          const freshUrl = await getFreshProfileImage(basics.profileImageKey)
-          if (freshUrl) {
-            setProfileImage(freshUrl)
-            localStorage.setItem('userProfileImage', freshUrl)
-            console.log('✅ TopNav: Profile image updated from DynamoDB')
-            return
-          }
-        }
-        
-        if (basics.profilePreview) {
-          setProfileImage(basics.profilePreview)
-          localStorage.setItem('userProfileImage', basics.profilePreview)
-          console.log('✅ TopNav: Profile image loaded from stored URL')
-          return
-        }
-      }
-      
-      setProfileImage('/assets/worker.avif')
-      
-    } catch (error) {
-      console.error('❌ TopNav: Error loading profile image:', error)
-    }
-  }
-
-  // ============================================================
-  // ✅ IMMEDIATELY UPDATE IMAGE FROM LOCALSTORAGE
-  // ============================================================
-  
-  const updateProfileImageFromStorage = () => {
-    const saved = localStorage.getItem('userProfileImage')
-    if (saved && saved !== profileImage) {
-      console.log('🔄 TopNav: Updating profile image from localStorage:', saved)
-      setProfileImage(saved)
-    }
-  }
-
-  // ============================================================
-  // ✅ INITIALIZE AND LOAD PROFILE IMAGE
-  // ============================================================
-  
+  // Get user info from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem('userProfileImage')
-    if (saved) {
-      console.log('🖼️ TopNav: Initial profile image from localStorage:', saved)
-      setProfileImage(saved)
-    }
+    const firstName = localStorage.getItem('pendingFirstName') || 
+                      sessionStorage.getItem('wizardFirstName') || 
+                      'User'
+    const lastName = localStorage.getItem('pendingLastName') || 
+                     sessionStorage.getItem('wizardLastName') || 
+                     ''
     
-    loadProfileImage()
+    if (firstName) {
+      setUserName(`${firstName} ${lastName}`.trim())
+      setUserInitial(firstName.charAt(0).toUpperCase())
+    }
   }, [])
 
-  // ✅ Listen for localStorage changes (cross-tab)
+  // Handle scroll effect
   useEffect(() => {
-    const handleStorageChange = (e) => {
-      if (e.key === 'userProfileImage') {
-        console.log('🔄 TopNav: Storage changed, updating avatar to:', e.newValue)
-        setProfileImage(e.newValue || '/assets/worker.avif')
-      }
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
     }
-    window.addEventListener('storage', handleStorageChange)
-    return () => window.removeEventListener('storage', handleStorageChange)
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // ✅ Custom event listener for same-tab updates
+  // Close mobile menu on route change
   useEffect(() => {
-    const handleProfileUpdate = (e) => {
-      if (e.detail && e.detail.profileImage) {
-        console.log('🔄 TopNav: Profile update event received:', e.detail.profileImage)
-        setProfileImage(e.detail.profileImage)
-        localStorage.setItem('userProfileImage', e.detail.profileImage)
-      }
-    }
-    window.addEventListener('profileImageUpdated', handleProfileUpdate)
-    return () => window.removeEventListener('profileImageUpdated', handleProfileUpdate)
-  }, [])
-
-  // ✅ Listen for navigation changes to refresh image
-  useEffect(() => {
-    const handleNavigate = () => {
-      updateProfileImageFromStorage()
-    }
-    
-    window.addEventListener('popstate', handleNavigate)
-    return () => window.removeEventListener('popstate', handleNavigate)
-  }, [profileImage])
-
-  // ✅ Also check for image updates on location change
-  useEffect(() => {
-    updateProfileImageFromStorage()
+    setIsMobileMenuOpen(false)
   }, [location.pathname])
 
-  // Handle click outside to close dropdown
+  // Close mobile menu on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
-          avatarRef.current && !avatarRef.current.contains(event.target)) {
-        setIsDropdownOpen(false)
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMobileMenuOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  // Update dropdown position when opened
-  useEffect(() => {
-    if (isDropdownOpen && avatarRef.current) {
-      const rect = avatarRef.current.getBoundingClientRect()
-      setDropdownPosition({
-        top: rect.bottom + 8,
-        right: window.innerWidth - rect.right,
-      })
-    }
-  }, [isDropdownOpen])
-
-  const handleProfileSettings = () => {
-    setIsDropdownOpen(false)
-    navigate('/wizard/summary')
-  }
-
   const handleLogout = () => {
-    setIsDropdownOpen(false)
-    localStorage.removeItem('userProfileImage')
-    setProfileImage('/assets/worker.avif')
+    localStorage.removeItem('authToken')
+    localStorage.removeItem('userId')
+    localStorage.removeItem('pendingEmail')
+    localStorage.removeItem('pendingPassword')
+    localStorage.removeItem('pendingPhoneNumber')
+    localStorage.removeItem('pendingFirstName')
+    localStorage.removeItem('pendingLastName')
+    localStorage.removeItem('pendingDob')
+    localStorage.removeItem('pendingLanguage')
+    
+    sessionStorage.clear()
+    
     navigate('/login')
+    setIsMobileMenuOpen(false)
   }
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen)
+  const handleNavigate = (path) => {
+    navigate(path)
+    setIsMobileMenuOpen(false)
   }
 
-  const showProfileSettings = shouldShowProfileSettings()
+  const getNavLinks = () => {
+    const links = []
 
-  // ============================================================
-  // ✅ DROPDOWN MENU
-  // ============================================================
-  
-  const DropdownMenu = () => {
-    return (
-      <div
-        ref={dropdownRef}
-        style={{
-          position: 'fixed',
-          top: `${dropdownPosition.top}px`,
-          right: `${dropdownPosition.right}px`,
-          minWidth: '200px',
-          background: 'white',
-          borderRadius: '12px',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.15)',
-          border: '1px solid rgba(18, 38, 63, 0.08)',
-          overflow: 'hidden',
-          zIndex: 9999999,
-          padding: '4px 0',
-          opacity: 1,
-          visibility: 'visible',
-          pointerEvents: 'auto',
-          display: 'block',
-        }}
-      >
-        {showProfileSettings && (
-          <>
-            <button
-              onClick={handleProfileSettings}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                width: '100%',
-                padding: '10px 16px',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                fontSize: '14px',
-                color: '#17263a',
-                transition: 'background 0.15s ease',
-                fontFamily: 'inherit',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(15, 78, 169, 0.06)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
-              </svg>
-              Profile Settings
-            </button>
+    if (isAuthenticated) {
+      links.push(
+        { path: '/', label: t('nav.home'), icon: <IconHome /> },
+        { path: '/projects', label: t('nav.projects'), icon: <IconProject /> },
+        { path: '/wizard/summary', label: t('nav.profile'), icon: <IconProfile /> }
+      )
+    }
 
-            <div style={{
-              height: '1px',
-              background: 'rgba(18, 38, 63, 0.08)',
-              margin: '4px 8px',
-            }} />
-          </>
-        )}
-
-        <button
-          onClick={handleLogout}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            width: '100%',
-            padding: '10px 16px',
-            background: 'transparent',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '14px',
-            color: '#dc2626',
-            transition: 'background 0.15s ease',
-            fontFamily: 'inherit',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(220, 38, 38, 0.06)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent'
-          }}
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-            <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="#dc2626" />
-          </svg>
-          Logout
-        </button>
-      </div>
-    )
+    return links
   }
 
-  // ============================================================
-  // ✅ IMAGE ERROR HANDLER
-  // ============================================================
-  
-  const handleImageError = () => {
-    console.warn('⚠️ TopNav: Profile image failed to load, using fallback')
-    setProfileImage('/assets/worker.avif')
-    localStorage.setItem('userProfileImage', '/assets/worker.avif')
+  const navLinks = getNavLinks()
+
+  // Determine if we're on auth pages
+  const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
+
+  // Don't show TopNav on auth pages if variant is 'auth'
+  if (isAuthPage && variant === 'auth') {
+    return null
   }
+
+  // Don't show TopNav if hideNav is true
+  if (hideNav) {
+    return null
+  }
+
+  const isSolid = variant === 'solid'
+  const isTransparent = variant === 'transparent'
 
   return (
-    <header className={`topbar ${variant === 'solid' ? 'topbarSolid' : ''}`} style={{ position: 'relative', zIndex: 9999 }}>
-      <div className="topbarInner">
-        <Link to="/" className="brand brandLink" aria-label="TradesMap home">
-          <img className="brandLogo" src="/assets/Logo_tradesmaps.png" alt="TradesMap" />
-        </Link>
+    <>
+      <style>
+        {`
+          .topnav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: ${isSolid ? 'white' : isTransparent ? 'transparent' : 'white'};
+            border-bottom: ${isSolid || isTransparent ? '1px solid rgba(18, 38, 63, 0.08)' : 'none'};
+            backdrop-filter: ${isTransparent && isScrolled ? 'blur(12px)' : 'none'};
+            background-color: ${isTransparent && isScrolled ? 'rgba(255, 255, 255, 0.85)' : isTransparent ? 'transparent' : 'white'};
+            transition: all 0.3s ease;
+            box-shadow: ${isScrolled ? '0 2px 16px rgba(0, 0, 0, 0.06)' : 'none'};
+          }
 
-        {variant === 'transparent' ? (
-          <nav className="navLinks" aria-label="Top navigation">
-            <a href="#" className="navLink">Faqs</a>
-            <a href="#" className="navLink">About</a>
-            <a href="#" className="navLink">Contact</a>
-          </nav>
-        ) : null}
+          .topnav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+          }
 
-        {variant === 'solid' ? (
-          <div className="topbarCenter" aria-label="Header search">
-            <div className="topbarSearch">
-              <span className="topbarSearchIcon" aria-hidden="true">
-                <IconSearch />
-              </span>
-              <input className="topbarSearchInput" type="search" placeholder="Search" />
-            </div>
-          </div>
-        ) : null}
+          .topnav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            flex-shrink: 0;
+            text-decoration: none;
+          }
 
-        <nav className="navActions" aria-label="Authentication navigation">
-          {variant === 'solid' ? (
-            <div className="navActionsSolid">
-              <button type="button" className="navIconButton" aria-label="Notifications">
-                <IconBell />
-                <span className="navIconBadge" aria-hidden="true">7</span>
-              </button>
-              
-              {/* ✅ Avatar with dynamic image and fallback */}
+          .topnav-logo img {
+            height: 32px;
+            width: auto;
+          }
+
+          .topnav-logo-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f4ea9;
+            letter-spacing: -0.5px;
+          }
+
+          .topnav-links {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+            justify-content: center;
+          }
+
+          .topnav-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+          }
+
+          .topnav-link:hover {
+            background: rgba(15, 78, 169, 0.06);
+            color: #0f4ea9;
+          }
+
+          .topnav-link.active {
+            background: rgba(15, 78, 169, 0.1);
+            color: #0f4ea9;
+            font-weight: 600;
+          }
+
+          .topnav-link .icon {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+          }
+
+          .topnav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+          }
+
+          .topnav-user {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 12px 4px 4px;
+            border-radius: 30px;
+            background: rgba(15, 78, 169, 0.06);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: inherit;
+          }
+
+          .topnav-user:hover {
+            background: rgba(15, 78, 169, 0.1);
+          }
+
+          .topnav-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #0f4ea9;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
+          }
+
+          .topnav-user-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #17263a;
+          }
+
+          .topnav-logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 8px;
+            background: transparent;
+            color: #dc2626;
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            font-family: inherit;
+          }
+
+          .topnav-logout-btn:hover {
+            background: rgba(220, 38, 38, 0.06);
+            border-color: rgba(220, 38, 38, 0.3);
+          }
+
+          .topnav-mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #17263a;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s ease;
+          }
+
+          .topnav-mobile-menu-btn:hover {
+            background: rgba(15, 78, 169, 0.06);
+          }
+
+          .topnav-mobile-menu {
+            display: none;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: white;
+            padding: 20px 24px;
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto;
+            z-index: 999;
+            border-top: 1px solid rgba(18, 38, 63, 0.08);
+            animation: slideDown 0.25s ease;
+          }
+
+          .topnav-mobile-menu.open {
+            display: flex;
+          }
+
+          .topnav-mobile-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: #17263a;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            font-family: inherit;
+            width: 100%;
+            text-align: left;
+          }
+
+          .topnav-mobile-link:hover {
+            background: rgba(15, 78, 169, 0.06);
+          }
+
+          .topnav-mobile-link.active {
+            background: rgba(15, 78, 169, 0.1);
+            color: #0f4ea9;
+          }
+
+          .topnav-mobile-link .icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+          }
+
+          .topnav-mobile-divider {
+            border: none;
+            border-top: 1px solid rgba(18, 38, 63, 0.08);
+            margin: 8px 0;
+          }
+
+          .topnav-mobile-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: rgba(15, 78, 169, 0.04);
+          }
+
+          .topnav-mobile-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #0f4ea9;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            flex-shrink: 0;
+          }
+
+          .topnav-mobile-user-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #17263a;
+          }
+
+          .topnav-mobile-user-email {
+            font-size: 13px;
+            color: #64748b;
+          }
+
+          .topnav-mobile-logout {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            color: #dc2626;
+            font-size: 15px;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+            width: 100%;
+            text-align: left;
+          }
+
+          .topnav-mobile-logout:hover {
+            background: rgba(220, 38, 38, 0.06);
+          }
+
+          .topnav-language-wrapper {
+            display: flex;
+            align-items: center;
+          }
+
+          @keyframes slideDown {
+            from {
+              opacity: 0;
+              transform: translateY(-10px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+
+          /* Responsive */
+          @media (max-width: 768px) {
+            .topnav-links {
+              display: none;
+            }
+
+            .topnav-right .topnav-user {
+              display: none;
+            }
+
+            .topnav-right .topnav-logout-btn {
+              display: none;
+            }
+
+            .topnav-mobile-menu-btn {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .topnav-container {
+              padding: 0 16px;
+              height: 56px;
+            }
+
+            .topnav-logo img {
+              height: 28px;
+            }
+
+            .topnav-logo-text {
+              font-size: 16px;
+            }
+          }
+
+          @media (min-width: 769px) {
+            .topnav-mobile-menu {
+              display: none !important;
+            }
+          }
+
+          /* Hide on auth pages when variant is 'auth' */
+          .topnav-hidden {
+            display: none !important;
+          }
+        `}
+      </style>
+
+      <nav className={`topnav ${isAuthPage && variant === 'auth' ? 'topnav-hidden' : ''}`}>
+        <div className="topnav-container">
+          {/* Logo */}
+          <a 
+            className="topnav-logo" 
+            onClick={() => handleNavigate('/')}
+            href="#"
+          >
+            <img src="/assets/logo_tradesmap.png" alt="TradesMap" />
+            <span className="topnav-logo-text">TradesMap</span>
+          </a>
+
+          {/* Navigation Links - Desktop */}
+          <div className="topnav-links">
+            {navLinks.map((link) => (
               <button
-                ref={avatarRef}
-                type="button"
-                onClick={toggleDropdown}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  position: 'relative',
-                }}
+                key={link.path}
+                className={`topnav-link ${location.pathname === link.path ? 'active' : ''}`}
+                onClick={() => handleNavigate(link.path)}
               >
-                <img 
-                  className="topbarAvatar" 
-                  src={profileImage}
-                  alt="Worker avatar"
-                  style={{
-                    border: isDropdownOpen ? '2px solid #0f4ea9' : '2px solid transparent',
-                    borderRadius: '50%',
-                    transition: 'border 0.2s ease',
-                    width: '40px',
-                    height: '40px',
-                    objectFit: 'cover',
-                    background: '#f0f0f0',
-                  }}
-                  onError={handleImageError}
-                />
-                {imageLoading && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '40px',
-                    height: '40px',
-                    borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.7)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                  }}>
-                    ⏳
-                  </div>
-                )}
+                <span className="icon">{link.icon}</span>
+                {link.label}
               </button>
-            </div>
-          ) : (
-            <NavLink to="/login" className={({ isActive }) => `navPill ${isActive ? 'navPillActive' : ''}`}>
-              Login
-            </NavLink>
-          )}
-        </nav>
-      </div>
+            ))}
+          </div>
 
-      {isDropdownOpen && createPortal(<DropdownMenu />, document.body)}
-    </header>
+          {/* Right Side */}
+          <div className="topnav-right">
+            {/* Language Switcher */}
+            <div className="topnav-language-wrapper">
+              <LanguageSwitcher variant="dropdown" />
+            </div>
+
+            {/* User Info - Desktop */}
+            {isAuthenticated && (
+              <>
+                <button 
+                  className="topnav-user"
+                  onClick={() => handleNavigate('/wizard/summary')}
+                >
+                  <div className="topnav-avatar">
+                    {userInitial || 'U'}
+                  </div>
+                  <span className="topnav-user-name">
+                    {userName || t('nav.user')}
+                  </span>
+                </button>
+
+                <button 
+                  className="topnav-logout-btn"
+                  onClick={handleLogout}
+                >
+                  <IconLogout />
+                  {t('nav.logout')}
+                </button>
+              </>
+            )}
+
+            {/* Mobile Menu Button */}
+            <button 
+              className="topnav-mobile-menu-btn"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label={isMobileMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
+            >
+              {isMobileMenuOpen ? <IconClose /> : <IconMenu />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        <div className={`topnav-mobile-menu ${isMobileMenuOpen ? 'open' : ''}`} ref={menuRef}>
+          {/* User Info - Mobile */}
+          {isAuthenticated && (
+            <>
+              <div className="topnav-mobile-user">
+                <div className="topnav-mobile-avatar">
+                  {userInitial || 'U'}
+                </div>
+                <div>
+                  <div className="topnav-mobile-user-name">
+                    {userName || t('nav.user')}
+                  </div>
+                  <div className="topnav-mobile-user-email">
+                    {localStorage.getItem('pendingEmail') || ''}
+                  </div>
+                </div>
+              </div>
+              <hr className="topnav-mobile-divider" />
+            </>
+          )}
+
+          {/* Navigation Links - Mobile */}
+          {navLinks.map((link) => (
+            <button
+              key={link.path}
+              className={`topnav-mobile-link ${location.pathname === link.path ? 'active' : ''}`}
+              onClick={() => handleNavigate(link.path)}
+            >
+              <span className="icon">{link.icon}</span>
+              {link.label}
+            </button>
+          ))}
+
+          {isAuthenticated && (
+            <>
+              <hr className="topnav-mobile-divider" />
+              
+              {/* Language Switcher - Mobile */}
+              <div style={{ padding: '8px 16px' }}>
+                <div style={{ 
+                  fontSize: '13px', 
+                  fontWeight: 600, 
+                  color: 'rgba(23, 38, 58, 0.5)',
+                  marginBottom: '8px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  {t('nav.language')}
+                </div>
+                <LanguageSwitcher variant="inline" />
+              </div>
+              
+              <hr className="topnav-mobile-divider" />
+              
+              <button 
+                className="topnav-mobile-logout"
+                onClick={handleLogout}
+              >
+                <IconLogout />
+                {t('nav.logout')}
+              </button>
+            </>
+          )}
+        </div>
+      </nav>
+    </>
   )
 }
+
+export default TopNav
