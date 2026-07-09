@@ -1555,14 +1555,13 @@
 
 
 
-
 // src/common/components/TopNav.jsx
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher } from './LanguageSwitcher'
 
-// Icons
+// Icons (keep all your existing icons here)
 function IconMenu(props) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
@@ -1831,6 +1830,50 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             flex-shrink: 0;
           }
 
+          /* ✅ NEW: Auth buttons for unauthenticated users */
+          .topnav-auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+          }
+
+          .topnav-login-btn {
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            color: #475569;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-family: inherit;
+          }
+
+          .topnav-login-btn:hover {
+            background: rgba(15, 78, 169, 0.06);
+            color: #0f4ea9;
+          }
+
+          .topnav-register-btn {
+            padding: 8px 20px;
+            border: none;
+            background: #0f4ea9;
+            color: white;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: inherit;
+          }
+
+          .topnav-register-btn:hover {
+            background: #0b3f90;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(15, 78, 169, 0.3);
+          }
+
           .topnav-right {
             display: flex;
             align-items: center;
@@ -2058,6 +2101,10 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
               display: none;
             }
 
+            .topnav-auth-buttons {
+              display: none !important;
+            }
+
             .topnav-mobile-menu-btn {
               display: flex;
               align-items: center;
@@ -2124,6 +2171,24 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
               <LanguageSwitcher variant="dropdown" />
             </div>
 
+            {/* ✅ Login/Register buttons for unauthenticated users */}
+            {!isAuthenticated && !isAuthPage && (
+              <div className="topnav-auth-buttons">
+                <button 
+                  className="topnav-login-btn"
+                  onClick={() => navigate('/login')}
+                >
+                  {t('nav.login') || 'Log in'}
+                </button>
+                <button 
+                  className="topnav-register-btn"
+                  onClick={() => navigate('/register')}
+                >
+                  {t('nav.register') || 'Register'}
+                </button>
+              </div>
+            )}
+
             {/* User Info - Desktop */}
             {isAuthenticated && (
               <>
@@ -2162,6 +2227,32 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
 
         {/* Mobile Menu */}
         <div className={`topnav-mobile-menu ${isMobileMenuOpen ? 'open' : ''}`} ref={menuRef}>
+          {/* ✅ Login/Register for unauthenticated users - Mobile */}
+          {!isAuthenticated && !isAuthPage && (
+            <>
+              <button 
+                className="topnav-mobile-link"
+                onClick={() => handleNavigate('/login')}
+              >
+                <span className="icon"><IconUser /></span>
+                {t('nav.login') || 'Log in'}
+              </button>
+              <button 
+                className="topnav-mobile-link"
+                onClick={() => handleNavigate('/register')}
+                style={{ 
+                  background: '#0f4ea9', 
+                  color: 'white',
+                  borderRadius: '10px'
+                }}
+              >
+                <span className="icon"><IconUser /></span>
+                {t('nav.register') || 'Register'}
+              </button>
+              <hr className="topnav-mobile-divider" />
+            </>
+          )}
+
           {/* User Info - Mobile */}
           {isAuthenticated && (
             <>
