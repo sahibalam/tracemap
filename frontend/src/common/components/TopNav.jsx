@@ -1551,12 +1551,12 @@
 
 
 
-
 // src/common/components/TopNav.jsx
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import api from '../../services/api'
 
 // Icons
 function IconMenu(props) {
@@ -1599,14 +1599,110 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
   const [isScrolled, setIsScrolled] = useState(false)
   const [userName, setUserName] = useState('')
   const [userInitial, setUserInitial] = useState('')
-  const [profileImage, setProfileImage] = useState('')
+  const [profileImage, setProfileImage] = useState('/assets/worker.avif')
+  const [imageLoading, setImageLoading] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
+  const dropdownRef = useRef(null)
+  const avatarRef = useRef(null)
   const menuRef = useRef(null)
 
   // Check if user is authenticated
   const isAuthenticated = !!localStorage.getItem('authToken')
 
-  // Get user info from localStorage
-  useEffect(() => {
+  // ============================================================
+  // ✅ GET FRESH PROFILE IMAGE URL
+  // ============================================================
+  
+  const getFreshProfileImage = async (fileKey) => {
+    if (!fileKey) return null
+    
+    try {
+      console.log('🔄 TopNav: Getting fresh profile image URL for:', fileKey)
+      setImageLoading(true)
+      
+      const response = await api.get(`/upload/view/${encodeURIComponent(fileKey)}`)
+      
+      if (response.data.success && response.data.data.viewUrl) {
+        console.log('✅ TopNav: Fresh profile image URL generated')
+        return response.data.data.viewUrl
+      }
+      return null
+    } catch (error) {
+      console.error('❌ TopNav: Error getting fresh profile image:', error)
+      return null
+    } finally {
+      setImageLoading(false)
+    }
+  }
+
+  // ============================================================
+  // ✅ LOAD PROFILE IMAGE FROM DYNAMODB
+  // ============================================================
+  
+  const loadProfileImage = async () => {
+    try {
+      const userId = localStorage.getItem('userId')
+      if (!userId) {
+        console.log('ℹ️ TopNav: No userId found, using default avatar')
+        return
+      }
+
+      console.log('📊 TopNav: Fetching profile for user:', userId)
+      
+      // Dynamically import workerService to avoid circular dependencies
+      const workerService = (await import('../../worker/services/workerService')).default
+      const result = await workerService.getWorkerProfile(userId)
+      
+      if (result.success && result.data) {
+        const basics = result.data.basics || {}
+        
+        // ✅ Check for profileImageKey first (S3 stored image)
+        if (basics.profileImageKey) {
+          const freshUrl = await getFreshProfileImage(basics.profileImageKey)
+          if (freshUrl) {
+            setProfileImage(freshUrl)
+            localStorage.setItem('userProfileImage', freshUrl)
+            console.log('✅ TopNav: Profile image updated from DynamoDB (S3)')
+            return
+          }
+        }
+        
+        // ✅ Fallback to profilePreview (base64 or URL)
+        if (basics.profilePreview) {
+          setProfileImage(basics.profilePreview)
+          localStorage.setItem('userProfileImage', basics.profilePreview)
+          console.log('✅ TopNav: Profile image loaded from stored URL')
+          return
+        }
+      }
+      
+      // ✅ No image found, use default
+      setProfileImage('/assets/worker.avif')
+      
+    } catch (error) {
+      console.error('❌ TopNav: Error loading profile image:', error)
+      setProfileImage('/assets/worker.avif')
+    }
+  }
+
+  // ============================================================
+  // ✅ UPDATE PROFILE IMAGE FROM LOCALSTORAGE
+  // ============================================================
+  
+  const updateProfileImageFromStorage = () => {
+    const saved = localStorage.getItem('userProfileImage')
+    if (saved && saved !== profileImage) {
+      console.log('🔄 TopNav: Updating profile image from localStorage:', saved)
+      setProfileImage(saved)
+    }
+  }
+
+  // ============================================================
+  // ✅ GET USER INFO
+  // ============================================================
+  
+  const getUserInfo = () => {
     // Get user name from various sources
     const firstName = localStorage.getItem('pendingFirstName') || 
                       sessionStorage.getItem('wizardFirstName') || 
@@ -1621,26 +1717,65 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
       setUserName(`${firstName} ${lastName}`.trim())
       setUserInitial(firstName.charAt(0).toUpperCase())
     }
+  }
 
-    // Get profile image if available
-    const savedImage = localStorage.getItem('userProfileImage') || 
-                       sessionStorage.getItem('userProfileImage') ||
-                       ''
-    if (savedImage) {
-      setProfileImage(savedImage)
+  // ============================================================
+  // ✅ INITIALIZE
+  // ============================================================
+  
+  useEffect(() => {
+    // Get user info
+    getUserInfo()
+    
+    // Load profile image
+    const saved = localStorage.getItem('userProfileImage')
+    if (saved) {
+      console.log('🖼️ TopNav: Initial profile image from localStorage:', saved)
+      setProfileImage(saved)
     }
+    
+    loadProfileImage()
+  }, [])
 
-    // Listen for profile image updates
-    const handleImageUpdate = (event) => {
-      if (event.detail?.profileImage) {
-        setProfileImage(event.detail.profileImage)
-        localStorage.setItem('userProfileImage', event.detail.profileImage)
+  // ✅ Listen for localStorage changes (cross-tab)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'userProfileImage') {
+        console.log('🔄 TopNav: Storage changed, updating avatar to:', e.newValue)
+        setProfileImage(e.newValue || '/assets/worker.avif')
       }
     }
-
-    window.addEventListener('profileImageUpdated', handleImageUpdate)
-    return () => window.removeEventListener('profileImageUpdated', handleImageUpdate)
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
   }, [])
+
+  // ✅ Custom event listener for same-tab updates
+  useEffect(() => {
+    const handleProfileUpdate = (e) => {
+      if (e.detail && e.detail.profileImage) {
+        console.log('🔄 TopNav: Profile update event received:', e.detail.profileImage)
+        setProfileImage(e.detail.profileImage)
+        localStorage.setItem('userProfileImage', e.detail.profileImage)
+      }
+    }
+    window.addEventListener('profileImageUpdated', handleProfileUpdate)
+    return () => window.removeEventListener('profileImageUpdated', handleProfileUpdate)
+  }, [])
+
+  // ✅ Listen for navigation changes to refresh image
+  useEffect(() => {
+    const handleNavigate = () => {
+      updateProfileImageFromStorage()
+    }
+    
+    window.addEventListener('popstate', handleNavigate)
+    return () => window.removeEventListener('popstate', handleNavigate)
+  }, [profileImage])
+
+  // ✅ Also check for image updates on location change
+  useEffect(() => {
+    updateProfileImageFromStorage()
+  }, [location.pathname])
 
   // Handle scroll effect
   useEffect(() => {
@@ -1656,18 +1791,35 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
     setIsMobileMenuOpen(false)
   }, [location.pathname])
 
-  // Close mobile menu on outside click
+  // Handle click outside to close mobile menu and dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMobileMenuOpen(false)
+      }
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+          avatarRef.current && !avatarRef.current.contains(event.target)) {
+        setIsDropdownOpen(false)
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Update dropdown position when opened
+  useEffect(() => {
+    if (isDropdownOpen && avatarRef.current) {
+      const rect = avatarRef.current.getBoundingClientRect()
+      setDropdownPosition({
+        top: rect.bottom + 8,
+        right: window.innerWidth - rect.right,
+      })
+    }
+  }, [isDropdownOpen])
+
   const handleLogout = () => {
+    setIsDropdownOpen(false)
+    setIsMobileMenuOpen(false)
     localStorage.removeItem('authToken')
     localStorage.removeItem('userId')
     localStorage.removeItem('pendingEmail')
@@ -1683,13 +1835,18 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
     
     sessionStorage.clear()
     
+    setProfileImage('/assets/worker.avif')
     navigate('/login')
-    setIsMobileMenuOpen(false)
   }
 
   const handleNavigate = (path) => {
-    navigate(path)
     setIsMobileMenuOpen(false)
+    setIsDropdownOpen(false)
+    navigate(path)
+  }
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen)
   }
 
   // Determine if we're on auth pages
@@ -1707,6 +1864,13 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
 
   const isSolid = variant === 'solid'
   const isTransparent = variant === 'transparent'
+
+  // Handle image error
+  const handleImageError = () => {
+    console.warn('⚠️ TopNav: Profile image failed to load, using fallback')
+    setProfileImage('/assets/worker.avif')
+    localStorage.setItem('userProfileImage', '/assets/worker.avif')
+  }
 
   return (
     <>
@@ -1796,6 +1960,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             border: none;
             font-family: inherit;
             text-decoration: none;
+            position: relative;
           }
 
           .topnav-user-btn:hover {
@@ -1803,8 +1968,8 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
           }
 
           .topnav-avatar {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: #0f4ea9;
             color: white;
@@ -1815,6 +1980,8 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             font-weight: 600;
             flex-shrink: 0;
             overflow: hidden;
+            border: ${isDropdownOpen ? '2px solid #0f4ea9' : '2px solid transparent'};
+            transition: border 0.2s ease;
           }
 
           .topnav-avatar img {
@@ -1968,6 +2135,52 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             align-items: center;
           }
 
+          /* Dropdown Menu */
+          .topnav-dropdown {
+            position: fixed;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(18, 38, 63, 0.08);
+            overflow: hidden;
+            z-index: 9999;
+            padding: 4px 0;
+            min-width: 200px;
+          }
+
+          .topnav-dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            color: #17263a;
+            transition: background 0.15s ease;
+            font-family: inherit;
+          }
+
+          .topnav-dropdown-item:hover {
+            background: rgba(15, 78, 169, 0.06);
+          }
+
+          .topnav-dropdown-item.logout {
+            color: #dc2626;
+          }
+
+          .topnav-dropdown-item.logout:hover {
+            background: rgba(220, 38, 38, 0.06);
+          }
+
+          .topnav-dropdown-divider {
+            height: 1px;
+            background: rgba(18, 38, 63, 0.08);
+            margin: 4px 8px;
+          }
+
           @keyframes slideDown {
             from {
               opacity: 0;
@@ -1985,7 +2198,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
               display: none;
             }
 
-            .topnav-right .topnav-user-btn {
+            .topnav-right .topnav-user-btn .topnav-user-name {
               display: none;
             }
 
@@ -2050,22 +2263,80 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
                 {t('auth.login') || 'Log in'}
               </button>
             ) : (
-              <button 
-                className="topnav-user-btn"
-                onClick={() => navigate('/wizard/summary')}
-                title={userName || 'User'}
-              >
-                <div className="topnav-avatar">
-                  {profileImage ? (
-                    <img src={profileImage} alt={userName || 'User'} />
-                  ) : (
-                    <span className="topnav-avatar-text">{userInitial || 'U'}</span>
+              <>
+                <button 
+                  ref={avatarRef}
+                  className="topnav-user-btn"
+                  onClick={toggleDropdown}
+                  title={userName || 'User'}
+                >
+                  <div className="topnav-avatar">
+                    {profileImage && profileImage !== '/assets/worker.avif' ? (
+                      <img 
+                        src={profileImage} 
+                        alt={userName || 'User'} 
+                        onError={handleImageError}
+                      />
+                    ) : (
+                      <span className="topnav-avatar-text">{userInitial || 'U'}</span>
+                    )}
+                  </div>
+                  <span className="topnav-user-name">
+                    {userName || 'User'}
+                  </span>
+                  {imageLoading && (
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      background: 'rgba(255,255,255,0.7)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '12px',
+                    }}>
+                      ⏳
+                    </div>
                   )}
-                </div>
-                <span className="topnav-user-name">
-                  {userName || 'User'}
-                </span>
-              </button>
+                </button>
+
+                {/* Dropdown Menu */}
+                {isDropdownOpen && (
+                  <div
+                    ref={dropdownRef}
+                    className="topnav-dropdown"
+                    style={{
+                      top: `${dropdownPosition.top}px`,
+                      right: `${dropdownPosition.right}px`,
+                    }}
+                  >
+                    <button
+                      className="topnav-dropdown-item"
+                      onClick={() => handleNavigate('/wizard/summary')}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
+                      </svg>
+                      {t('nav.profile') || 'Profile Settings'}
+                    </button>
+
+                    <div className="topnav-dropdown-divider" />
+
+                    <button
+                      className="topnav-dropdown-item logout"
+                      onClick={handleLogout}
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                        <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="#dc2626" />
+                      </svg>
+                      {t('nav.logout') || 'Sign out'}
+                    </button>
+                  </div>
+                )}
+              </>
             )}
 
             {/* Mobile Menu Button */}
@@ -2086,8 +2357,8 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             <>
               <div className="topnav-mobile-user">
                 <div className="topnav-mobile-avatar">
-                  {profileImage ? (
-                    <img src={profileImage} alt={userName || 'User'} />
+                  {profileImage && profileImage !== '/assets/worker.avif' ? (
+                    <img src={profileImage} alt={userName || 'User'} onError={handleImageError} />
                   ) : (
                     userInitial || 'U'
                   )}
@@ -2146,7 +2417,9 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
                 onClick={() => handleNavigate('/wizard/summary')}
               >
                 <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <IconUser />
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="#17263a" />
+                  </svg>
                   {t('nav.profile') || 'Profile'}
                 </span>
               </button>
