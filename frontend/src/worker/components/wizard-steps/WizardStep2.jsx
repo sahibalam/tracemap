@@ -6695,8 +6695,632 @@
 
 
 
+// // src/worker/components/wizard-steps/WizardStep2.jsx
+// import { useState } from 'react'
+// import { SelectField, TextField } from '../../../common/components/TextField'
+
+// const TRADE_LEVEL_MAP = {
+//   'Metal Framing': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Drywall Hanging': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Taping/Finishing': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Acoustical Ceilings': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Interior Carpentry': [
+//     'Helper',
+//     'Mechanic',
+//     'Advanced Mechanic',
+//     'Lead/Foreman',
+//   ],
+//   'Helpers/Labourers': [
+//     'Helper',
+//     'Lead Helper',
+//   ],
+//   'Insulation': [
+//     'Helper',
+//     'Mechanic',
+//     'Lead',
+//   ],
+//   'Demolition/Punch/Final Clean': [
+//     'Helper',
+//     'Mechanic',
+//   ],
+//   'Leads/Foremen': [
+//     'Lead/Foreman',
+//   ],
+//   'Other': [],
+// }
+
+// const LEAD_FOREMAN_RESPONSIBILITIES = [
+//   'Crew size managed',
+//   'Manpower planning',
+//   'Daily planning',
+//   'Daily enforcement',
+//   'Housekeeping enforcement',
+//   'Daily reporting',
+//   'Punch closeout',
+//   'Coordination with superintendent',
+// ]
+
+// const METAL_FRAMING_SKILLS = [
+//   'Layout',
+//   'Shaft walls',
+//   'Partition types',
+//   'Rated assemblies',
+//   'Stud/track gauge',
+//   'Bulkheads/softits',
+//   'Backing/blocking',
+//   'High-wall framing',
+//   'MEP Coordination',
+// ]
+
+// const DRYWALL_HANGING_SKILLS = [
+//   'Walls',
+//   'Ceiling',
+//   'Fire-rated board',
+//   'Abuse board',
+//   'Shaft-wall board',
+//   'High walls',
+//   'Production hanging',
+//   'Lift work',
+//   'Blueprint reading',
+// ]
+
+// const TAPING_FINISHING_SKILLS = [
+//   'Level 1-5 finish',
+//   'Skim coat',
+//   'Texture match',
+//   'Punch repair',
+//   'Corner bead systems',
+//   'Smooth finish',
+// ]
+
+// const ACOUSTICAL_CEILINGS_SKILLS = [
+//   'Standard grid',
+//   'Tegular',
+//   'Specialty ceilings',
+//   'Clouds/baffles',
+//   'Seismic requirements',
+//   'Light/HVAC/sprinkler coordination',
+// ]
+
+// const INTERIOR_CARPENTRY_SKILLS = [
+//   'Backing',
+//   'Blocking',
+//   'Doors/frames/hardware support',
+//   'Trim/carpentry',
+//   'Finish carpentry',
+// ]
+
+// const HELPERS_LABOURERS_SKILLS = [
+//   'Material movement',
+//   'Trade Assistance',
+//   'Cleanup',
+//   'Preparation work',
+// ]
+
+// const INSULATION_SKILLS = [
+//   'Wall Insulation',
+//   'Bat Insulation',
+//   'Sound Insulation',
+//   'Specialty Insulation',
+// ]
+
+// const DEMOLITION_SKILLS = [
+//   'Demolition',
+//   'Removal Support',
+//   'Clean up',
+//   'Punch work',
+//   'Final clean',
+//   'Closeout Support',
+// ]
+
+// // ✅ Helper function to get trade level options
+// const getTradeLevels = (trade) => {
+//   return TRADE_LEVEL_MAP[trade] || []
+// }
+
+// // ✅ Helper function to check if trade is "Other"
+// const isOtherTrade = (trade) => {
+//   return trade === 'Other'
+// }
+
+// // ✅ Helper function to check if level should show trade skills
+// const shouldShowTradeSkills = (level) => {
+//   if (level === 'Lead' || level === 'Lead/Foreman') {
+//     return false
+//   }
+//   return true
+// }
+
+// // ✅ Helper function to get skill options for a trade
+// const getTradeSkills = (trade) => {
+//   const skillMap = {
+//     'Metal Framing': METAL_FRAMING_SKILLS,
+//     'Drywall Hanging': DRYWALL_HANGING_SKILLS,
+//     'Taping/Finishing': TAPING_FINISHING_SKILLS,
+//     'Acoustical Ceilings': ACOUSTICAL_CEILINGS_SKILLS,
+//     'Interior Carpentry': INTERIOR_CARPENTRY_SKILLS,
+//     'Helpers/Labourers': HELPERS_LABOURERS_SKILLS,
+//     'Insulation': INSULATION_SKILLS,
+//     'Demolition/Punch/Final Clean': DEMOLITION_SKILLS,
+//   }
+//   return skillMap[trade] || []
+// }
+
+// // ✅ Helper function to get responsibilities for Lead/Foreman
+// const getLeadResponsibilities = (trade) => {
+//   return LEAD_FOREMAN_RESPONSIBILITIES
+// }
+
+// // ✅ Create initial trade row
+// const createInitialTradeRow = () => ({
+//   id: Date.now().toString(),
+//   trade: '',
+//   otherTrade: '',
+//   level: '',
+//   experience: '',
+//   skills: {},
+//   responsibilities: {},
+// })
+
+// export function WizardStep2({ data, onChange, onNext, onBack }) {
+//   // ✅ State for dynamic trade rows
+//   const [tradeRows, setTradeRows] = useState(() => {
+//     // If there's existing data, load it
+//     if (data.tradeRows && data.tradeRows.length > 0) {
+//       return data.tradeRows
+//     }
+//     // Otherwise, start with one empty row
+//     return [createInitialTradeRow()]
+//   })
+
+//   // ✅ Handle change for a specific trade row
+//   const handleTradeRowChange = (rowId, field, value) => {
+//     const updatedRows = tradeRows.map(row => {
+//       if (row.id === rowId) {
+//         // If trade changes, reset level, skills, and responsibilities
+//         if (field === 'trade') {
+//           return {
+//             ...row,
+//             trade: value,
+//             otherTrade: '',
+//             level: '',
+//             skills: {},
+//             responsibilities: {},
+//           }
+//         }
+//         return { ...row, [field]: value }
+//       }
+//       return row
+//     })
+    
+//     setTradeRows(updatedRows)
+//     // ✅ Update parent component's data
+//     onChange({ tradeRows: updatedRows })
+//   }
+
+//   // ✅ Handle skill toggle for a specific trade row
+//   const handleSkillToggle = (rowId, skill) => (e) => {
+//     const updatedRows = tradeRows.map(row => {
+//       if (row.id === rowId) {
+//         return {
+//           ...row,
+//           skills: {
+//             ...row.skills,
+//             [skill]: e.target.checked,
+//           }
+//         }
+//       }
+//       return row
+//     })
+    
+//     setTradeRows(updatedRows)
+//     onChange({ tradeRows: updatedRows })
+//   }
+
+//   // ✅ Handle responsibility toggle for a specific trade row
+//   const handleResponsibilityToggle = (rowId, responsibility) => (e) => {
+//     const updatedRows = tradeRows.map(row => {
+//       if (row.id === rowId) {
+//         return {
+//           ...row,
+//           responsibilities: {
+//             ...row.responsibilities,
+//             [responsibility]: e.target.checked,
+//           }
+//         }
+//       }
+//       return row
+//     })
+    
+//     setTradeRows(updatedRows)
+//     onChange({ tradeRows: updatedRows })
+//   }
+
+//   // ✅ Add new trade row (max 40)
+//   const addTradeRow = () => {
+//     if (tradeRows.length < 40) {
+//       const newRow = createInitialTradeRow()
+//       const updatedRows = [...tradeRows, newRow]
+//       setTradeRows(updatedRows)
+//       onChange({ tradeRows: updatedRows })
+//     }
+//   }
+
+//   // ✅ Remove trade row (minimum 1)
+//   const removeTradeRow = (rowId) => {
+//     if (tradeRows.length > 1) {
+//       const updatedRows = tradeRows.filter(row => row.id !== rowId)
+//       setTradeRows(updatedRows)
+//       onChange({ tradeRows: updatedRows })
+//     }
+//   }
+
+//   // ✅ Get all trade options
+//   const getTradeOptions = () => {
+//     return Object.keys(TRADE_LEVEL_MAP)
+//   }
+
+//   // ✅ Get level options for a trade
+//   const getLevelOptions = (trade) => {
+//     return getTradeLevels(trade)
+//   }
+
+//   // ✅ Check if trade is "Other"
+//   const isOther = (trade) => {
+//     return isOtherTrade(trade)
+//   }
+
+//   // ✅ Get skills for a trade
+//   const getSkills = (trade) => {
+//     return getTradeSkills(trade)
+//   }
+
+//   // ✅ Check if level should show skills
+//   const shouldShowSkills = (level) => {
+//     return shouldShowTradeSkills(level)
+//   }
+
+//   // ✅ Get responsibilities for Lead/Foreman
+//   const getResponsibilities = (trade) => {
+//     return getLeadResponsibilities(trade)
+//   }
+
+//   return (
+//     <div className="wizardStep">
+//       <div className="wizardBody">
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">Trade Profile & Skill Matrix</div>
+
+//           {/* ✅ Dynamic Trade Rows */}
+//           {tradeRows.map((row, index) => {
+//             const isOther = row.trade === 'Other'
+//             const levels = getLevelOptions(row.trade)
+//             const skills = getSkills(row.trade)
+//             const showSkills = row.trade && row.level && shouldShowSkills(row.level)
+//             const showResponsibilities = row.trade && (row.level === 'Lead' || row.level === 'Lead/Foreman')
+//             const responsibilities = getResponsibilities(row.trade)
+//             const rowNumber = index + 1
+
+//             return (
+//               <div key={row.id} style={{ 
+//                 marginBottom: index < tradeRows.length - 1 ? '32px' : '16px',
+//                 padding: '16px',
+//                 border: '1px solid rgba(18, 38, 63, 0.08)',
+//                 borderRadius: '12px',
+//                 background: index % 2 === 0 ? 'rgba(15, 78, 169, 0.02)' : 'transparent',
+//                 position: 'relative'
+//               }}>
+//                 {/* ✅ Row Header with Number and Delete Button */}
+//                 <div style={{
+//                   display: 'flex',
+//                   justifyContent: 'space-between',
+//                   alignItems: 'center',
+//                   marginBottom: '12px'
+//                 }}>
+//                   <div style={{
+//                     fontSize: '14px',
+//                     fontWeight: 600,
+//                     color: '#17263a',
+//                   }}>
+//                     Trade #{rowNumber}
+//                   </div>
+//                   {tradeRows.length > 1 && (
+//                     <button
+//                       type="button"
+//                       onClick={() => removeTradeRow(row.id)}
+//                       style={{
+//                         background: 'none',
+//                         border: 'none',
+//                         color: '#dc2626',
+//                         cursor: 'pointer',
+//                         fontSize: '14px',
+//                         padding: '4px 12px',
+//                         borderRadius: '6px',
+//                         transition: 'background 0.2s',
+//                       }}
+//                       onMouseEnter={(e) => {
+//                         e.currentTarget.style.background = 'rgba(220, 38, 38, 0.08)'
+//                       }}
+//                       onMouseLeave={(e) => {
+//                         e.currentTarget.style.background = 'transparent'
+//                       }}
+//                     >
+//                       ✕ Remove Trade
+//                     </button>
+//                   )}
+//                 </div>
+
+//                 {/* ✅ Trade Selection Row */}
+//                 <div className="wizardGrid3">
+//                   <SelectField
+//                     label=""
+//                     value={row.trade || ''}
+//                     onChange={(value) => handleTradeRowChange(row.id, 'trade', value)}
+//                   >
+//                     <option value="">Select Trade</option>
+//                     {getTradeOptions().map((trade) => (
+//                       <option key={trade} value={trade}>
+//                         {trade}
+//                       </option>
+//                     ))}
+//                   </SelectField>
+
+//                   {isOther ? (
+//                     <TextField
+//                       label=""
+//                       value={row.otherTrade || ''}
+//                       onChange={(value) => handleTradeRowChange(row.id, 'otherTrade', value)}
+//                       placeholder="Enter Custom Trade"
+//                     />
+//                   ) : (
+//                     <SelectField
+//                       label=""
+//                       value={row.level || ''}
+//                       disabled={!row.trade}
+//                       onChange={(value) => handleTradeRowChange(row.id, 'level', value)}
+//                     >
+//                       <option value="">Select Worker Level</option>
+//                       {levels.map((level) => (
+//                         <option key={level} value={level}>
+//                           {level}
+//                         </option>
+//                       ))}
+//                     </SelectField>
+//                   )}
+
+//                   <TextField
+//                     label=""
+//                     type="number"
+//                     min="0"
+//                     value={row.experience || ''}
+//                     onChange={(value) => handleTradeRowChange(row.id, 'experience', value)}
+//                     placeholder="Enter years"
+//                   />
+//                 </div>
+
+//                 {/* ✅ Show custom trade input when "Other" is selected */}
+//                 {isOther && row.otherTrade && (
+//                   <div style={{
+//                     marginTop: 8,
+//                     fontSize: '13px',
+//                     color: '#0f4ea9',
+//                     fontWeight: 500,
+//                     padding: '8px 12px',
+//                     background: 'rgba(15, 78, 169, 0.05)',
+//                     borderRadius: '8px',
+//                     border: '1px solid rgba(15, 78, 169, 0.1)',
+//                   }}>
+//                     Custom Trade: {row.otherTrade}
+//                   </div>
+//                 )}
+
+//                 {/* ✅ Trade Skills */}
+//                 {showSkills && skills.length > 0 && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       {row.trade} Skills ({row.level === 'Helper' ? 'H' : row.level === 'Mechanic' ? 'M' : 'A'})
+//                     </legend>
+//                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>
+//                       Skills for {row.trade} - {row.level} Level
+//                     </div>
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {skills.map((skill) => (
+//                         <label key={skill} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(row.skills?.[skill] || false)}
+//                             onChange={handleSkillToggle(row.id, skill)}
+//                           />
+//                           {skill}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+
+//                 {/* ✅ Lead/Foreman Responsibilities */}
+//                 {showResponsibilities && (
+//                   <fieldset style={{
+//                     marginTop: 16,
+//                     padding: '16px 20px 20px 20px',
+//                     border: '1px solid rgba(15, 78, 169, 0.2)',
+//                     borderRadius: '12px',
+//                     background: 'rgba(15, 78, 169, 0.03)',
+//                     position: 'relative',
+//                   }}>
+//                     <legend style={{
+//                       padding: '0 12px',
+//                       fontSize: '14px',
+//                       fontWeight: 600,
+//                       color: '#0f4ea9',
+//                       background: 'white',
+//                       borderRadius: '8px',
+//                       marginLeft: '8px',
+//                     }}>
+//                       {row.level === 'Lead' ? 'Lead Responsibilities' : 'Lead/Foreman Responsibilities'}
+//                     </legend>
+
+//                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
+//                       {responsibilities.map((responsibility) => (
+//                         <label key={responsibility} className="wizardCheck">
+//                           <input
+//                             type="checkbox"
+//                             checked={!!(row.responsibilities?.[responsibility] || false)}
+//                             onChange={handleResponsibilityToggle(row.id, responsibility)}
+//                           />
+//                           {responsibility}
+//                         </label>
+//                       ))}
+//                     </div>
+//                   </fieldset>
+//                 )}
+//               </div>
+//             )
+//           })}
+
+//           {/* ✅ Add Trade Button */}
+//           <div style={{ 
+//             marginTop: '16px',
+//             display: 'flex',
+//             justifyContent: 'center'
+//           }}>
+//             <button
+//               type="button"
+//               onClick={addTradeRow}
+//               disabled={tradeRows.length >= 40}
+//               style={{
+//                 padding: '10px 24px',
+//                 background: tradeRows.length >= 40 ? '#94a3b8' : 'rgba(15, 78, 169, 0.08)',
+//                 color: tradeRows.length >= 40 ? '#94a3b8' : '#0f4ea9',
+//                 border: `1px solid ${tradeRows.length >= 40 ? '#94a3b8' : 'rgba(15, 78, 169, 0.2)'}`,
+//                 borderRadius: '8px',
+//                 cursor: tradeRows.length >= 40 ? 'not-allowed' : 'pointer',
+//                 fontSize: '14px',
+//                 fontWeight: 500,
+//                 transition: 'all 0.2s',
+//                 display: 'flex',
+//                 alignItems: 'center',
+//                 gap: '8px'
+//               }}
+//               onMouseEnter={(e) => {
+//                 if (tradeRows.length < 40) {
+//                   e.currentTarget.style.background = 'rgba(15, 78, 169, 0.15)'
+//                 }
+//               }}
+//               onMouseLeave={(e) => {
+//                 if (tradeRows.length < 40) {
+//                   e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'
+//                 }
+//               }}
+//             >
+//               <span style={{ fontSize: '18px' }}>+</span>
+//               Add Trade 
+//             </button>
+//           </div>
+
+//           {/* ✅ Additional Skills/Tools/Systems Text Area */}
+//           <div style={{ marginTop: '24px' }}>
+//             <div style={{ 
+//               fontSize: '14px', 
+//               fontWeight: 600, 
+//               color: '#17263a', 
+//               marginBottom: 8 
+//             }}>
+//               Additional Skills / Tools / Systems
+//             </div>
+//             <textarea
+//               className="wizardTextArea"
+//               value={data.additionalSkillsTools || ''}
+//               onChange={(e) => onChange({ additionalSkillsTools: e.target.value })}
+//               placeholder="Enter additional skills, tools, or systems you have experience with..."
+//               rows={4}
+//               style={{
+//                 width: '100%',
+//                 padding: '12px 16px',
+//                 border: '1px solid rgba(18, 38, 63, 0.12)',
+//                 borderRadius: '12px',
+//                 fontSize: '14px',
+//                 fontFamily: 'inherit',
+//                 resize: 'vertical',
+//                 outline: 'none',
+//                 transition: 'all 0.2s ease',
+//                 background: 'white',
+//                 color: '#17263a',
+//                 minHeight: '100px',
+//               }}
+//               onFocus={(e) => {
+//                 e.target.style.borderColor = '#0f4ea9'
+//                 e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+//               }}
+//               onBlur={(e) => {
+//                 e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+//                 e.target.style.boxShadow = 'none'
+//               }}
+//             />
+//             <div style={{ 
+//               fontSize: '11px', 
+//               color: 'rgba(23, 38, 58, 0.5)', 
+//               marginTop: '4px',
+//               textAlign: 'right'
+//             }}>
+//               {data.additionalSkillsTools?.length || 0} characters
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
+
+
+
+
+
+
+
+
+
+
+
+
 // src/worker/components/wizard-steps/WizardStep2.jsx
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { SelectField, TextField } from '../../../common/components/TextField'
 
 const TRADE_LEVEL_MAP = {
@@ -6883,6 +7507,8 @@ const createInitialTradeRow = () => ({
 })
 
 export function WizardStep2({ data, onChange, onNext, onBack }) {
+  const { t } = useTranslation()
+  
   // ✅ State for dynamic trade rows
   const [tradeRows, setTradeRows] = useState(() => {
     // If there's existing data, load it
@@ -7009,7 +7635,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     <div className="wizardStep">
       <div className="wizardBody">
         <div className="wizardSection">
-          <div className="wizardSectionBar">Trade Profile & Skill Matrix</div>
+          <div className="wizardSectionBar">{t('wizard.step2.title')}</div>
 
           {/* ✅ Dynamic Trade Rows */}
           {tradeRows.map((row, index) => {
@@ -7042,7 +7668,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                     fontWeight: 600,
                     color: '#17263a',
                   }}>
-                    Trade #{rowNumber}
+                    {t('wizard.step2.trade')} #{rowNumber}
                   </div>
                   {tradeRows.length > 1 && (
                     <button
@@ -7065,7 +7691,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                         e.currentTarget.style.background = 'transparent'
                       }}
                     >
-                      ✕ Remove Trade
+                      ✕ {t('wizard.step2.removeTrade')}
                     </button>
                   )}
                 </div>
@@ -7077,7 +7703,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                     value={row.trade || ''}
                     onChange={(value) => handleTradeRowChange(row.id, 'trade', value)}
                   >
-                    <option value="">Select Trade</option>
+                    <option value="">{t('wizard.step2.selectTrade')}</option>
                     {getTradeOptions().map((trade) => (
                       <option key={trade} value={trade}>
                         {trade}
@@ -7090,7 +7716,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                       label=""
                       value={row.otherTrade || ''}
                       onChange={(value) => handleTradeRowChange(row.id, 'otherTrade', value)}
-                      placeholder="Enter Custom Trade"
+                      placeholder={t('wizard.step2.enterCustomTrade')}
                     />
                   ) : (
                     <SelectField
@@ -7099,7 +7725,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                       disabled={!row.trade}
                       onChange={(value) => handleTradeRowChange(row.id, 'level', value)}
                     >
-                      <option value="">Select Worker Level</option>
+                      <option value="">{t('wizard.step2.selectWorkerLevel')}</option>
                       {levels.map((level) => (
                         <option key={level} value={level}>
                           {level}
@@ -7114,7 +7740,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                     min="0"
                     value={row.experience || ''}
                     onChange={(value) => handleTradeRowChange(row.id, 'experience', value)}
-                    placeholder="Enter years"
+                    placeholder={t('wizard.step2.enterYears')}
                   />
                 </div>
 
@@ -7130,7 +7756,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                     borderRadius: '8px',
                     border: '1px solid rgba(15, 78, 169, 0.1)',
                   }}>
-                    Custom Trade: {row.otherTrade}
+                    {t('wizard.step2.customTrade')}: {row.otherTrade}
                   </div>
                 )}
 
@@ -7153,10 +7779,10 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                       borderRadius: '8px',
                       marginLeft: '8px',
                     }}>
-                      {row.trade} Skills ({row.level === 'Helper' ? 'H' : row.level === 'Mechanic' ? 'M' : 'A'})
+                      {row.trade} {t('wizard.step2.skills')} ({row.level === 'Helper' ? 'H' : row.level === 'Mechanic' ? 'M' : 'A'})
                     </legend>
                     <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: 12, marginTop: 4, fontWeight: 500 }}>
-                      Skills for {row.trade} - {row.level} Level
+                      {t('wizard.step2.skills')} {row.trade} - {row.level} {t('wizard.step2.selectWorkerLevel')}
                     </div>
                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
                       {skills.map((skill) => (
@@ -7192,7 +7818,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                       borderRadius: '8px',
                       marginLeft: '8px',
                     }}>
-                      {row.level === 'Lead' ? 'Lead Responsibilities' : 'Lead/Foreman Responsibilities'}
+                      {row.level === 'Lead' ? t('wizard.step2.leadResponsibilities') : t('wizard.step2.foremanResponsibilities')}
                     </legend>
 
                     <div className="wizardGrid2" style={{ marginTop: 4 }}>
@@ -7249,7 +7875,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
               }}
             >
               <span style={{ fontSize: '18px' }}>+</span>
-              Add Trade 
+              {t('wizard.step2.addTrade')}
             </button>
           </div>
 
@@ -7261,13 +7887,13 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
               color: '#17263a', 
               marginBottom: 8 
             }}>
-              Additional Skills / Tools / Systems
+              {t('wizard.step2.additionalSkills')}
             </div>
             <textarea
               className="wizardTextArea"
               value={data.additionalSkillsTools || ''}
               onChange={(e) => onChange({ additionalSkillsTools: e.target.value })}
-              placeholder="Enter additional skills, tools, or systems you have experience with..."
+              placeholder={t('wizard.step2.additionalSkillsPlaceholder') || 'Enter additional skills, tools, or systems you have experience with...'}
               rows={4}
               style={{
                 width: '100%',
@@ -7298,7 +7924,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
               marginTop: '4px',
               textAlign: 'right'
             }}>
-              {data.additionalSkillsTools?.length || 0} characters
+              {data.additionalSkillsTools?.length || 0} {t('wizard.step2.characters') || 'characters'}
             </div>
           </div>
         </div>
@@ -7306,3 +7932,5 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     </div>
   )
 }
+
+export default WizardStep2
