@@ -1547,7 +1547,6 @@
 // }
 
 
-
 // src/common/components/TopNav.jsx
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -1602,7 +1601,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [fileKey, setFileKey] = useState(null)
-  const [imageLoadAttempts, setImageLoadAttempts] = useState(0)
   const dropdownRef = useRef(null)
   const avatarRef = useRef(null)
   const menuRef = useRef(null)
@@ -1614,6 +1612,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
   useEffect(() => {
     const token = localStorage.getItem('authToken')
     setIsAuthenticated(!!token)
+    console.log('🔐 TopNav: isAuthenticated =', !!token)
   }, [location.pathname])
 
   // ============================================================
@@ -1633,6 +1632,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
     if (firstName) {
       setUserName(`${firstName} ${lastName}`.trim())
       setUserInitial(firstName.charAt(0).toUpperCase())
+      console.log('👤 TopNav: User name set to', `${firstName} ${lastName}`.trim())
     }
   }
 
@@ -1672,10 +1672,11 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
       const userId = localStorage.getItem('userId')
       if (!userId) {
         console.log('ℹ️ TopNav: No userId found')
-        // Try to use cached image if available
+        // Try to use cached image
         const saved = localStorage.getItem('userProfileImage')
         if (saved && saved !== '/assets/worker.avif') {
           setProfileImage(saved)
+          console.log('🖼️ TopNav: Using cached image from localStorage')
         }
         return
       }
@@ -1696,8 +1697,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
       }
       
       const result = await workerService.getWorkerProfile(userId)
-      
-      console.log('📊 TopNav: Profile result:', result)
       
       if (result.success && result.data) {
         const basics = result.data.basics || {}
@@ -1727,12 +1726,14 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
         }
       }
       
-      // ✅ If no image found, use default
+      // ✅ If no image found, use cached or default
       const saved = localStorage.getItem('userProfileImage')
       if (saved && saved !== '/assets/worker.avif') {
         setProfileImage(saved)
+        console.log('🖼️ TopNav: Using cached image from localStorage')
       } else {
         setProfileImage('/assets/worker.avif')
+        console.log('🖼️ TopNav: Using default avatar')
       }
       
     } catch (error) {
@@ -1751,17 +1752,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
   // ============================================================
   
   const refreshImageUrl = async () => {
-    // Prevent infinite refresh loops
-    if (imageLoadAttempts > 3) {
-      console.warn('⚠️ TopNav: Too many refresh attempts, using fallback')
-      setProfileImage('/assets/worker.avif')
-      return false
-    }
-    
-    setImageLoadAttempts(prev => prev + 1)
-    
     if (!fileKey) {
-      // Try to get fileKey from localStorage
       const savedKey = localStorage.getItem('profileImageKey')
       if (savedKey) {
         setFileKey(savedKey)
@@ -1794,7 +1785,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
     const token = localStorage.getItem('authToken')
     setIsAuthenticated(!!token)
     
-    // ✅ Check if we have a saved image URL
+    // ✅ Check cached image first
     const saved = localStorage.getItem('userProfileImage')
     const savedKey = localStorage.getItem('profileImageKey')
     
@@ -1802,15 +1793,15 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
       setFileKey(savedKey)
     }
     
-    // Always try to load fresh image if authenticated
-    if (token) {
-      loadProfileImage()
-    } else if (saved && saved !== '/assets/worker.avif') {
+    if (saved && saved !== '/assets/worker.avif') {
       setProfileImage(saved)
+      console.log('🖼️ TopNav: Initial image from localStorage:', saved)
     }
     
-    // Reset image load attempts on new session
-    setImageLoadAttempts(0)
+    // ✅ Load fresh from DynamoDB if authenticated
+    if (token) {
+      loadProfileImage()
+    }
   }, [])
 
   // ✅ Reload when route changes
@@ -1821,9 +1812,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
     if (token && (location.pathname === '/wizard/summary' || location.pathname === '/wizard')) {
       loadProfileImage()
     }
-    
-    // Reset image load attempts on route change
-    setImageLoadAttempts(0)
   }, [location.pathname])
 
   // ✅ Listen for profile image updates
@@ -1832,28 +1820,23 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
       if (e.detail) {
         console.log('🔄 TopNav: Profile update event received:', e.detail)
         
-        // ✅ Store the file key if provided
         if (e.detail.fileKey) {
           setFileKey(e.detail.fileKey)
           localStorage.setItem('profileImageKey', e.detail.fileKey)
         }
         
-        // ✅ Get fresh URL if we have a file key
         if (e.detail.fileKey) {
           getFreshProfileImage(e.detail.fileKey).then(freshUrl => {
             if (freshUrl) {
               setProfileImage(freshUrl)
               localStorage.setItem('userProfileImage', freshUrl)
-              setImageLoadAttempts(0)
             }
           })
         } else if (e.detail.profileImage) {
           setProfileImage(e.detail.profileImage)
           localStorage.setItem('userProfileImage', e.detail.profileImage)
-          setImageLoadAttempts(0)
         }
         
-        // ✅ Update user info
         if (e.detail.firstName) {
           const firstName = e.detail.firstName
           const lastName = e.detail.lastName || ''
@@ -1868,7 +1851,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
     return () => window.removeEventListener('profileImageUpdated', handleProfileUpdate)
   }, [])
 
-  // ✅ Listen for localStorage changes (cross-tab)
+  // ✅ Listen for localStorage changes
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === 'userProfileImage') {
@@ -1971,7 +1954,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
   const isSolid = variant === 'solid'
   const isTransparent = variant === 'transparent'
 
-  // ✅ Handle image error - refresh the URL
+  // Handle image error
   const handleImageError = async () => {
     console.warn('⚠️ TopNav: Profile image failed to load, refreshing URL...')
     const refreshed = await refreshImageUrl()
@@ -2359,7 +2342,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
               <LanguageSwitcher variant="dropdown" />
             </div>
 
-            {/* Login Button OR User Avatar */}
+            {/* ✅ LOGIN BUTTON OR USER AVATAR - Always show based on auth status */}
             {!isAuthenticated ? (
               <button 
                 className="topnav-login-btn"
