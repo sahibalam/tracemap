@@ -4,7 +4,9 @@
     "register": "Register",
     "email": "Email",
     "password": "Password",
+    "confirmPassword": "Confirm Password",
     "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
     "loggingIn": "Logging in...",
     "loginError": "Login failed. Please try again.",
     "enterEmailAndPassword": "Please enter both email and password",
@@ -12,11 +14,11 @@
     "incorrectPassword": "Incorrect password",
     "emailRequired": "Email is required",
     "passwordRequired": "Password is required",
+    "validEmail": "Please enter a valid email address",
     "loginSuccess": "Login successful",
     "createAccount": "Create account",
     "firstName": "First name",
     "lastName": "Last name",
-    "confirmPassword": "Confirm Password",
     "emailAddress": "Email Address",
     "mobileNumber": "Mobile number",
     "language": "Language",
@@ -29,15 +31,14 @@
     "emailAvailable": "Email is available",
     "checkingEmail": "Checking email availability...",
     "emailAlreadyRegistered": "This email is already registered. Please login instead.",
-    "validEmail": "Please enter a valid email address",
     "phoneRequired": "Phone number must be 10 digits",
     "passwordMinLength": "Password must be at least 8 characters",
     "passwordLettersNumbers": "Password must contain both letters and numbers",
     "passwordsDoNotMatch": "Passwords do not match",
     "ageRequired": "You must be at least 18 years old to register",
     "validDateOfBirth": "Please enter a valid date of birth",
-    "ageYears": "years",
-    "resetPassword": "Reset Password",
+    "age": "Age",
+    "years": "years",
     "enterEmailReset": "Enter your email address and we'll send you a link to reset your password.",
     "sendRecoveryEmail": "Send Recovery Email",
     "sending": "Sending...",
@@ -46,12 +47,29 @@
     "didntReceiveEmail": "Didn't receive the email?",
     "tryAgain": "Try again",
     "rememberPassword": "Remember your password?",
-    "logIn": "Log in"
+    "logIn": "Log in",
+    "newPassword": "Enter New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "passwordUpdated": "Password Updated!",
+    "redirecting": "Redirecting to login...",
+    "updatePassword": "Update Password",
+    "updating": "Updating..."
+  },
+  "nav": {
+    "language": "Language",
+    "login": "Log in",
+    "register": "Register",
+    "profile": "Profile"
+  },
+  "home": {
+    "workInProgress": "Work in progress",
+    "workInProgressDescription": "We're building something amazing. Stay tuned!"
   },
   "wizard": {
     "step1": {
       "title": "Personal Information",
       "address": "Address",
+      "addressLine2": "Address Line 2 (Optional)",
       "currentAddress": "Current Address",
       "sameAsAddress": "Same as Address",
       "city": "City",
@@ -63,8 +81,10 @@
       "englishSpanish": "English+Spanish",
       "profileImage": "Profile Image",
       "upload": "Upload",
+      "uploading": "Uploading...",
+      "uploadError": "Failed to upload image. Please try again.",
       "agreements": "Agreements",
-      "acceptTerms": "I accept the bottomless terms of use",
+      "acceptTerms": "I accept the terms of use",
       "acceptPrivacy": "I accept the privacy policy",
       "consentElectronic": "I consent to electronic records",
       "certifyAccurate": "I confirm the information entered is accurate"
@@ -79,7 +99,9 @@
       "responsibilities": "Responsibilities",
       "additionalSkills": "Additional Skills / Tools / Systems",
       "addTrade": "Add Trade",
-      "removeTrade": "Remove Trade"
+      "removeTrade": "Remove Trade",
+      "customTrade": "Custom Trade",
+      "enterCustomTrade": "Enter Custom Trade"
     },
     "step3": {
       "title": "Work History",
@@ -91,7 +113,8 @@
       "role": "Role",
       "start": "Start",
       "end": "End",
-      "scopeSummary": "Scope Summary"
+      "scopeSummary": "Scope Summary",
+      "characterCount": "characters"
     },
     "step4": {
       "title": "Availability & Rate",
@@ -158,6 +181,13 @@
     "all": "All",
     "none": "None",
     "optional": "Optional",
-    "required": "Required"
+    "required": "Required",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "skip": "Skip",
+    "continue": "Continue",
+    "submit": "Submit",
+    "review": "Review"
   }
 }

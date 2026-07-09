@@ -4,7 +4,9 @@
     "register": "Registrarse",
     "email": "Correo electrónico",
     "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
     "forgotPassword": "¿Olvidó su contraseña?",
+    "resetPassword": "Restablecer Contraseña",
     "loggingIn": "Iniciando sesión...",
     "loginError": "Error al iniciar sesión. Intente nuevamente.",
     "enterEmailAndPassword": "Por favor ingrese su correo y contraseña",
@@ -12,11 +14,11 @@
     "incorrectPassword": "Contraseña incorrecta",
     "emailRequired": "El correo electrónico es requerido",
     "passwordRequired": "La contraseña es requerida",
+    "validEmail": "Por favor ingrese un correo electrónico válido",
     "loginSuccess": "Inicio de sesión exitoso",
     "createAccount": "Crear cuenta",
     "firstName": "Nombre",
     "lastName": "Apellido",
-    "confirmPassword": "Confirmar Contraseña",
     "emailAddress": "Correo Electrónico",
     "mobileNumber": "Número de teléfono",
     "language": "Idioma",
@@ -29,15 +31,14 @@
     "emailAvailable": "El correo está disponible",
     "checkingEmail": "Verificando disponibilidad del correo...",
     "emailAlreadyRegistered": "Este correo ya está registrado. Por favor inicie sesión.",
-    "validEmail": "Por favor ingrese un correo electrónico válido",
     "phoneRequired": "El número de teléfono debe tener 10 dígitos",
     "passwordMinLength": "La contraseña debe tener al menos 8 caracteres",
     "passwordLettersNumbers": "La contraseña debe contener letras y números",
     "passwordsDoNotMatch": "Las contraseñas no coinciden",
     "ageRequired": "Debe tener al menos 18 años para registrarse",
     "validDateOfBirth": "Por favor ingrese una fecha de nacimiento válida",
-    "ageYears": "años",
-    "resetPassword": "Restablecer Contraseña",
+    "age": "Edad",
+    "years": "años",
     "enterEmailReset": "Ingrese su correo electrónico y le enviaremos un enlace para restablecer su contraseña.",
     "sendRecoveryEmail": "Enviar Correo de Recuperación",
     "sending": "Enviando...",
@@ -46,12 +47,29 @@
     "didntReceiveEmail": "¿No recibió el correo?",
     "tryAgain": "Intentar de nuevo",
     "rememberPassword": "¿Recuerda su contraseña?",
-    "logIn": "Iniciar sesión"
+    "logIn": "Iniciar sesión",
+    "newPassword": "Ingresar Nueva Contraseña",
+    "confirmNewPassword": "Confirmar Nueva Contraseña",
+    "passwordUpdated": "¡Contraseña Actualizada!",
+    "redirecting": "Redirigiendo al inicio de sesión...",
+    "updatePassword": "Actualizar Contraseña",
+    "updating": "Actualizando..."
+  },
+  "nav": {
+    "language": "Idioma",
+    "login": "Iniciar sesión",
+    "register": "Registrarse",
+    "profile": "Perfil"
+  },
+  "home": {
+    "workInProgress": "Trabajo en progreso",
+    "workInProgressDescription": "Estamos construyendo algo increíble. ¡Manténgase atento!"
   },
   "wizard": {
     "step1": {
       "title": "Información Personal",
       "address": "Dirección",
+      "addressLine2": "Línea 2 de Dirección (Opcional)",
       "currentAddress": "Dirección Actual",
       "sameAsAddress": "Misma que Dirección",
       "city": "Ciudad",
@@ -63,6 +81,8 @@
       "englishSpanish": "Inglés+Español",
       "profileImage": "Imagen de Perfil",
       "upload": "Subir",
+      "uploading": "Subiendo...",
+      "uploadError": "Error al subir la imagen. Intente nuevamente.",
       "agreements": "Acuerdos",
       "acceptTerms": "Acepto los términos de uso",
       "acceptPrivacy": "Acepto la política de privacidad",
@@ -79,7 +99,9 @@
       "responsibilities": "Responsabilidades",
       "additionalSkills": "Habilidades / Herramientas / Sistemas Adicionales",
       "addTrade": "Agregar Oficio",
-      "removeTrade": "Eliminar Oficio"
+      "removeTrade": "Eliminar Oficio",
+      "customTrade": "Oficio Personalizado",
+      "enterCustomTrade": "Ingresar Oficio Personalizado"
     },
     "step3": {
       "title": "Historial Laboral",
@@ -91,7 +113,8 @@
       "role": "Rol",
       "start": "Inicio",
       "end": "Fin",
-      "scopeSummary": "Resumen del Alcance"
+      "scopeSummary": "Resumen del Alcance",
+      "characterCount": "caracteres"
     },
     "step4": {
       "title": "Disponibilidad y Tarifa",
@@ -158,6 +181,13 @@
     "all": "Todos",
     "none": "Ninguno",
     "optional": "Opcional",
-    "required": "Requerido"
+    "required": "Requerido",
+    "back": "Volver",
+    "next": "Siguiente",
+    "finish": "Finalizar",
+    "skip": "Omitir",
+    "continue": "Continuar",
+    "submit": "Enviar",
+    "review": "Revisar"
   }
 }
