@@ -37,7 +37,6 @@
 //     </div>
 //   )
 // }
-
 // src/pages/HomePage.jsx
 import { useTranslation } from 'react-i18next'
 import { TopNav } from '../common/components/TopNav'
@@ -50,7 +49,7 @@ export function HomePage() {
     <div className="page" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <div className="bg bgAuth" />
       <div className="bgOverlay" />
-      <TopNav variant="transparent" />
+      <TopNav variant="solid" /> {/* ✅ Changed from 'transparent' to 'solid' */}
       <main className="homeMain" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div className="wipCard" role="status" style={{ textAlign: 'center', padding: '40px' }}>
           <h1 style={{ fontSize: '36px', fontWeight: 700, color: '#17263a', marginBottom: '16px' }}>
