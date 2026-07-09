@@ -6697,7 +6697,6 @@
 
 
 
-
 // src/worker/pages/WorkerAuthPage.jsx
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -7057,6 +7056,14 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   }
 
   // ============================================================
+  // ✅ GENERATE SESSION TOKEN
+  // ============================================================
+  
+  const generateSessionToken = () => {
+    return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+  }
+
+  // ============================================================
   // ✅ LOGIN HANDLER
   // ============================================================
   
@@ -7078,6 +7085,30 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       
       if (result.success) {
         console.log('✅ Login successful')
+        
+        // ✅ Ensure auth token is set
+        const token = result.data?.token || generateSessionToken()
+        localStorage.setItem('authToken', token)
+        localStorage.setItem('userId', result.data?.userId || '')
+        
+        // ✅ Set user name for avatar
+        if (result.data?.profile?.basics) {
+          const basics = result.data.profile.basics
+          localStorage.setItem('userFirstName', basics.legalFirstName || '')
+          localStorage.setItem('userLastName', basics.legalLastName || '')
+          localStorage.setItem('pendingFirstName', basics.legalFirstName || '')
+          localStorage.setItem('pendingLastName', basics.legalLastName || '')
+          localStorage.setItem('pendingEmail', basics.emailAddress || '')
+        }
+        
+        // ✅ Trigger profile update
+        window.dispatchEvent(new CustomEvent('profileImageUpdated', {
+          detail: { 
+            firstName: localStorage.getItem('userFirstName') || 'User',
+            profileImage: localStorage.getItem('userProfileImage')
+          }
+        }))
+        
         navigate('/wizard/summary', { replace: true })
       }
       
@@ -7147,7 +7178,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
         console.log('✅ Registration API response:', result)
         
         if (result.success) {
-          // ✅ STEP 2: Store data in localStorage for wizard
+          // ✅ STEP 2: Store data in localStorage
           localStorage.setItem('pendingEmail', email)
           localStorage.setItem('pendingPassword', registerPassword)
           localStorage.setItem('pendingPhoneNumber', phoneNumber)
@@ -7157,6 +7188,23 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
           localStorage.setItem('pendingLanguage', language)
           localStorage.setItem('userId', result.data.userId)
           
+          // ✅ STEP 3: Generate and store session token (CRITICAL for avatar)
+          const sessionToken = generateSessionToken()
+          localStorage.setItem('authToken', sessionToken)
+          localStorage.setItem('userFirstName', firstName)
+          localStorage.setItem('userLastName', lastName)
+          
+          console.log('✅ Session token set for user:', sessionToken)
+          
+          // ✅ STEP 4: Trigger profile update event
+          window.dispatchEvent(new CustomEvent('profileImageUpdated', {
+            detail: { 
+              firstName: firstName,
+              lastName: lastName,
+              profileImage: localStorage.getItem('userProfileImage')
+            }
+          }))
+          
           sessionStorage.setItem('wizardFirstName', firstName)
           sessionStorage.setItem('wizardLastName', lastName)
           sessionStorage.setItem('wizardEmail', email)
@@ -7165,7 +7213,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
           sessionStorage.setItem('wizardLanguage', language)
           sessionStorage.setItem('wizardFromRegister', 'true')
           
-          // ✅ STEP 3: Navigate to verify
+          // ✅ STEP 5: Navigate to verify
           navigate('/verify', { 
             state: { 
               email, 

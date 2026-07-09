@@ -1546,7 +1546,6 @@
 //   )
 // }
 
-
 // src/common/components/TopNav.jsx
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -1582,7 +1581,7 @@ function IconUser(props) {
 function IconLogout(props) {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4z" fill="currentColor" />
+      <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4z" fill="currentColor" />
     </svg>
   )
 }
@@ -1601,18 +1600,21 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, right: 0 })
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [fileKey, setFileKey] = useState(null)
+  const [imageLoadAttempts, setImageLoadAttempts] = useState(0)
   const dropdownRef = useRef(null)
   const avatarRef = useRef(null)
   const menuRef = useRef(null)
 
   // ============================================================
-  // ✅ CHECK AUTHENTICATION
+  // ✅ CHECK AUTHENTICATION - Consider userId as auth
   // ============================================================
   
   useEffect(() => {
     const token = localStorage.getItem('authToken')
-    setIsAuthenticated(!!token)
-    console.log('🔐 TopNav: isAuthenticated =', !!token)
+    const userId = localStorage.getItem('userId')
+    // ✅ Consider authenticated if either token OR userId exists
+    setIsAuthenticated(!!token || !!userId)
+    console.log('🔐 TopNav: isAuthenticated =', !!(token || userId))
   }, [location.pathname])
 
   // ============================================================
@@ -1672,18 +1674,15 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
       const userId = localStorage.getItem('userId')
       if (!userId) {
         console.log('ℹ️ TopNav: No userId found')
-        // Try to use cached image
         const saved = localStorage.getItem('userProfileImage')
         if (saved && saved !== '/assets/worker.avif') {
           setProfileImage(saved)
-          console.log('🖼️ TopNav: Using cached image from localStorage')
         }
         return
       }
 
       console.log('📊 TopNav: Fetching profile for user:', userId)
       
-      // Try to import workerService
       let workerService;
       try {
         workerService = (await import('../../worker/services/workerService')).default;
@@ -1704,7 +1703,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
         
         console.log('📸 TopNav: Profile image key:', profileImageKey)
         
-        // ✅ If we have a file key, get a fresh URL from S3
         if (profileImageKey) {
           setFileKey(profileImageKey)
           localStorage.setItem('profileImageKey', profileImageKey)
@@ -1717,7 +1715,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
           }
         }
         
-        // ✅ Fallback to profilePreview
         if (basics.profilePreview) {
           setProfileImage(basics.profilePreview)
           localStorage.setItem('userProfileImage', basics.profilePreview)
@@ -1726,14 +1723,11 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
         }
       }
       
-      // ✅ If no image found, use cached or default
       const saved = localStorage.getItem('userProfileImage')
       if (saved && saved !== '/assets/worker.avif') {
         setProfileImage(saved)
-        console.log('🖼️ TopNav: Using cached image from localStorage')
       } else {
         setProfileImage('/assets/worker.avif')
-        console.log('🖼️ TopNav: Using default avatar')
       }
       
     } catch (error) {
@@ -1752,6 +1746,14 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
   // ============================================================
   
   const refreshImageUrl = async () => {
+    if (imageLoadAttempts > 3) {
+      console.warn('⚠️ TopNav: Too many refresh attempts, using fallback')
+      setProfileImage('/assets/worker.avif')
+      return false
+    }
+    
+    setImageLoadAttempts(prev => prev + 1)
+    
     if (!fileKey) {
       const savedKey = localStorage.getItem('profileImageKey')
       if (savedKey) {
@@ -1783,9 +1785,9 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
     getUserInfo()
     
     const token = localStorage.getItem('authToken')
-    setIsAuthenticated(!!token)
+    const userId = localStorage.getItem('userId')
+    setIsAuthenticated(!!token || !!userId)
     
-    // ✅ Check cached image first
     const saved = localStorage.getItem('userProfileImage')
     const savedKey = localStorage.getItem('profileImageKey')
     
@@ -1793,25 +1795,26 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
       setFileKey(savedKey)
     }
     
-    if (saved && saved !== '/assets/worker.avif') {
+    if (token || userId) {
+      loadProfileImage()
+    } else if (saved && saved !== '/assets/worker.avif') {
       setProfileImage(saved)
-      console.log('🖼️ TopNav: Initial image from localStorage:', saved)
     }
     
-    // ✅ Load fresh from DynamoDB if authenticated
-    if (token) {
-      loadProfileImage()
-    }
+    setImageLoadAttempts(0)
   }, [])
 
   // ✅ Reload when route changes
   useEffect(() => {
     const token = localStorage.getItem('authToken')
-    setIsAuthenticated(!!token)
+    const userId = localStorage.getItem('userId')
+    setIsAuthenticated(!!token || !!userId)
     
-    if (token && (location.pathname === '/wizard/summary' || location.pathname === '/wizard')) {
+    if ((token || userId) && (location.pathname === '/wizard/summary' || location.pathname === '/wizard')) {
       loadProfileImage()
     }
+    
+    setImageLoadAttempts(0)
   }, [location.pathname])
 
   // ✅ Listen for profile image updates
@@ -1830,11 +1833,13 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             if (freshUrl) {
               setProfileImage(freshUrl)
               localStorage.setItem('userProfileImage', freshUrl)
+              setImageLoadAttempts(0)
             }
           })
         } else if (e.detail.profileImage) {
           setProfileImage(e.detail.profileImage)
           localStorage.setItem('userProfileImage', e.detail.profileImage)
+          setImageLoadAttempts(0)
         }
         
         if (e.detail.firstName) {
@@ -1851,15 +1856,17 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
     return () => window.removeEventListener('profileImageUpdated', handleProfileUpdate)
   }, [])
 
-  // ✅ Listen for localStorage changes
+  // ✅ Listen for localStorage changes (cross-tab)
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === 'userProfileImage') {
         console.log('🔄 TopNav: Storage changed, updating avatar to:', e.newValue)
         setProfileImage(e.newValue || '/assets/worker.avif')
       }
-      if (e.key === 'authToken') {
-        setIsAuthenticated(!!e.newValue)
+      if (e.key === 'authToken' || e.key === 'userId') {
+        const token = localStorage.getItem('authToken')
+        const userId = localStorage.getItem('userId')
+        setIsAuthenticated(!!token || !!userId)
       }
     }
     window.addEventListener('storage', handleStorageChange)
@@ -1954,7 +1961,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
   const isSolid = variant === 'solid'
   const isTransparent = variant === 'transparent'
 
-  // Handle image error
+  // ✅ Handle image error - refresh the URL
   const handleImageError = async () => {
     console.warn('⚠️ TopNav: Profile image failed to load, refreshing URL...')
     const refreshed = await refreshImageUrl()
@@ -2342,7 +2349,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
               <LanguageSwitcher variant="dropdown" />
             </div>
 
-            {/* ✅ LOGIN BUTTON OR USER AVATAR - Always show based on auth status */}
+            {/* Login Button OR User Avatar */}
             {!isAuthenticated ? (
               <button 
                 className="topnav-login-btn"

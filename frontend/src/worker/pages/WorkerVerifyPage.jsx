@@ -1888,6 +1888,83 @@
 
 
 
+// // src/worker/pages/WorkerVerifyPage.jsx
+// import { useEffect } from 'react'
+// import { useNavigate } from 'react-router-dom'
+
+// export function WorkerVerifyPage() {
+//   const navigate = useNavigate()
+
+//   useEffect(() => {
+//     // ✅ Get data from localStorage (already saved during registration)
+//     const firstName = localStorage.getItem('pendingFirstName') || ''
+//     const lastName = localStorage.getItem('pendingLastName') || ''
+//     const email = localStorage.getItem('pendingEmail') || ''
+//     const phoneNumber = localStorage.getItem('pendingPhoneNumber') || ''
+//     const dob = localStorage.getItem('pendingDob') || ''
+//     const language = localStorage.getItem('pendingLanguage') || ''
+//     const password = localStorage.getItem('pendingPassword') || ''
+//     const userId = localStorage.getItem('userId') || ''
+
+//     console.log('🚀 Skipping verification, proceeding to wizard...')
+//     console.log('📋 Data available:', { firstName, lastName, email, phoneNumber, dob, language, userId })
+
+//     // ✅ Navigate directly to wizard with all data
+//     navigate('/wizard', { 
+//       state: { 
+//         email, 
+//         phoneNumber,
+//         firstName,
+//         lastName,
+//         dob,
+//         language,
+//         password,
+//         userId,
+//         fromVerification: true,
+//         skipVerification: true
+//       },
+//       replace: true  // Prevents going back to verify page
+//     })
+//   }, [navigate])
+
+//   // Show loading spinner while redirecting
+//   return (
+//     <div style={{ 
+//       display: 'flex', 
+//       justifyContent: 'center', 
+//       alignItems: 'center', 
+//       height: '100vh',
+//       flexDirection: 'column',
+//       gap: '16px'
+//     }}>
+//       <div style={{ 
+//         width: '48px', 
+//         height: '48px', 
+//         border: '4px solid rgba(15, 78, 169, 0.1)',
+//         borderTop: '4px solid #0f4ea9',
+//         borderRadius: '50%',
+//         animation: 'spin 1s linear infinite'
+//       }} />
+//       <p style={{ color: '#17263a', fontSize: '16px' }}>
+//         Redirecting to wizard...
+//       </p>
+//       <style>{`
+//         @keyframes spin {
+//           0% { transform: rotate(0deg); }
+//           100% { transform: rotate(360deg); }
+//         }
+//       `}</style>
+//     </div>
+//   )
+// }
+
+// export default WorkerVerifyPage
+
+
+
+
+
+
 // src/worker/pages/WorkerVerifyPage.jsx
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -1905,11 +1982,21 @@ export function WorkerVerifyPage() {
     const language = localStorage.getItem('pendingLanguage') || ''
     const password = localStorage.getItem('pendingPassword') || ''
     const userId = localStorage.getItem('userId') || ''
+    const authToken = localStorage.getItem('authToken') || ''
 
     console.log('🚀 Skipping verification, proceeding to wizard...')
-    console.log('📋 Data available:', { firstName, lastName, email, phoneNumber, dob, language, userId })
+    console.log('📋 Data available:', { 
+      firstName, 
+      lastName, 
+      email, 
+      phoneNumber, 
+      dob, 
+      language, 
+      userId,
+      hasAuthToken: !!authToken 
+    })
 
-    // ✅ Navigate directly to wizard with all data
+    // ✅ Navigate directly to wizard with all data including authToken
     navigate('/wizard', { 
       state: { 
         email, 
@@ -1920,6 +2007,7 @@ export function WorkerVerifyPage() {
         language,
         password,
         userId,
+        authToken,  // ✅ Pass the token to wizard
         fromVerification: true,
         skipVerification: true
       },
@@ -1945,8 +2033,11 @@ export function WorkerVerifyPage() {
         borderRadius: '50%',
         animation: 'spin 1s linear infinite'
       }} />
-      <p style={{ color: '#17263a', fontSize: '16px' }}>
+      <p style={{ color: '#17263a', fontSize: '16px', fontWeight: 500 }}>
         Redirecting to wizard...
+      </p>
+      <p style={{ color: 'rgba(23, 38, 58, 0.5)', fontSize: '14px' }}>
+        Please wait while we set up your profile
       </p>
       <style>{`
         @keyframes spin {
