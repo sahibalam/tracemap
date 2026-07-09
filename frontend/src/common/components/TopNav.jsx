@@ -1554,14 +1554,13 @@
 
 
 
-
 // src/common/components/TopNav.jsx
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LanguageSwitcher } from './LanguageSwitcher'
 
-// Icons (keep all your existing icons here)
+// Icons
 function IconMenu(props) {
   return (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
@@ -1586,81 +1585,15 @@ function IconUser(props) {
   )
 }
 
-function IconLogout(props) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4z" fill="currentColor" />
-    </svg>
-  )
-}
-
-function IconHome(props) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" fill="currentColor" />
-    </svg>
-  )
-}
-
-function IconProject(props) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6z" fill="currentColor" />
-    </svg>
-  )
-}
-
-function IconProfile(props) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5z" fill="currentColor" />
-    </svg>
-  )
-}
-
-function IconSupport(props) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.9-6.4h1.8V17h-1.8v-1.4zm1.8-2.2h-1.8c0-2.6 3-2.3 3-4.4 0-1.1-.9-1.8-2.1-1.8-1.1 0-2 .7-2.1 1.8H8.1c.1-2.1 1.9-3.6 4-3.6 2.3 0 3.9 1.4 3.9 3.5 0 2.7-3 2.7-3 4.5z" fill="currentColor" />
-    </svg>
-  )
-}
-
-function IconNotification(props) {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="currentColor" />
-    </svg>
-  )
-}
-
 export function TopNav({ variant = 'solid', hideNav = false }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const [userName, setUserName] = useState('')
-  const [userInitial, setUserInitial] = useState('')
-  const menuRef = useRef(null)
 
   // Check if user is authenticated
   const isAuthenticated = !!localStorage.getItem('authToken')
-
-  // Get user info from localStorage
-  useEffect(() => {
-    const firstName = localStorage.getItem('pendingFirstName') || 
-                      sessionStorage.getItem('wizardFirstName') || 
-                      'User'
-    const lastName = localStorage.getItem('pendingLastName') || 
-                     sessionStorage.getItem('wizardLastName') || 
-                     ''
-    
-    if (firstName) {
-      setUserName(`${firstName} ${lastName}`.trim())
-      setUserInitial(firstName.charAt(0).toUpperCase())
-    }
-  }, [])
 
   // Handle scroll effect
   useEffect(() => {
@@ -1676,54 +1609,10 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
     setIsMobileMenuOpen(false)
   }, [location.pathname])
 
-  // Close mobile menu on outside click
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setIsMobileMenuOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
-
-  const handleLogout = () => {
-    localStorage.removeItem('authToken')
-    localStorage.removeItem('userId')
-    localStorage.removeItem('pendingEmail')
-    localStorage.removeItem('pendingPassword')
-    localStorage.removeItem('pendingPhoneNumber')
-    localStorage.removeItem('pendingFirstName')
-    localStorage.removeItem('pendingLastName')
-    localStorage.removeItem('pendingDob')
-    localStorage.removeItem('pendingLanguage')
-    
-    sessionStorage.clear()
-    
-    navigate('/login')
-    setIsMobileMenuOpen(false)
-  }
-
   const handleNavigate = (path) => {
     navigate(path)
     setIsMobileMenuOpen(false)
   }
-
-  const getNavLinks = () => {
-    const links = []
-
-    if (isAuthenticated) {
-      links.push(
-        { path: '/', label: t('nav.home'), icon: <IconHome /> },
-        { path: '/projects', label: t('nav.projects'), icon: <IconProject /> },
-        { path: '/wizard/summary', label: t('nav.profile'), icon: <IconProfile /> }
-      )
-    }
-
-    return links
-  }
-
-  const navLinks = getNavLinks()
 
   // Determine if we're on auth pages
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register'
@@ -1740,6 +1629,12 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
 
   const isSolid = variant === 'solid'
   const isTransparent = variant === 'transparent'
+
+  // Get user info for mobile menu
+  const firstName = localStorage.getItem('pendingFirstName') || 
+                    sessionStorage.getItem('wizardFirstName') || 
+                    'User'
+  const userInitial = firstName.charAt(0).toUpperCase()
 
   return (
     <>
@@ -1788,74 +1683,15 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             letter-spacing: -0.5px;
           }
 
-          .topnav-links {
+          .topnav-right {
             display: flex;
             align-items: center;
-            gap: 4px;
-            flex: 1;
-            justify-content: center;
-          }
-
-          .topnav-link {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 8px;
-            color: #475569;
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-            background: transparent;
-            border: none;
-            font-family: inherit;
-          }
-
-          .topnav-link:hover {
-            background: rgba(15, 78, 169, 0.06);
-            color: #0f4ea9;
-          }
-
-          .topnav-link.active {
-            background: rgba(15, 78, 169, 0.1);
-            color: #0f4ea9;
-            font-weight: 600;
-          }
-
-          .topnav-link .icon {
-            width: 18px;
-            height: 18px;
+            gap: 12px;
             flex-shrink: 0;
           }
 
-          /* ✅ NEW: Auth buttons for unauthenticated users */
-          .topnav-auth-buttons {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-          }
-
+          /* Login Button */
           .topnav-login-btn {
-            padding: 8px 16px;
-            border: none;
-            background: transparent;
-            color: #475569;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s ease;
-            font-family: inherit;
-          }
-
-          .topnav-login-btn:hover {
-            background: rgba(15, 78, 169, 0.06);
-            color: #0f4ea9;
-          }
-
-          .topnav-register-btn {
             padding: 8px 20px;
             border: none;
             background: #0f4ea9;
@@ -1866,25 +1702,20 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             cursor: pointer;
             transition: all 0.2s ease;
             font-family: inherit;
+            white-space: nowrap;
           }
 
-          .topnav-register-btn:hover {
+          .topnav-login-btn:hover {
             background: #0b3f90;
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(15, 78, 169, 0.3);
           }
 
-          .topnav-right {
+          /* User Avatar (when logged in) */
+          .topnav-user-btn {
             display: flex;
             align-items: center;
-            gap: 12px;
-            flex-shrink: 0;
-          }
-
-          .topnav-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            gap: 8px;
             padding: 4px 12px 4px 4px;
             border-radius: 30px;
             background: rgba(15, 78, 169, 0.06);
@@ -1894,7 +1725,7 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             font-family: inherit;
           }
 
-          .topnav-user:hover {
+          .topnav-user-btn:hover {
             background: rgba(15, 78, 169, 0.1);
           }
 
@@ -1916,27 +1747,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             font-size: 14px;
             font-weight: 500;
             color: #17263a;
-          }
-
-          .topnav-logout-btn {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            border-radius: 8px;
-            background: transparent;
-            color: #dc2626;
-            border: 1px solid rgba(220, 38, 38, 0.2);
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            font-family: inherit;
-          }
-
-          .topnav-logout-btn:hover {
-            background: rgba(220, 38, 38, 0.06);
-            border-color: rgba(220, 38, 38, 0.3);
           }
 
           .topnav-mobile-menu-btn {
@@ -1998,17 +1808,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             background: rgba(15, 78, 169, 0.06);
           }
 
-          .topnav-mobile-link.active {
-            background: rgba(15, 78, 169, 0.1);
-            color: #0f4ea9;
-          }
-
-          .topnav-mobile-link .icon {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-          }
-
           .topnav-mobile-divider {
             border: none;
             border-top: 1px solid rgba(18, 38, 63, 0.08);
@@ -2044,33 +1843,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             color: #17263a;
           }
 
-          .topnav-mobile-user-email {
-            font-size: 13px;
-            color: #64748b;
-          }
-
-          .topnav-mobile-logout {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
-            border-radius: 10px;
-            color: #dc2626;
-            font-size: 15px;
-            font-weight: 500;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-family: inherit;
-            width: 100%;
-            text-align: left;
-          }
-
-          .topnav-mobile-logout:hover {
-            background: rgba(220, 38, 38, 0.06);
-          }
-
           .topnav-language-wrapper {
             display: flex;
             align-items: center;
@@ -2089,20 +1861,12 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
 
           /* Responsive */
           @media (max-width: 768px) {
-            .topnav-links {
+            .topnav-right .topnav-login-btn {
               display: none;
             }
 
-            .topnav-right .topnav-user {
+            .topnav-right .topnav-user-btn {
               display: none;
-            }
-
-            .topnav-right .topnav-logout-btn {
-              display: none;
-            }
-
-            .topnav-auth-buttons {
-              display: none !important;
             }
 
             .topnav-mobile-menu-btn {
@@ -2150,20 +1914,6 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             <span className="topnav-logo-text">TradesMap</span>
           </a>
 
-          {/* Navigation Links - Desktop */}
-          <div className="topnav-links">
-            {navLinks.map((link) => (
-              <button
-                key={link.path}
-                className={`topnav-link ${location.pathname === link.path ? 'active' : ''}`}
-                onClick={() => handleNavigate(link.path)}
-              >
-                <span className="icon">{link.icon}</span>
-                {link.label}
-              </button>
-            ))}
-          </div>
-
           {/* Right Side */}
           <div className="topnav-right">
             {/* Language Switcher */}
@@ -2171,54 +1921,33 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
               <LanguageSwitcher variant="dropdown" />
             </div>
 
-            {/* ✅ Login/Register buttons for unauthenticated users */}
-            {!isAuthenticated && !isAuthPage && (
-              <div className="topnav-auth-buttons">
-                <button 
-                  className="topnav-login-btn"
-                  onClick={() => navigate('/login')}
-                >
-                  {t('nav.login') || 'Log in'}
-                </button>
-                <button 
-                  className="topnav-register-btn"
-                  onClick={() => navigate('/register')}
-                >
-                  {t('nav.register') || 'Register'}
-                </button>
-              </div>
-            )}
-
-            {/* User Info - Desktop */}
-            {isAuthenticated && (
-              <>
-                <button 
-                  className="topnav-user"
-                  onClick={() => handleNavigate('/wizard/summary')}
-                >
-                  <div className="topnav-avatar">
-                    {userInitial || 'U'}
-                  </div>
-                  <span className="topnav-user-name">
-                    {userName || t('nav.user')}
-                  </span>
-                </button>
-
-                <button 
-                  className="topnav-logout-btn"
-                  onClick={handleLogout}
-                >
-                  <IconLogout />
-                  {t('nav.logout')}
-                </button>
-              </>
+            {/* Login Button OR User Avatar */}
+            {!isAuthenticated ? (
+              <button 
+                className="topnav-login-btn"
+                onClick={() => navigate('/login')}
+              >
+                {t('auth.login') || 'Log in'}
+              </button>
+            ) : (
+              <button 
+                className="topnav-user-btn"
+                onClick={() => navigate('/wizard/summary')}
+              >
+                <div className="topnav-avatar">
+                  {userInitial}
+                </div>
+                <span className="topnav-user-name">
+                  {firstName}
+                </span>
+              </button>
             )}
 
             {/* Mobile Menu Button */}
             <button 
               className="topnav-mobile-menu-btn"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label={isMobileMenuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
+              aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
             >
               {isMobileMenuOpen ? <IconClose /> : <IconMenu />}
             </button>
@@ -2226,45 +1955,19 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`topnav-mobile-menu ${isMobileMenuOpen ? 'open' : ''}`} ref={menuRef}>
-          {/* ✅ Login/Register for unauthenticated users - Mobile */}
-          {!isAuthenticated && !isAuthPage && (
-            <>
-              <button 
-                className="topnav-mobile-link"
-                onClick={() => handleNavigate('/login')}
-              >
-                <span className="icon"><IconUser /></span>
-                {t('nav.login') || 'Log in'}
-              </button>
-              <button 
-                className="topnav-mobile-link"
-                onClick={() => handleNavigate('/register')}
-                style={{ 
-                  background: '#0f4ea9', 
-                  color: 'white',
-                  borderRadius: '10px'
-                }}
-              >
-                <span className="icon"><IconUser /></span>
-                {t('nav.register') || 'Register'}
-              </button>
-              <hr className="topnav-mobile-divider" />
-            </>
-          )}
-
-          {/* User Info - Mobile */}
+        <div className={`topnav-mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+          {/* User Info - Mobile (if logged in) */}
           {isAuthenticated && (
             <>
               <div className="topnav-mobile-user">
                 <div className="topnav-mobile-avatar">
-                  {userInitial || 'U'}
+                  {userInitial}
                 </div>
                 <div>
                   <div className="topnav-mobile-user-name">
-                    {userName || t('nav.user')}
+                    {firstName}
                   </div>
-                  <div className="topnav-mobile-user-email">
+                  <div style={{ fontSize: '13px', color: '#64748b' }}>
                     {localStorage.getItem('pendingEmail') || ''}
                   </div>
                 </div>
@@ -2273,48 +1976,69 @@ export function TopNav({ variant = 'solid', hideNav = false }) {
             </>
           )}
 
-          {/* Navigation Links - Mobile */}
-          {navLinks.map((link) => (
-            <button
-              key={link.path}
-              className={`topnav-mobile-link ${location.pathname === link.path ? 'active' : ''}`}
-              onClick={() => handleNavigate(link.path)}
-            >
-              <span className="icon">{link.icon}</span>
-              {link.label}
-            </button>
-          ))}
-
-          {isAuthenticated && (
+          {/* Login/Register buttons for mobile */}
+          {!isAuthenticated ? (
             <>
-              <hr className="topnav-mobile-divider" />
-              
-              {/* Language Switcher - Mobile */}
-              <div style={{ padding: '8px 16px' }}>
-                <div style={{ 
-                  fontSize: '13px', 
-                  fontWeight: 600, 
-                  color: 'rgba(23, 38, 58, 0.5)',
-                  marginBottom: '8px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  {t('nav.language')}
-                </div>
-                <LanguageSwitcher variant="inline" />
-              </div>
-              
-              <hr className="topnav-mobile-divider" />
-              
               <button 
-                className="topnav-mobile-logout"
-                onClick={handleLogout}
+                className="topnav-mobile-link"
+                onClick={() => handleNavigate('/login')}
+                style={{ 
+                  background: '#0f4ea9', 
+                  color: 'white',
+                  borderRadius: '10px',
+                  fontWeight: 600
+                }}
               >
-                <IconLogout />
-                {t('nav.logout')}
+                <span className="topnav-mobile-link-icon" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <IconUser />
+                  {t('auth.login') || 'Log in'}
+                </span>
               </button>
+              <button 
+                className="topnav-mobile-link"
+                onClick={() => handleNavigate('/register')}
+                style={{ 
+                  border: '2px solid #0f4ea9',
+                  borderRadius: '10px',
+                  fontWeight: 500
+                }}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <IconUser />
+                  {t('auth.register') || 'Register'}
+                </span>
+              </button>
+              <hr className="topnav-mobile-divider" />
+            </>
+          ) : (
+            <>
+              <button 
+                className="topnav-mobile-link"
+                onClick={() => handleNavigate('/wizard/summary')}
+              >
+                <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <IconUser />
+                  {t('nav.profile') || 'Profile'}
+                </span>
+              </button>
+              <hr className="topnav-mobile-divider" />
             </>
           )}
+
+          {/* Language Switcher - Mobile */}
+          <div style={{ padding: '8px 16px' }}>
+            <div style={{ 
+              fontSize: '13px', 
+              fontWeight: 600, 
+              color: 'rgba(23, 38, 58, 0.5)',
+              marginBottom: '8px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px'
+            }}>
+              {t('nav.language') || 'Language'}
+            </div>
+            <LanguageSwitcher variant="inline" />
+          </div>
         </div>
       </nav>
     </>
