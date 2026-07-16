@@ -7936,7 +7936,6 @@
 // export default WizardStep2
 
 
-
 // src/worker/components/wizard-steps/WizardStep2.jsx
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -7970,13 +7969,874 @@ const MAIN_TRADES = [
   'Equipment / Specialty Installations / Owner-Furnished Equipment Systems',
 ]
 
+// ✅ SKILL GROUPS mapped to each Main Trade
+const SKILL_GROUPS = {
+  'Interiors': [
+    'Metal Framing',
+    'Drywall Hanging',
+    'Taping/Finishing',
+    'Acoustical Ceilings',
+    'Interior Carpentry',
+    'Insulation',
+    'Demolition/Punch/Final Clean',
+  ],
+  'HVAC/Mechanical': [
+    'HVAC Installation',
+    'Ductwork',
+    'Mechanical Piping',
+    'Refrigeration',
+    'HVAC Controls',
+  ],
+  'Electrical / Power': [
+    'Electrical Wiring',
+    'Power Distribution',
+    'Lighting Installation',
+    'Panel Installation',
+    'Conduit Installation',
+  ],
+  'Plumbing / Piping': [
+    'Pipe Installation',
+    'Plumbing Fixtures',
+    'Water Supply',
+    'Drainage Systems',
+    'Pipe Fitting',
+  ],
+  'Concrete / Formwork / Rebar / Flatwork': [
+    'Formwork',
+    'Rebar Installation',
+    'Concrete Pouring',
+    'Flatwork',
+    'Stamped Concrete',
+  ],
+  'Civil / Sitework / Earthwork / Utilities': [
+    'Earthwork',
+    'Utilities Installation',
+    'Trenching',
+    'Site Grading',
+    'Storm Drainage',
+  ],
+  'Asphalt / Paving Work': [
+    'Asphalt Paving',
+    'Sealcoating',
+    'Patching',
+    'Striping',
+  ],
+  'Landscaping / Exterior Improvements': [
+    'Landscape Installation',
+    'Irrigation',
+    'Hardscaping',
+    'Sod Installation',
+  ],
+  'Roofing / Waterproofing': [
+    'Roof Installation',
+    'Waterproofing',
+    'Membrane Installation',
+    'Flashing',
+  ],
+  'General Labor / Site Support / Material Handling': [
+    'Material Movement',
+    'Site Cleanup',
+    'Equipment Operation',
+    'Site Support',
+  ],
+  'Demolition / Selective Demo / Abatement Support': [
+    'Demolition',
+    'Selective Demolition',
+    'Abatement Support',
+    'Waste Removal',
+  ],
+  'Masonry / Stucco / EIFS Systems': [
+    'Masonry',
+    'Stucco Application',
+    'EIFS Systems',
+    'Stone Installation',
+  ],
+  'Structural Steel / Misc. Metals / Welding': [
+    'Structural Steel',
+    'Misc. Metals',
+    'Welding',
+    'Bolt Up',
+  ],
+  'Carpentry / Rough Carpentry / Wood Framing / Blocking Systems': [
+    'Rough Carpentry',
+    'Wood Framing',
+    'Blocking Systems',
+    'Roof Framing',
+  ],
+  'Millwork / Cabinets / Finish Carpentry': [
+    'Millwork',
+    'Cabinets Installation',
+    'Finish Carpentry',
+    'Trim Installation',
+  ],
+  'Flooring / Tile / Resilient / Carpet Systems': [
+    'Flooring Installation',
+    'Tile Installation',
+    'Carpet Installation',
+    'Resilient Flooring',
+  ],
+  'Painting / Coatings / Wallcovering Systems': [
+    'Painting',
+    'Coatings Application',
+    'Wallcovering',
+    'Spray Painting',
+  ],
+  'Doors / Frames / Hardware / Openings Systems': [
+    'Door Installation',
+    'Frame Installation',
+    'Hardware Installation',
+    'Openings Systems',
+  ],
+  'Glass / Glazing / Storefront': [
+    'Glass Installation',
+    'Storefront Systems',
+    'Curtain Wall',
+    'Glazing',
+  ],
+  'Fire Protection / Sprinkler Systems': [
+    'Sprinkler Installation',
+    'Fire Pumps',
+    'Standpipe Systems',
+    'Fire Alarm',
+  ],
+  'Firestopping / Fireproofing / Joint Sealants': [
+    'Firestopping',
+    'Fireproofing',
+    'Joint Sealants',
+    'Penetration Sealing',
+  ],
+  'Low Voltage / Data / Security / Fire Alarm': [
+    'Data Cabling',
+    'Security Systems',
+    'Fire Alarm',
+    'Access Control',
+  ],
+  'Division 10 Specialties / Accessories / Signage Systems': [
+    'Specialties Installation',
+    'Accessories',
+    'Signage Installation',
+  ],
+  'Equipment / Specialty Installations / Owner-Furnished Equipment Systems': [
+    'Equipment Installation',
+    'Specialty Installations',
+    'Owner-Furnished Equipment',
+  ],
+}
+
+// ✅ SKILL DETAILS mapped to each Skill Group
+const SKILL_DETAILS = {
+  'Metal Framing': [
+    'Layout walls',
+    'Install top/bottom track',
+    'Install metal studs',
+    'Frame soffits',
+    'Frame ceilings',
+    'Install backing/blocking',
+    'Read basic layout',
+    'Use laser/level',
+    'Fire-rated framing',
+  ],
+  'Drywall Hanging': [
+    'Hang walls',
+    'Hang ceilings',
+    'Fire-rated board',
+    'Abuse board',
+    'Shaft-wall board',
+    'High walls',
+    'Production hanging',
+    'Lift work',
+    'Blueprint reading',
+  ],
+  'Taping/Finishing': [
+    'Level 1-5 finish',
+    'Skim coat',
+    'Texture match',
+    'Punch repair',
+    'Corner bead systems',
+    'Smooth finish',
+  ],
+  'Acoustical Ceilings': [
+    'Standard grid',
+    'Tegular',
+    'Specialty ceilings',
+    'Clouds/baffles',
+    'Seismic requirements',
+    'Light/HVAC/sprinkler coordination',
+  ],
+  'Interior Carpentry': [
+    'Backing',
+    'Blocking',
+    'Doors/frames/hardware support',
+    'Trim/carpentry',
+    'Finish carpentry',
+  ],
+  'Insulation': [
+    'Wall Insulation',
+    'Bat Insulation',
+    'Sound Insulation',
+    'Specialty Insulation',
+  ],
+  'Demolition/Punch/Final Clean': [
+    'Demolition',
+    'Removal Support',
+    'Clean up',
+    'Punch work',
+    'Final clean',
+    'Closeout Support',
+  ],
+  'HVAC Installation': [
+    'Install HVAC units',
+    'Connect ductwork',
+    'Set thermostats',
+    'Test HVAC systems',
+    'Charge refrigerant',
+  ],
+  'Ductwork': [
+    'Fabricate ductwork',
+    'Install ductwork',
+    'Insulate ductwork',
+    'Seal ductwork',
+  ],
+  'Mechanical Piping': [
+    'Install piping',
+    'Weld piping',
+    'Thread pipe',
+    'Test piping systems',
+  ],
+  'Refrigeration': [
+    'Install refrigeration systems',
+    'Charge systems',
+    'Test refrigeration',
+  ],
+  'HVAC Controls': [
+    'Install control panels',
+    'Wire controls',
+    'Test control systems',
+  ],
+  'Electrical Wiring': [
+    'Install wiring',
+    'Connect to panel',
+    'Pull wire',
+    'Terminate wire',
+  ],
+  'Power Distribution': [
+    'Set panels',
+    'Install breakers',
+    'Run feeders',
+    'Connect transformers',
+  ],
+  'Lighting Installation': [
+    'Install light fixtures',
+    'Wire lights',
+    'Mount emergency lights',
+  ],
+  'Panel Installation': [
+    'Set electrical panels',
+    'Wire main panel',
+    'Install subpanels',
+  ],
+  'Conduit Installation': [
+    'Install conduit',
+    'Bend conduit',
+    'Run MC cable',
+    'Use bender tools',
+  ],
+  'Pipe Installation': [
+    'Install copper pipe',
+    'Install PVC pipe',
+    'Install cast iron',
+    'Install PEX',
+  ],
+  'Plumbing Fixtures': [
+    'Install toilets',
+    'Install sinks',
+    'Install tubs/shower',
+    'Install water heaters',
+  ],
+  'Water Supply': [
+    'Run water lines',
+    'Connect supplies',
+    'Test water systems',
+  ],
+  'Drainage Systems': [
+    'Install drain lines',
+    'Connect DWV',
+    'Test drain systems',
+  ],
+  'Pipe Fitting': [
+    'Measure and cut pipe',
+    'Thread pipe',
+    'Install pipe supports',
+  ],
+  'Formwork': [
+    'Set forms',
+    'Build forms',
+    'Strip forms',
+    'Install form ties',
+  ],
+  'Rebar Installation': [
+    'Tie rebar',
+    'Set rebar',
+    'Place chairs',
+    'Inspect rebar',
+  ],
+  'Concrete Pouring': [
+    'Pour concrete',
+    'Screed concrete',
+    'Trowel finish',
+    'Cure concrete',
+  ],
+  'Flatwork': [
+    'Finish flatwork',
+    'Install expansion joints',
+    'Broom finish',
+  ],
+  'Stamped Concrete': [
+    'Apply stamps',
+    'Color concrete',
+    'Seal stamped concrete',
+  ],
+  'Earthwork': [
+    'Excavate',
+    'Backfill',
+    'Compaction',
+    'Grade site',
+  ],
+  'Utilities Installation': [
+    'Install water lines',
+    'Install sewer lines',
+    'Install gas lines',
+  ],
+  'Trenching': [
+    'Trench for utilities',
+    'Set pipe bedding',
+    'Backfill trenches',
+  ],
+  'Site Grading': [
+    'Set grades',
+    'Operate equipment',
+    'Read grade stakes',
+  ],
+  'Storm Drainage': [
+    'Install storm pipes',
+    'Set catch basins',
+    'Connect to system',
+  ],
+  'Asphalt Paving': [
+    'Install base',
+    'Pave asphalt',
+    'Roll asphalt',
+    'Edge asphalt',
+  ],
+  'Sealcoating': [
+    'Apply sealcoat',
+    'Striping',
+    'Seal cracks',
+  ],
+  'Patching': [
+    'Patch asphalt',
+    'Cut and fill',
+    'Compact patches',
+  ],
+  'Striping': [
+    'Layout striping',
+    'Apply paint',
+    'Apply thermoplastic',
+  ],
+  'Landscape Installation': [
+    'Install plants',
+    'Install trees',
+    'Install shrubs',
+    'Install sod',
+  ],
+  'Irrigation': [
+    'Install irrigation',
+    'Connect valves',
+    'Set controllers',
+    'Test irrigation',
+  ],
+  'Hardscaping': [
+    'Install pavers',
+    'Retaining walls',
+    'Stone paths',
+  ],
+  'Sod Installation': [
+    'Grade area',
+    'Lay sod',
+    'Water sod',
+  ],
+  'Roof Installation': [
+    'Install roofing',
+    'Install shingles',
+    'Install metal roofing',
+    'Install TPO',
+  ],
+  'Waterproofing': [
+    'Install waterproofing',
+    'Apply coatings',
+    'Test waterproofing',
+  ],
+  'Membrane Installation': [
+    'Install roofing membrane',
+    'Weld seams',
+    'Install flashing',
+  ],
+  'Flashing': [
+    'Install flashing',
+    'Install drip edge',
+    'Seal penetrations',
+  ],
+  'Material Movement': [
+    'Move materials',
+    'Unload trucks',
+    'Stock materials',
+  ],
+  'Site Cleanup': [
+    'Clean site',
+    'Waste removal',
+    'Debris cleanup',
+  ],
+  'Equipment Operation': [
+    'Operate forklift',
+    'Operate skid steer',
+    'Operate aerial lift',
+  ],
+  'Site Support': [
+    'Support trade crews',
+    'Material prep',
+    'Site maintenance',
+  ],
+  'Demolition': [
+    'Perform demolition',
+    'Use demo tools',
+    'Sort materials',
+  ],
+  'Selective Demolition': [
+    'Selective demolition',
+    'Protect finishes',
+    'Remove partitions',
+  ],
+  'Abatement Support': [
+    'Support abatement',
+    'Containment',
+    'Waste handling',
+  ],
+  'Waste Removal': [
+    'Remove waste',
+    'Sort debris',
+    'Load dumpsters',
+  ],
+  'Masonry': [
+    'Lay brick',
+    'Lay block',
+    'Mix mortar',
+    'Set stone',
+  ],
+  'Stucco Application': [
+    'Apply stucco',
+    'Float stucco',
+    'Texture stucco',
+  ],
+  'EIFS Systems': [
+    'Install EIFS',
+    'Apply finish coats',
+    'Base coat applications',
+  ],
+  'Stone Installation': [
+    'Set stone veneer',
+    'Cut stone',
+    'Apply mortar',
+  ],
+  'Structural Steel': [
+    'Erect steel',
+    'Bolt up',
+    'Weld steel',
+    'Install decking',
+  ],
+  'Misc. Metals': [
+    'Install metals',
+    'Install railings',
+    'Install stairs',
+  ],
+  'Welding': [
+    'MIG welding',
+    'TIG welding',
+    'Stick welding',
+    'Read blueprints',
+  ],
+  'Bolt Up': [
+    'Bolt connections',
+    'Set columns',
+    'Level steel',
+  ],
+  'Rough Carpentry': [
+    'Framing',
+    'Sheathing',
+    'Nailing',
+    'Use power tools',
+  ],
+  'Wood Framing': [
+    'Frame walls',
+    'Frame floors',
+    'Frame roofs',
+  ],
+  'Blocking Systems': [
+    'Install blocking',
+    'Backing installation',
+  ],
+  'Roof Framing': [
+    'Frame roof',
+    'Set trusses',
+    'Install roof deck',
+  ],
+  'Millwork': [
+    'Install cabinets',
+    'Install countertops',
+    'Casework',
+  ],
+  'Cabinets Installation': [
+    'Set cabinets',
+    'Level cabinets',
+    'Adjust hardware',
+  ],
+  'Finish Carpentry': [
+    'Install trim',
+    'Install base',
+    'Install crown',
+    'Set doors',
+  ],
+  'Trim Installation': [
+    'Install baseboard',
+    'Install crown',
+    'Case windows',
+  ],
+  'Flooring Installation': [
+    'Install flooring',
+    'Layout floors',
+    'Cut flooring',
+  ],
+  'Tile Installation': [
+    'Install tile',
+    'Grout tile',
+    'Cut tile',
+  ],
+  'Carpet Installation': [
+    'Lay carpet',
+    'Stretch carpet',
+    'Seam carpet',
+  ],
+  'Resilient Flooring': [
+    'Install LVT',
+    'Install LVP',
+    'Install sheet vinyl',
+  ],
+  'Painting': [
+    'Paint walls',
+    'Paint ceilings',
+    'Spray paint',
+    'Brush and roll',
+  ],
+  'Coatings Application': [
+    'Apply coatings',
+    'Epoxy application',
+    'Waterproof coatings',
+  ],
+  'Wallcovering': [
+    'Hang wallpaper',
+    'Install wallcovering',
+  ],
+  'Spray Painting': [
+    'Spray paint',
+    'Set up sprayer',
+    'Mask and cover',
+  ],
+  'Door Installation': [
+    'Hang doors',
+    'Set door frames',
+    'Install hardware',
+  ],
+  'Frame Installation': [
+    'Set frames',
+    'Anchor frames',
+    'Plumb frames',
+  ],
+  'Hardware Installation': [
+    'Install locks',
+    'Install hinges',
+    'Install closers',
+  ],
+  'Openings Systems': [
+    'Install windows',
+    'Install storefronts',
+    'Install sliding doors',
+  ],
+  'Glass Installation': [
+    'Set glass',
+    'Glazing',
+    'Cut glass',
+  ],
+  'Storefront Systems': [
+    'Install storefront',
+    'Set glass',
+    'Install entrances',
+  ],
+  'Curtain Wall': [
+    'Install curtain wall',
+    'Set glass',
+    'Seal joints',
+  ],
+  'Glazing': [
+    'Glazing installation',
+    'Seal glazing',
+    'Gaskets',
+  ],
+  'Sprinkler Installation': [
+    'Install sprinkler heads',
+    'Run piping',
+    'Test system',
+  ],
+  'Fire Pumps': [
+    'Install fire pumps',
+    'Connect pumps',
+    'Test pumps',
+  ],
+  'Standpipe Systems': [
+    'Install standpipes',
+    'Connect hose connections',
+  ],
+  'Fire Alarm': [
+    'Install fire alarm',
+    'Wire devices',
+    'Test systems',
+  ],
+  'Firestopping': [
+    'Firestop penetrations',
+    'Seal joints',
+    'Inspect firestopping',
+  ],
+  'Fireproofing': [
+    'Apply fireproofing',
+    'Spray fireproofing',
+    'Inspect fireproofing',
+  ],
+  'Joint Sealants': [
+    'Apply sealants',
+    'Caulk joints',
+    'Backer rod',
+  ],
+  'Penetration Sealing': [
+    'Seal penetrations',
+    'Firestop sleeves',
+  ],
+  'Data Cabling': [
+    'Pull cat6 cables',
+    'Terminate cables',
+    'Install jacks',
+  ],
+  'Security Systems': [
+    'Install security cameras',
+    'Wire sensors',
+    'Install access control',
+  ],
+  'Access Control': [
+    'Install card readers',
+    'Wire controllers',
+    'Test access',
+  ],
+  'Specialties Installation': [
+    'Install specialties',
+    'Install accessories',
+  ],
+  'Accessories': [
+    'Install accessories',
+    'Set toilet accessories',
+    'Install mirrors',
+  ],
+  'Signage Installation': [
+    'Install signs',
+    'Mount signs',
+    'Electrical signs',
+  ],
+  'Equipment Installation': [
+    'Install equipment',
+    'Set in place',
+    'Connect utilities',
+  ],
+  'Specialty Installations': [
+    'Specialty installation',
+    'Manufacturer install',
+  ],
+  'Owner-Furnished Equipment': [
+    'Set equipment',
+    'Connect to systems',
+    'Test equipment',
+  ],
+}
+
+// ✅ Experience Level options
+const EXPERIENCE_LEVELS = [
+  'Entry Level',
+  'Intermediate',
+  'Experienced',
+  'Advanced',
+  'Master'
+]
+
+// ✅ Years of Experience options
+const YEARS_OF_EXPERIENCE = [
+  '0-1',
+  '1-2',
+  '2-3',
+  '3-4',
+  '4-5',
+  '5-10',
+  '10-15',
+  '15-20',
+  '20+'
+]
+
+// ✅ Tools, Certifications, and Requirements
+const TOOLS_CERTIFICATIONS = [
+  'OSHA 10',
+  'OSHA 30',
+  'Scissor lift experience',
+  'Boom lift experience',
+  'Lift certified',
+  'Fall protection',
+  'Own hand tools',
+  'Own power tools',
+  'Basic PPE',
+  'Reliable transportation',
+  'Valid driver license',
+  'Willing to travel',
+  'Night shift available',
+  'Weekend work available',
+  'Overtime available',
+  'Can pass background check if required',
+  'Can work secure/badged sites',
+  'Bilingual English/Spanish',
+]
+
 export function WizardStep2({ data, onChange, onNext, onBack }) {
   const { t } = useTranslation()
 
-  // ✅ Handle main trade change
+  // ✅ State for skill groups with checkboxes
+  const [skillGroups, setSkillGroups] = useState(() => {
+    if (data.skillGroups) {
+      return data.skillGroups
+    }
+    return {}
+  })
+
+  // ✅ State for experience and years for each skill group
+  const [skillDetails, setSkillDetails] = useState(() => {
+    if (data.skillDetails) {
+      return data.skillDetails
+    }
+    return {}
+  })
+
+  // ✅ State for tools and certifications
+  const [toolsCertifications, setToolsCertifications] = useState(() => {
+    if (data.toolsCertifications) {
+      return data.toolsCertifications
+    }
+    return {}
+  })
+
+  // ✅ Handle main trade selection
   const handleMainTradeChange = (value) => {
     onChange({ mainTrade: value })
+    // Reset skill groups when main trade changes
+    setSkillGroups({})
+    setSkillDetails({})
   }
+
+  // ✅ Handle skill group checkbox toggle
+  const handleSkillGroupToggle = (skillGroup) => (e) => {
+    const isChecked = e.target.checked
+    const updated = { ...skillGroups, [skillGroup]: isChecked }
+    setSkillGroups(updated)
+    onChange({ skillGroups: updated })
+
+    // If unchecked, remove skill details for this group
+    if (!isChecked) {
+      const updatedDetails = { ...skillDetails }
+      delete updatedDetails[skillGroup]
+      setSkillDetails(updatedDetails)
+      onChange({ skillDetails: updatedDetails })
+    } else {
+      // Initialize skill details with empty values
+      const updatedDetails = { ...skillDetails, [skillGroup]: { experience: '', years: '', skills: {} } }
+      setSkillDetails(updatedDetails)
+      onChange({ skillDetails: updatedDetails })
+    }
+  }
+
+  // ✅ Handle skill detail checkbox toggle
+  const handleSkillDetailToggle = (skillGroup, skill) => (e) => {
+    const isChecked = e.target.checked
+    const currentSkills = skillDetails[skillGroup]?.skills || {}
+    const updatedSkills = { ...currentSkills, [skill]: isChecked }
+    
+    const updatedDetails = {
+      ...skillDetails,
+      [skillGroup]: {
+        ...skillDetails[skillGroup],
+        skills: updatedSkills
+      }
+    }
+    setSkillDetails(updatedDetails)
+    onChange({ skillDetails: updatedDetails })
+  }
+
+  // ✅ Handle experience level change
+  const handleExperienceChange = (skillGroup, value) => {
+    const updatedDetails = {
+      ...skillDetails,
+      [skillGroup]: {
+        ...skillDetails[skillGroup],
+        experience: value
+      }
+    }
+    setSkillDetails(updatedDetails)
+    onChange({ skillDetails: updatedDetails })
+  }
+
+  // ✅ Handle years of experience change
+  const handleYearsChange = (skillGroup, value) => {
+    const updatedDetails = {
+      ...skillDetails,
+      [skillGroup]: {
+        ...skillDetails[skillGroup],
+        years: value
+      }
+    }
+    setSkillDetails(updatedDetails)
+    onChange({ skillDetails: updatedDetails })
+  }
+
+  // ✅ Handle tools/certifications toggle
+  const handleToolToggle = (tool) => (e) => {
+    const isChecked = e.target.checked
+    const updated = { ...toolsCertifications, [tool]: isChecked }
+    setToolsCertifications(updated)
+    onChange({ toolsCertifications: updated })
+  }
+
+  // ✅ Get skill groups for selected main trade
+  const getSkillGroups = () => {
+    const mainTrade = data.mainTrade || ''
+    return SKILL_GROUPS[mainTrade] || []
+  }
+
+  // ✅ Get skill details for a specific skill group
+  const getSkillDetails = (skillGroup) => {
+    return SKILL_DETAILS[skillGroup] || []
+  }
+
+  const selectedTrade = data.mainTrade || ''
+  const groups = getSkillGroups()
 
   return (
     <div className="wizardStep">
@@ -7984,11 +8844,11 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
         <div className="wizardSection">
           <div className="wizardSectionBar">{t('wizard.step2.title')}</div>
 
-          {/* ✅ Single Main Trade Dropdown */}
-          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+          {/* ✅ Main Trade Dropdown */}
+          <div style={{ maxWidth: '500px', margin: '0 auto 32px auto' }}>
             <SelectField
               label={t('wizard.step2.selectMainTrade') || 'Select Main Trade'}
-              value={data.mainTrade || ''}
+              value={selectedTrade}
               onChange={handleMainTradeChange}
             >
               <option value="">{t('wizard.step2.selectMainTrade') || 'Select Main Trade'}</option>
@@ -7998,6 +8858,174 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                 </option>
               ))}
             </SelectField>
+          </div>
+
+          {/* ✅ Skill Groups */}
+          {selectedTrade && groups.length > 0 && (
+            <div style={{ marginTop: '16px' }}>
+              <div style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#17263a',
+                marginBottom: '16px',
+                paddingBottom: '8px',
+                borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+              }}>
+                Skill Groups
+              </div>
+
+              {groups.map((group, index) => (
+                <div key={group} style={{
+                  marginBottom: index < groups.length - 1 ? '24px' : '16px',
+                }}>
+                  {/* ✅ Skill Group Row with Checkbox */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '12px 16px',
+                    background: 'rgba(15, 78, 169, 0.03)',
+                    border: '1px solid rgba(18, 38, 63, 0.08)',
+                    borderRadius: '8px',
+                  }}>
+                    <label style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      cursor: 'pointer',
+                      flex: 1,
+                      fontSize: '14px',
+                      fontWeight: 500,
+                      color: '#17263a',
+                    }}>
+                      <input
+                        type="checkbox"
+                        checked={!!skillGroups[group]}
+                        onChange={handleSkillGroupToggle(group)}
+                      />
+                      {group}
+                    </label>
+
+                    <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
+                      <SelectField
+                        label=""
+                        value={skillDetails[group]?.experience || ''}
+                        onChange={(value) => handleExperienceChange(group, value)}
+                        style={{ flex: 1 }}
+                      >
+                        <option value="">Experience Level</option>
+                        {EXPERIENCE_LEVELS.map((level) => (
+                          <option key={level} value={level}>
+                            {level}
+                          </option>
+                        ))}
+                      </SelectField>
+
+                      <SelectField
+                        label=""
+                        value={skillDetails[group]?.years || ''}
+                        onChange={(value) => handleYearsChange(group, value)}
+                        style={{ flex: 1 }}
+                      >
+                        <option value="">Years of Experience</option>
+                        {YEARS_OF_EXPERIENCE.map((years) => (
+                          <option key={years} value={years}>
+                            {years}
+                          </option>
+                        ))}
+                      </SelectField>
+                    </div>
+                  </div>
+
+                  {/* ✅ Skill Details Legend (appears when checkbox is checked) */}
+                  {skillGroups[group] && (
+                    <div style={{
+                      marginTop: '8px',
+                      marginLeft: '28px',
+                      padding: '16px 20px',
+                      border: '1px solid rgba(15, 78, 169, 0.2)',
+                      borderRadius: '8px',
+                      background: 'rgba(15, 78, 169, 0.02)',
+                    }}>
+                      <div style={{
+                        fontSize: '12px',
+                        fontWeight: 600,
+                        color: '#0f4ea9',
+                        marginBottom: '12px',
+                      }}>
+                        Skill Details - {group}
+                      </div>
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '6px 16px',
+                      }}>
+                        {getSkillDetails(group).map((skill) => (
+                          <label key={skill} style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            cursor: 'pointer',
+                            fontSize: '13px',
+                            color: '#17263a',
+                          }}>
+                            <input
+                              type="checkbox"
+                              checked={!!(skillDetails[group]?.skills?.[skill] || false)}
+                              onChange={handleSkillDetailToggle(group, skill)}
+                            />
+                            {skill}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* ✅ Tools, Certifications, and Requirements Section */}
+          <div style={{ marginTop: '32px' }}>
+            <div style={{
+              fontSize: '14px',
+              fontWeight: 600,
+              color: '#17263a',
+              marginBottom: '16px',
+              paddingBottom: '8px',
+              borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+            }}>
+              Tools, Certifications, and Requirements
+            </div>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr 1fr',
+              gap: '6px 16px',
+              padding: '16px',
+              border: '1px solid rgba(18, 38, 63, 0.08)',
+              borderRadius: '8px',
+              background: 'rgba(15, 78, 169, 0.02)',
+            }}>
+              {TOOLS_CERTIFICATIONS.map((tool) => (
+                <label key={tool} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  cursor: 'pointer',
+                  fontSize: '13px',
+                  color: '#17263a',
+                  padding: '4px 0',
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={!!(toolsCertifications[tool] || false)}
+                    onChange={handleToolToggle(tool)}
+                  />
+                  {tool}
+                </label>
+              ))}
+            </div>
           </div>
         </div>
       </div>
