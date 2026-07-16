@@ -9123,16 +9123,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
 // src/worker/components/wizard-steps/WizardStep2.jsx
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -9189,6 +9179,19 @@ const SKILL_GROUPS = {
     'Air Distribution / Diffusers / Grilles',
     'HVAC Punch / Troubleshooting / Final Support',
   ],
+  'Civil / Sitework / Earthwork / Utilities': [
+    'General Site Labor / Civil Labor',
+    'Earthwork / Grading',
+    'Excavation / Trenching',
+    'Pipe Layer / Underground Utilities',
+    'Storm Drain / Sewer / Water Utilities',
+    'Utility Installation Support',
+    'Erosion Control',
+    'Equipment Spotter / Grade Checker',
+    'Traffic Control / Flagging',
+    'Site Cleanup / Final Grading',
+    'Heavy Equipment Operation',
+  ],
   'Electrical / Power': [
     'Electrical Wiring',
     'Power Distribution',
@@ -9209,13 +9212,6 @@ const SKILL_GROUPS = {
     'Concrete Pouring',
     'Flatwork',
     'Stamped Concrete',
-  ],
-  'Civil / Sitework / Earthwork / Utilities': [
-    'Earthwork',
-    'Utilities Installation',
-    'Trenching',
-    'Site Grading',
-    'Storm Drainage',
   ],
   'Asphalt / Paving Work': [
     'Asphalt Paving',
@@ -9506,6 +9502,174 @@ const SKILL_DETAILS = {
     'Clean equipment/work areas',
     'Document completed punch',
     'Return for service calls',
+  ],
+
+  // ==================== CIVIL / SITEWORK SKILLS ====================
+  'General Site Labor / Civil Labor': [
+    'Move site materials',
+    'Shovel / rake soil or rock',
+    'Assist grading crew',
+    'Assist trench crew',
+    'Load / unload materials',
+    'Use hand tools',
+    'Use small compaction tools',
+    'Spot equipment basic',
+    'Site cleanup',
+    'Install stakes / basic layout support',
+    'Assist utility crew',
+    'Prepare work area',
+  ],
+  'Earthwork / Grading': [
+    'Rough grading support',
+    'Fine grading support',
+    'Backfill areas',
+    'Compact soil',
+    'Read grade stakes basic',
+    'Use laser level basic',
+    'Set grade stakes support',
+    'Prepare subgrade',
+    'Spread base material',
+    'Check low/high areas',
+    'Work with dozer/loader crew',
+    'Final grade cleanup',
+  ],
+  'Excavation / Trenching': [
+    'Assist excavation',
+    'Dig by hand around utilities',
+    'Prepare trenches',
+    'Clean trench bottom',
+    'Install bedding material',
+    'Backfill trench',
+    'Compact trench backfill',
+    'Potholing / daylighting support',
+    'Trench box awareness',
+    'Trench safety support',
+    'Spot excavator',
+    'Mark trench area support',
+  ],
+  'Pipe Layer / Underground Utilities': [
+    'Lay utility pipe',
+    'Set pipe bedding',
+    'Install storm pipe',
+    'Install sewer pipe',
+    'Install waterline support',
+    'Install fittings',
+    'Set pipe grade with laser',
+    'Connect pipe sections',
+    'Set manholes support',
+    'Set catch basins / inlets support',
+    'Install valves / hydrant support',
+    'Backfill around pipe',
+  ],
+  'Storm Drain / Sewer / Water Utilities': [
+    'Storm drain installation support',
+    'Sanitary sewer support',
+    'Waterline support',
+    'Fire line support',
+    'Set structures support',
+    'Adjust manholes support',
+    'Install cleanouts support',
+    'Install utility fittings',
+    'Pressure test support',
+    'Leak repair support',
+    'Utility trench cleanup',
+    'Inspection support',
+  ],
+  'Utility Installation Support': [
+    'Bedding pipe',
+    'Haul pipe/materials',
+    'Prepare fittings',
+    'Assist pipe crew',
+    'Measure pipe lengths',
+    'Cut pipe support',
+    'Install warning tape',
+    'Install tracer wire support',
+    'Utility cleanup',
+    'Backfill utility trench',
+    'Compact utility trench',
+    'Assist utility inspection',
+  ],
+  'Erosion Control': [
+    'Install silt fence',
+    'Install inlet protection',
+    'Install wattles',
+    'Install erosion blanket',
+    'Maintain SWPPP BMPs',
+    'Clean stormwater inlets',
+    'Repair erosion controls',
+    'Install construction entrance support',
+    'Sediment cleanup',
+    'Slope protection support',
+    'Fence/stake support',
+    'Remove erosion controls',
+  ],
+  'Equipment Spotter / Grade Checker': [
+    'Spot excavator',
+    'Spot loader',
+    'Spot trucks',
+    'Communicate with operators',
+    'Use hand signals',
+    'Check grade with laser',
+    'Read grade stakes',
+    'Mark elevations basic',
+    'Check trench depth',
+    'Check pipe slope support',
+    'Work around active equipment',
+    'Traffic / equipment awareness',
+  ],
+  'Traffic Control / Flagging': [
+    'Flag traffic',
+    'Set cones/signs',
+    'Lane closure support',
+    'Pedestrian control',
+    'Spot trucks entering site',
+    'Direct delivery traffic',
+    'Work zone setup support',
+    'Work zone cleanup',
+    'Night work traffic support',
+    'Follow traffic control plan',
+    'Use radio communication',
+    'Safety watch',
+  ],
+  'Site Cleanup / Final Grading': [
+    'Final site cleanup',
+    'Remove debris',
+    'Rake/level areas',
+    'Clean around utilities',
+    'Backfill low spots',
+    'Prepare area for next trade',
+    'Sweep / cleanup site access',
+    'Remove excess material',
+    'Support punch list',
+    'Clean around structures',
+    'Final grade support',
+    'Load-out cleanup',
+  ],
+  'Heavy Equipment Operation': [
+    'Skid Steer',
+    'Mini Excavator',
+    'Excavator',
+    'Backhoe',
+    'Dozer',
+    'Front Loader / Wheel Loader',
+    'Roller / Compactor',
+    'Motor Grader',
+    'Trencher',
+    'Forklift / Telehandler',
+    'Water Truck',
+    'Dump Truck support / CDL if applicable',
+    'Rough grade',
+    'Fine grade',
+    'Excavate trenches',
+    'Load trucks',
+    'Backfill trenches',
+    'Compact soil/base',
+    'Move materials',
+    'Spread base material',
+    'Work near utilities',
+    'Finish grade support',
+    'Operate safely around crews',
+    'Read plans/basic stakes',
   ],
 
   // ==================== OTHER TRADES (placeholder) ====================
@@ -9969,15 +10133,16 @@ const SKILL_DETAILS = {
   ],
 }
 
-// ✅ Experience Level options
-const EXPERIENCE_LEVELS = [
-  'Helper',
-  'Apprentice / Junior',
-  'Skilled Worker / Installer',
-  'Mechanic / Technician',
-  'Lead / Foreman',
-  'Specialty / Advanced Tech',
-]
+// ✅ Experience Level options (varies by trade)
+const EXPERIENCE_LEVELS = {
+  'General Site Labor / Civil Labor': ['Helper', 'Skilled Worker', 'Lead'],
+  'Earthwork / Grading': ['Helper', 'Skilled Worker', 'Lead', 'Foreman'],
+  'Pipe Layer / Underground Utilities': ['Helper', 'Skilled Worker', 'Pipe Layer', 'Lead', 'Foreman'],
+  'Heavy Equipment Operation': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
+  'Traffic Control / Flagging': ['Helper', 'Flagger', 'Lead'],
+  'HVAC/Mechanical': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+  'default': ['Helper', 'Skilled Worker', 'Lead', 'Foreman'],
+}
 
 // ✅ Years of Experience options
 const YEARS_OF_EXPERIENCE = [
@@ -10012,7 +10177,6 @@ const TOOLS_CERTIFICATIONS_INTERIORS = [
 
 // ✅ Tools, Certifications, and Requirements for HVAC
 const TOOLS_CERTIFICATIONS_HVAC = [
-  // Certifications/Training
   'EPA 608 Universal',
   'EPA 608 Type I',
   'EPA 608 Type II',
@@ -10025,7 +10189,6 @@ const TOOLS_CERTIFICATIONS_HVAC = [
   'Confined space awareness',
   'First aid / CPR',
   'Other certification - optional note',
-  // Tools/Equipment Experience
   'Own basic hand tools',
   'Own power tools',
   'Tin snips / sheet metal tools',
@@ -10038,6 +10201,30 @@ const TOOLS_CERTIFICATIONS_HVAC = [
   'Manometer',
   'Ladders',
   'PPE available',
+]
+
+// ✅ Tools, Certifications, and Requirements for Civil/Sitework
+const TOOLS_CERTIFICATIONS_CIVIL = [
+  'OSHA 10',
+  'OSHA 30',
+  'Trench safety awareness',
+  'Competent person - trenching',
+  'Flagger certification',
+  'Confined space awareness',
+  'First aid / CPR',
+  'Valid driver license',
+  'CDL',
+  'Equipment certification/card',
+  'TWIC / secure site eligible',
+  'Can pass background check',
+  'Has PPE',
+  'Work boots',
+  'Hard hat',
+  'Safety vest',
+  'Own hand tools',
+  'Can work outdoors',
+  'Can work around heavy equipment',
+  'Can work in heat/cold',
 ]
 
 export function WizardStep2({ data, onChange, onNext, onBack }) {
@@ -10160,6 +10347,11 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     return SKILL_DETAILS[skillGroup] || []
   }
 
+  // ✅ Get experience levels for a specific skill group
+  const getExperienceLevels = (skillGroup) => {
+    return EXPERIENCE_LEVELS[skillGroup] || EXPERIENCE_LEVELS['default']
+  }
+
   // ✅ Get tools/certifications based on selected trade
   const getToolsCertifications = () => {
     const mainTrade = data.mainTrade || ''
@@ -10167,6 +10359,8 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
       return TOOLS_CERTIFICATIONS_INTERIORS
     } else if (mainTrade === 'HVAC/Mechanical') {
       return TOOLS_CERTIFICATIONS_HVAC
+    } else if (mainTrade === 'Civil / Sitework / Earthwork / Utilities') {
+      return TOOLS_CERTIFICATIONS_CIVIL
     }
     return []
   }
@@ -10174,7 +10368,9 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
   const selectedTrade = data.mainTrade || ''
   const groups = getSkillGroups()
   const toolsList = getToolsCertifications()
-  const showToolsSection = selectedTrade === 'Interiors' || selectedTrade === 'HVAC/Mechanical'
+  const showToolsSection = selectedTrade === 'Interiors' || 
+                          selectedTrade === 'HVAC/Mechanical' || 
+                          selectedTrade === 'Civil / Sitework / Earthwork / Utilities'
 
   return (
     <div className="wizardStep">
@@ -10252,7 +10448,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                         style={{ flex: 1 }}
                       >
                         <option value="">Experience Level</option>
-                        {EXPERIENCE_LEVELS.map((level) => (
+                        {getExperienceLevels(group).map((level) => (
                           <option key={level} value={level}>
                             {level}
                           </option>
@@ -10323,7 +10519,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
             </div>
           )}
 
-          {/* ✅ Tools, Certifications, and Requirements Section - for Interiors and HVAC */}
+          {/* ✅ Tools, Certifications, and Requirements Section - for Interiors, HVAC, and Civil */}
           {showToolsSection && toolsList.length > 0 && (
             <div style={{ marginTop: '32px' }}>
               <div style={{
