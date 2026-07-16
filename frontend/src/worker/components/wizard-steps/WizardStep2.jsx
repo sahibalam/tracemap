@@ -7936,6 +7936,85 @@
 // export default WizardStep2
 
 
+
+// // src/worker/components/wizard-steps/WizardStep2.jsx
+// import { useState } from 'react'
+// import { useTranslation } from 'react-i18next'
+// import { SelectField } from '../../../common/components/TextField'
+
+// // ✅ MAIN TRADES from PDF
+// const MAIN_TRADES = [
+//   'Interiors',
+//   'HVAC/Mechanical',
+//   'Electrical / Power',
+//   'Plumbing / Piping',
+//   'Concrete / Formwork / Rebar / Flatwork',
+//   'Civil / Sitework / Earthwork / Utilities',
+//   'Asphalt / Paving Work',
+//   'Landscaping / Exterior Improvements',
+//   'Roofing / Waterproofing',
+//   'General Labor / Site Support / Material Handling',
+//   'Demolition / Selective Demo / Abatement Support',
+//   'Masonry / Stucco / EIFS Systems',
+//   'Structural Steel / Misc. Metals / Welding',
+//   'Carpentry / Rough Carpentry / Wood Framing / Blocking Systems',
+//   'Millwork / Cabinets / Finish Carpentry',
+//   'Flooring / Tile / Resilient / Carpet Systems',
+//   'Painting / Coatings / Wallcovering Systems',
+//   'Doors / Frames / Hardware / Openings Systems',
+//   'Glass / Glazing / Storefront',
+//   'Fire Protection / Sprinkler Systems',
+//   'Firestopping / Fireproofing / Joint Sealants',
+//   'Low Voltage / Data / Security / Fire Alarm',
+//   'Division 10 Specialties / Accessories / Signage Systems',
+//   'Equipment / Specialty Installations / Owner-Furnished Equipment Systems',
+// ]
+
+// export function WizardStep2({ data, onChange, onNext, onBack }) {
+//   const { t } = useTranslation()
+
+//   // ✅ Handle main trade change
+//   const handleMainTradeChange = (value) => {
+//     onChange({ mainTrade: value })
+//   }
+
+//   return (
+//     <div className="wizardStep">
+//       <div className="wizardBody">
+//         <div className="wizardSection">
+//           <div className="wizardSectionBar">{t('wizard.step2.title')}</div>
+
+//           {/* ✅ Single Main Trade Dropdown */}
+//           <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+//             <SelectField
+//               label={t('wizard.step2.selectMainTrade') || 'Select Main Trade'}
+//               value={data.mainTrade || ''}
+//               onChange={handleMainTradeChange}
+//             >
+//               <option value="">{t('wizard.step2.selectMainTrade') || 'Select Main Trade'}</option>
+//               {MAIN_TRADES.map((trade) => (
+//                 <option key={trade} value={trade}>
+//                   {trade}
+//                 </option>
+//               ))}
+//             </SelectField>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default WizardStep2
+
+
+
+
+
+
+
+
+
 // src/worker/components/wizard-steps/WizardStep2.jsx
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -8695,7 +8774,7 @@ const YEARS_OF_EXPERIENCE = [
   '20+'
 ]
 
-// ✅ Tools, Certifications, and Requirements
+// ✅ Tools, Certifications, and Requirements (ONLY for Interiors)
 const TOOLS_CERTIFICATIONS = [
   'OSHA 10',
   'OSHA 30',
@@ -8750,6 +8829,8 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     // Reset skill groups when main trade changes
     setSkillGroups({})
     setSkillDetails({})
+    // Reset tools certifications when main trade changes (only for Interiors)
+    setToolsCertifications({})
   }
 
   // ✅ Handle skill group checkbox toggle
@@ -8837,6 +8918,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
 
   const selectedTrade = data.mainTrade || ''
   const groups = getSkillGroups()
+  const showToolsSection = selectedTrade === 'Interiors'
 
   return (
     <div className="wizardStep">
@@ -8985,48 +9067,50 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
             </div>
           )}
 
-          {/* ✅ Tools, Certifications, and Requirements Section */}
-          <div style={{ marginTop: '32px' }}>
-            <div style={{
-              fontSize: '14px',
-              fontWeight: 600,
-              color: '#17263a',
-              marginBottom: '16px',
-              paddingBottom: '8px',
-              borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
-            }}>
-              Tools, Certifications, and Requirements
-            </div>
+          {/* ✅ Tools, Certifications, and Requirements Section - ONLY for Interiors */}
+          {showToolsSection && (
+            <div style={{ marginTop: '32px' }}>
+              <div style={{
+                fontSize: '14px',
+                fontWeight: 600,
+                color: '#17263a',
+                marginBottom: '16px',
+                paddingBottom: '8px',
+                borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+              }}>
+                Tools, Certifications, and Requirements
+              </div>
 
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: '6px 16px',
-              padding: '16px',
-              border: '1px solid rgba(18, 38, 63, 0.08)',
-              borderRadius: '8px',
-              background: 'rgba(15, 78, 169, 0.02)',
-            }}>
-              {TOOLS_CERTIFICATIONS.map((tool) => (
-                <label key={tool} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  cursor: 'pointer',
-                  fontSize: '13px',
-                  color: '#17263a',
-                  padding: '4px 0',
-                }}>
-                  <input
-                    type="checkbox"
-                    checked={!!(toolsCertifications[tool] || false)}
-                    onChange={handleToolToggle(tool)}
-                  />
-                  {tool}
-                </label>
-              ))}
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr 1fr',
+                gap: '6px 16px',
+                padding: '16px',
+                border: '1px solid rgba(18, 38, 63, 0.08)',
+                borderRadius: '8px',
+                background: 'rgba(15, 78, 169, 0.02)',
+              }}>
+                {TOOLS_CERTIFICATIONS.map((tool) => (
+                  <label key={tool} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    cursor: 'pointer',
+                    fontSize: '13px',
+                    color: '#17263a',
+                    padding: '4px 0',
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={!!(toolsCertifications[tool] || false)}
+                      onChange={handleToolToggle(tool)}
+                    />
+                    {tool}
+                  </label>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
