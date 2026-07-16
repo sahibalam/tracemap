@@ -7937,12 +7937,10 @@
 
 
 
-
-
 // src/worker/components/wizard-steps/WizardStep2.jsx
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SelectField, TextField } from '../../../common/components/TextField'
+import { SelectField } from '../../../common/components/TextField'
 
 // ✅ MAIN TRADES from PDF
 const MAIN_TRADES = [
@@ -7972,62 +7970,12 @@ const MAIN_TRADES = [
   'Equipment / Specialty Installations / Owner-Furnished Equipment Systems',
 ]
 
-// ✅ Create initial trade row
-const createInitialTradeRow = () => ({
-  id: Date.now().toString(),
-  mainTrade: '',
-  experience: '',
-})
-
 export function WizardStep2({ data, onChange, onNext, onBack }) {
   const { t } = useTranslation()
-  
-  // ✅ State for dynamic trade rows
-  const [tradeRows, setTradeRows] = useState(() => {
-    // If there's existing data, load it
-    if (data.tradeRows && data.tradeRows.length > 0) {
-      return data.tradeRows
-    }
-    // Otherwise, start with one empty row
-    return [createInitialTradeRow()]
-  })
 
-  // ✅ Handle change for a specific trade row
-  const handleTradeRowChange = (rowId, field, value) => {
-    const updatedRows = tradeRows.map(row => {
-      if (row.id === rowId) {
-        return { ...row, [field]: value }
-      }
-      return row
-    })
-    
-    setTradeRows(updatedRows)
-    // ✅ Update parent component's data
-    onChange({ tradeRows: updatedRows })
-  }
-
-  // ✅ Add new trade row (max 40)
-  const addTradeRow = () => {
-    if (tradeRows.length < 40) {
-      const newRow = createInitialTradeRow()
-      const updatedRows = [...tradeRows, newRow]
-      setTradeRows(updatedRows)
-      onChange({ tradeRows: updatedRows })
-    }
-  }
-
-  // ✅ Remove trade row (minimum 1)
-  const removeTradeRow = (rowId) => {
-    if (tradeRows.length > 1) {
-      const updatedRows = tradeRows.filter(row => row.id !== rowId)
-      setTradeRows(updatedRows)
-      onChange({ tradeRows: updatedRows })
-    }
-  }
-
-  // ✅ Get all main trade options
-  const getMainTradeOptions = () => {
-    return MAIN_TRADES
+  // ✅ Handle main trade change
+  const handleMainTradeChange = (value) => {
+    onChange({ mainTrade: value })
   }
 
   return (
@@ -8036,174 +7984,20 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
         <div className="wizardSection">
           <div className="wizardSectionBar">{t('wizard.step2.title')}</div>
 
-          {/* ✅ Dynamic Trade Rows */}
-          {tradeRows.map((row, index) => {
-            const rowNumber = index + 1
-
-            return (
-              <div key={row.id} style={{ 
-                marginBottom: index < tradeRows.length - 1 ? '32px' : '16px',
-                padding: '16px',
-                border: '1px solid rgba(18, 38, 63, 0.08)',
-                borderRadius: '12px',
-                background: index % 2 === 0 ? 'rgba(15, 78, 169, 0.02)' : 'transparent',
-                position: 'relative'
-              }}>
-                {/* ✅ Row Header with Number and Delete Button */}
-                <div style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '12px'
-                }}>
-                  <div style={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                  }}>
-                    {t('wizard.step2.trade')} #{rowNumber}
-                  </div>
-                  {tradeRows.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => removeTradeRow(row.id)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#dc2626',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        padding: '4px 12px',
-                        borderRadius: '6px',
-                        transition: 'background 0.2s',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.background = 'rgba(220, 38, 38, 0.08)'
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.background = 'transparent'
-                      }}
-                    >
-                      ✕ {t('wizard.step2.removeTrade')}
-                    </button>
-                  )}
-                </div>
-
-                {/* ✅ Main Trade Selection Row - Single Dropdown */}
-                <div className="wizardGrid2">
-                  <SelectField
-                    label=""
-                    value={row.mainTrade || ''}
-                    onChange={(value) => handleTradeRowChange(row.id, 'mainTrade', value)}
-                  >
-                    <option value="">{t('wizard.step2.selectMainTrade') || 'Select Main Trade'}</option>
-                    {getMainTradeOptions().map((trade) => (
-                      <option key={trade} value={trade}>
-                        {trade}
-                      </option>
-                    ))}
-                  </SelectField>
-
-                  <TextField
-                    label=""
-                    type="number"
-                    min="0"
-                    value={row.experience || ''}
-                    onChange={(value) => handleTradeRowChange(row.id, 'experience', value)}
-                    placeholder={t('wizard.step2.enterYears') || 'Enter years'}
-                  />
-                </div>
-              </div>
-            )
-          })}
-
-          {/* ✅ Add Trade Button */}
-          <div style={{ 
-            marginTop: '16px',
-            display: 'flex',
-            justifyContent: 'center'
-          }}>
-            <button
-              type="button"
-              onClick={addTradeRow}
-              disabled={tradeRows.length >= 40}
-              style={{
-                padding: '10px 24px',
-                background: tradeRows.length >= 40 ? '#94a3b8' : 'rgba(15, 78, 169, 0.08)',
-                color: tradeRows.length >= 40 ? '#94a3b8' : '#0f4ea9',
-                border: `1px solid ${tradeRows.length >= 40 ? '#94a3b8' : 'rgba(15, 78, 169, 0.2)'}`,
-                borderRadius: '8px',
-                cursor: tradeRows.length >= 40 ? 'not-allowed' : 'pointer',
-                fontSize: '14px',
-                fontWeight: 500,
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-              onMouseEnter={(e) => {
-                if (tradeRows.length < 40) {
-                  e.currentTarget.style.background = 'rgba(15, 78, 169, 0.15)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (tradeRows.length < 40) {
-                  e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'
-                }
-              }}
+          {/* ✅ Single Main Trade Dropdown */}
+          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+            <SelectField
+              label={t('wizard.step2.selectMainTrade') || 'Select Main Trade'}
+              value={data.mainTrade || ''}
+              onChange={handleMainTradeChange}
             >
-              <span style={{ fontSize: '18px' }}>+</span>
-              {t('wizard.step2.addTrade') || 'Add Trade'}
-            </button>
-          </div>
-
-          {/* ✅ Additional Skills/Tools/Systems Text Area */}
-          <div style={{ marginTop: '24px' }}>
-            <div style={{ 
-              fontSize: '14px', 
-              fontWeight: 600, 
-              color: '#17263a', 
-              marginBottom: 8 
-            }}>
-              {t('wizard.step2.additionalSkills') || 'Additional Skills / Tools / Systems'}
-            </div>
-            <textarea
-              className="wizardTextArea"
-              value={data.additionalSkillsTools || ''}
-              onChange={(e) => onChange({ additionalSkillsTools: e.target.value })}
-              placeholder={t('wizard.step2.additionalSkillsPlaceholder') || 'Enter additional skills, tools, or systems you have experience with...'}
-              rows={4}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                border: '1px solid rgba(18, 38, 63, 0.12)',
-                borderRadius: '12px',
-                fontSize: '14px',
-                fontFamily: 'inherit',
-                resize: 'vertical',
-                outline: 'none',
-                transition: 'all 0.2s ease',
-                background: 'white',
-                color: '#17263a',
-                minHeight: '100px',
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#0f4ea9'
-                e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                e.target.style.boxShadow = 'none'
-              }}
-            />
-            <div style={{ 
-              fontSize: '11px', 
-              color: 'rgba(23, 38, 58, 0.5)', 
-              marginTop: '4px',
-              textAlign: 'right'
-            }}>
-              {data.additionalSkillsTools?.length || 0} {t('wizard.step2.characters') || 'characters'}
-            </div>
+              <option value="">{t('wizard.step2.selectMainTrade') || 'Select Main Trade'}</option>
+              {MAIN_TRADES.map((trade) => (
+                <option key={trade} value={trade}>
+                  {trade}
+                </option>
+              ))}
+            </SelectField>
           </div>
         </div>
       </div>
