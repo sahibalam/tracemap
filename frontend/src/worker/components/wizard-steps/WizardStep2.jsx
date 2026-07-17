@@ -31179,7 +31179,7 @@ const [heavyEquipment, setHeavyEquipment] = useState(() => {
     <div className="wizardStep">
       <div className="wizardBody">
         <div className="wizardSection">
-          <div className="wizardSectionBar">{t('wizard.step2.title') || 'Trade Profile & Skill Matrix'}</div>
+          {/* <div className="wizardSectionBar">{t('wizard.step2.title') || 'Trade Profile & Skill Matrix'}</div> */}
 
           {/* ✅ Main Trade Dropdown */}
           <div style={{ maxWidth: '500px', margin: '0 auto 32px auto' }}>
