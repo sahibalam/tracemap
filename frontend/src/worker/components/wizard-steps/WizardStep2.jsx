@@ -25829,7 +25829,7 @@ const SKILL_GROUPS = {
     'Equipment Spotter / Grade Checker',
     'Traffic Control / Flagging',
     'Site Cleanup / Final Grading',
-    // 'Heavy Equipment Operation' - REMOVED from here, will be in separate section
+    // 'Heavy Equipment Operation' - REMOVED from skill groups
   ],
   'Asphalt / Paving Work': [
     'Asphalt Helper / Labor',
@@ -26153,7 +26153,7 @@ const SKILL_GROUPS = {
   ],
 }
 
-// ✅ SKILL DETAILS - Complete for ALL Trades
+// ✅ SKILL_DETAILS - Complete for ALL Trades
 const SKILL_DETAILS = {
   // ==================== INTERIORS SKILLS ====================
   'Metal Framing': [
@@ -26954,7 +26954,34 @@ const SKILL_DETAILS = {
     'Final grade support',
     'Load-out cleanup',
   ],
-  // 'Heavy Equipment Operation' - REMOVED from SKILL_DETAILS, will be handled separately
+
+  // ==================== HEAVY EQUIPMENT OPERATION SKILLS ====================
+  'Heavy Equipment Operation': [
+    'Skid Steer',
+    'Mini Excavator',
+    'Excavator',
+    'Backhoe',
+    'Dozer',
+    'Front Loader / Wheel Loader',
+    'Roller / Compactor',
+    'Motor Grader',
+    'Trencher',
+    'Forklift / Telehandler',
+    'Water Truck',
+    'Dump Truck support / CDL if applicable',
+    'Rough grade',
+    'Fine grade',
+    'Excavate trenches',
+    'Load trucks',
+    'Backfill trenches',
+    'Compact soil/base',
+    'Move materials',
+    'Spread base material',
+    'Work near utilities',
+    'Finish grade support',
+    'Operate safely around crews',
+    'Read plans/basic stakes',
+  ],
 
   // ==================== ASPHALT SKILLS ====================
   'Asphalt Helper / Labor': [
@@ -28134,7 +28161,7 @@ const SKILL_DETAILS = {
     'Install healthcare / nurse-station components',
     'Install specialty upper / reagent shelving',
     'Follow room and equipment numbering',
-    'Install specialty fillers / closures',
+    'Install specialty fillers and closures',
     'Protect phased-turnover casework',
     'Install classroom / educational casework',
     'Install institutional cabinets / built-in storage',
@@ -28617,256 +28644,427 @@ const SKILL_DETAILS = {
     'Repair wallcovering seams, bubbles, corners, and localized damage when selected',
     'Label, organize, and turn over attic stock, colors, and product information',
   ],
+
   // ==================== DOORS / FRAMES / HARDWARE SKILLS ====================
   'Door / Frame / Hardware Helper / Material Support': [
-    'Receive and stage doors, frames, hardware, prehung units, accessories, and tools',
-    'Move materials to work areas using carts, dollies, forklifts, or approved material handling',
-    'Organize hardware packs, keys, cylinders, electrified components, and installation supplies',
-    'Assist with layout, lifting, propping, leveling, shimming, and fastening as directed',
-    'Maintain clean work areas, remove packaging, protect finished surfaces, and contain debris',
-    'Support qualified installers without performing specialized modifications or approvals',
+    'Receive, verify, stage, and protect door/frame/hardware components by room and opening',
+    'Move, stack, and support doors, frames, hardware kits, and accessories without damaging finish',
+    'Sort and lay out hardware kits, keys, cylinders, gasketing, stops, and hinges for installation',
+    'Assist installers with layout marks, lifts, tool staging, shims, fasteners, and work-area protection',
+    'Maintain clean work areas and protect doors/frames from adjacent trades and finishing operations',
+    'Assist with basic frame assembly, knockdown setup, and hardware preparation as directed',
   ],
   'Layout / Field Measurement / Opening Verification': [
-    'Verify opening size, type, wall/floor condition, clearance, swing, hardware prep, and tag against approved documents',
-    'Measure rough openings, wall thickness, head clearance, sill, and accessibility/egress clearances',
-    'Identify existing blocking, substrate condition, fire rating, smoke/egress requirements, and facility-specific standards',
-    'Mark hinge, strike, closer, trim, and electrified hardware locations on field-verified openings',
-    'Document discrepancies, damaged conditions, incompatible substrates, and nonconforming locations',
-    'Coordinate final measurements before ordering, fabrication, or installation of doors and frames',
+    'Verify opening width, height, depth, wall thickness, rough opening, and floor conditions',
+    'Confirm fire-ratings, smoke/draft labels, acoustical requirements, and specialty assembly designations',
+    'Check anchorage conditions, backing, substrates, floor flatness, and overhead clearances',
+    'Coordinate adjacent wall, ceiling, floor, and MEP work that affects opening assembly',
+    'Mark opening location, height reference, hinge side, and access/egress requirements for installation',
+    'Document discrepancies and coordinate resolution before installation',
   ],
   'Hollow Metal Frame Installation': [
-    'Install knockdown, welded, or specialty hollow metal frames in approved wall/floor conditions',
-    'Anchor frames using approved mechanical, epoxy, powder-actuated, or manufacturer fasteners',
-    'Plumb, square, brace, shim, and secure frames before welding, grouting, or closing adjacent work',
-    'Install masonry, drywall, or specialty frame anchors, clips, and support components',
-    'Install frame-mounted hardware prep, silencers, stops, astragals, and accessories as supplied',
-    'Coordinate frame installation with wall, ceiling, floor, and rated/sound assemblies',
+    'Set knockdown, welded, or welded/knockdown frames in approved openings',
+    'Plumb, square, anchor, shim, weld, grout, and brace frames for finished conditions',
+    'Install approved anchors, grout inserts, weld plates, or specialty frame attachments',
+    'Install double-egress, pair, or specialty frame assemblies with approved mullion/dutchman/dustproof components',
+    'Coordinate frame installation with fire-rated wall assemblies, smoke/draft seals, and rated construction',
+    'Adjust frame alignment and correct sweep, stop, and reveal conditions before doors/hardware go on',
   ],
   'Wood / Specialty Frame / Prehung Unit Installation': [
-    'Install wood, composite, or specialty door frames in non-rated, acoustical, or finish applications',
-    'Install prehung wood or specialty doors with factory-applied frames, hinges, and hardware prep',
-    'Level, plumb, shim, fasten, and adjust factory-square and field-square units',
-    'Install split jambs, adjustable frames, cased openings, and specialty trim components',
-    'Coordinate frame trim, casing, drywall, or finish floor transitions without performing finish carpentry/trim',
-    'Replace, repair, or adjust wood and specialty frames from punch or service assignments',
+    'Assemble and install wood frames, jambs, stops, brickmould, and specialty millwork components',
+    'Set prehung door units in approved openings',
+    'Plumb, shim, anchor, fasten, and adjust prehung assemblies to wall conditions and clearance requirements',
+    'Coordinate specialty wood-frame conditions and fire/access ratings with approved shop details',
+    'Apply temporary protection for finished jambs and prefinished components',
+    'Adjust prehung units and prepare for hardware and final adjustments',
   ],
   'Hollow Metal Door Installation': [
-    'Install hollow metal doors in approved frames with factory prep, hinge locations, and hardware set',
-    'Hang doors using approved hinges, pivots, or specialty suspension hardware',
-    'Adjust door gap, reveal, hinge alignment, and operation to manufacturer/owner requirements',
-    'Install and adjust doors in rated, smoke, acoustical, and specialty openings as approved',
-    'Field-fit and modify hollow metal doors using approved tools for hardware, glazing, access, or louver locations',
-    'Replace, repair, and adjust hollow metal doors during punch, service, or turnover',
+    'Hang hollow metal doors, single or pair, in approved frames',
+    'Install pivot or hinge locations, hardware prep, factory-installed reinforcement, and template conditions',
+    'Set clearances, alignment, and gasketing for fire, smoke, acoustic, and egress requirements',
+    'Grind, drill, mortise, cut, or modify factory prep only when approved and within project scope',
+    'Adjust hinge alignment, door drop/swing, latch engagement, and door/clearance/overlap conditions',
+    'Repair or replace damaged hollow metal doors, frame stops, and prep locations',
   ],
   'Wood Door Installation / Field Fitting / Machining': [
-    'Install wood doors in hollow metal, wood, or specialty frames with approved hardware prep',
-    'Hang wood doors using approved hinges, pivots, or specialty hardware and complete fit/adjustments',
-    'Field-fit wood doors by machining hinge, lock, closer, and specialty hardware locations',
-    'Install wood doors with veneer, laminate, fire-rated, acoustical, and specialty finishes as directed',
-    'Adjust wood door clearance, reveal, swing, hardware function, and seal/stop engagement',
-    'Replace, repair, and adjust wood doors from punch and service assignments',
+    'Hang wood doors, veneer/plastic laminate/architectural faces, single or pair, in approved frames',
+    'Mortise, bore, rout, edge, fit, and machine wood doors for hinges, locksets, closers, and accessories',
+    'Machining and fitting wood doors by project-approved methods with finished edges and exposed conditions',
+    'Fit gasketing, astragals, sill conditions, and edge details for acoustic/fire/smoke assembly requirements',
+    'Field-fit to irregular frames, cut/plane/sand door edges while maintaining factory finish and required clearances',
+    'Repair edge damage, delamination, finish chips, and minor defects before or during punch, or identify for replacement',
   ],
   'Architectural / Finish Hardware Installation': [
-    'Install hinges, pivots, continuous hinges, and specialty door hardware components',
-    'Install locks, latches, exit devices, handles, pulls, push plates, and protective hardware',
-    'Install closers, coordinators, overhead stops, floor stops, wall stops, and door guards',
-    'Install trim, escutcheons, cylinders, cores, and keying components',
-    'Adjust hardware function, alignment, latching, closing speed, locking, and code/access requirements',
-    'Perform hardware punch, adjustment, replacement, and service calls',
+    'Install hinges, pivots, continuous hinges, spring hinges, and intermediate hardware',
+    'Install locksets, mortise locks, cylindrical locks, exit devices, closers, overhead stops, and door holders',
+    'Install kickplates, push plates, pulls, mop plates, edge guards, and protective/function hardware',
+    'Install gasketing, astragals, coordinators, flushbolts, dustproofs, and door/frame specialty accessories',
+    'Set and adjust lock/trim functions, key cylinders, core removal, and final hardware operation',
+    'Coordinate installation with threshold, sill, and door/floor conditions for closing and latching',
   ],
   'Electrified Hardware / Access-Control Door Interface': [
-    'Install electrified locks, strikes, magnetic locks, exit-device interfaces, and power transfer devices',
-    'Install power-transfer hinges, electrified pivots, and approved door-to-frame wiring/cabling',
-    'Install power supplies, power distribution modules, and manufacturer-supplied accessories',
-    'Terminate approved wiring between door, frame, wall, controller, and low-voltage systems',
-    'Coordinate and test basic lock function, door position sensing, request-to-exit, and local door status interfaces',
-    'Replace electrified hardware components and complete punch/service corrections',
+    'Install electrified locksets, strike plates, power transfer devices, door position/contact and request-to-exit devices',
+    'Install wired and wireless door hardware components for access control and electronic door release',
+    'Coordinate and physically install electrified hardware to approved electrical and low-voltage requirements',
+    'Test door-hardware operation for normal mechanical function, egress, latching, locking, and release modes',
+    'Provide and maintain sequence, access, and egress coordination when integrated with low-voltage controls',
+    'Replace electrified hardware components and test functions as part of punch or service calls',
   ],
   'Automatic Door Operators / Accessible Entrance Systems': [
-    'Install automatic door operators, sensors, push plates, touchless devices, and activation/motion components',
-    'Install low-energy and high-energy automatic entrance systems in approved frames and openings',
-    'Install header, track, control boxes, and manufacturer power-supply accessories',
-    'Route and terminate operator-to-sensor, operator-to-control, and operator-to-motor low-voltage wiring',
-    'Adjust opening speed, closing speed, hold-open time, activation zones, and safety functions',
-    'Support programming, testing, punch, service, and annual inspections when authorized',
+    'Install automatic door operators for swing, sliding, folding, or balanced door systems',
+    'Install actuators, push plates, sensors, mats, and activation interface devices',
+    'Set operation speed, opening/closing force, hold-open time, and code-required safety functions',
+    'Test activation, obstruction sensing, power assist, egress, and required accessible entrance functions',
+    'Coordinate power, low-voltage, and control interface connections with qualified electrical and controls trades',
+    'Service, adjust, repair, and respond to automatic entrance punch/service issues',
   ],
   'Fire-Rated / Smoke / Egress Opening Assemblies': [
-    'Install UL-listed doors, frames, hardware, glazing, seals, and accessories in approved fire-rated openings',
-    'Install labeled fire doors with rated hardware, closers, and latching components',
-    'Install smoke and draft-control assemblies, and seals in approved rated/smoke openings',
-    'Replace damaged or noncompliant fire-rated components with approved listed replacements',
-    'Support inspection, testing, and maintenance of rated doors and hardware',
-    'Adjust fire-rated door functions to maintain compliance and label status',
+    'Identify approved fire-rated, smoke/draft-rated, and egress assembly requirements from plans and label',
+    'Install fire-rated frames, doors, hardware, gasketing, and accessories under approved system and label requirements',
+    'Confirm required fire-rating, hose-stream, smoke-seal, and positive-pressure testing conditions',
+    'Apply required labels, tags, and documentation to door, frame, hardware, and assembly components',
+    'Support acceptance, inspection, and third-party verification of fire/smoke/egress assemblies',
+    'Replace door/frame/hardware components of existing rated assemblies when damaged or modified by other trades',
   ],
   'Keying / Cylinders / Cores / Locksmith Support': [
-    'Remove and replace approved cylinders and cores under direction',
-    'Install master-keyed, grand-master, building, or owner-supplied systems in assigned hardware',
-    'Use manufacturer-approved pinning kits, code keys, and core removal/installation tools',
-    'Label keys, cylinders, cores, and hardware with assigned keying/identification systems',
-    'Perform rekeying, replacement, lockset modification, and emergency lockout services when authorized',
-    'Support project-owned and owner-supplied keying in coordination with security/owner representatives',
+    'Install cylinders, cores, key systems, and approved master-keying components under lock-supply requirements',
+    'Set approved key system, master keys, construction keys, grand master, and change-key levels',
+    'Support locksmith service for door-hardware keyed cylinders, rekeying, and core replacement',
+    'Coordinate construction-use keys and permanent key systems for turnover and building-management acceptance',
+    'Service locks, cylinder issues, pin/spring changes, restricted-keyway, and access-control hardware integration',
+    'Install/repair door hardware condition and key cylinder function to support locksmith/change-order requirements',
   ],
   'Overhead / Sectional / Coiling / Rolling Doors': [
-    'Install sectional, coiling, rolling, grille, counter-shutter, and specialty overhead doors',
-    'Install tracks, drums, springs, motor mounts, and manufacturer-specified hardware',
-    'Set and adjust spring tension, counterbalance, manual/chain operation, and motorized opener interfaces',
-    'Install safety edges, photo-eyes, limit switches, manual disconnect, and approved safety components',
-    'Install high-cycle, high-speed, fire-rated, and specialty overhead doors as selected',
-    'Adjust door travel, tension, safety devices, weather seals, and punch/service corrections',
+    'Install sectional overhead doors, tracks, springs, hardware, motors, and related components',
+    'Install coiling doors, rolling service doors, fire shutters, and counter shutters with support and manufacturer components',
+    'Set and balance spring tension, track alignment, chain hoist, or operator-driven systems per manufacturer',
+    'Install ancillary components such as vision lites, pass doors, opening/damper enclosures, and weather seals',
+    'Coordinate with fire-rated shutter and coiling-door approval and manufacturer documentation',
+    'Service, repair, replace, and adjust overhead and coiling door components',
   ],
   'Specialty / Security / Acoustic / Lead-Lined / Detention / Cleanroom Doors': [
-    'Install detention, security, lead-lined, acoustic, radiation-shielding, and cleanroom door assemblies',
-    'Install approved frames, doors, hardware, seals, and accessories provided by the specialty system manufacturer',
-    'Coordinate and install acoustic, STC, lab, cleanroom, and hospital-door systems under manufacturer guidelines',
-    'Field-fit doors and hardware without altering acoustical, lead-lined, shielding, or cleanroom integrity',
-    'Perform installation and adjustments for access-control, pressure, and environmental interfaces',
-    'Support specialized inspection, testing, commissioning, and turnover documentation',
+    'Install acoustic-rated and sound-dampening door assemblies, gasketing, and acoustic seals',
+    'Install lead-lined doors and frames for radiological/healthcare applications with physical supports and alignment',
+    'Install detention/security doors, frames, hinges, hardware, locking/electrified devices, and approved accessories',
+    'Install cleanroom, hospital, sterile, or control-area doors with gasketing, pressure-balance, and environmental seals',
+    'Coordinate physically heavy and specialty door conditions with field reinforcing, lifting, and manufacturer support',
+    'Repair/replace specialty door components and maintain environmental/detention/security functional requirements',
   ],
   'Field Modification / Machining / Welding / Repair': [
-    'Modify frame, door, and hardware prep using approved tools and authorized methods',
-    'Machine hinge, lock, closer, and handle prep in wood, hollow metal, and specialty doors',
-    'Weld, grind, and refinish approved metal modifications at frames, doors, or specialty assemblies',
-    'Repair damaged doors, frames, hardware, thresholds, and accessories under approved procedures',
-    'Re-machine or repair failed hinge, lock, closer, and electrified hardware locations',
-    'Prepare modifications for refinish, clean, and protect all reworked surfaces',
+    'Modify/fit frames, doors, hardware, and associated components in the field when approved',
+    'Perform field grinding, metal removal, welding, brazing, and equipment modifications when selected and qualified',
+    'Cut, weld, grind, and repair hollow metal doors, frames, and misc metal opening components',
+    'Machine, drill, rout, and install hidden hardware, concealed closer devices, and specialty security hardware',
+    'Use metal and wood field-modification equipment, weld, torch, and material handling in occupied/night shift areas',
+    'Correct manufacturer/modification defects, damaged stops, hinges, anchors, and prepare for finished hardware/accessory installation',
   ],
   'Door / Frame / Hardware Punch / Commissioning / Closeout': [
-    'Align, adjust, and fine-tune doors, frames, hardware, closers, locks, and access devices',
-    'Replace damaged/missing components and correct finish, gap, reveal, and operation issues',
-    'Verify locks, exit devices, closers, and safety/access functions to project requirements',
-    'Install final labels, tags, keys, and sign-offs associated with door/hardware deliverables',
-    'Support fire-door inspection, AHJ tests, owner walk-throughs, and service turnover',
-    'Prepare hardware lists, key schedules, door schedules, deficiencies, warranties, and closeout records',
+    'Adjust doors, frames, hinges, hardware, thresholds, stops, gasketing, and accessory items',
+    'Replace damaged components, locks, cylinder/cores, door glazing, astragals, signs, and physical parts',
+    'Verify proper operation of doors, hardware, electrified components, automatic operators, and fire/smoke/egress conditions',
+    'Complete owner, architect, and punch-list items for openings and hardware delivery',
+    'Protect completed doors/frames/hardware and coordinate turnover/cleaning services',
+    'Provide operation, maintenance, keying, and access-control turnover documentation',
   ],
 
   // ==================== GLASS / GLAZING SKILLS ====================
   'Glazing Helper / Material Handling': [
-    'Receive, unload, protect, move, and stage glass, framing, hardware, sealants, and tools',
-    'Unpack, inspect, and confirm glass sizes, tints, coatings, laminates, frame colors, and manufacturer labeling against approved schedules',
-    'Clean, polish, and prepare metal, glass, gaskets, sealants, and minor accessory surfaces',
-    'Use suction cups, carts, A-frames, glass dollies, glass trailers, and mechanical handling equipment under direct supervision',
-    'Maintain clean, staged, and protected work areas and remove packing waste as directed',
+    'Receive, inventory, inspect, and stage glass, frames, hardware, sealants, and glazing accessories',
+    'Unload, move, position, and protect glass units, IGUs, lites, and framed systems using approved equipment and lifting methods',
+    'Sort and organize aluminum frame members, hardware, gaskets, seals, fasteners, and closure systems',
+    'Maintain clean work areas and protect installed/stock glass from impact, scratches, and chemical damage',
+    'Assist glaziers with layout, setting, gasketing, sealant application, and glass handling operations',
   ],
   'Layout / Field Measurement / Opening Verification': [
-    'Verify opening width, height, squareness, depth, plane, substrates, anchors, and clearances against approved shop drawings',
-    'Check anchors, inserts, supports, and substrate condition for frame attachment and glazing',
-    'Mark frame anchor locations, sealant joints, control/expansion joints, and accessory locations',
-    'Document out-of-tolerance openings and discrepancies to support field-fit and change requests',
-    'Measure field conditions and coordinate with shop drawings, as-built records, and installer requirements',
+    'Verify opening width, height, depth, squareness, and structure/rough opening conditions',
+    'Confirm structural anchorage, mullion locations, floor-to-floor heights, slab edges, and structural support',
+    'Check interface between adjacent curtain-wall, storefront, window, wall, ceiling, and floor systems',
+    'Measure and mark glass/glazing system field dimensions and transfer to shop/fabrication documentation',
+    'Coordinate with structural, MEP, and finish trades for routing, clearance, and anchorage access',
+    'Report field discrepancies and update layout drawings with RFI and change documentation',
   ],
   'Shop Fabrication / Aluminum Frame Assembly': [
-    'Cut aluminum extrusions to approved lengths using saws, cut-off saws, and panel/gantry saws',
-    'Drill, punch, rout, and prepare anchor and hardware locations from approved shop drawings',
-    'Assemble frame sections, join corners, attach anchors, and install gaskets, clips, and hardware from approved fabrication drawings',
-    'Install gaskets, thermal breaks, tape, glazing accessories, and manufacturer fabricator components',
-    'Label, package, protect, and prepare frame shipments for storage and field delivery',
+    'Cut, punch, drill, rout, and machine aluminum frame members to approved shop/assembly drawings',
+    'Assemble storefront, curtain-wall, window, door, and specialty metal frame components',
+    'Install hardware anchors, clip systems, pressure plates, caps, covers, and trim components',
+    'Apply sealant/backer, gaskets, and accessories in frame assembly when specified',
+    'Label, protect, inventory, and prepare assemblies for field installation',
+    'Operate fabrication equipment when trained and authorized within safety and quality requirements',
   ],
   'Glass Cutting / Edgework / Shop Handling': [
-    'Cut, break, and size glass sheets, mirrors, and specialty glass to approved dimensions',
-    'Grind, polish, chamfer, and edge finished glass for approved applications and handling safety',
-    'Inspect glass surfaces, edges, coatings, and temper to approved quality standards',
-    'Label, pack, protect, and handle glass for delivery, on-site staging, and installation',
-    'Operate cutting tables, edge grinders, polishers, and overhead/mechanical glass handling equipment when approved',
+    'Cut, score, break, and size glass lites when field/shop glass fabrication is allowed and qualified',
+    'Polish, seam, edge, and finish glass to required size, profile, and edge detail for exposed and encapsulated conditions',
+    'Cut, drill, notch, or shape glass for specialty hardware, hinges, lock cutouts, and mounted accessories',
+    'Handle glass using suction cups, lifting frames, edge protection, and glass carts during shop and field activities',
+    'Mark, label, crate, protect, and prepare glass for shipment and installation',
   ],
   'Storefront Framing / Aluminum Entrances': [
-    'Install storefront frames, door frames, transoms, sidelites, and approved mullion/anchor components',
-    'Set, plumb, square, align, fasten, and shim aluminum entrances and storefront framing to approved tolerances',
-    'Install sill, head, jamb, and hardware application for approved storefront systems',
-    'Glaze glass into frames and door panels using approved gaskets, setting blocks, and pressure plate systems',
-    'Install manual and automatic entrance hardware, closing/operational components, and manufacturer accessories',
-    'Adjust door/frame alignment, hardware action, gasketing, and weather- and air/water-rated performance',
+    'Install storefront framing, mullions, transoms, headers, sills, and floor tracks',
+    'Set storefront door frames, hardware, closers, hinges, and egress devices on storefront systems',
+    'Install aluminum entrances, sliding doors, swing doors, and specialty access control systems in low-rise applications',
+    'Assemble and install storefront components with approved anchors, fasteners, and structural connections',
+    'Coordinate storefront systems with curtain-wall, window, and storefront entrances for interior/exterior design',
+    'Apply approved sealants at perimeter and assembly joints to maintain water, air, and structural performance',
   ],
   'Curtain Wall / Window Wall Systems': [
-    'Install pressure-plate, structural-silicone, unitized, or mullion-approved curtain-wall/window-wall framing systems',
-    'Set, plumb, align, anchor, and fasten mullions, anchors, transoms, and fully engineered assembly components',
-    'Install gaskets, weather seals, and approved framing accessories',
-    'Install glass, lites, and approved glazing materials into framing and at interfaces',
-    'Maintain approved perimeter fire stops, fire/smoke barrier integrity, and backing/insulation coordination',
-    'Adjust framing, gaskets, accessories, and hardware as directed during commissioning and punch',
+    'Set and install curtain-wall framing, mullions, transoms, spandrel panels, and vision glass',
+    'Install pressure plates, caps, gaskets, splice connections, and structural/thermal barrier components',
+    'Install stick-built curtain wall, unitized systems, or prefabricated frame assemblies as project requires',
+    'Set and anchor curtain-wall mullions, anchors, and support components to the structure/slab edges',
+    'Coordinate with spandrel, backpan, insulation, firestopping, and perimeter/thermal protection systems',
+    'Install approved sealant and gasketing at frame/glass interfaces, joints, and termination conditions',
   ],
   'Commercial Windows / Punched Openings': [
-    'Install direct-set, window-wall, punched, and frame-insert/structural combination windows',
-    'Install approved window frames, anchors, shims, sealants, and accessories in prepared openings',
-    'Set, level, plumb, square, and fastener-secured window units to manufacturer and project tolerances',
-    'Install exterior/interior trim, panning, sealant, and waterproof accessory components',
-    'Adjust mechanical operators, sash, hardware, and vents as directed from service and punch assignments',
+    'Install fixed and operable commercial window units in punched, ribbon, and field opening conditions',
+    'Set window frames, anchors, jamb extensions, perimeter components, and integral fin systems',
+    'Install windows with approved weather-resistive barrier, flashing, tape, or fluid-applied systems',
+    'Operate, adjust, test, and lock windows, and apply required hardware and occupant controls',
+    'Coordinate window installation with neighboring cladding, waterproofing, and building envelope systems',
+    'Service and repair commercial windows and replace failed IGUs/glass components',
   ],
   'Interior Glass / Office Partitions': [
-    'Install interior aluminum, steel, and approved non-thermal frames and entrances',
-    'Install glass and lites in interior storefront, partition, and doorway applications',
-    'Align, shim, and fasten interior glazing systems to level/plumb and project clearance requirements',
-    'Install acoustical, fire-rated, specialty-security, and custom interior glazing when assigned and qualified',
-    'Adjust hinges, pivot sets, locks, seals, and associated hardware on interior systems',
+    'Install interior glass partitions, sliders, full-height glass, and aluminum/wood framing',
+    'Install frameless all-glass entrances and interior glass systems with approved hardware and closures',
+    'Set interior glass walls in drywall, floor, ceiling, and finish-grade applications',
+    'Install privacy systems, switchable glass, and acoustic partitions as required by specialty project documents',
+    'Apply approved sealant and gasketing at interior glass transitions without requiring structural glazing application',
+    'Coordinate interior glass with MEP devices, outlets, switches, and approved wall/ceiling floor systems',
   ],
   'Heavy Glass / Frameless Entrances': [
-    'Install heavy glass, frameless glass doors, and all-glass entrance systems',
-    'Set floor closers, floor guides, header devices, pivots, patch fittings, and project accessories',
-    'Drill, counter-sink, and prepare glass for fittings, handles, patch hardware, and specialty devices',
-    'Align and adjust heavy glass hardware, door clearance, closing speed, and latch alignment to hardware/architectural design requirements',
-    'Apply approved glass film/interlayer and protect glass surfaces from framing/hardware contact',
+    'Install frameless all-glass entrances, sliding doors, swing doors, and door assemblies using approved hardware',
+    'Set glass doors in approved floor closures, top rails, bottom rails, and specialty pivot and hinge systems',
+    'Install access-control hardware, locks, closers, automatic operators, and egress functions on glass doors',
+    'Attach hardware to glass, including patch fittings, hinges, floor rails, lever and touch-bar systems',
+    'Coordinate all-glass storefront and entrance/exit systems with building exterior structural and weatherproofing features',
   ],
   'Mirrors / Decorative / Interior Specialty Glass': [
-    'Set and install interior wall and ceiling mirrors to approved elevations',
-    'Install decorative, coloured, printed, and textured interior glass panels',
-    'Install shelving, rails, and glass finishing components with approved attachments',
-    'Fasten mirrors, panels, and decorative glass with approved clips, rails, brackets, and adhesives',
-    'Make on-site field modifications to mirrors and interior glass only under approved methods and reinforcement evaluation',
+    'Install mirrors, wall-to-wall mirrors, and specialty finished glass in interior locations',
+    'Install decorative glass, colored/patterned glass, and etched/printed/backlit interior applications',
+    'Set mirrors on cabinets, built-ins, retail displays, and millwork features in finish-scope installations',
+    'Install decorative glass and mirrors using approved adhesives, clip systems, and mounting components',
+    'Handle/protect mirror and specialty glass surfaces, eliminate and prevent scratches, etching, and deterioration',
   ],
   'Glass Railings / Guards': [
-    'Install glass railing, guard, and balustrade systems with approved fittings, posts, shoes, and brackets',
-    'Drill, prepare, and set glass panels into guard rails, mounting hardware, and cable/rod systems',
-    'Align and level glass panels, adjust hardware, and meet guard load/deflection requirements',
-    'Coordinate structural supports, framing, and substrate conditions',
-    'Modify and repair railing/guard glass, fittings, and attachments under approved methods',
+    'Install glass railings, guards, handrails, windbreakers, and/or glass infill panels at stairs/ramps/exterior decks',
+    'Set glass panels in base shoes, stanchions, brackets, and structural posts with clamped hardware',
+    'Install specified code-compliant tempered/laminated/ballistic glass panels as guard components',
+    'Set and seal glass rail/guard base, cap, joint, and transition conditions as required by finished details',
+    'Meet safety/guardrail requirements and coordinate field tests and verified installation inspection reports',
   ],
   'Skylights / Canopies / Overhead Glazing': [
-    'Install frame-mounted skylights, barrel-vaults, canopies, and overhead glass systems',
-    'Set, align, and anchor manufactured skylight/overhead framing, flashing, and curb components',
-    'Install approved glass panels and interlayer systems for overhead applications',
-    'Install and seal waterproofing and weatherproofing details at canopy and overhead glazing interfaces',
-    'Install fall-protection systems and staging for overhead applications',
+    'Install structural skylights, glass canopies, overhead glazing, and thermally broken/curtain-wall systems',
+    'Assemble and install skylight/glass canopy frames and rafters/mullion support over openings in roofs and building entrances',
+    'Set and seal glazing panels, gaskets, pressure plates, caps, and architectural trim for overhead/sloped assemblies',
+    'Coordinate structural anchorage, welding, and manufacturer support of canopies/skylights with roof/wall/structural conditions',
+    'Seal overhead and canopy panel joints, edge conditions, and termination conditions for water/air/structural performance',
   ],
   'Specialty Glass / IGUs / Spandrel / Rated / Security Systems': [
-    'Install insulated glass units, heat-strengthened/tempered, laminated, and low-E coated glass',
-    'Install fire-rated, ballistics-rated, forced-entry-rated, and approved security glass systems',
-    'Install spandrel glass, opaque glass, and approved back-painted/back-misted glass assemblies',
-    'Use approved lifting, handling, and rigging for oversized/high-volume assemblies',
-    'Perform on-site glass replacement, repair, and modification under manufacturer-approved methods',
+    'Install laminated, tempered, heat-strengthened, IGUs, and specialty glass for insulation, sound/security requirements',
+    'Handle, inspect, set, and install spandrel glass, backpans, heat-treated/coated glass for curtain-wall/spandrel applications',
+    'Install rated glass assemblies for fire-resistive/ballistic/forced-entry/hurricane-rated systems and components',
+    'Set specialty security glass, detention glass, and blast-resistant glass/systems in approved conditions',
+    'Coordinate specialty glass with structural, fireproofing, ballistic, and security systems to meet project approval status',
+    'Service/replace special glass systems when damaged/delaminated in specialty applications, and refer to manufacturer for complex replacement/repair',
   ],
   'Structural Silicone / Wet Glazing / Gaskets / Sealants': [
-    'Apply structural silicone glazing systems in accordance with manufacturer and material-specific procedures',
-    'Install wet glazing and gasket glazing systems in approved frame and stop applications',
-    'Install gaskets, wedging, setting blocks, and approved structural/weep components',
-    'Install and tool sealants at perimeter, frame-to-glass, and frame-to-substrate interfaces',
-    'Perform field-fabricated and post-installation sealant applications and provide documentation',
+    'Apply structural silicone, weatherseal, gaskets, and glazing sealants at frame/glass interfaces',
+    'Install wet-glaze sealant and tape systems, including backer rod, primer, and tooled sealant beads',
+    'Install dry-glaze gaskets, tapes, and sheet-applied compression seals in exterior/interior glazing applications',
+    'Tool/trim sealant to acceptable depth, width, angle, and appearance in finished visible sealing conditions',
+    'Confirm adhesion, temperature, and compatibility with glass/frame/primer/sealant and structural glazing requirements',
+    'Remove/replace failed glazing sealant systems and coordinate field inspection/retesting on specialty systems',
   ],
   'Glass Setting / Lifting / Rigging / Vacuum Equipment': [
-    'Lift, position, and set glass panels using approved manual and mechanical lifting equipment',
-    'Operate suction cups, lift assist attachments, vacuum lifters, and small mechanical hoists under supervision',
-    'Attach lifting hardware and vacuum-assisted manipulators to glass and panels for positioning',
-    'Support rigging, sling placement, and tag-line operations for crane/hoist glass positions',
-    'Maintain staging, protection, and clearance for glass lifts and assist with panel transportation',
+    'Use manual glass suction cups, lifting frames, manipulators, vacuum lifters, and construction lifts/hoists',
+    'Set, position, and place glass into fixed/operable hardware without damage to edges, surfaces, or coatings',
+    'Assist with fork/clamp/choker crane rigging and glass placement under qualified supervision/approved lifting plan',
+    'Apply approved equipment and methods for interior/exterior glass setting and placement in high-access locations',
+    'Support glass lifting and rigging team with tags, spotting, and guide lines for construction level changes and high-level placements',
+    'Report rigging/equipment condition and secure glass/equipment at the end of shifts to prevent wind/impact loss',
   ],
   'Service / Replacement / Emergency Board-Up': [
-    'Measure, order, and replace broken/sealed unit/damaged/seal-failed glass and panels',
-    'Install temporary glazing or protective coverings for occupied, vacancy, and life-safety applications',
-    'Remove existing glass and frames using approved methodologies while protecting surfaces',
-    'Adjust and rehang/install door/frame assemblies, hardware, and glazing in service/scoped applications',
-    'Clean, adjust, and finalize all glazing replacements with documented coverage',
+    'Respond to glass damage, breakage, failure, and remove/replace window/storefront/curtain-wall/entry/glass components',
+    'Perform emergency board-up and protect openings after intentional/accidental glass failure',
+    'Coordinate glass replacement in occupied, retail, healthcare, secure, and active-use facilities',
+    'Remove and replace broken/seal-failed IGUs, glass panels, hardware, and sealing components',
+    'Troubleshoot fogging, seal failure, and condensation/failure caused by glass damage/installation issues',
+    'Complete replacement/release and address associated punch items and warranty work',
   ],
   'Water Testing / Air Leakage / Diagnostic Support': [
-    'Set up field water test equipment for curtain wall and glazing systems',
-    'Perform visual air leakage inspections and diagnostic testing under approved procedures',
-    'Identify and record water penetration, air leakage, and component failure conditions',
-    'Support glazing/panel resealing, gasket reinstallation, framing repairs, and component adjustment',
-    'Document and photograph diagnostic findings for repair, warranty, and root-cause analysis',
+    'Perform water and air infiltration testing on glazing systems, curtain walls, and storefront/exterior walls',
+    'Diagnose water/air leakage at glass, frame, sealant, gasket, assembly, and building interface conditions',
+    'Identify failed sealant, and moisture/air passage through glass/frame joints, gaskets, and hardware seals',
+    'Assist testing, documentation, and field remediation of water/air infiltration and system performance issues',
+    'Work with manufacturer, testing lab, and building envelope consultants during performance verification and diagnostic tests',
   ],
   'Glass / Glazing Punch / Adjustment / Closeout': [
-    'Complete mechanical/hardware adjustment and final glazing alignment under approved schedules',
-    'Clean glass surfaces and frames to manufacturer standards',
-    'Install and verify all signage, labels, and fire-rating documentation',
-    'Produce punch list verification, final photographs, operating manuals, and warranties',
-    'Verify final access, hardware, and safety/security functions; coordinate with owners and inspectors',
+    'Adjust glass panel alignment, storefront/frame, and hardware function to project requirements',
+    'Clean glass surfaces, frames, sills, tracks, hardware, and exposed architectural metal finish elements',
+    'Complete punch and deficiency items affecting glass, glazing, hardware, sealant, and frame components',
+    'Provide required O&M documentation, manufacturer warranty, glass/specialty replacement inventory, and warranty letter',
+    'Protect installed glass and storefront systems through trade turnover and final owner acceptance',
+  ],
+
+  // ==================== FIRESTOPPING SKILLS ====================
+  'Passive Fire Protection Helper / Material Support': [
+    'Receive, verify, move, and stage approved firestop, fireproofing, sealant, backing, and protection materials',
+    'Protect finished surfaces, equipment, openings, and adjacent trades before application',
+    'Prepare mineral wool, backer rod, bond breaker, mixing water, accessories, and basic consumables under direction',
+    'Assist caulk, spray, mortar, collar, wrap, board, and fireproofing crews without performing independent system selection',
+    'Clean pumps, hoses, mixers, tools, lifts, and work areas under approved procedures',
+    'Maintain lot labels, material counts, waste control, and housekeeping',
+  ],
+  'Layout / Survey / Barrier / Opening Verification': [
+    'Identify rated wall, floor, shaft, curtain-wall, and structural protection locations from approved documents',
+    'Measure opening size, annular space, joint width, movement condition, depth, and backing requirements',
+    'Identify penetrant type, material, insulation, sleeve, cable fill, tray, duct, or mixed-service condition',
+    'Compare field condition to approved system detail, submittal, or design reference and flag mismatches',
+    'Mark locations, quantities, access restrictions, and sequence needs for installation crews',
+    'Capture photos, sketches, room/zone IDs, and pre-installation condition records',
+  ],
+  'Metallic Pipe Penetration Firestopping': [
+    'Prepare rated opening and metallic pipe/conduit penetration without damaging the barrier or penetrant',
+    'Install approved backing, packing material, sealant, mortar, or device to required depth and configuration',
+    'Firestop bare and insulated metallic piping where the approved system permits',
+    'Treat sleeves, escutcheon conditions, clustered penetrations, and open/closed annular spaces under approved details',
+    'Tool and finish exposed sealant or mortar while maintaining required dimensions',
+    'Label and document system location, product, detail, and repair status',
+  ],
+  'Combustible / Nonmetallic Pipe Penetration Firestopping': [
+    'Identify plastic/combustible pipe type, size, wall/floor assembly, and required device/system',
+    'Install approved collars, wrap strips, bands, devices, sleeves, and fastening components',
+    'Install backing and sealant/mortar components around combustible penetrations as listed',
+    'Treat floor, wall, chase, tub/shower, and concealed plastic-pipe conditions under approved details',
+    'Verify device orientation, fastener count, wrap layers, depth, and annular-space limits',
+    'Repair, re-enter, label, and document combustible-pipe systems when authorized',
+  ],
+  'Cable / Conduit / Cable Tray / Busway Penetrations': [
+    'Prepare openings containing cables, conduits, sleeves, bundles, trays, or busway',
+    'Install approved sealant, putty, mortar, pillows, blocks, plugs, composite sheet, or re-enterable device',
+    'Pack and seal cable bundles while maintaining approved fill, spacing, backing, and depth',
+    'Treat cable trays and large openings with approved support/reinforcement and multi-component systems',
+    'Perform authorized re-entry for cable changes and restore the system after work',
+    'Document cable loading, sleeve/opening condition, product, detail, and final status',
+  ],
+  'Mechanical / Duct / Damper / Mixed-Service Penetrations': [
+    'Prepare duct, insulated pipe, mixed-service, sleeve, and approved damper-interface openings',
+    'Install approved backing, sealant, mortar, composite sheet, wrap, or enclosure components',
+    'Treat insulated penetrants while maintaining approved insulation/jacket/system configuration',
+    'Coordinate around fire/smoke dampers without obstructing blades, access, breakaway connections, or service clearance',
+    'Treat mixed metallic, plastic, cable, and duct penetrations only under an approved multi-penetrant system',
+    'Document penetrant changes and route non-firestop MEP corrections to the responsible trade',
+  ],
+  'Membrane Penetrations / Electrical Boxes / Putty Pads': [
+    'Identify membrane penetration, box type, size, spacing, wall assembly, and required protection',
+    'Install approved putty pads, box inserts, gaskets, sealants, or listed protective devices',
+    'Seal annular spaces around conduits, cables, pipes, or accessories entering rated membrane openings',
+    'Treat back-to-back, offset, grouped, oversized, or specialty box conditions only under approved details',
+    'Maintain required coverage, overlap, molding, adhesion, and access to device components',
+    'Label and document completed membrane-penetration protection',
+  ],
+  'Firestop Devices / Sleeves / Collars / Wrap Strips / Cast-In Systems': [
+    'Install approved cast-in devices, sleeves, pathway devices, collars, wrap strips, plugs, blocks, or composite sheets',
+    'Set cast-in devices at correct location, elevation, orientation, and slab/wall condition before placement',
+    'Install manufacturer-specified fasteners, anchors, bands, layers, inserts, and accessories',
+    'Open, re-enter, and reseal approved pathway or re-enterable devices',
+    'Replace damaged or missing device components only with approved compatible parts',
+    'Verify labeling, device ID, product lot, and system documentation',
+  ],
+  'Fire-Resistive Construction Joints / Head-of-Wall / Floor-to-Wall': [
+    'Prepare head-of-wall, bottom-of-wall, wall-to-wall, floor-to-wall, and floor-to-floor joint surfaces',
+    'Install approved mineral wool/backing to required compression, orientation, and depth',
+    'Apply fire-resistive sealant, spray, coating, or joint material to required thickness and overlap',
+    'Maintain approved joint width, movement capability, bond breaker, adhesion surfaces, and continuity',
+    'Treat intersections, corners, flutes, deck profiles, columns, and transitions under approved details',
+    'Repair damaged joint systems and document system/detail/location',
+  ],
+  'Perimeter Fire Containment / Edge-of-Slab / Curtain Wall': [
+    'Verify curtain-wall/facade type, slab edge, spandrel zone, mullion/transom condition, and approved perimeter design',
+    'Install safing insulation at required orientation, compression, depth, and continuity',
+    'Install spandrel insulation, foil/facing, clips, fasteners, reinforcement, and approved support components',
+    'Apply approved smoke seal, spray, or joint treatment at the slab edge and curtain-wall interface',
+    'Treat anchors, mullions, transoms, corners, transitions, stack joints, and facade changes under approved details',
+    'Perform high-access installation, repair, photo records, and punch correction under approved access/safety controls',
+  ],
+  'Smoke / Acoustical / Draft Sealants': [
+    'Prepare partition perimeters, gaps, interfaces, and service openings for smoke/acoustic/draft sealant',
+    'Install backer rod, backing, bond breaker, and sealant to required depth and continuity',
+    'Seal wall-to-floor, wall-to-deck, perimeter, door-frame, and approved service interfaces',
+    'Tool joints and maintain clean, continuous finish without contaminating adjacent work',
+    'Distinguish non-fire-rated smoke/acoustic seal from rated fire-resistive joint work',
+    'Repair failed, separated, or missing sealant and document location',
+  ],
+  'Architectural Joint Sealants / Expansion / Control / Perimeter Joints': [
+    'Remove failed sealant and prepare concrete, masonry, metal, wood, or approved substrate joints',
+    'Install primer, backer rod, bond breaker, and compatible sealant chemistry',
+    'Gun and tool vertical, horizontal, perimeter, control, and expansion joints',
+    'Maintain joint geometry, adhesion surfaces, movement capability, and clean edges',
+    'Work at facade, precast, masonry, concrete, door/frame, or specialty interfaces within assigned scope',
+    'Perform sealant replacement, color matching, mockups, punch, and warranty repair',
+  ],
+  'SFRM - Spray-Applied Fire-Resistive Materials': [
+    'Verify approved substrate condition, clips/attachments, primers, ambient conditions, and protection before application',
+    'Mix SFRM to approved consistency and operate mixer, pump, hose, and nozzle equipment',
+    'Spray fibrous or cementitious SFRM on beams, columns, joists, deck, and approved assemblies',
+    'Build required thickness and density with uniform coverage around flanges, webs, attachments, and transitions',
+    'Patch voids, overspray damage, shadow areas, and deficient locations under approved repair procedure',
+    'Protect completed SFRM and coordinate thickness/density/adhesion inspection and records',
+  ],
+  'IFRM / Intumescent Fire-Resistive Coatings': [
+    'Verify steel profile, cleanliness, primer compatibility, environmental conditions, and approved design',
+    'Mix and apply intumescent/mastic material by spray, roller, brush, or approved method',
+    'Build coats to specified wet-film and dry-film thickness while controlling cure/recoat windows',
+    'Treat connections, edges, bolts, attachments, irregular profiles, and transitions',
+    'Apply compatible sealer/topcoat or repair damage where specified',
+    'Measure/document wet or dry film, environmental conditions, batch/lot, and repair status',
+  ],
+  'Board / Blanket / Encasement Fire Protection': [
+    'Measure, cut, fit, and install approved fire-resistive boards, blankets, wraps, or encasement components',
+    'Install clips, pins, fasteners, channels, bands, ties, adhesives, and support accessories',
+    'Treat seams, joints, corners, penetrations, terminations, and transitions',
+    'Maintain required layers, overlaps, clearances, continuity, and protection',
+    'Repair damaged boards, wraps, blankets, joints, and attachments using approved procedures',
+    'Label/document completed systems and protect from subsequent trade damage',
+  ],
+  'Fireproofing Surface Prep / Masking / Mixing / Pump Support': [
+    'Mask glass, equipment, floors, walls, MEP components, labels, moving parts, and finished surfaces',
+    'Prepare approved substrate by cleaning loose material, dust, oil, debris, or incompatible contamination under direction',
+    'Set up mixers, pumps, compressors, hoses, nozzles, water supply, ventilation, and containment',
+    'Mix, feed, monitor, and clean SFRM or approved coating equipment under manufacturer procedures',
+    'Manage overspray, waste, curing protection, access control, and daily equipment maintenance',
+    'Support staging, lifts, scaffold, fall protection, ventilation, and occupied-site controls',
+  ],
+  'Fireproofing Patch / Repair / Retrofit': [
+    'Survey damaged, missing, delaminated, wet, impacted, or disturbed fireproofing areas',
+    'Identify original SFRM, IFRM, board, blanket, substrate, and approved repair procedure',
+    'Remove loose material and prepare substrate without expanding damage',
+    'Apply compatible patch material and restore profile, thickness, layers, and continuity',
+    'Blend transitions and protect adjacent systems, attachments, labels, and finished work',
+    'Coordinate retesting, documentation, deficiency closure, and closeout',
+  ],
+  'Firestop / Joint Sealant Removal / Repair / Retrofit': [
+    'Identify failed, damaged, missing, unlisted, or modified penetration/joint conditions',
+    'Remove failed sealant, mortar, backing, device, or patch material under approved limits',
+    'Clean and prepare opening/joint, verify penetrant/barrier change, and route approved repair detail through authorized process',
+    'Reinstall approved backing, sealant, device, collar, wrap, mortar, spray, or joint material',
+    'Restore re-entered cable/pathway systems after authorized changes',
+    'Label, photograph, map, and document repair and unresolved conditions',
+  ],
+  'Inspection / QA / Thickness / Adhesion / Documentation Support': [
+    'Verify product labels, batch/lot, system/detail references, barrier/penetrant/joint conditions, and installer records',
+    'Measure and document firestop depth, annular space, backing, overlap, joint width, and visible installation conditions',
+    'Support on-site firestop and fire-resistive joint inspection activities under qualified supervision',
+    'Support SFRM thickness/density sampling and cohesion/adhesion test setup/documentation',
+    'Measure wet/dry film thickness and environmental conditions for intumescent systems under approved procedure',
+    'Create deficiency logs, photo records, location maps, retest records, and closure packages',
+  ],
+  'Labeling / Photo Records / Punch / Closeout / Maintenance': [
+    'Apply approved labels, tags, system numbers, date/crew identifiers, and location references',
+    'Capture before, during, and after photos with project/zone/opening identifiers',
+    'Maintain penetration/joint logs, re-entry records, floor plans, QR/barcode records, or digital closeout data',
+    'Correct accessible punch items such as voids, missing labels, damaged sealant, incomplete backing, or unprotected areas',
+    'Protect completed work from damage and coordinate reinspection/retest after correction',
+    'Support periodic maintenance surveys and route new penetrations or damage for authorized repair',
   ],
 
   // ==================== FIRE PROTECTION SKILLS ====================
@@ -29048,168 +29246,6 @@ const SKILL_DETAILS = {
     'Remove temporary protection, clean components, and protect finished areas',
     'Verify valve identification, signage, access, and visible completion against punch lists',
     'Update redlines, valve lists, test records, material records, and closeout documents',
-  ],
-
-  // ==================== FIRESTOPPING SKILLS ====================
-  'Passive Fire Protection Helper / Material Support': [
-    'Receive, verify, move, and stage approved firestop, fireproofing, sealant, backing, and protection materials',
-    'Protect finished surfaces, equipment, openings, and adjacent trades before application',
-    'Prepare mineral wool, backer rod, bond breaker, mixing water, accessories, and basic consumables under direction',
-    'Assist caulk, spray, mortar, collar, wrap, board, and fireproofing crews without performing independent system selection',
-    'Clean pumps, hoses, mixers, tools, lifts, and work areas under approved procedures',
-    'Maintain lot labels, material counts, waste control, and housekeeping',
-  ],
-  'Layout / Survey / Barrier / Opening Verification': [
-    'Identify rated wall, floor, shaft, curtain-wall, and structural protection locations from approved documents',
-    'Measure opening size, annular space, joint width, movement condition, depth, and backing requirements',
-    'Identify penetrant type, material, insulation, sleeve, cable fill, tray, duct, or mixed-service condition',
-    'Compare field condition to approved system detail, submittal, or design reference and flag mismatches',
-    'Mark locations, quantities, access restrictions, and sequence needs for installation crews',
-    'Capture photos, sketches, room/zone IDs, and pre-installation condition records',
-  ],
-  'Metallic Pipe Penetration Firestopping': [
-    'Prepare rated opening and metallic pipe/conduit penetration without damaging the barrier or penetrant',
-    'Install approved backing, packing material, sealant, mortar, or device to required depth and configuration',
-    'Firestop bare and insulated metallic piping where the approved system permits',
-    'Treat sleeves, escutcheon conditions, clustered penetrations, and open/closed annular spaces under approved details',
-    'Tool and finish exposed sealant or mortar while maintaining required dimensions',
-    'Label and document system location, product, detail, and repair status',
-  ],
-  'Combustible / Nonmetallic Pipe Penetration Firestopping': [
-    'Identify plastic/combustible pipe type, size, wall/floor assembly, and required device/system',
-    'Install approved collars, wrap strips, bands, devices, sleeves, and fastening components',
-    'Install backing and sealant/mortar components around combustible penetrations as listed',
-    'Treat floor, wall, chase, tub/shower, and concealed plastic-pipe conditions under approved details',
-    'Verify device orientation, fastener count, wrap layers, depth, and annular-space limits',
-    'Repair, re-enter, label, and document combustible-pipe systems when authorized',
-  ],
-  'Cable / Conduit / Cable Tray / Busway Penetrations': [
-    'Prepare openings containing cables, conduits, sleeves, bundles, trays, or busway',
-    'Install approved sealant, putty, mortar, pillows, blocks, plugs, composite sheet, or re-enterable device',
-    'Pack and seal cable bundles while maintaining approved fill, spacing, backing, and depth',
-    'Treat cable trays and large openings with approved support/reinforcement and multi-component systems',
-    'Perform authorized re-entry for cable changes and restore the system after work',
-    'Document cable loading, sleeve/opening condition, product, detail, and final status',
-  ],
-  'Mechanical / Duct / Damper / Mixed-Service Penetrations': [
-    'Prepare duct, insulated pipe, mixed-service, sleeve, and approved damper-interface openings',
-    'Install approved backing, sealant, mortar, composite sheet, wrap, or enclosure components',
-    'Treat insulated penetrants while maintaining approved insulation/jacket/system configuration',
-    'Coordinate around fire/smoke dampers without obstructing blades, access, breakaway connections, or service clearance',
-    'Treat mixed metallic, plastic, cable, and duct penetrations only under an approved multi-penetrant system',
-    'Document penetrant changes and route non-firestop MEP corrections to the responsible trade',
-  ],
-  'Membrane Penetrations / Electrical Boxes / Putty Pads': [
-    'Identify membrane penetration, box type, size, spacing, wall assembly, and required protection',
-    'Install approved putty pads, box inserts, gaskets, sealants, or listed protective devices',
-    'Seal annular spaces around conduits, cables, pipes, or accessories entering rated membrane openings',
-    'Treat back-to-back, offset, grouped, oversized, or specialty box conditions only under approved details',
-    'Maintain required coverage, overlap, molding, adhesion, and access to device components',
-    'Label and document completed membrane-penetration protection',
-  ],
-  'Firestop Devices / Sleeves / Collars / Wrap Strips / Cast-In Systems': [
-    'Install approved cast-in devices, sleeves, pathway devices, collars, wrap strips, plugs, blocks, or composite sheets',
-    'Set cast-in devices at correct location, elevation, orientation, and slab/wall condition before placement',
-    'Install manufacturer-specified fasteners, anchors, bands, layers, inserts, and accessories',
-    'Open, re-enter, and reseal approved pathway or re-enterable devices',
-    'Replace damaged or missing device components only with approved compatible parts',
-    'Verify labeling, device ID, product lot, and system documentation',
-  ],
-  'Fire-Resistive Construction Joints / Head-of-Wall / Floor-to-Wall': [
-    'Prepare head-of-wall, bottom-of-wall, wall-to-wall, floor-to-wall, and floor-to-floor joint surfaces',
-    'Install approved mineral wool/backing to required compression, orientation, and depth',
-    'Apply fire-resistive sealant, spray, coating, or joint material to required thickness and overlap',
-    'Maintain approved joint width, movement capability, bond breaker, adhesion surfaces, and continuity',
-    'Treat intersections, corners, flutes, deck profiles, columns, and transitions under approved details',
-    'Repair damaged joint systems and document system/detail/location',
-  ],
-  'Perimeter Fire Containment / Edge-of-Slab / Curtain Wall': [
-    'Verify curtain-wall/facade type, slab edge, spandrel zone, mullion/transom condition, and approved perimeter design',
-    'Install safing insulation at required orientation, compression, depth, and continuity',
-    'Install spandrel insulation, foil/facing, clips, fasteners, reinforcement, and approved support components',
-    'Apply approved smoke seal, spray, or joint treatment at the slab edge and curtain-wall interface',
-    'Treat anchors, mullions, transoms, corners, transitions, stack joints, and facade changes under approved details',
-    'Perform high-access installation, repair, photo records, and punch correction under approved access/safety controls',
-  ],
-  'Smoke / Acoustical / Draft Sealants': [
-    'Prepare partition perimeters, gaps, interfaces, and service openings for smoke/acoustic/draft sealant',
-    'Install backer rod, backing, bond breaker, and sealant to required depth and continuity',
-    'Seal wall-to-floor, wall-to-deck, perimeter, door-frame, and approved service interfaces',
-    'Tool joints and maintain clean, continuous finish without contaminating adjacent work',
-    'Distinguish non-fire-rated smoke/acoustic seal from rated fire-resistive joint work',
-    'Repair failed, separated, or missing sealant and document location',
-  ],
-  'Architectural Joint Sealants / Expansion / Control / Perimeter Joints': [
-    'Remove failed sealant and prepare concrete, masonry, metal, wood, or approved substrate joints',
-    'Install primer, backer rod, bond breaker, and compatible sealant chemistry',
-    'Gun and tool vertical, horizontal, perimeter, control, and expansion joints',
-    'Maintain joint geometry, adhesion surfaces, movement capability, and clean edges',
-    'Work at facade, precast, masonry, concrete, door/frame, or specialty interfaces within assigned scope',
-    'Perform sealant replacement, color matching, mockups, punch, and warranty repair',
-  ],
-  'SFRM - Spray-Applied Fire-Resistive Materials': [
-    'Verify approved substrate condition, clips/attachments, primers, ambient conditions, and protection before application',
-    'Mix SFRM to approved consistency and operate mixer, pump, hose, and nozzle equipment',
-    'Spray fibrous or cementitious SFRM on beams, columns, joists, deck, and approved assemblies',
-    'Build required thickness and density with uniform coverage around flanges, webs, attachments, and transitions',
-    'Patch voids, overspray damage, shadow areas, and deficient locations under approved repair procedure',
-    'Protect completed SFRM and coordinate thickness/density/adhesion inspection and records',
-  ],
-  'IFRM / Intumescent Fire-Resistive Coatings': [
-    'Verify steel profile, cleanliness, primer compatibility, environmental conditions, and approved design',
-    'Mix and apply intumescent/mastic material by spray, roller, brush, or approved method',
-    'Build coats to specified wet-film and dry-film thickness while controlling cure/recoat windows',
-    'Treat connections, edges, bolts, attachments, irregular profiles, and transitions',
-    'Apply compatible sealer/topcoat or repair damage where specified',
-    'Measure/document wet or dry film, environmental conditions, batch/lot, and repair status',
-  ],
-  'Board / Blanket / Encasement Fire Protection': [
-    'Measure, cut, fit, and install approved fire-resistive boards, blankets, wraps, or encasement components',
-    'Install clips, pins, fasteners, channels, bands, ties, adhesives, and support accessories',
-    'Treat seams, joints, corners, penetrations, terminations, and transitions',
-    'Maintain required layers, overlaps, clearances, continuity, and protection',
-    'Repair damaged boards, wraps, blankets, joints, and attachments using approved procedures',
-    'Label/document completed systems and protect from subsequent trade damage',
-  ],
-  'Fireproofing Surface Prep / Masking / Mixing / Pump Support': [
-    'Mask glass, equipment, floors, walls, MEP components, labels, moving parts, and finished surfaces',
-    'Prepare approved substrate by cleaning loose material, dust, oil, debris, or incompatible contamination under direction',
-    'Set up mixers, pumps, compressors, hoses, nozzles, water supply, ventilation, and containment',
-    'Mix, feed, monitor, and clean SFRM or approved coating equipment under manufacturer procedures',
-    'Manage overspray, waste, curing protection, access control, and daily equipment maintenance',
-    'Support staging, lifts, scaffold, fall protection, ventilation, and occupied-site controls',
-  ],
-  'Fireproofing Patch / Repair / Retrofit': [
-    'Survey damaged, missing, delaminated, wet, impacted, or disturbed fireproofing areas',
-    'Identify original SFRM, IFRM, board, blanket, substrate, and approved repair procedure',
-    'Remove loose material and prepare substrate without expanding damage',
-    'Apply compatible patch material and restore profile, thickness, layers, and continuity',
-    'Blend transitions and protect adjacent systems, attachments, labels, and finished work',
-    'Coordinate retesting, documentation, deficiency closure, and closeout',
-  ],
-  'Firestop / Joint Sealant Removal / Repair / Retrofit': [
-    'Identify failed, damaged, missing, unlisted, or modified penetration/joint conditions',
-    'Remove failed sealant, mortar, backing, device, or patch material under approved limits',
-    'Clean and prepare opening/joint, verify penetrant/barrier change, and route approved repair detail through authorized process',
-    'Reinstall approved backing, sealant, device, collar, wrap, mortar, spray, or joint material',
-    'Restore re-entered cable/pathway systems after authorized changes',
-    'Label, photograph, map, and document repair and unresolved conditions',
-  ],
-  'Inspection / QA / Thickness / Adhesion / Documentation Support': [
-    'Verify product labels, batch/lot, system/detail references, barrier/penetrant/joint conditions, and installer records',
-    'Measure and document firestop depth, annular space, backing, overlap, joint width, and visible installation conditions',
-    'Support on-site firestop and fire-resistive joint inspection activities under qualified supervision',
-    'Support SFRM thickness/density sampling and cohesion/adhesion test setup/documentation',
-    'Measure wet/dry film thickness and environmental conditions for intumescent systems under approved procedure',
-    'Create deficiency logs, photo records, location maps, retest records, and closure packages',
-  ],
-  'Labeling / Photo Records / Punch / Closeout / Maintenance': [
-    'Apply approved labels, tags, system numbers, date/crew identifiers, and location references',
-    'Capture before, during, and after photos with project/zone/opening identifiers',
-    'Maintain penetration/joint logs, re-entry records, floor plans, QR/barcode records, or digital closeout data',
-    'Correct accessible punch items such as voids, missing labels, damaged sealant, incomplete backing, or unprotected areas',
-    'Protect completed work from damage and coordinate reinspection/retest after correction',
-    'Support periodic maintenance surveys and route new penetrations or damage for authorized repair',
   ],
 
   // ==================== LOW VOLTAGE SKILLS ====================
@@ -29638,7 +29674,7 @@ const SKILL_DETAILS = {
   ],
 }
 
-// ✅ EXPERIENCE_LEVELS - Complete
+// ✅ EXPERIENCE_LEVELS - Complete for ALL Trades
 const EXPERIENCE_LEVELS = {
   // Interiors
   'Metal Framing': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
@@ -29651,6 +29687,7 @@ const EXPERIENCE_LEVELS = {
   'Division 10 Accessories': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
   'Interior Punch / Patching': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
   'Interior Labor / Material Handling': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+
   // HVAC
   'HVAC Helper / Mechanical Labor': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
   'Ductwork / Sheet Metal Installation': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
@@ -29662,6 +29699,7 @@ const EXPERIENCE_LEVELS = {
   'Hydronic / Mechanical Piping': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
   'Air Distribution / Diffusers / Grilles': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
   'HVAC Punch / Troubleshooting / Final Support': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+
   // Electrical
   'Electrical Helper / Material Handling': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
   'Electrical Rough-In': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
@@ -29675,6 +29713,7 @@ const EXPERIENCE_LEVELS = {
   'Electrical Service / Troubleshooting': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
   'Industrial Electrical': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
   'Electrical Punch / Final Support': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+
   // Plumbing
   'Plumbing Helper / Material Handling': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
   'Underground Plumbing': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
@@ -29688,6 +29727,7 @@ const EXPERIENCE_LEVELS = {
   'Testing / Inspection Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
   'Service Plumbing / Repair': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
   'Plumbing Punch / Final Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+
   // Concrete
   'Concrete Helper / General Concrete Labor': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
   'Formwork / Form Carpenter': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
@@ -29702,6 +29742,7 @@ const EXPERIENCE_LEVELS = {
   'Concrete Pump Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
   'Tilt-Up / Precast Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
   'Concrete Punch / Cleanup / Final Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+
   // Civil
   'General Site Labor / Civil Labor': ['Helper', 'Skilled Worker', 'Lead'],
   'Earthwork / Grading': ['Helper', 'Skilled Worker', 'Lead', 'Foreman'],
@@ -29713,34 +29754,11 @@ const EXPERIENCE_LEVELS = {
   'Equipment Spotter / Grade Checker': ['Helper', 'Skilled Worker', 'Lead'],
   'Traffic Control / Flagging': ['Helper', 'Flagger', 'Lead'],
   'Site Cleanup / Final Grading': ['Helper', 'Skilled Worker', 'Lead'],
-  // 'Heavy Equipment Operation' - REMOVED from EXPERIENCE_LEVELS
-  
-  // ==================== NEW: HEAVY EQUIPMENT OPERATION EXPERIENCE LEVELS ====================
-  'Skid Steer': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Mini Excavator': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Excavator': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Backhoe': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Dozer': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Front Loader / Wheel Loader': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Roller / Compactor': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Motor Grader': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Trencher': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Forklift / Telehandler': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Water Truck': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Dump Truck support / CDL if applicable': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Rough grade': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Fine grade': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Excavate trenches': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Load trucks': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Backfill trenches': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Compact soil/base': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Move materials': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Spread base material': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Work near utilities': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Finish grade support': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Operate safely around crews': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  'Read plans/basic stakes': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
-  
+  // 'Heavy Equipment Operation' - REMOVED from skill groups
+
+  // Heavy Equipment Operation - SEPARATE BLOCK
+  'Heavy Equipment Operation': ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator'],
+
   // Asphalt
   'Asphalt Helper / Labor': ['Helper', 'Skilled Worker', 'Lead'],
   'Base Prep / Surface Prep': ['Helper', 'Skilled Worker', 'Lead'],
@@ -29755,6 +29773,7 @@ const EXPERIENCE_LEVELS = {
   'Striping / Pavement Marking': ['Helper', 'Skilled Worker', 'Specialist', 'Lead'],
   'Wheel Stops / Bollards / Signs': ['Helper', 'Skilled Worker', 'Lead'],
   'Asphalt Cleanup / Punch': ['Helper', 'Skilled Worker', 'Lead'],
+
   // Landscaping
   'Landscape Labor / Exterior Helper': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
   'Planting / Trees / Shrubs': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
@@ -29770,6 +29789,7 @@ const EXPERIENCE_LEVELS = {
   'Exterior Cleanup / Final Appearance': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
   'Maintenance / Landscape Service': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
   'Exterior Punch / Final Corrections': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+
   // Roofing
   'Roofing Helper / Roof Labor': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
   'Roof Tear-Off / Demo': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
@@ -29785,6 +29805,7 @@ const EXPERIENCE_LEVELS = {
   'Roof Repair / Leak Investigation': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
   'Roof Safety / Material Handling': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
   'Roof Punch / Final Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+
   // General Labor
   'General Site Labor': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
   'Material Handling / Stocking': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
@@ -29798,6 +29819,7 @@ const EXPERIENCE_LEVELS = {
   'Multi-Trade Helper Support': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
   'Punch Support Labor': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
   'Closeout / Turnover Support': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+
   // Demolition
   'Demo Helper / Demo Labor': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
   'Interior Selective Demo': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
@@ -29812,6 +29834,7 @@ const EXPERIENCE_LEVELS = {
   'Abatement Support / Environmental Containment': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
   'Occupied Building / Night Demo': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
   'Demo Punch / Final Cleanup': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+
   // Masonry
   'Masonry Helper / Mason Tender': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
   'CMU / Block Masonry': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
@@ -29825,6 +29848,7 @@ const EXPERIENCE_LEVELS = {
   'EIFS Systems': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
   'Sealants / Weather Interface': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
   'Masonry Punch / Cleanup': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+
   // Structural Steel
   'Steel Helper / Ironworker Helper': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
   'Structural Steel Erection': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
@@ -29840,6 +29864,7 @@ const EXPERIENCE_LEVELS = {
   'Steel Repair / Retrofit / Punch': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
   'Fireproofing Interface Support': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
   'Steel Cleanup / Material Staging': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+
   // Carpentry
   'Carpenter Helper / Rough Carpentry Support': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
   'Wood Wall Framing': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
@@ -29854,6 +29879,7 @@ const EXPERIENCE_LEVELS = {
   'Prefabricated / Panelized Wood Framing': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
   'Rough Stairs / Ramps / Platforms': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
   'Rough Carpentry Repair / Retrofit / Punch': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+
   // Millwork
   'Finish Carpentry Helper / Millwork Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
   'Casework / Cabinet Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
@@ -29869,6 +29895,7 @@ const EXPERIENCE_LEVELS = {
   'Shop Fabrication / Assembly Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
   'Field Modification / Cutting / Fitting / Repair': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
   'Millwork Punch / Adjustment / Protection / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+
   // Flooring
   'Flooring Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
   'Flooring Removal / Tear-Out': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
@@ -29888,6 +29915,7 @@ const EXPERIENCE_LEVELS = {
   'Polished Concrete / Densified / Decorative Concrete Flooring': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
   'Base / Cove Base / Transitions / Flooring Accessories': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
   'Flooring Repair / Punch / Protection / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+
   // Painting
   'Painting Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
   'Surface Protection / Masking / Jobsite Setup': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
@@ -29905,6 +29933,7 @@ const EXPERIENCE_LEVELS = {
   'Coating Removal / Pressure Washing / Abrasive Surface Preparation': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
   'Color Matching / Mockups / Layout / Quality-Control Support': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
   'Painting Repair / Touch-Up / Punch / Closeout': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+
   // Doors / Frames / Hardware
   'Door / Frame / Hardware Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Layout / Field Measurement / Opening Verification': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
@@ -29921,6 +29950,7 @@ const EXPERIENCE_LEVELS = {
   'Specialty / Security / Acoustic / Lead-Lined / Detention / Cleanroom Doors': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Field Modification / Machining / Welding / Repair': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Door / Frame / Hardware Punch / Commissioning / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+
   // Glass / Glazing
   'Glazing Helper / Material Handling': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Layout / Field Measurement / Opening Verification': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
@@ -29940,6 +29970,7 @@ const EXPERIENCE_LEVELS = {
   'Service / Replacement / Emergency Board-Up': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Water Testing / Air Leakage / Diagnostic Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Glass / Glazing Punch / Adjustment / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+
   // Fire Protection
   'Fire Sprinkler Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
   'Field Layout / Measurement / Coordination': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
@@ -29961,6 +29992,7 @@ const EXPERIENCE_LEVELS = {
   'Hydrostatic / Flushing / Acceptance Test Support': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
   'Water-Based Systems Layout / CAD / Submittal / As-Built Support': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
   'Fire Sprinkler Punch / Labeling / Closeout': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+
   // Firestopping
   'Passive Fire Protection Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
   'Layout / Survey / Barrier / Opening Verification': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
@@ -29982,6 +30014,7 @@ const EXPERIENCE_LEVELS = {
   'Firestop / Joint Sealant Removal / Repair / Retrofit': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
   'Inspection / QA / Thickness / Adhesion / Documentation Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
   'Labeling / Photo Records / Punch / Closeout / Maintenance': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+
   // Low Voltage
   'Low Voltage Helper / Material Support': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
   'Pathways / Supports / Cable Management': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
@@ -30004,6 +30037,7 @@ const EXPERIENCE_LEVELS = {
   'BAS / Controls Low-Voltage Cabling Support': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
   'Service / Troubleshooting / Moves-Adds-Changes': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
   'Low Voltage Punch / As-Builts / Closeout': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+
   // Division 10
   'Division 10 Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Layout / Field Measurement / Blocking & Substrate Verification': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
@@ -30022,6 +30056,7 @@ const EXPERIENCE_LEVELS = {
   'Flagpoles / Manufactured Flagpole Accessories': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Specialty Repair / Replacement / Service': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Division 10 Punch / Protection / Labeling / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+
   // Equipment
   'Equipment Installation Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
   'Receiving / Inventory / Staging / Damage Documentation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
@@ -30055,7 +30090,7 @@ const YEARS_OF_EXPERIENCE = [
 ]
 
 // ============================================================
-// TOOLS_CERTIFICATIONS - All Trades
+// TOOLS_CERTIFICATIONS - Arrays for each trade
 // ============================================================
 
 // Interiors
@@ -30203,6 +30238,41 @@ const TOOLS_CERTIFICATIONS_CIVIL = [
   'Hard hat',
   'Safety vest',
   'Own hand tools',
+  'Can work outdoors',
+  'Can work around heavy equipment',
+  'Can work in heat/cold',
+]
+
+// Civil - Heavy Equipment Operation specific tools (separate block)
+const TOOLS_CERTIFICATIONS_HEAVY_EQUIPMENT = [
+  'OSHA 10',
+  'OSHA 30',
+  'Valid driver license',
+  'CDL',
+  'Equipment certification/card',
+  'Skid Steer certified',
+  'Mini Excavator certified',
+  'Excavator certified',
+  'Backhoe certified',
+  'Dozer certified',
+  'Front Loader / Wheel Loader certified',
+  'Roller / Compactor certified',
+  'Motor Grader certified',
+  'Trencher certified',
+  'Forklift / Telehandler certified',
+  'Water Truck certified',
+  'Dump Truck certified / CDL',
+  'Trench safety awareness',
+  'Competent person - trenching',
+  'Flagger certification',
+  'Confined space awareness',
+  'First aid / CPR',
+  'TWIC / secure site eligible',
+  'Can pass background check',
+  'Has PPE',
+  'Work boots',
+  'Hard hat',
+  'Safety vest',
   'Can work outdoors',
   'Can work around heavy equipment',
   'Can work in heat/cold',
@@ -30894,36 +30964,6 @@ const TOOLS_CERTIFICATIONS_EQUIPMENT = [
 ]
 
 // ============================================================
-// HEAVY EQUIPMENT OPERATION SKILLS - Separate section for Civil
-// ============================================================
-const HEAVY_EQUIPMENT_SKILLS = [
-  'Skid Steer',
-  'Mini Excavator',
-  'Excavator',
-  'Backhoe',
-  'Dozer',
-  'Front Loader / Wheel Loader',
-  'Roller / Compactor',
-  'Motor Grader',
-  'Trencher',
-  'Forklift / Telehandler',
-  'Water Truck',
-  'Dump Truck support / CDL if applicable',
-  'Rough grade',
-  'Fine grade',
-  'Excavate trenches',
-  'Load trucks',
-  'Backfill trenches',
-  'Compact soil/base',
-  'Move materials',
-  'Spread base material',
-  'Work near utilities',
-  'Finish grade support',
-  'Operate safely around crews',
-  'Read plans/basic stakes',
-]
-
-// ============================================================
 // COMPONENT - The main component function
 // ============================================================
 export function WizardStep2({ data, onChange, onNext, onBack }) {
@@ -30953,13 +30993,13 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     return {}
   })
 
-  // ✅ State for heavy equipment skills (separate from skillGroups)
-  const [heavyEquipment, setHeavyEquipment] = useState(() => {
-    if (data.heavyEquipment) {
-      return data.heavyEquipment
-    }
-    return {}
-  })
+  // ✅ State for heavy equipment operation (separate block for Civil)
+const [heavyEquipment, setHeavyEquipment] = useState(() => {
+  if (data.heavyEquipment) {
+    return data.heavyEquipment
+  }
+  return {}
+})
 
   // ✅ Handle main trade selection
   const handleMainTradeChange = (value) => {
@@ -31045,7 +31085,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     onChange({ toolsCertifications: updated })
   }
 
-  // ✅ Handle heavy equipment toggle
+  // ✅ Handle heavy equipment toggle (separate block for Civil)
   const handleHeavyEquipmentToggle = (skill) => (e) => {
     const isChecked = e.target.checked
     const updated = { ...heavyEquipment, [skill]: isChecked }
@@ -31053,15 +31093,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     onChange({ heavyEquipment: updated })
   }
 
-  // ✅ Handle heavy equipment experience level change
-  const handleHeavyEquipmentExperienceChange = (skill, value) => {
-    const updated = { 
-      ...heavyEquipment, 
-      [`${skill}_experience`]: value 
-    }
-    setHeavyEquipment(updated)
-    onChange({ heavyEquipment: updated })
-  }
+
 
   // ✅ Get skill groups for selected main trade
   const getSkillGroups = () => {
@@ -31076,7 +31108,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
 
   // ✅ Get experience levels for a specific skill group
   const getExperienceLevels = (skillGroup) => {
-    return EXPERIENCE_LEVELS[skillGroup] || ['Helper', 'Skilled Worker', 'Lead', 'Foreman']
+    return EXPERIENCE_LEVELS[skillGroup] || ['Helper', 'Skilled Worker', 'Lead']
   }
 
   // ✅ Get tools/certifications based on selected trade
@@ -31134,16 +31166,14 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
     return []
   }
 
-  // ✅ Get heavy equipment experience levels
-  const getHeavyEquipmentExperienceLevels = (skill) => {
-    return EXPERIENCE_LEVELS[skill] || ['Can assist', 'Can Operator', 'Advanced', 'Lead Operator']
-  }
-
   const selectedTrade = data.mainTrade || ''
   const groups = getSkillGroups()
   const toolsList = getToolsCertifications()
   const showToolsSection = selectedTrade !== '' && toolsList.length > 0
-  const showHeavyEquipmentSection = selectedTrade === 'Civil / Sitework / Earthwork / Utilities'
+  const isCivil = selectedTrade === 'Civil / Sitework / Earthwork / Utilities'
+
+  // ✅ Get heavy equipment skills
+  const heavyEquipmentSkills = SKILL_DETAILS['Heavy Equipment Operation'] || []
 
   return (
     <div className="wizardStep">
@@ -31292,69 +31322,130 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
             </div>
           )}
 
-          {/* ✅ Heavy Equipment Operation Section (only for Civil) */}
-          {showHeavyEquipmentSection && (
-            <div style={{ marginTop: '32px' }}>
-              <div style={{
-                fontSize: '14px',
-                fontWeight: 600,
-                color: '#17263a',
-                marginBottom: '16px',
-                paddingBottom: '8px',
-                borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
-              }}>
-                Heavy Equipment Operation
-              </div>
+       {/* ✅ Heavy Equipment Operation Section - Separate Block for Civil */}
+{isCivil && (
+  <div style={{ marginTop: '32px' }}>
+    <div style={{
+      fontSize: '14px',
+      fontWeight: 600,
+      color: '#17263a',
+      marginBottom: '16px',
+      paddingBottom: '8px',
+      borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+    }}>
+      Heavy Equipment Operation
+    </div>
 
-              <div style={{
-                padding: '16px',
-                border: '1px solid rgba(18, 38, 63, 0.08)',
-                borderRadius: '8px',
-                background: 'rgba(15, 78, 169, 0.02)',
-              }}>
-                {HEAVY_EQUIPMENT_SKILLS.map((skill, index) => (
-                  <div key={skill} style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '8px 0',
-                    borderBottom: index < HEAVY_EQUIPMENT_SKILLS.length - 1 ? '1px solid rgba(18, 38, 63, 0.05)' : 'none',
-                  }}>
-                    <label style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px',
-                      cursor: 'pointer',
-                      flex: 1,
-                      fontSize: '13px',
-                      color: '#17263a',
-                    }}>
-                      <input
-                        type="checkbox"
-                        checked={!!(heavyEquipment[skill] || false)}
-                        onChange={handleHeavyEquipmentToggle(skill)}
-                      />
-                      {skill}
-                    </label>
+    {/* Equipment Type Checklist */}
+    <div style={{
+      marginBottom: '20px',
+      padding: '16px 20px',
+      border: '1px solid rgba(15, 78, 169, 0.2)',
+      borderRadius: '8px',
+      background: 'rgba(15, 78, 169, 0.02)',
+    }}>
+      <div style={{
+        fontSize: '13px',
+        fontWeight: 600,
+        color: '#0f4ea9',
+        marginBottom: '12px',
+      }}>
+        Equipment Type Checklist
+      </div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: '6px 16px',
+      }}>
+        {[
+          'Skid Steer',
+          'Mini Excavator',
+          'Excavator',
+          'Backhoe',
+          'Dozer',
+          'Front Loader / Wheel Loader',
+          'Roller / Compactor',
+          'Motor Grader',
+          'Trencher',
+          'Forklift / Telehandler',
+          'Water Truck',
+          'Dump Truck support / CDL if applicable'
+        ].map((skill) => (
+          <label key={skill} style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: 'pointer',
+            fontSize: '13px',
+            color: '#17263a',
+            padding: '4px 0',
+          }}>
+            <input
+              type="checkbox"
+              checked={!!(heavyEquipment?.[skill] || false)}
+              onChange={handleHeavyEquipmentToggle(skill)}
+            />
+            {skill}
+          </label>
+        ))}
+      </div>
+    </div>
 
-                    <SelectField
-                      label=""
-                      value={heavyEquipment[`${skill}_experience`] || ''}
-                      onChange={(value) => handleHeavyEquipmentExperienceChange(skill, value)}
-                      style={{ flex: '0 0 200px' }}
-                    >
-                      <option value="">Experience Level</option>
-                      {getHeavyEquipmentExperienceLevels(skill).map((level) => (
-                        <option key={level} value={level}>
-                          {level}
-                        </option>
-                      ))}
-                    </SelectField>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+    {/* Equipment Operation Task Capabilities */}
+    <div style={{
+      padding: '16px 20px',
+      border: '1px solid rgba(15, 78, 169, 0.2)',
+      borderRadius: '8px',
+      background: 'rgba(15, 78, 169, 0.02)',
+    }}>
+      <div style={{
+        fontSize: '13px',
+        fontWeight: 600,
+        color: '#0f4ea9',
+        marginBottom: '12px',
+      }}>
+        Equipment Operation Task Capabilities
+      </div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr 1fr',
+        gap: '6px 16px',
+      }}>
+        {[
+          'Rough grade',
+          'Fine grade',
+          'Excavate trenches',
+          'Load trucks',
+          'Backfill trenches',
+          'Compact soil/base',
+          'Move materials',
+          'Spread base material',
+          'Work near utilities',
+          'Finish grade support',
+          'Operate safely around crews',
+          'Read plans/basic stakes'
+        ].map((skill) => (
+          <label key={skill} style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: 'pointer',
+            fontSize: '13px',
+            color: '#17263a',
+            padding: '4px 0',
+          }}>
+            <input
+              type="checkbox"
+              checked={!!(heavyEquipment?.[skill] || false)}
+              onChange={handleHeavyEquipmentToggle(skill)}
+            />
+            {skill}
+          </label>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
 
           {/* ✅ Tools, Certifications, and Requirements Section */}
           {showToolsSection && (
