@@ -2263,7 +2263,6 @@
 
 
 
-
 // src/worker/components/wizard-steps/WizardStep3.jsx
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -2312,16 +2311,30 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
 
   // Trade options
   const tradeOptions = [
-    'Metal Framing',
-    'Drywall Hanging',
-    'Taping/Finishing',
-    'Acoustical Ceilings',
-    'Interior Carpentry',
-    'Helpers/Labourers',
-    'Insulation',
-    'Demolition/Punch/Final Clean',
-    'Leads/Foremen',
-    'Other'
+    'Interiors',
+    'HVAC/Mechanical',
+    'Electrical / Power',
+    'Plumbing / Piping',
+    'Concrete / Formwork / Rebar / Flatwork',
+    'Civil / Sitework / Earthwork / Utilities',
+    'Asphalt / Paving Work',
+    'Landscaping / Exterior Improvements',
+    'Roofing / Waterproofing',
+    'General Labor / Site Support / Material Handling',
+    'Demolition / Selective Demo / Abatement Support',
+    'Masonry / Stucco / EIFS Systems',
+    'Structural Steel / Misc. Metals / Welding',
+    'Carpentry / Rough Carpentry / Wood Framing / Blocking Systems',
+    'Millwork / Cabinets / Finish Carpentry',
+    'Flooring / Tile / Resilient / Carpet Systems',
+    'Painting / Coatings / Wallcovering Systems',
+    'Doors / Frames / Hardware / Openings Systems',
+    'Glass / Glazing / Storefront',
+    'Fire Protection / Sprinkler Systems',
+    'Firestopping / Fireproofing / Joint Sealants',
+    'Low Voltage / Data / Security / Fire Alarm',
+    'Division 10 Specialties / Accessories / Signage Systems',
+    'Equipment / Specialty Installations / Owner-Furnished Equipment Systems'
   ]
 
   // Custom styles for date picker and trade select
