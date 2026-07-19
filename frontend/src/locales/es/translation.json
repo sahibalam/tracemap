@@ -2,6 +2,9 @@
   "auth": {
     "login": "Iniciar sesión",
     "register": "Registrarse",
+    "year": "Año",
+    "month": "Mes",
+    "day": "Día",
     "email": "Correo electrónico",
     "password": "Contraseña",
     "confirmPassword": "Confirmar Contraseña",

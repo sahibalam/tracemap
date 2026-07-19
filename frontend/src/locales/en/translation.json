@@ -2,6 +2,9 @@
   "auth": {
     "login": "Log in",
     "register": "Register",
+    "year": "Year",
+    "month": "Month",
+    "day": "Day",
     "email": "Email",
     "password": "Password",
     "confirmPassword": "Confirm Password",
