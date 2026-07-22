@@ -8501,8 +8501,8 @@ export function WorkerSummaryPage() {
             ============================================================ */}
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
               
-              {/* Basic Information Card */}
-              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+              {/* ✅ UPDATED Basic Information Card - Fixed clipping issues */}
+              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', minHeight: '280px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.basicInfo')}</span>
                   <button 
@@ -8533,44 +8533,73 @@ export function WorkerSummaryPage() {
                         height: '48px', 
                         borderRadius: '50%', 
                         objectFit: 'cover',
-                        background: '#f0f0f0'
+                        background: '#f0f0f0',
+                        flexShrink: 0
                       }}
                       onError={(e) => {
                         e.target.src = '/assets/worker.avif'
                       }}
                     />
-                    <div>
-                      <div style={{ fontWeight: 600, fontSize: '16px', color: '#17263a' }}>{fullName}</div>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <div style={{ fontWeight: 600, fontSize: '16px', color: '#17263a', wordBreak: 'break-word' }}>
+                        {fullName}
+                      </div>
                       <span style={{ fontSize: '12px', color: '#e0d616', fontWeight: 500 }}>{t('summary.pending')}</span>
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>
+                  
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: '1fr 1fr', 
+                    gap: '6px 16px',
+                    marginTop: '4px'
+                  }}>
                     <div>
-                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.dob')}</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.dob)}</div>
+                      <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                        {t('summary.dob')}
+                      </span>
+                      <div style={{ fontSize: '14px', color: '#17263a', fontWeight: 500 }}>
+                        {displayValue(basics.dob)}
+                      </div>
                     </div>
                     <div>
-                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.language')}</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{language}</div>
-                    </div>
-                    <div>
-                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.email')}</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.emailAddress)}</div>
-                    </div>
-                    <div>
-                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.phone')}</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{formatPhone(basics.mobilePhone)}</div>
+                      <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                        {t('summary.language')}
+                      </span>
+                      <div style={{ fontSize: '14px', color: '#17263a', fontWeight: 500 }}>
+                        {language}
+                      </div>
                     </div>
                     <div style={{ gridColumn: '1 / -1' }}>
-                      <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.address')}</span>
-                      <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(address)}</div>
+                      <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                        {t('summary.email')}
+                      </span>
+                      <div style={{ fontSize: '14px', color: '#17263a', fontWeight: 500, wordBreak: 'break-all' }}>
+                        {displayValue(basics.emailAddress)}
+                      </div>
+                    </div>
+                    <div>
+                      <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                        {t('summary.phone')}
+                      </span>
+                      <div style={{ fontSize: '14px', color: '#17263a', fontWeight: 500 }}>
+                        {formatPhone(basics.mobilePhone)}
+                      </div>
+                    </div>
+                    <div style={{ gridColumn: '1 / -1' }}>
+                      <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, textTransform: 'uppercase', letterSpacing: '0.3px' }}>
+                        {t('summary.address')}
+                      </span>
+                      <div style={{ fontSize: '14px', color: '#17263a', fontWeight: 500, wordBreak: 'break-word' }}>
+                        {displayValue(address)}
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Trade Profile Card */}
-              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', minHeight: '280px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.tradeProfile')}</span>
                   <button 
@@ -8612,7 +8641,7 @@ export function WorkerSummaryPage() {
                       {skillGroupsList.length > 0 && (
                         <div style={{ marginBottom: '10px' }}>
                           <div style={{ 
-                            fontSize: '12px', 
+                            fontSize: '11px', 
                             fontWeight: 600, 
                             color: 'rgba(23,38,58,0.5)',
                             marginBottom: '4px',
@@ -8630,14 +8659,16 @@ export function WorkerSummaryPage() {
                                 padding: '2px 10px',
                                 borderRadius: '12px',
                                 border: '1px solid rgba(15, 78, 169, 0.08)',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '4px'
                               }}>
                                 {group.name}
                                 {group.experience && (
                                   <span style={{ 
-                                    marginLeft: '4px',
                                     fontSize: '10px',
                                     color: '#0f4ea9',
-                                    fontWeight: 500
+                                    fontWeight: 600
                                   }}>
                                     ({group.experience})
                                   </span>
@@ -8670,7 +8701,7 @@ export function WorkerSummaryPage() {
                             onClick={toggleToolsExpansion}
                           >
                             <div style={{ 
-                              fontSize: '12px', 
+                              fontSize: '11px', 
                               fontWeight: 600, 
                               color: 'rgba(23,38,58,0.5)',
                               textTransform: 'uppercase',
@@ -8679,12 +8710,12 @@ export function WorkerSummaryPage() {
                               alignItems: 'center',
                               gap: '6px'
                             }}>
-                              <IconWrench style={{ color: 'rgba(23,38,58,0.4)' }} />
+                              <IconWrench style={{ color: 'rgba(23,38,58,0.4)', width: '12px', height: '12px' }} />
                               {t('wizard.step3.toolsCertifications')}
                               <span style={{
                                 fontSize: '11px',
-                                color: '#2fb463',
-                                fontWeight: 500,
+                                color: selectedToolsCount === totalToolsCount ? '#2fb463' : '#0f4ea9',
+                                fontWeight: 600,
                               }}>
                                 ({selectedToolsCount}/{totalToolsCount})
                               </span>
@@ -8692,7 +8723,9 @@ export function WorkerSummaryPage() {
                             <IconChevronRight style={{ 
                               transform: expandedTools ? 'rotate(90deg)' : 'rotate(0deg)',
                               transition: 'transform 0.2s',
-                              color: 'rgba(23,38,58,0.4)'
+                              color: 'rgba(23,38,58,0.4)',
+                              width: '14px',
+                              height: '14px'
                             }} />
                           </div>
                           
@@ -8703,6 +8736,8 @@ export function WorkerSummaryPage() {
                               background: 'rgba(15, 78, 169, 0.03)',
                               borderRadius: '6px',
                               border: '1px solid rgba(15, 78, 169, 0.06)',
+                              maxHeight: '120px',
+                              overflowY: 'auto'
                             }}>
                               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
                                 {Object.keys(toolsCertifications)
@@ -8716,8 +8751,11 @@ export function WorkerSummaryPage() {
                                       padding: '2px 8px',
                                       borderRadius: '12px',
                                       border: '1px solid rgba(47, 180, 99, 0.1)',
+                                      display: 'inline-flex',
+                                      alignItems: 'center',
+                                      gap: '2px'
                                     }}>
-                                      <IconCheck style={{ width: '10px', height: '10px', marginRight: '2px' }} />
+                                      <IconCheck style={{ width: '10px', height: '10px' }} />
                                       {tool}
                                     </span>
                                   ))}
@@ -8748,8 +8786,8 @@ export function WorkerSummaryPage() {
                             🚜 {t('wizard.step3.heavyEquipment')}
                             <span style={{
                               fontSize: '11px',
-                              color: '#2fb463',
-                              fontWeight: 500,
+                              color: selectedHeavyCount === totalHeavyCount ? '#2fb463' : '#0f4ea9',
+                              fontWeight: 600,
                             }}>
                               ({selectedHeavyCount}/{totalHeavyCount})
                             </span>
@@ -8799,7 +8837,7 @@ export function WorkerSummaryPage() {
               </div>
 
               {/* Subscription & Rewards Card */}
-              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+              <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', minHeight: '280px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.subscription')}</span>
                 </div>
@@ -8820,7 +8858,7 @@ export function WorkerSummaryPage() {
                   </div>
                   <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(15,78,169,0.06)', borderRadius: '8px', textAlign: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                      <IconTrophy style={{ color: '#f59e0b' }} />
+                      <IconTrophy style={{ color: '#f59e0b', width: '20px', height: '20px' }} />
                       <span style={{ fontSize: '20px', fontWeight: 700, color: '#0f4ea9' }}>12</span>
                       <span style={{ fontSize: '13px', color: 'rgba(23,38,58,0.6)' }}>{t('summary.tradePoints')}</span>
                     </div>
@@ -8866,10 +8904,10 @@ export function WorkerSummaryPage() {
                   
                   return (
                     <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length > 0 ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
-                      <div>{displayValue(p.name)}</div>
-                      <div>{displayValue(projectCompany)}</div>
-                      <div>{displayValue(projectTrade)}</div>
-                      <div>{displayValue(p.role)}</div>
+                      <div style={{ wordBreak: 'break-word' }}>{displayValue(p.name)}</div>
+                      <div style={{ wordBreak: 'break-word' }}>{displayValue(projectCompany)}</div>
+                      <div style={{ wordBreak: 'break-word' }}>{displayValue(projectTrade)}</div>
+                      <div style={{ wordBreak: 'break-word' }}>{displayValue(p.role)}</div>
                     </div>
                   )
                 })}
