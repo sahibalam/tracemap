@@ -4032,7 +4032,15 @@ export function CertificationEditPage() {
   // STATE MANAGEMENT
   // ============================================================
   
-  const [certData, setCertData] = useState({})
+  const [certData, setCertData] = useState({
+    certChecklist: {},
+    certRows: [
+      { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+      { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+      { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+    ],
+    safetyFlags: {},
+  })
   const [isSaving, setIsSaving] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -4057,39 +4065,30 @@ export function CertificationEditPage() {
           return
         }
 
-        // If data is in location state, use it
-        if (location?.state?.certData) {
-          console.log('📋 Using certification data from location state')
-          setCertData(location.state.certData)
-          
-          // Try to get main trade from parent data or fetch it
-          if (location?.state?.parentData?.trade?.mainTrade) {
-            setMainTrade(location.state.parentData.trade.mainTrade)
-          } else {
-            // Fetch profile to get main trade
-            const profile = await workerService.getWorkerProfile(userId)
-            if (profile.success && profile.data?.trade?.mainTrade) {
-              setMainTrade(profile.data.trade.mainTrade)
-            }
-          }
-          
-          setLoading(false)
-          return
-        }
-
-        // Otherwise fetch from server
+        // Fetch profile to get main trade and certifications
         console.log('📊 Fetching certification data from Workers table')
         const profile = await workerService.getWorkerProfile(userId)
         
-        if (profile.success) {
+        if (profile.success && profile.data) {
           // Get main trade
           if (profile.data?.trade?.mainTrade) {
             setMainTrade(profile.data.trade.mainTrade)
           }
           
+          // Get certifications data
           if (profile.data?.certifications) {
-            setCertData(profile.data.certifications)
-            console.log('✅ Certification data loaded from Workers table')
+            // Ensure certChecklist exists
+            const certs = profile.data.certifications
+            setCertData({
+              certChecklist: certs.certChecklist || {},
+              certRows: certs.certRows || [
+                { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+                { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+                { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+              ],
+              safetyFlags: certs.safetyFlags || {},
+            })
+            console.log('✅ Certification data loaded from Workers table', certs.certChecklist)
           } else {
             // Initialize with empty data
             setCertData({
@@ -4105,8 +4104,8 @@ export function CertificationEditPage() {
           }
           
           // Auto-expand the section for the main trade
-          if (mainTrade) {
-            setExpandedSections({ [mainTrade]: true })
+          if (profile.data?.trade?.mainTrade) {
+            setExpandedSections({ [profile.data.trade.mainTrade]: true })
           }
         }
       } catch (error) {
@@ -4118,45 +4117,49 @@ export function CertificationEditPage() {
     }
 
     loadCertifications()
-  }, [location?.state?.certData, location?.state?.parentData])
+  }, [])
 
   // ============================================================
   // HANDLERS
   // ============================================================
   
   const handleChange = (field, value) => {
-    setCertData({ ...certData, [field]: value })
+    setCertData(prev => ({ ...prev, [field]: value }))
   }
 
+  // ✅ FIXED: Properly toggle certification checklist items
   const toggleCertChecklist = (key) => (e) => {
-    const current = certData.certChecklist || {}
-    setCertData({
-      ...certData,
+    const isChecked = e.target.checked
+    console.log(`🔄 Toggling ${key}: ${isChecked}`)
+    setCertData(prev => ({
+      ...prev,
       certChecklist: {
-        ...current,
-        [key]: e.target.checked,
+        ...(prev.certChecklist || {}),
+        [key]: isChecked,
       },
-    })
+    }))
   }
 
   const toggleSafetyFlag = (key) => (e) => {
-    const current = certData.safetyFlags || {}
-    setCertData({
-      ...certData,
+    const isChecked = e.target.checked
+    setCertData(prev => ({
+      ...prev,
       safetyFlags: {
-        ...current,
-        [key]: e.target.checked,
+        ...(prev.safetyFlags || {}),
+        [key]: isChecked,
       },
-    })
+    }))
   }
 
   const updateCertRow = (index, key) => (value) => {
-    const rows = [...(certData.certRows || [])]
-    if (!rows[index]) {
-      rows[index] = { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }
-    }
-    rows[index] = { ...rows[index], [key]: value }
-    setCertData({ ...certData, certRows: rows })
+    setCertData(prev => {
+      const rows = [...(prev.certRows || [])]
+      if (!rows[index]) {
+        rows[index] = { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }
+      }
+      rows[index] = { ...rows[index], [key]: value }
+      return { ...prev, certRows: rows }
+    })
   }
 
   const toggleSection = (trade) => {
@@ -4203,18 +4206,20 @@ export function CertificationEditPage() {
       const result = await wizardService.uploadCertificate(userId, file, index)
       
       if (result.success) {
-        const rows = [...(certData.certRows || [])]
-        if (!rows[index]) {
-          rows[index] = { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }
-        }
-        rows[index] = {
-          ...rows[index],
-          uploadRef: file.name,
-          fileKey: result.fileKey,
-          fileUrl: result.fileUrl,
-          uploadedAt: new Date().toISOString()
-        }
-        setCertData({ ...certData, certRows: rows })
+        setCertData(prev => {
+          const rows = [...(prev.certRows || [])]
+          if (!rows[index]) {
+            rows[index] = { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }
+          }
+          rows[index] = {
+            ...rows[index],
+            uploadRef: file.name,
+            fileKey: result.fileKey,
+            fileUrl: result.fileUrl,
+            uploadedAt: new Date().toISOString()
+          }
+          return { ...prev, certRows: rows }
+        })
         setSuccess(`File "${file.name}" uploaded successfully!`)
       }
     } catch (error) {
@@ -4302,6 +4307,7 @@ export function CertificationEditPage() {
       }
 
       console.log('💾 Saving certifications to Workers table')
+      console.log('📋 certChecklist:', certData.certChecklist)
 
       const hasChecklist = Object.values(certData.certChecklist || {}).some(v => v === true)
       const hasSafetyFlags = Object.values(certData.safetyFlags || {}).some(v => v === true)
@@ -4309,11 +4315,14 @@ export function CertificationEditPage() {
         row.name || row.cardNumber || row.uploadRef
       )
 
-      if (!hasChecklist && !hasSafetyFlags && !hasCertRows) {
-        throw new Error('Please add at least one certification, checklist item, or safety flag')
-      }
+      // Allow saving even if empty (user might want to clear everything)
+      // Just save the data as is
 
-      await workerService.updateCertifications(userId, certData)
+      await workerService.updateCertifications(userId, {
+        certChecklist: certData.certChecklist || {},
+        certRows: certData.certRows || [],
+        safetyFlags: certData.safetyFlags || {},
+      })
       
       console.log('✅ Certifications saved to Workers table')
       setSuccess('Certifications saved successfully!')
@@ -4939,6 +4948,18 @@ export function CertificationEditPage() {
                           }}>
                             {tradeCertifications.length} certifications
                           </span>
+                          {/* Show selected count */}
+                          {Object.values(certData.certChecklist || {}).filter(v => v === true).length > 0 && (
+                            <span style={{
+                              fontSize: '11px',
+                              color: '#2fb463',
+                              background: 'rgba(47, 180, 99, 0.1)',
+                              padding: '2px 10px',
+                              borderRadius: '12px',
+                            }}>
+                              {Object.values(certData.certChecklist || {}).filter(v => v === true).length} selected
+                            </span>
+                          )}
                         </div>
                         {expandedSections[mainTrade] ? (
                           <IconChevronDown style={{ color: 'rgba(23, 38, 58, 0.4)' }} />
