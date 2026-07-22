@@ -682,7 +682,7 @@
 
 
 
-// src/worker/components/wizard-steps/WizardStep4.jsx
+// src/worker/components/wizard-steps/WizardStep5.jsx
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { TextField } from '../../../common/components/TextField'
@@ -761,7 +761,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
           <div className="wizardGrid2" style={{ alignItems: 'flex-start' }}>
             {/* Hourly Rate */}
             <div>
-              <div className="wizardSectionBar">{t('wizard.step4.hourlyRate')}</div>
+              <div className="wizardSectionBar">{t('wizard.step5.hourlyRate')}</div>
               <div style={{ maxWidth: '200px' }}>
                 <TextField
                   placeholder="$$"
@@ -774,7 +774,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
 
             {/* Availability */}
             <div>
-              <div className="wizardSectionBar">{t('wizard.step4.availability')}</div>
+              <div className="wizardSectionBar">{t('wizard.step5.availability')}</div>
               <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '4px' }}>
                 <label className="wizardCheck">
                   <input
@@ -782,7 +782,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                     checked={!!(data.payPrefs?.overtime || false)}
                     onChange={togglePayPref('overtime')}
                   />
-                  {t('wizard.step4.openToOvertime')}
+                  {t('wizard.step5.openToOvertime')}
                 </label>
                 <label className="wizardCheck">
                   <input
@@ -790,7 +790,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                     checked={!!(data.payPrefs?.weekends || false)}
                     onChange={togglePayPref('weekends')}
                   />
-                  {t('wizard.step4.availableWeekends')}
+                  {t('wizard.step5.availableWeekends')}
                 </label>
               </div>
             </div>
@@ -802,7 +802,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
           <div className="wizardGrid2" style={{ alignItems: 'flex-start' }}>
             {/* Travel Radius - Custom Slider with 70% width */}
             <div>
-              <div className="wizardSectionBar">{t('wizard.step4.travelRadius')}</div>
+              <div className="wizardSectionBar">{t('wizard.step5.travelRadius')}</div>
               <div style={{ marginTop: '4px', maxWidth: '70%' }}>
                 {/* Custom slider container */}
                 <div style={{ position: 'relative', padding: '8px 0' }}>
@@ -881,7 +881,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                       padding: '4px 16px',
                       borderRadius: '6px',
                     }}>
-                      {currentRadius} {t('wizard.step4.miles')}
+                      {currentRadius} {t('wizard.step5.miles')}
                     </span>
                   </div>
 
@@ -906,7 +906,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
 
             {/* Willingness to Travel */}
             <div>
-              <div className="wizardSectionBar">{t('wizard.step4.willingToTravel')}</div>
+              <div className="wizardSectionBar">{t('wizard.step5.willingToTravel')}</div>
               <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', marginTop: '4px' }}>
                 <label className="wizardCheck">
                   <input
@@ -916,7 +916,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                     checked={data.willingToTravel === 'yes'}
                     onChange={() => handleWillingToTravelChange('yes')}
                   />
-                  {t('wizard.step4.yes')}
+                  {t('wizard.step5.yes')}
                 </label>
                 <label className="wizardCheck">
                   <input
@@ -926,7 +926,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                     checked={data.willingToTravel === 'no'}
                     onChange={() => handleWillingToTravelChange('no')}
                   />
-                  {t('wizard.step4.no')}
+                  {t('wizard.step5.no')}
                 </label>
               </div>
             </div>
@@ -948,7 +948,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                 color: '#17263a',
                 marginBottom: '10px'
               }}>
-                {t('wizard.step4.travelPreferences')}
+                {t('wizard.step5.travelPreferences')}
               </div>
               <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
                 <label className="wizardCheck">
@@ -957,7 +957,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                     checked={!!(data.travelPrefs?.housing || false)}
                     onChange={toggleTravelPref('housing')}
                   />
-                  {t('wizard.step4.needsHousing')}
+                  {t('wizard.step5.needsHousing')}
                 </label>
                 <label className="wizardCheck">
                   <input
@@ -965,7 +965,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                     checked={!!(data.travelPrefs?.perDiem || false)}
                     onChange={toggleTravelPref('perDiem')}
                   />
-                  {t('wizard.step4.needsPerDiem')}
+                  {t('wizard.step5.needsPerDiem')}
                 </label>
                 <label className="wizardCheck">
                   <input
@@ -973,7 +973,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                     checked={!!(data.travelPrefs?.transportation || false)}
                     onChange={toggleTravelPref('transportation')}
                   />
-                  {t('wizard.step4.ownTransportation')}
+                  {t('wizard.step5.ownTransportation')}
                 </label>
               </div>
             </div>
@@ -982,7 +982,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
 
         {/* Available Days Section */}
         <div className="wizardSection">
-          <div className="wizardSectionBar">{t('wizard.step4.availableDays')}</div>
+          <div className="wizardSectionBar">{t('wizard.step5.availableDays')}</div>
           <div style={{ 
             display: 'grid', 
             gridTemplateColumns: 'repeat(7, 1fr)', 
@@ -1008,7 +1008,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
                   color: 'rgba(23, 38, 58, 0.6)',
                   textTransform: 'uppercase'
                 }}>
-                  {t(`wizard.step4.days.${day.toLowerCase()}`)}
+                  {t(`wizard.step5.days.${day.toLowerCase()}`)}
                 </span>
                 <input
                   type="checkbox"

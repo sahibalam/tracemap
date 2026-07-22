@@ -184,7 +184,7 @@
 
 
 
-// src/worker/components/wizard-steps/WizardStep5.jsx
+// src/worker/components/wizard-steps/WizardStep6.jsx
 import { useTranslation } from 'react-i18next'
 import { TextField } from '../../../common/components/TextField'
 import { IconUser, IconSupport, IconPhone } from '../../../common/components/Icons'
@@ -211,33 +211,33 @@ export function WizardStep6({ data, onChange, onFinish, onBack }) {
   const isValid = data.emergencyContactName && data.emergencyContactRelationship && data.emergencyContactPhone
 
   const policyItems = [
-    'wizard.step5.policy1',
-    'wizard.step5.policy2',
-    'wizard.step5.policy3',
-    'wizard.step5.policy4',
-    'wizard.step5.policy5'
+    'wizard.step6.policy1',
+    'wizard.step6.policy2',
+    'wizard.step6.policy3',
+    'wizard.step6.policy4',
+    'wizard.step6.policy5'
   ]
 
   return (
     <div className="wizardStep">
       <div className="wizardBody">
         <div className="wizardSection">
-          <div className="wizardSectionBar">{t('wizard.step5.emergencyContact')}</div>
+          <div className="wizardSectionBar">{t('wizard.step6.emergencyContact')}</div>
           <div className="wizardGrid3">
             <TextField
-              placeholder={t('wizard.step5.contactName')}
+              placeholder={t('wizard.step6.contactName')}
               icon={<IconUser />}
               value={data.emergencyContactName || ''}
               onChange={(v) => handleChange('emergencyContactName', v)}
             />
             <TextField
-              placeholder={t('wizard.step5.relationship')}
+              placeholder={t('wizard.step6.relationship')}
               icon={<IconSupport />}
               value={data.emergencyContactRelationship || ''}
               onChange={(v) => handleChange('emergencyContactRelationship', v)}
             />
             <TextField
-              placeholder={t('wizard.step5.phone')}
+              placeholder={t('wizard.step6.phone')}
               icon={<IconPhone />}
               value={data.emergencyContactPhone || ''}
               onChange={(v) => handleChange('emergencyContactPhone', v)}
@@ -246,7 +246,7 @@ export function WizardStep6({ data, onChange, onFinish, onBack }) {
         </div>
 
         <div className="wizardSection">
-          <div className="wizardSectionBar">{t('wizard.step5.acknowledgments')}</div>
+          <div className="wizardSectionBar">{t('wizard.step6.acknowledgments')}</div>
           <div className="wizardChecks">
             {policyItems.map((itemKey) => (
               <label key={itemKey} className="wizardCheck">
@@ -272,7 +272,7 @@ export function WizardStep6({ data, onChange, onFinish, onBack }) {
             color: '#92400e',
             fontSize: '13px',
           }}>
-            ⚠️ {t('wizard.step5.completeFields')}
+            ⚠️ {t('wizard.step6.completeFields')}
           </div>
         )}
 
@@ -289,7 +289,7 @@ export function WizardStep6({ data, onChange, onFinish, onBack }) {
             alignItems: 'center',
             gap: '8px'
           }}>
-            ✅ {t('wizard.step5.allCompleted')}
+            ✅ {t('wizard.step6.allCompleted')}
           </div>
         )}
       </div>

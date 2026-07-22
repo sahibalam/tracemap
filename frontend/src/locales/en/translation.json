@@ -95,23 +95,27 @@
     },
     "step2": {
       "title": "Trade Profile & Skill Matrix",
-      "tradeProfile": "Trade Profile",
-      "selectTrade": "Select Trade",
-      "selectWorkerLevel": "Select Worker Level",
-      "enterYears": "Enter years",
-      "skills": "Skills",
-      "responsibilities": "Responsibilities",
-      "additionalSkills": "Additional Skills / Tools / Systems",
-      "addTrade": "Add Trade",
-      "removeTrade": "Remove Trade",
-      "customTrade": "Custom Trade",
-      "enterCustomTrade": "Enter Custom Trade",
-      "leadResponsibilities": "Lead Responsibilities",
-      "foremanResponsibilities": "Foreman Responsibilities",
-      "selectMainTrade": "Select Main Trade"
+      "selectMainTrade": "Select Main Trade",
+      "skillGroups": "Skill Groups",
+      "searchSkillGroups": "Search skill groups...",
+      "noSkillGroupsFound": "No skill groups match your search",
+      "experienceLevel": "Experience Level",
+      "yearsOfExperience": "Years of Experience",
+      "skillDetails": "Skill Details"
     },
     "step3": {
-      "title": "Work History",
+      "title": "Tools, Certifications & Requirements",
+      "toolsCertifications": "Tools & Certifications",
+      "heavyEquipment": "Heavy Equipment Operation",
+      "heavyEquipmentDescription": "Select the heavy equipment you are qualified to operate",
+      "equipmentTypeChecklist": "Equipment Type Checklist",
+      "equipmentOperationTasks": "Equipment Operation Task Capabilities",
+      "selectedItems": "items selected",
+      "noToolsCertifications": "No tools or certifications defined for this trade yet.",
+      "selectTradeFirst": "Please select a trade in the previous step first"
+    },
+    "step4": {
+      "title": "Work History & Project Experience",
       "project": "Project",
       "projectName": "Project Name",
       "companyName": "Company Name",
@@ -122,10 +126,12 @@
       "start": "Start",
       "end": "End",
       "scopeSummary": "Scope Summary",
-      "characterCount": "characters"
+      "characterCount": "characters",
+      "addProject": "Add Project",
+      "removeProject": "Remove Project"
     },
-    "step4": {
-      "title": "Availability & Rate",
+    "step5": {
+      "title": "Availability, Travel & Pay Preferences",
       "hourlyRate": "Hourly Rate",
       "availability": "Availability",
       "openToOvertime": "Open to overtime",
@@ -139,9 +145,18 @@
       "needsHousing": "Needs housing for travel work",
       "needsPerDiem": "Needs per diem",
       "ownTransportation": "Own transportation",
-      "availableDays": "Available Days"
+      "availableDays": "Available Days",
+      "days": {
+        "monday": "Mon",
+        "tuesday": "Tue",
+        "wednesday": "Wed",
+        "thursday": "Thu",
+        "friday": "Fri",
+        "saturday": "Sat",
+        "sunday": "Sun"
+      }
     },
-    "step5": {
+    "step6": {
       "title": "Emergency Contact & Acknowledgments",
       "emergencyContact": "Emergency Contact",
       "contactName": "Contact name",
@@ -267,5 +282,14 @@
     "emergencyContact": "Emergency Contact",
     "name": "Name",
     "relationship": "Relationship"
+  },
+  "registration": {
+    "success": {
+      "title": "Registration Successful! 🎉",
+      "subtitle": "Thank you for registering with TradesMap.",
+      "description": "Your registration has been submitted successfully. Our team is currently reviewing your information. Once the verification process is complete, your account will be activated.",
+      "instruction": "In the meantime, please visit the Profile section and complete all remaining information. This will help us verify your account more quickly and ensure you can access all TradesMap features as soon as your account is approved.",
+      "goToProfile": "Go to Profile"
+    }
   }
 }

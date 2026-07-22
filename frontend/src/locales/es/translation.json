@@ -95,23 +95,27 @@
     },
     "step2": {
       "title": "Perfil de Oficio y Matriz de Habilidades",
-      "tradeProfile": "Perfil de Oficio",
-      "selectTrade": "Seleccionar Oficio",
-      "selectWorkerLevel": "Seleccionar Nivel",
-      "enterYears": "Ingresar años",
-      "skills": "Habilidades",
-      "responsibilities": "Responsabilidades",
-      "additionalSkills": "Habilidades / Herramientas / Sistemas Adicionales",
-      "addTrade": "Agregar Oficio",
-      "removeTrade": "Eliminar Oficio",
-      "customTrade": "Oficio Personalizado",
-      "enterCustomTrade": "Ingresar Oficio Personalizado",
-      "leadResponsibilities": "Responsabilidades de Líder",
-      "foremanResponsibilities": "Responsabilidades de Capataz",
-      "selectMainTrade": "Seleccionar Oficio Principal"
+      "selectMainTrade": "Seleccionar Oficio Principal",
+      "skillGroups": "Grupos de Habilidades",
+      "searchSkillGroups": "Buscar grupos de habilidades...",
+      "noSkillGroupsFound": "No se encontraron grupos de habilidades que coincidan con su búsqueda",
+      "experienceLevel": "Nivel de Experiencia",
+      "yearsOfExperience": "Años de Experiencia",
+      "skillDetails": "Detalles de Habilidades"
     },
     "step3": {
-      "title": "Historial Laboral",
+      "title": "Herramientas, Certificaciones y Requisitos",
+      "toolsCertifications": "Herramientas y Certificaciones",
+      "heavyEquipment": "Operación de Equipo Pesado",
+      "heavyEquipmentDescription": "Seleccione el equipo pesado que está calificado para operar",
+      "equipmentTypeChecklist": "Lista de Tipos de Equipo",
+      "equipmentOperationTasks": "Capacidades de Operación de Equipo",
+      "selectedItems": "elementos seleccionados",
+      "noToolsCertifications": "No hay herramientas o certificaciones definidas para este oficio aún.",
+      "selectTradeFirst": "Primero seleccione un oficio en el paso anterior"
+    },
+    "step4": {
+      "title": "Historial Laboral y Experiencia en Proyectos",
       "project": "Proyecto",
       "projectName": "Nombre del Proyecto",
       "companyName": "Nombre de la Empresa",
@@ -122,10 +126,12 @@
       "start": "Inicio",
       "end": "Fin",
       "scopeSummary": "Resumen del Alcance",
-      "characterCount": "caracteres"
+      "characterCount": "caracteres",
+      "addProject": "Agregar Proyecto",
+      "removeProject": "Eliminar Proyecto"
     },
-    "step4": {
-      "title": "Disponibilidad y Tarifa",
+    "step5": {
+      "title": "Disponibilidad, Viaje y Preferencias de Pago",
       "hourlyRate": "Tarifa por Hora",
       "availability": "Disponibilidad",
       "openToOvertime": "Disponible para horas extras",
@@ -139,9 +145,18 @@
       "needsHousing": "Necesita alojamiento para trabajo de viaje",
       "needsPerDiem": "Necesita viáticos",
       "ownTransportation": "Transporte propio",
-      "availableDays": "Días Disponibles"
+      "availableDays": "Días Disponibles",
+      "days": {
+        "monday": "Lun",
+        "tuesday": "Mar",
+        "wednesday": "Mié",
+        "thursday": "Jue",
+        "friday": "Vie",
+        "saturday": "Sáb",
+        "sunday": "Dom"
+      }
     },
-    "step5": {
+    "step6": {
       "title": "Contacto de Emergencia y Reconocimientos",
       "emergencyContact": "Contacto de Emergencia",
       "contactName": "Nombre del contacto",
@@ -267,5 +282,14 @@
     "emergencyContact": "Contacto de Emergencia",
     "name": "Nombre",
     "relationship": "Relación"
+  },
+  "registration": {
+    "success": {
+      "title": "¡Registro Exitoso! 🎉",
+      "subtitle": "Gracias por registrarse en TradesMap.",
+      "description": "Su registro ha sido enviado exitosamente. Nuestro equipo está revisando su información. Una vez que el proceso de verificación esté completo, su cuenta será activada.",
+      "instruction": "Mientras tanto, por favor visite la sección de Perfil y complete toda la información restante. Esto nos ayudará a verificar su cuenta más rápidamente y asegurar que pueda acceder a todas las funciones de TradesMap tan pronto como su cuenta sea aprobada.",
+      "goToProfile": "Ir al Perfil"
+    }
   }
 }

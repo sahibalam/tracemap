@@ -1885,10 +1885,10 @@
 //           <div className="grid-3-col">
 //             {/* Project 1 */}
 //             <div className="project-card">
-//               <div className="project-title">{t('wizard.step3.project')} 1</div>
+//               <div className="project-title">{t('wizard.step4.project')} 1</div>
               
 //               <TextField
-//                 placeholder={t('wizard.step3.projectName')}
+//                 placeholder={t('wizard.step4.projectName')}
 //                 icon={<IconFolder />}
 //                 value={projects[0]?.name || ''}
 //                 onChange={updateProjectField(0, 'name')}
@@ -1896,7 +1896,7 @@
 //               />
               
 //               <TextField
-//                 placeholder={t('wizard.step3.client')}
+//                 placeholder={t('wizard.step4.client')}
 //                 icon={<IconSupport />}
 //                 value={projects[0]?.client || ''}
 //                 onChange={updateProjectField(0, 'client')}
@@ -1904,7 +1904,7 @@
 //               />
               
 //               <TextField
-//                 placeholder={t('wizard.step3.employerPhone')}
+//                 placeholder={t('wizard.step4.employerPhone')}
 //                 icon={<IconPhone />}
 //                 value={projects[0]?.phone || ''}
 //                 onChange={updateProjectField(0, 'phone')}
@@ -1922,7 +1922,7 @@
 //                     }}
 //                   >
 //                     <option value="" className="placeholder-option" disabled>
-//                       {t('wizard.step3.trade')}
+//                       {t('wizard.step4.trade')}
 //                     </option>
 //                     {tradeOptions.map((trade) => (
 //                       <option key={trade} value={trade}>
@@ -1933,7 +1933,7 @@
 //                   <span className="select-icon"><IconSupport /></span>
 //                 </div>
 //                 <TextField
-//                   placeholder={t('wizard.step3.role')}
+//                   placeholder={t('wizard.step4.role')}
 //                   icon={<IconUser />}
 //                   value={projects[0]?.role || ''}
 //                   onChange={updateProjectField(0, 'role')}
@@ -1946,7 +1946,7 @@
 //                     selected={parseDate(projects[0]?.start || '')}
 //                     onChange={handleDateChange(0, 'start')}
 //                     dateFormat="MM/dd/yyyy"
-//                     placeholderText={t('wizard.step3.start')}
+//                     placeholderText={t('wizard.step4.start')}
 //                     maxDate={new Date()}
 //                     showYearDropdown
 //                     showMonthDropdown
@@ -1970,7 +1970,7 @@
 //                     selected={parseDate(projects[0]?.end || '')}
 //                     onChange={handleDateChange(0, 'end')}
 //                     dateFormat="MM/dd/yyyy"
-//                     placeholderText={t('wizard.step3.end')}
+//                     placeholderText={t('wizard.step4.end')}
 //                     maxDate={new Date()}
 //                     showYearDropdown
 //                     showMonthDropdown
@@ -1994,23 +1994,23 @@
 //               <div>
 //                 <textarea
 //                   className="wizard-textarea"
-//                   placeholder={t('wizard.step3.scopeSummary')}
+//                   placeholder={t('wizard.step4.scopeSummary')}
 //                   value={projects[0]?.scope || ''}
 //                   onChange={(e) => updateProjectField(0, 'scope')(e.target.value)}
 //                   rows={3}
 //                 />
 //                 <div className="character-count">
-//                   {(projects[0]?.scope?.length || 0)} {t('wizard.step3.characters')}
+//                   {(projects[0]?.scope?.length || 0)} {t('wizard.step4.characters')}
 //                 </div>
 //               </div>
 //             </div>
 
 //             {/* Project 2 */}
 //             <div className="project-card">
-//               <div className="project-title">{t('wizard.step3.project')} 2</div>
+//               <div className="project-title">{t('wizard.step4.project')} 2</div>
               
 //               <TextField
-//                 placeholder={t('wizard.step3.projectName')}
+//                 placeholder={t('wizard.step4.projectName')}
 //                 icon={<IconFolder />}
 //                 value={projects[1]?.name || ''}
 //                 onChange={updateProjectField(1, 'name')}
@@ -2018,7 +2018,7 @@
 //               />
               
 //               <TextField
-//                 placeholder={t('wizard.step3.client')}
+//                 placeholder={t('wizard.step4.client')}
 //                 icon={<IconSupport />}
 //                 value={projects[1]?.client || ''}
 //                 onChange={updateProjectField(1, 'client')}
@@ -2026,7 +2026,7 @@
 //               />
               
 //               <TextField
-//                 placeholder={t('wizard.step3.employerPhone')}
+//                 placeholder={t('wizard.step4.employerPhone')}
 //                 icon={<IconPhone />}
 //                 value={projects[1]?.phone || ''}
 //                 onChange={updateProjectField(1, 'phone')}
@@ -2044,7 +2044,7 @@
 //                     }}
 //                   >
 //                     <option value="" className="placeholder-option" disabled>
-//                       {t('wizard.step3.trade')}
+//                       {t('wizard.step4.trade')}
 //                     </option>
 //                     {tradeOptions.map((trade) => (
 //                       <option key={trade} value={trade}>
@@ -2055,7 +2055,7 @@
 //                   <span className="select-icon"><IconSupport /></span>
 //                 </div>
 //                 <TextField
-//                   placeholder={t('wizard.step3.role')}
+//                   placeholder={t('wizard.step4.role')}
 //                   icon={<IconUser />}
 //                   value={projects[1]?.role || ''}
 //                   onChange={updateProjectField(1, 'role')}
@@ -2068,7 +2068,7 @@
 //                     selected={parseDate(projects[1]?.start || '')}
 //                     onChange={handleDateChange(1, 'start')}
 //                     dateFormat="MM/dd/yyyy"
-//                     placeholderText={t('wizard.step3.start')}
+//                     placeholderText={t('wizard.step4.start')}
 //                     maxDate={new Date()}
 //                     showYearDropdown
 //                     showMonthDropdown
@@ -2092,7 +2092,7 @@
 //                     selected={parseDate(projects[1]?.end || '')}
 //                     onChange={handleDateChange(1, 'end')}
 //                     dateFormat="MM/dd/yyyy"
-//                     placeholderText={t('wizard.step3.end')}
+//                     placeholderText={t('wizard.step4.end')}
 //                     maxDate={new Date()}
 //                     showYearDropdown
 //                     showMonthDropdown
@@ -2116,23 +2116,23 @@
 //               <div>
 //                 <textarea
 //                   className="wizard-textarea"
-//                   placeholder={t('wizard.step3.scopeSummary')}
+//                   placeholder={t('wizard.step4.scopeSummary')}
 //                   value={projects[1]?.scope || ''}
 //                   onChange={(e) => updateProjectField(1, 'scope')(e.target.value)}
 //                   rows={3}
 //                 />
 //                 <div className="character-count">
-//                   {(projects[1]?.scope?.length || 0)} {t('wizard.step3.characters')}
+//                   {(projects[1]?.scope?.length || 0)} {t('wizard.step4.characters')}
 //                 </div>
 //               </div>
 //             </div>
 
 //             {/* Project 3 */}
 //             <div className="project-card">
-//               <div className="project-title">{t('wizard.step3.project')} 3</div>
+//               <div className="project-title">{t('wizard.step4.project')} 3</div>
               
 //               <TextField
-//                 placeholder={t('wizard.step3.projectName')}
+//                 placeholder={t('wizard.step4.projectName')}
 //                 icon={<IconFolder />}
 //                 value={projects[2]?.name || ''}
 //                 onChange={updateProjectField(2, 'name')}
@@ -2140,7 +2140,7 @@
 //               />
               
 //               <TextField
-//                 placeholder={t('wizard.step3.client')}
+//                 placeholder={t('wizard.step4.client')}
 //                 icon={<IconSupport />}
 //                 value={projects[2]?.client || ''}
 //                 onChange={updateProjectField(2, 'client')}
@@ -2148,7 +2148,7 @@
 //               />
               
 //               <TextField
-//                 placeholder={t('wizard.step3.employerPhone')}
+//                 placeholder={t('wizard.step4.employerPhone')}
 //                 icon={<IconPhone />}
 //                 value={projects[2]?.phone || ''}
 //                 onChange={updateProjectField(2, 'phone')}
@@ -2166,7 +2166,7 @@
 //                     }}
 //                   >
 //                     <option value="" className="placeholder-option" disabled>
-//                       {t('wizard.step3.trade')}
+//                       {t('wizard.step4.trade')}
 //                     </option>
 //                     {tradeOptions.map((trade) => (
 //                       <option key={trade} value={trade}>
@@ -2177,7 +2177,7 @@
 //                   <span className="select-icon"><IconSupport /></span>
 //                 </div>
 //                 <TextField
-//                   placeholder={t('wizard.step3.role')}
+//                   placeholder={t('wizard.step4.role')}
 //                   icon={<IconUser />}
 //                   value={projects[2]?.role || ''}
 //                   onChange={updateProjectField(2, 'role')}
@@ -2190,7 +2190,7 @@
 //                     selected={parseDate(projects[2]?.start || '')}
 //                     onChange={handleDateChange(2, 'start')}
 //                     dateFormat="MM/dd/yyyy"
-//                     placeholderText={t('wizard.step3.start')}
+//                     placeholderText={t('wizard.step4.start')}
 //                     maxDate={new Date()}
 //                     showYearDropdown
 //                     showMonthDropdown
@@ -2214,7 +2214,7 @@
 //                     selected={parseDate(projects[2]?.end || '')}
 //                     onChange={handleDateChange(2, 'end')}
 //                     dateFormat="MM/dd/yyyy"
-//                     placeholderText={t('wizard.step3.end')}
+//                     placeholderText={t('wizard.step4.end')}
 //                     maxDate={new Date()}
 //                     showYearDropdown
 //                     showMonthDropdown
@@ -2238,13 +2238,13 @@
 //               <div>
 //                 <textarea
 //                   className="wizard-textarea"
-//                   placeholder={t('wizard.step3.scopeSummary')}
+//                   placeholder={t('wizard.step4.scopeSummary')}
 //                   value={projects[2]?.scope || ''}
 //                   onChange={(e) => updateProjectField(2, 'scope')(e.target.value)}
 //                   rows={3}
 //                 />
 //                 <div className="character-count">
-//                   {(projects[2]?.scope?.length || 0)} {t('wizard.step3.characters')}
+//                   {(projects[2]?.scope?.length || 0)} {t('wizard.step4.characters')}
 //                 </div>
 //               </div>
 //             </div>
@@ -2263,7 +2263,7 @@
 
 
 
-// src/worker/components/wizard-steps/WizardStep3.jsx
+// src/worker/components/wizard-steps/WizardStep4.jsx
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import DatePicker from 'react-datepicker'
@@ -2625,10 +2625,10 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
           <div className="grid-3-col">
             {/* Project 1 */}
             <div className="project-card">
-              <div className="project-title">{t('wizard.step3.project')} 1</div>
+              <div className="project-title">{t('wizard.step4.project')} 1</div>
               
               <TextField
-                placeholder={t('wizard.step3.companyName')}
+                placeholder={t('wizard.step4.companyName')}
                 icon={<IconFolder />}
                 value={projects[0]?.name || ''}
                 onChange={updateProjectField(0, 'name')}
@@ -2636,7 +2636,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
               />
               
               <TextField
-                placeholder={t('wizard.step3.client')}
+                placeholder={t('wizard.step4.client')}
                 icon={<IconSupport />}
                 value={projects[0]?.client || ''}
                 onChange={updateProjectField(0, 'client')}
@@ -2644,7 +2644,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
               />
               
               <TextField
-                placeholder={t('wizard.step3.employerPhone')}
+                placeholder={t('wizard.step4.employerPhone')}
                 icon={<IconPhone />}
                 value={projects[0]?.phone || ''}
                 onChange={updateProjectField(0, 'phone')}
@@ -2657,7 +2657,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     selected={parseDate(projects[0]?.start || '')}
                     onChange={handleDateChange(0, 'start')}
                     dateFormat="MM/dd/yyyy"
-                    placeholderText={t('wizard.step3.start')}
+                    placeholderText={t('wizard.step4.start')}
                     maxDate={new Date()}
                     showYearDropdown
                     showMonthDropdown
@@ -2681,7 +2681,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     selected={parseDate(projects[0]?.end || '')}
                     onChange={handleDateChange(0, 'end')}
                     dateFormat="MM/dd/yyyy"
-                    placeholderText={t('wizard.step3.end')}
+                    placeholderText={t('wizard.step4.end')}
                     maxDate={new Date()}
                     showYearDropdown
                     showMonthDropdown
@@ -2712,7 +2712,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                   }}
                 >
                   <option value="" className="placeholder-option" disabled>
-                    {t('wizard.step3.trade')}
+                    {t('wizard.step4.trade')}
                   </option>
                   {tradeOptions.map((trade) => (
                     <option key={trade} value={trade}>
@@ -2726,10 +2726,10 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
 
             {/* Project 2 */}
             <div className="project-card">
-              <div className="project-title">{t('wizard.step3.project')} 2</div>
+              <div className="project-title">{t('wizard.step4.project')} 2</div>
               
               <TextField
-                placeholder={t('wizard.step3.companyName')}
+                placeholder={t('wizard.step4.companyName')}
                 icon={<IconFolder />}
                 value={projects[1]?.name || ''}
                 onChange={updateProjectField(1, 'name')}
@@ -2737,7 +2737,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
               />
               
               <TextField
-                placeholder={t('wizard.step3.client')}
+                placeholder={t('wizard.step4.client')}
                 icon={<IconSupport />}
                 value={projects[1]?.client || ''}
                 onChange={updateProjectField(1, 'client')}
@@ -2745,7 +2745,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
               />
               
               <TextField
-                placeholder={t('wizard.step3.employerPhone')}
+                placeholder={t('wizard.step4.employerPhone')}
                 icon={<IconPhone />}
                 value={projects[1]?.phone || ''}
                 onChange={updateProjectField(1, 'phone')}
@@ -2758,7 +2758,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     selected={parseDate(projects[1]?.start || '')}
                     onChange={handleDateChange(1, 'start')}
                     dateFormat="MM/dd/yyyy"
-                    placeholderText={t('wizard.step3.start')}
+                    placeholderText={t('wizard.step4.start')}
                     maxDate={new Date()}
                     showYearDropdown
                     showMonthDropdown
@@ -2782,7 +2782,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     selected={parseDate(projects[1]?.end || '')}
                     onChange={handleDateChange(1, 'end')}
                     dateFormat="MM/dd/yyyy"
-                    placeholderText={t('wizard.step3.end')}
+                    placeholderText={t('wizard.step4.end')}
                     maxDate={new Date()}
                     showYearDropdown
                     showMonthDropdown
@@ -2813,7 +2813,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                   }}
                 >
                   <option value="" className="placeholder-option" disabled>
-                    {t('wizard.step3.trade')}
+                    {t('wizard.step4.trade')}
                   </option>
                   {tradeOptions.map((trade) => (
                     <option key={trade} value={trade}>
@@ -2827,10 +2827,10 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
 
             {/* Project 3 */}
             <div className="project-card">
-              <div className="project-title">{t('wizard.step3.project')} 3</div>
+              <div className="project-title">{t('wizard.step4.project')} 3</div>
               
               <TextField
-                placeholder={t('wizard.step3.companyName')}
+                placeholder={t('wizard.step4.companyName')}
                 icon={<IconFolder />}
                 value={projects[2]?.name || ''}
                 onChange={updateProjectField(2, 'name')}
@@ -2838,7 +2838,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
               />
               
               <TextField
-                placeholder={t('wizard.step3.client')}
+                placeholder={t('wizard.step4.client')}
                 icon={<IconSupport />}
                 value={projects[2]?.client || ''}
                 onChange={updateProjectField(2, 'client')}
@@ -2846,7 +2846,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
               />
               
               <TextField
-                placeholder={t('wizard.step3.employerPhone')}
+                placeholder={t('wizard.step4.employerPhone')}
                 icon={<IconPhone />}
                 value={projects[2]?.phone || ''}
                 onChange={updateProjectField(2, 'phone')}
@@ -2859,7 +2859,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     selected={parseDate(projects[2]?.start || '')}
                     onChange={handleDateChange(2, 'start')}
                     dateFormat="MM/dd/yyyy"
-                    placeholderText={t('wizard.step3.start')}
+                    placeholderText={t('wizard.step4.start')}
                     maxDate={new Date()}
                     showYearDropdown
                     showMonthDropdown
@@ -2883,7 +2883,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     selected={parseDate(projects[2]?.end || '')}
                     onChange={handleDateChange(2, 'end')}
                     dateFormat="MM/dd/yyyy"
-                    placeholderText={t('wizard.step3.end')}
+                    placeholderText={t('wizard.step4.end')}
                     maxDate={new Date()}
                     showYearDropdown
                     showMonthDropdown
@@ -2914,7 +2914,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                   }}
                 >
                   <option value="" className="placeholder-option" disabled>
-                    {t('wizard.step3.trade')}
+                    {t('wizard.step4.trade')}
                   </option>
                   {tradeOptions.map((trade) => (
                     <option key={trade} value={trade}>
