@@ -688,7 +688,7 @@ import { useTranslation } from 'react-i18next'
 import { TextField } from '../../../common/components/TextField'
 import { IconUser, IconSupport, IconLocation } from '../../../common/components/Icons'
 
-export function WizardStep4({ data, onChange, onNext, onBack }) {
+export function WizardStep5({ data, onChange, onNext, onBack }) {
   const { t } = useTranslation()
   
   // ✅ FIX: Handle change - only update specific field
@@ -1030,4 +1030,4 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
   )
 }
 
-export default WizardStep4
+export default WizardStep5

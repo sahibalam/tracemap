@@ -2271,7 +2271,7 @@ import 'react-datepicker/dist/react-datepicker.css'
 import { TextField } from '../../../common/components/TextField'
 import { IconFolder, IconSupport, IconLocation, IconUser, IconPhone } from '../../../common/components/Icons'
 
-export function WizardStep3({ data, onChange, onNext, onBack }) {
+export function WizardStep4({ data, onChange, onNext, onBack }) {
   const { t } = useTranslation()
   
   // ✅ FIX: Update only the specific project field
@@ -2932,4 +2932,4 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
   )
 }
 
-export default WizardStep3
+export default WizardStep4
