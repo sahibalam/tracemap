@@ -7124,14 +7124,21 @@ export function WorkerSummaryPage() {
     })
   }
 
-  const handleEditTrade = () => {
-    navigate('/trade-profile/edit', {
-      state: {
-        tradeData: trade,
-        parentData: profile
-      }
-    })
-  }
+const handleEditTrade = () => {
+  // Navigate to the combined trade profile edit page
+  navigate('/trade-profile/edit', {
+    state: {
+      tradeData: {
+        mainTrade: trade.mainTrade || '',
+        skillGroups: trade.skillGroups || {},
+        skillDetails: trade.skillDetails || {},
+        toolsCertifications: trade.toolsCertifications || {},
+        heavyEquipment: trade.heavyEquipment || {},
+      },
+      parentData: profile
+    }
+  })
+}
 
   const handleEditWorkHistory = () => {
     navigate('/work-history/edit', {
