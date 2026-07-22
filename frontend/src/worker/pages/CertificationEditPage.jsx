@@ -4075,37 +4075,38 @@ export function CertificationEditPage() {
             setMainTrade(profile.data.trade.mainTrade)
           }
           
-          // Get certifications data
-          if (profile.data?.certifications) {
-            // Ensure certChecklist exists
-            const certs = profile.data.certifications
-            setCertData({
-              certChecklist: certs.certChecklist || {},
-              certRows: certs.certRows || [
-                { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
-                { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
-                { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
-              ],
-              safetyFlags: certs.safetyFlags || {},
-            })
-            console.log('✅ Certification data loaded from Workers table', certs.certChecklist)
-          } else {
-            // Initialize with empty data
-            setCertData({
-              certChecklist: {},
-              certRows: [
-                { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
-                { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
-                { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
-              ],
-              safetyFlags: {},
-            })
-            console.log('📝 Initialized empty certification data')
-          }
+          // ✅ CRITICAL FIX: Get certifications from trade.toolsCertifications (WizardStep3 data)
+          // The wizard stores tools/certifications in trade.toolsCertifications
+          const tradeData = profile.data.trade || {}
+          const toolsCerts = tradeData.toolsCertifications || {}
+          
+          // Also check if there's data in the certifications section (for backward compatibility)
+          const certsData = profile.data.certifications || {}
+          
+          // Merge: prefer trade.toolsCertifications, fallback to certifications.certChecklist
+          const checklistData = Object.keys(toolsCerts).length > 0 
+            ? toolsCerts 
+            : (certsData.certChecklist || {})
+          
+          console.log('✅ Tools/Certifications loaded from trade:', Object.keys(checklistData))
+          console.log('📋 certChecklist:', checklistData)
+          
+          // Get certRows from certifications section (these are separate from tools checklist)
+          const certRows = certsData.certRows || [
+            { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+            { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+            { name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' },
+          ]
+          
+          setCertData({
+            certChecklist: checklistData,
+            certRows: certRows,
+            safetyFlags: certsData.safetyFlags || {},
+          })
           
           // Auto-expand the section for the main trade
-          if (profile.data?.trade?.mainTrade) {
-            setExpandedSections({ [profile.data.trade.mainTrade]: true })
+          if (mainTrade) {
+            setExpandedSections({ [mainTrade]: true })
           }
         }
       } catch (error) {
@@ -4117,7 +4118,7 @@ export function CertificationEditPage() {
     }
 
     loadCertifications()
-  }, [])
+  }, [mainTrade])
 
   // ============================================================
   // HANDLERS
@@ -4127,7 +4128,6 @@ export function CertificationEditPage() {
     setCertData(prev => ({ ...prev, [field]: value }))
   }
 
-  // ✅ FIXED: Properly toggle certification checklist items
   const toggleCertChecklist = (key) => (e) => {
     const isChecked = e.target.checked
     console.log(`🔄 Toggling ${key}: ${isChecked}`)
@@ -4309,22 +4309,28 @@ export function CertificationEditPage() {
       console.log('💾 Saving certifications to Workers table')
       console.log('📋 certChecklist:', certData.certChecklist)
 
-      const hasChecklist = Object.values(certData.certChecklist || {}).some(v => v === true)
-      const hasSafetyFlags = Object.values(certData.safetyFlags || {}).some(v => v === true)
-      const hasCertRows = (certData.certRows || []).some(row => 
-        row.name || row.cardNumber || row.uploadRef
-      )
-
-      // Allow saving even if empty (user might want to clear everything)
-      // Just save the data as is
-
+      // ✅ Save to both trade.toolsCertifications AND certifications.certChecklist for consistency
+      // First, get the current profile to update trade section
+      const profile = await workerService.getWorkerProfile(userId)
+      const currentTrade = profile.data?.trade || {}
+      
+      // Update trade.toolsCertifications with the checklist data
+      const updatedTrade = {
+        ...currentTrade,
+        toolsCertifications: certData.certChecklist || {},
+      }
+      
+      // Save to trade section
+      await workerService.updateTrade(userId, updatedTrade)
+      
+      // Also save to certifications section for compatibility
       await workerService.updateCertifications(userId, {
         certChecklist: certData.certChecklist || {},
         certRows: certData.certRows || [],
         safetyFlags: certData.safetyFlags || {},
       })
       
-      console.log('✅ Certifications saved to Workers table')
+      console.log('✅ Certifications saved to Workers table (both trade and certifications sections)')
       setSuccess('Certifications saved successfully!')
 
       setTimeout(() => {
