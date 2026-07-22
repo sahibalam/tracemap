@@ -8867,52 +8867,166 @@ export function WorkerSummaryPage() {
               </div>
             </div>
 
-            {/* ============================================================
-            Row 2: Work History
-            ============================================================ */}
-            <div className="wizardSummaryWideCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', marginBottom: '20px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.workHistory')}</span>
-                <button 
-                  type="button" 
-                  onClick={handleEditWorkHistory}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    color: '#0f4ea9', 
-                    cursor: 'pointer',
-                    padding: '4px 8px',
-                    borderRadius: '6px',
-                    transition: 'background 0.2s',
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
-                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                >
-                  <IconPencil />
-                </button>
-              </div>
-              <div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '8px 12px', borderBottom: '2px solid rgba(18,38,63,0.08)', fontWeight: 600, fontSize: '12px', color: 'rgba(23,38,58,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                  <div>{t('summary.project')}</div>
-                  <div>{t('summary.company')}</div>
-                  <div>{t('summary.trade')}</div>
-                  <div>{t('summary.role')}</div>
-                </div>
-                {(projects.length > 0 ? projects : fallbackProjects).map((p, idx) => {
-                  const projectTrade = p.trade || p.projectTrade || p.primaryTrade || p.tradeType || (p.trade && p.trade.name) || ''
-                  const projectCompany = p.client || p.company || ''
-                  
-                  return (
-                    <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length > 0 ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
-                      <div style={{ wordBreak: 'break-word' }}>{displayValue(p.name)}</div>
-                      <div style={{ wordBreak: 'break-word' }}>{displayValue(projectCompany)}</div>
-                      <div style={{ wordBreak: 'break-word' }}>{displayValue(projectTrade)}</div>
-                      <div style={{ wordBreak: 'break-word' }}>{displayValue(p.role)}</div>
-                    </div>
-                  )
-                })}
-              </div>
+           {/* ============================================================
+Row 2: Work History - UPDATED
+============================================================ */}
+<div className="wizardSummaryWideCard" style={{ 
+  padding: '20px', 
+  border: '1px solid rgba(18,38,63,0.08)', 
+  borderRadius: '12px', 
+  background: 'white', 
+  marginBottom: '20px' 
+}}>
+  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+    <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.workHistory')}</span>
+    <button 
+      type="button" 
+      onClick={handleEditWorkHistory}
+      style={{ 
+        background: 'none', 
+        border: 'none', 
+        color: '#0f4ea9', 
+        cursor: 'pointer',
+        padding: '4px 8px',
+        borderRadius: '6px',
+        transition: 'background 0.2s',
+      }}
+      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+    >
+      <IconPencil />
+    </button>
+  </div>
+  
+  {projects.length > 0 ? (
+    <div>
+      {/* Header Row */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1.2fr 1.2fr 1fr 1fr 0.6fr', 
+        gap: '12px', 
+        padding: '10px 12px', 
+        borderBottom: '2px solid rgba(18,38,63,0.08)', 
+        fontWeight: 600, 
+        fontSize: '11px', 
+        color: 'rgba(23,38,58,0.5)', 
+        textTransform: 'uppercase', 
+        letterSpacing: '0.5px',
+        backgroundColor: 'rgba(15, 78, 169, 0.03)',
+        borderRadius: '8px 8px 0 0',
+      }}>
+        <div>{t('summary.project')}</div>
+        <div>{t('summary.company')}</div>
+        <div>{t('summary.trade')}</div>
+        <div>{t('summary.role')}</div>
+        <div style={{ textAlign: 'center' }}>Dates</div>
+      </div>
+
+      {/* Project Rows */}
+      {projects.map((p, idx) => {
+        const projectTrade = p.trade || p.projectTrade || p.primaryTrade || p.tradeType || (p.trade && p.trade.name) || ''
+        const projectCompany = p.client || p.company || ''
+        const startDate = p.start || p.startDate || ''
+        const endDate = p.end || p.endDate || ''
+        const dateDisplay = startDate || endDate ? `${startDate} - ${endDate}` : '—'
+        
+        return (
+          <div 
+            key={idx} 
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: '1.2fr 1.2fr 1fr 1fr 0.6fr', 
+              gap: '12px', 
+              padding: '12px 12px', 
+              borderBottom: idx < projects.length - 1 ? '1px solid rgba(18,38,63,0.06)' : 'none',
+              fontSize: '14px', 
+              color: '#17263a',
+              backgroundColor: idx % 2 === 0 ? 'rgba(15, 78, 169, 0.02)' : 'transparent',
+              transition: 'background-color 0.2s',
+            }}
+            onMouseEnter={(e) => {
+              if (idx % 2 === 0) {
+                e.currentTarget.style.backgroundColor = 'rgba(15, 78, 169, 0.06)'
+              } else {
+                e.currentTarget.style.backgroundColor = 'rgba(15, 78, 169, 0.04)'
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = idx % 2 === 0 ? 'rgba(15, 78, 169, 0.02)' : 'transparent'
+            }}
+          >
+            <div style={{ 
+              fontWeight: 500, 
+              color: '#0f4ea9',
+              wordBreak: 'break-word',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}>
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                background: 'rgba(15, 78, 169, 0.1)',
+                color: '#0f4ea9',
+                fontSize: '10px',
+                fontWeight: 700,
+                flexShrink: 0
+              }}>
+                {idx + 1}
+              </span>
+              {displayValue(p.name, 'Untitled Project')}
             </div>
+            <div style={{ wordBreak: 'break-word', color: '#17263a' }}>{displayValue(projectCompany)}</div>
+            <div>
+              {projectTrade ? (
+                <span style={{
+                  display: 'inline-block',
+                  padding: '2px 10px',
+                  background: 'rgba(15, 78, 169, 0.08)',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  color: '#0f4ea9',
+                  fontWeight: 500,
+                }}>
+                  {projectTrade}
+                </span>
+              ) : (
+                <span style={{ color: 'rgba(23,38,58,0.4)' }}>—</span>
+              )}
+            </div>
+            <div style={{ wordBreak: 'break-word' }}>{displayValue(p.role)}</div>
+            <div style={{ 
+              textAlign: 'center', 
+              fontSize: '12px', 
+              color: 'rgba(23,38,58,0.6)',
+              fontWeight: 500,
+              whiteSpace: 'nowrap'
+            }}>
+              {dateDisplay}
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  ) : (
+    <div style={{ 
+      textAlign: 'center', 
+      padding: '40px 20px',
+      color: 'rgba(23,38,58,0.4)',
+      fontSize: '14px',
+    }}>
+      <div style={{ fontSize: '40px', marginBottom: '12px' }}>📋</div>
+      <div>{t('summary.noProjects')}</div>
+      <div style={{ fontSize: '12px', marginTop: '4px' }}>
+        Add your work history to showcase your experience
+      </div>
+    </div>
+  )}
+</div>
 
             {/* ============================================================
             Row 3: Availability, Certifications, Tax, Payment
