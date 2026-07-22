@@ -8868,7 +8868,7 @@ export function WorkerSummaryPage() {
             </div>
 
            {/* ============================================================
-Row 2: Work History - UPDATED
+Row 2: Work History - UPDATED (Role column removed)
 ============================================================ */}
 <div className="wizardSummaryWideCard" style={{ 
   padding: '20px', 
@@ -8900,10 +8900,10 @@ Row 2: Work History - UPDATED
   
   {projects.length > 0 ? (
     <div>
-      {/* Header Row */}
+      {/* Header Row - 4 columns (Role removed) */}
       <div style={{ 
         display: 'grid', 
-        gridTemplateColumns: '1.2fr 1.2fr 1fr 1fr 0.6fr', 
+        gridTemplateColumns: '1.5fr 1.5fr 1.2fr 0.8fr', 
         gap: '12px', 
         padding: '10px 12px', 
         borderBottom: '2px solid rgba(18,38,63,0.08)', 
@@ -8918,11 +8918,10 @@ Row 2: Work History - UPDATED
         <div>{t('summary.project')}</div>
         <div>{t('summary.company')}</div>
         <div>{t('summary.trade')}</div>
-        <div>{t('summary.role')}</div>
         <div style={{ textAlign: 'center' }}>Dates</div>
       </div>
 
-      {/* Project Rows */}
+      {/* Project Rows - 4 columns (Role removed) */}
       {projects.map((p, idx) => {
         const projectTrade = p.trade || p.projectTrade || p.primaryTrade || p.tradeType || (p.trade && p.trade.name) || ''
         const projectCompany = p.client || p.company || ''
@@ -8935,7 +8934,7 @@ Row 2: Work History - UPDATED
             key={idx} 
             style={{ 
               display: 'grid', 
-              gridTemplateColumns: '1.2fr 1.2fr 1fr 1fr 0.6fr', 
+              gridTemplateColumns: '1.5fr 1.5fr 1.2fr 0.8fr', 
               gap: '12px', 
               padding: '12px 12px', 
               borderBottom: idx < projects.length - 1 ? '1px solid rgba(18,38,63,0.06)' : 'none',
@@ -8998,7 +8997,6 @@ Row 2: Work History - UPDATED
                 <span style={{ color: 'rgba(23,38,58,0.4)' }}>—</span>
               )}
             </div>
-            <div style={{ wordBreak: 'break-word' }}>{displayValue(p.role)}</div>
             <div style={{ 
               textAlign: 'center', 
               fontSize: '12px', 
