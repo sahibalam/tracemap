@@ -8107,9 +8107,6 @@ export function WorkerSummaryPage() {
         return response.data.data.viewUrl
       }
       return null
-    } catch (error) {
-      console.error('❌ Error getting fresh profile image:', error)
-      return null
     } finally {
       setImageLoading(false)
     }
@@ -8138,7 +8135,6 @@ export function WorkerSummaryPage() {
           console.log('✅ Profile loaded from DynamoDB')
           setProfile(result.data)
           
-          // ✅ Get fresh profile image URL if exists
           const basics = result.data.basics || {}
           if (basics.profileImageKey) {
             const freshUrl = await getFreshProfileImage(basics.profileImageKey)
@@ -8188,7 +8184,6 @@ export function WorkerSummaryPage() {
   const payment = profile.payment || {}
   const emergency = profile.emergency || {}
 
-  // ✅ Get trade data - combined from WizardStep2 and WizardStep3
   const mainTrade = trade.mainTrade || ''
   const skillGroups = trade.skillGroups || {}
   const skillDetails = trade.skillDetails || {}
@@ -8245,18 +8240,14 @@ export function WorkerSummaryPage() {
     { name: t('summary.noProjects'), client: '—', role: '—', trade: '—' },
   ]
 
-  // ✅ Use profileImage state for the image src
   const imageSrc = profileImage || basics.profilePreview || "/assets/worker.avif"
 
-  // ✅ Get selected tools count
   const selectedToolsCount = Object.values(toolsCertifications).filter(v => v === true).length
   const totalToolsCount = Object.keys(toolsCertifications).length
 
-  // ✅ Get selected heavy equipment count
   const selectedHeavyCount = Object.values(heavyEquipment).filter(v => v === true).length
   const totalHeavyCount = Object.keys(heavyEquipment).length
 
-  // ✅ Get skill groups with their details
   const getSkillGroupsWithDetails = () => {
     const groups = Object.keys(skillGroups).filter(key => skillGroups[key] === true)
     return groups.map(group => ({
@@ -8578,7 +8569,7 @@ export function WorkerSummaryPage() {
                 </div>
               </div>
 
-              {/* ✅ UPDATED Trade Profile Card - Combines WizardStep2 & WizardStep3 */}
+              {/* Trade Profile Card */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.tradeProfile')}</span>
@@ -8601,207 +8592,207 @@ export function WorkerSummaryPage() {
                   </button>
                 </div>
                 <div>
-                  {/* Main Trade */}
                   {mainTrade ? (
-                    <div style={{ marginBottom: '12px' }}>
-                      <div style={{ 
-                        display: 'inline-block',
-                        padding: '4px 16px',
-                        background: 'rgba(15, 78, 169, 0.08)',
-                        border: '1px solid rgba(15, 78, 169, 0.15)',
-                        borderRadius: '20px',
-                        fontSize: '13px',
-                        fontWeight: 600,
-                        color: '#0f4ea9',
-                      }}>
-                        {mainTrade}
-                      </div>
-                    </div>
-                  ) : (
-                    <div style={{ color: 'rgba(23,38,58,0.4)', fontSize: '14px', textAlign: 'center', padding: '8px 0' }}>
-                      {t('summary.noTradeInfo')}
-                    </div>
-                  )}
-
-                  {/* Skill Groups */}
-                  {skillGroupsList.length > 0 && (
-                    <div style={{ marginBottom: '10px' }}>
-                      <div style={{ 
-                        fontSize: '12px', 
-                        fontWeight: 600, 
-                        color: 'rgba(23,38,58,0.5)',
-                        marginBottom: '4px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        {t('wizard.step2.skillGroups')}
-                      </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                        {skillGroupsList.slice(0, 3).map((group, idx) => (
-                          <span key={idx} style={{
-                            fontSize: '12px',
-                            background: 'rgba(15, 78, 169, 0.06)',
-                            color: '#17263a',
-                            padding: '2px 10px',
-                            borderRadius: '12px',
-                            border: '1px solid rgba(15, 78, 169, 0.08)',
-                          }}>
-                            {group.name}
-                            {group.experience && (
-                              <span style={{ 
-                                marginLeft: '4px',
-                                fontSize: '10px',
-                                color: '#0f4ea9',
-                                fontWeight: 500
-                              }}>
-                                ({group.experience})
-                              </span>
-                            )}
-                          </span>
-                        ))}
-                        {skillGroupsList.length > 3 && (
-                          <span style={{
-                            fontSize: '12px',
-                            color: 'rgba(23,38,58,0.5)',
-                            padding: '2px 10px',
-                          }}>
-                            +{skillGroupsList.length - 3} more
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Tools & Certifications */}
-                  {totalToolsCount > 0 && (
-                    <div style={{ marginBottom: '6px' }}>
-                      <div style={{ 
-                        display: 'flex', 
-                        alignItems: 'center', 
-                        justifyContent: 'space-between',
-                        cursor: 'pointer',
-                        padding: '4px 0',
-                        onClick={toggleToolsExpansion}
-                      }}>
+                    <>
+                      <div style={{ marginBottom: '12px' }}>
                         <div style={{ 
-                          fontSize: '12px', 
-                          fontWeight: 600, 
-                          color: 'rgba(23,38,58,0.5)',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '6px'
+                          display: 'inline-block',
+                          padding: '4px 16px',
+                          background: 'rgba(15, 78, 169, 0.08)',
+                          border: '1px solid rgba(15, 78, 169, 0.15)',
+                          borderRadius: '20px',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          color: '#0f4ea9',
                         }}>
-                          <IconWrench style={{ color: 'rgba(23,38,58,0.4)' }} />
-                          {t('wizard.step3.toolsCertifications')}
-                          <span style={{
-                            fontSize: '11px',
-                            color: '#2fb463',
-                            fontWeight: 500,
-                          }}>
-                            ({selectedToolsCount}/{totalToolsCount})
-                          </span>
+                          {mainTrade}
                         </div>
-                        <IconChevronRight style={{ 
-                          transform: expandedTools ? 'rotate(90deg)' : 'rotate(0deg)',
-                          transition: 'transform 0.2s',
-                          color: 'rgba(23,38,58,0.4)'
-                        }} />
                       </div>
-                      
-                      {expandedTools && (
-                        <div style={{ 
-                          marginTop: '6px',
-                          padding: '8px 10px',
-                          background: 'rgba(15, 78, 169, 0.03)',
-                          borderRadius: '6px',
-                          border: '1px solid rgba(15, 78, 169, 0.06)',
-                        }}>
+
+                      {skillGroupsList.length > 0 && (
+                        <div style={{ marginBottom: '10px' }}>
+                          <div style={{ 
+                            fontSize: '12px', 
+                            fontWeight: 600, 
+                            color: 'rgba(23,38,58,0.5)',
+                            marginBottom: '4px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.5px'
+                          }}>
+                            {t('wizard.step2.skillGroups')}
+                          </div>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                            {Object.keys(toolsCertifications)
-                              .filter(key => toolsCertifications[key] === true)
-                              .slice(0, 8)
-                              .map((tool, idx) => (
-                                <span key={idx} style={{
-                                  fontSize: '11px',
-                                  background: 'rgba(47, 180, 99, 0.08)',
-                                  color: '#065f46',
-                                  padding: '2px 8px',
-                                  borderRadius: '12px',
-                                  border: '1px solid rgba(47, 180, 99, 0.1)',
-                                }}>
-                                  <IconCheck style={{ width: '10px', height: '10px', marginRight: '2px' }} />
-                                  {tool}
-                                </span>
-                              ))}
-                            {Object.keys(toolsCertifications).filter(key => toolsCertifications[key] === true).length > 8 && (
-                              <span style={{
-                                fontSize: '11px',
-                                color: 'rgba(23,38,58,0.5)',
-                                padding: '2px 8px',
+                            {skillGroupsList.slice(0, 3).map((group, idx) => (
+                              <span key={idx} style={{
+                                fontSize: '12px',
+                                background: 'rgba(15, 78, 169, 0.06)',
+                                color: '#17263a',
+                                padding: '2px 10px',
+                                borderRadius: '12px',
+                                border: '1px solid rgba(15, 78, 169, 0.08)',
                               }}>
-                                +{Object.keys(toolsCertifications).filter(key => toolsCertifications[key] === true).length - 8} more
+                                {group.name}
+                                {group.experience && (
+                                  <span style={{ 
+                                    marginLeft: '4px',
+                                    fontSize: '10px',
+                                    color: '#0f4ea9',
+                                    fontWeight: 500
+                                  }}>
+                                    ({group.experience})
+                                  </span>
+                                )}
+                              </span>
+                            ))}
+                            {skillGroupsList.length > 3 && (
+                              <span style={{
+                                fontSize: '12px',
+                                color: 'rgba(23,38,58,0.5)',
+                                padding: '2px 10px',
+                              }}>
+                                +{skillGroupsList.length - 3} more
                               </span>
                             )}
                           </div>
                         </div>
                       )}
-                    </div>
-                  )}
 
-                  {/* Heavy Equipment (Civil only) */}
-                  {totalHeavyCount > 0 && (
-                    <div style={{ marginTop: '4px' }}>
-                      <div style={{ 
-                        fontSize: '11px', 
-                        color: 'rgba(23,38,58,0.5)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px'
-                      }}>
-                        🚜 {t('wizard.step3.heavyEquipment')}
-                        <span style={{
-                          fontSize: '11px',
-                          color: '#2fb463',
-                          fontWeight: 500,
-                        }}>
-                          ({selectedHeavyCount}/{totalHeavyCount})
-                        </span>
-                      </div>
-                      {selectedHeavyCount > 0 && (
-                        <div style={{ 
-                          display: 'flex', 
-                          flexWrap: 'wrap', 
-                          gap: '4px',
-                          marginTop: '4px'
-                        }}>
-                          {Object.keys(heavyEquipment)
-                            .filter(key => heavyEquipment[key] === true)
-                            .slice(0, 4)
-                            .map((item, idx) => (
-                              <span key={idx} style={{
-                                fontSize: '10px',
-                                background: 'rgba(15, 78, 169, 0.06)',
-                                color: '#17263a',
-                                padding: '1px 8px',
-                                borderRadius: '10px',
-                                border: '1px solid rgba(15, 78, 169, 0.08)',
-                              }}>
-                                {item}
-                              </span>
-                            ))}
-                          {Object.keys(heavyEquipment).filter(key => heavyEquipment[key] === true).length > 4 && (
-                            <span style={{
-                              fontSize: '10px',
+                      {totalToolsCount > 0 && (
+                        <div style={{ marginBottom: '6px' }}>
+                          <div 
+                            style={{ 
+                              display: 'flex', 
+                              alignItems: 'center', 
+                              justifyContent: 'space-between',
+                              cursor: 'pointer',
+                              padding: '4px 0',
+                            }}
+                            onClick={toggleToolsExpansion}
+                          >
+                            <div style={{ 
+                              fontSize: '12px', 
+                              fontWeight: 600, 
                               color: 'rgba(23,38,58,0.5)',
-                              padding: '1px 8px',
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.5px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px'
                             }}>
-                              +{Object.keys(heavyEquipment).filter(key => heavyEquipment[key] === true).length - 4}
-                            </span>
+                              <IconWrench style={{ color: 'rgba(23,38,58,0.4)' }} />
+                              {t('wizard.step3.toolsCertifications')}
+                              <span style={{
+                                fontSize: '11px',
+                                color: '#2fb463',
+                                fontWeight: 500,
+                              }}>
+                                ({selectedToolsCount}/{totalToolsCount})
+                              </span>
+                            </div>
+                            <IconChevronRight style={{ 
+                              transform: expandedTools ? 'rotate(90deg)' : 'rotate(0deg)',
+                              transition: 'transform 0.2s',
+                              color: 'rgba(23,38,58,0.4)'
+                            }} />
+                          </div>
+                          
+                          {expandedTools && (
+                            <div style={{ 
+                              marginTop: '6px',
+                              padding: '8px 10px',
+                              background: 'rgba(15, 78, 169, 0.03)',
+                              borderRadius: '6px',
+                              border: '1px solid rgba(15, 78, 169, 0.06)',
+                            }}>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                                {Object.keys(toolsCertifications)
+                                  .filter(key => toolsCertifications[key] === true)
+                                  .slice(0, 8)
+                                  .map((tool, idx) => (
+                                    <span key={idx} style={{
+                                      fontSize: '11px',
+                                      background: 'rgba(47, 180, 99, 0.08)',
+                                      color: '#065f46',
+                                      padding: '2px 8px',
+                                      borderRadius: '12px',
+                                      border: '1px solid rgba(47, 180, 99, 0.1)',
+                                    }}>
+                                      <IconCheck style={{ width: '10px', height: '10px', marginRight: '2px' }} />
+                                      {tool}
+                                    </span>
+                                  ))}
+                                {Object.keys(toolsCertifications).filter(key => toolsCertifications[key] === true).length > 8 && (
+                                  <span style={{
+                                    fontSize: '11px',
+                                    color: 'rgba(23,38,58,0.5)',
+                                    padding: '2px 8px',
+                                  }}>
+                                    +{Object.keys(toolsCertifications).filter(key => toolsCertifications[key] === true).length - 8} more
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           )}
                         </div>
                       )}
+
+                      {totalHeavyCount > 0 && (
+                        <div style={{ marginTop: '4px' }}>
+                          <div style={{ 
+                            fontSize: '11px', 
+                            color: 'rgba(23,38,58,0.5)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                          }}>
+                            🚜 {t('wizard.step3.heavyEquipment')}
+                            <span style={{
+                              fontSize: '11px',
+                              color: '#2fb463',
+                              fontWeight: 500,
+                            }}>
+                              ({selectedHeavyCount}/{totalHeavyCount})
+                            </span>
+                          </div>
+                          {selectedHeavyCount > 0 && (
+                            <div style={{ 
+                              display: 'flex', 
+                              flexWrap: 'wrap', 
+                              gap: '4px',
+                              marginTop: '4px'
+                            }}>
+                              {Object.keys(heavyEquipment)
+                                .filter(key => heavyEquipment[key] === true)
+                                .slice(0, 4)
+                                .map((item, idx) => (
+                                  <span key={idx} style={{
+                                    fontSize: '10px',
+                                    background: 'rgba(15, 78, 169, 0.06)',
+                                    color: '#17263a',
+                                    padding: '1px 8px',
+                                    borderRadius: '10px',
+                                    border: '1px solid rgba(15, 78, 169, 0.08)',
+                                  }}>
+                                    {item}
+                                  </span>
+                                ))}
+                              {Object.keys(heavyEquipment).filter(key => heavyEquipment[key] === true).length > 4 && (
+                                <span style={{
+                                  fontSize: '10px',
+                                  color: 'rgba(23,38,58,0.5)',
+                                  padding: '1px 8px',
+                                }}>
+                                  +{Object.keys(heavyEquipment).filter(key => heavyEquipment[key] === true).length - 4}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div style={{ color: 'rgba(23,38,58,0.4)', fontSize: '14px', textAlign: 'center', padding: '12px 0' }}>
+                      {t('summary.noTradeInfo')}
                     </div>
                   )}
                 </div>
