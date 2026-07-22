@@ -6848,6 +6848,1124 @@
 
 
 
+// // src/worker/pages/WorkerSummaryPage.jsx
+// import { useState, useEffect } from 'react'
+// import { useNavigate } from 'react-router-dom'
+// import { useTranslation } from 'react-i18next'
+// import { TopNav } from '../../common/components/TopNav'
+// import workerService from '../services/workerService'
+// import api from '../../services/api'
+
+// // Icons
+// function IconGrid(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconFolder(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconChart(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconLogout(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconSupport(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.9-6.4h1.8V17h-1.8v-1.4zm1.8-2.2h-1.8c0-2.6 3-2.3 3-4.4 0-1.1-.9-1.8-2.1-1.8-1.1 0-2 .7-2.1 1.8H8.1c.1-2.1 1.9-3.6 4-3.6 2.3 0 3.9 1.4 3.9 3.5 0 2.7-3 2.7-3 4.5z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconUser(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconPencil(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25ZM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconCheckCircle(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconTrophy(props) {
+//   return (
+//     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconChevronRight(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6-6-6z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// export function WorkerSummaryPage() {
+//   const { t } = useTranslation()
+//   const navigate = useNavigate()
+  
+//   // ============================================================
+//   // STATE MANAGEMENT
+//   // ============================================================
+  
+//   const [profile, setProfile] = useState({})
+//   const [loading, setLoading] = useState(true)
+//   const [error, setError] = useState('')
+//   const [profileImage, setProfileImage] = useState('')
+//   const [imageLoading, setImageLoading] = useState(false)
+//   const [expandedTrade, setExpandedTrade] = useState(null)
+
+//   // ============================================================
+//   // ✅ GET FRESH PROFILE IMAGE URL
+//   // ============================================================
+  
+//   const getFreshProfileImage = async (fileKey) => {
+//     if (!fileKey) return null
+    
+//     try {
+//       console.log('🔄 Getting fresh profile image URL for:', fileKey)
+//       setImageLoading(true)
+      
+//       const response = await api.get(`/upload/view/${encodeURIComponent(fileKey)}`)
+      
+//       if (response.data.success && response.data.data.viewUrl) {
+//         console.log('✅ Fresh profile image URL generated')
+//         return response.data.data.viewUrl
+//       }
+//       return null
+//     } catch (error) {
+//       console.error('❌ Error getting fresh profile image:', error)
+//       return null
+//     } finally {
+//       setImageLoading(false)
+//     }
+//   }
+
+//   // ============================================================
+//   // ✅ ALWAYS FETCH FROM DYNAMODB
+//   // ============================================================
+  
+//   useEffect(() => {
+//     const loadProfile = async () => {
+//       try {
+//         const userId = localStorage.getItem('userId')
+        
+//         if (!userId) {
+//           setError('User not logged in. Please login again.')
+//           setLoading(false)
+//           return
+//         }
+
+//         console.log('📊 Fetching profile from DynamoDB for user:', userId)
+        
+//         const result = await workerService.getWorkerProfile(userId)
+        
+//         if (result.success && result.data) {
+//           console.log('✅ Profile loaded from DynamoDB')
+//           setProfile(result.data)
+          
+//           // ✅ Get fresh profile image URL if exists
+//           const basics = result.data.basics || {}
+//           if (basics.profileImageKey) {
+//             const freshUrl = await getFreshProfileImage(basics.profileImageKey)
+//             if (freshUrl) {
+//               setProfileImage(freshUrl)
+//               // ✅ Also update the profile data with fresh URL
+//               setProfile(prev => ({
+//                 ...prev,
+//                 basics: {
+//                   ...prev.basics,
+//                   profilePreview: freshUrl
+//                 }
+//               }))
+//             } else if (basics.profilePreview) {
+//               // Fallback to stored URL (might be expired)
+//               setProfileImage(basics.profilePreview)
+//             }
+//           } else {
+//             // No profile image
+//             setProfileImage('/assets/worker.avif')
+//           }
+          
+//           setError('')
+//         } else {
+//           setError('No profile data found. Please complete the wizard.')
+//         }
+//       } catch (error) {
+//         console.error('❌ Error loading profile:', error)
+//         setError(error.message || 'Failed to load profile')
+//       } finally {
+//         setLoading(false)
+//       }
+//     }
+
+//     loadProfile()
+//   }, [])
+
+//   // ============================================================
+//   // DATA EXTRACTION
+//   // ============================================================
+  
+//   const basics = profile.basics || {}
+//   const trade = profile.trade || {}
+//   const workHistory = profile.workHistory || {}
+//   const projects = workHistory.projects || []
+//   const availability = profile.availability || {}
+//   const medical = profile.medical || {}
+//   const certifications = profile.certifications || {}
+//   const tax = profile.tax || {}
+//   const payment = profile.payment || {}
+//   const emergency = profile.emergency || {}
+
+//   // ✅ Get trade rows from trade data
+//   const tradeRows = trade.tradeRows || []
+//   const additionalSkillsTools = trade.additionalSkillsTools || ''
+
+//   // ============================================================
+//   // HELPER FUNCTIONS
+//   // ============================================================
+  
+//   const displayValue = (value, placeholder = '—') => {
+//     if (value === null || value === undefined || value === '') {
+//       return placeholder
+//     }
+//     if (typeof value === 'string' && value.trim() === '') {
+//       return placeholder
+//     }
+//     return value
+//   }
+
+//   const formatPhone = (phone) => {
+//     if (!phone) return '—'
+//     const cleaned = phone.replace(/\D/g, '')
+//     if (cleaned.length === 10) {
+//       return `(${cleaned.slice(0, 3)}) ${cleaned.slice(3, 6)}-${cleaned.slice(6)}`
+//     }
+//     return phone
+//   }
+
+//   const fullName = [basics.legalFirstName, basics.legalLastName].filter(Boolean).join(' ') || '—'
+//   const address = [basics.addressLine1, basics.city, basics.stateCode, basics.zip].filter(Boolean).join(', ')
+  
+//   const language = basics.english ? (basics.spanish ? t('summary.languages.both') : t('summary.languages.english')) : (basics.spanish ? t('summary.languages.spanish') : '—')
+  
+//   const certChecklist = certifications.certChecklist || {}
+//   const certNames = Object.keys(certChecklist).filter(key => certChecklist[key])
+//   const certText = certNames.length > 0 ? certNames.join(', ') : t('summary.noCertifications')
+  
+//   const avail = availability.availability || {}
+//   const availableDays = Object.keys(avail).filter(key => avail[key])
+//   const availabilityText = availableDays.length > 0 ? availableDays.map(d => t(`summary.days.${d.toLowerCase()}`) || d.charAt(0).toUpperCase() + d.slice(1)).join(', ') : t('summary.notSpecified')
+  
+//   const taxPath = tax.classificationPath || ''
+//   const taxText = taxPath === 'employee' ? t('summary.w2Employee') : taxPath === 'subcontractor' ? t('summary.contractor') : '—'
+  
+//   const medicalFlags = medical.emergencyMedicalFlags || {}
+//   const allergies = Object.keys(medicalFlags).filter(key => medicalFlags[key])
+//   const allergiesText = allergies.length > 0 ? allergies.join(', ') : t('summary.noAllergies')
+  
+//   const bankName = payment.bankName || t('summary.notSet')
+//   const achEnabled = payment.achEnabled ? t('summary.enabled') : t('summary.notEnabled')
+
+//   const fallbackProjects = [
+//     { name: t('summary.noProjects'), client: '—', role: '—', trade: '—' },
+//   ]
+
+//   // ✅ Use profileImage state for the image src
+//   const imageSrc = profileImage || basics.profilePreview || "/assets/worker.avif"
+
+//   // ============================================================
+//   // NAVIGATION HANDLERS
+//   // ============================================================
+  
+//   const handleEditBasic = () => {
+//     navigate('/basic-info/edit', {
+//       state: {
+//         basicData: basics,
+//         parentData: profile
+//       }
+//     })
+//   }
+
+// const handleEditTrade = () => {
+//   // Navigate to the combined trade profile edit page
+//   navigate('/trade-profile/edit', {
+//     state: {
+//       tradeData: {
+//         mainTrade: trade.mainTrade || '',
+//         skillGroups: trade.skillGroups || {},
+//         skillDetails: trade.skillDetails || {},
+//         toolsCertifications: trade.toolsCertifications || {},
+//         heavyEquipment: trade.heavyEquipment || {},
+//       },
+//       parentData: profile
+//     }
+//   })
+// }
+
+//   const handleEditWorkHistory = () => {
+//     navigate('/work-history/edit', {
+//       state: {
+//         workHistoryData: workHistory,
+//         parentData: profile
+//       }
+//     })
+//   }
+
+//   const handleEditAvailability = () => {
+//     navigate('/availability/edit', {
+//       state: {
+//         availabilityData: availability,
+//         parentData: profile
+//       }
+//     })
+//   }
+
+//   const handleEditCertifications = () => {
+//     navigate('/certification/edit', {
+//       state: {
+//         certData: certifications,
+//         parentData: profile
+//       }
+//     })
+//   }
+
+//   const handleEditTax = () => {
+//     navigate('/tax/edit', {
+//       state: {
+//         taxData: tax,
+//         parentData: profile
+//       }
+//     })
+//   }
+
+//   const handleEditPayment = () => {
+//     navigate('/payment/edit', {
+//       state: {
+//         paymentData: payment,
+//         parentData: profile
+//       }
+//     })
+//   }
+
+//   const handleEditMedical = () => {
+//     navigate('/medical/edit', {
+//       state: {
+//         medicalData: medical,
+//         parentData: profile
+//       }
+//     })
+//   }
+
+//   const handleEditEmergency = () => {
+//     navigate('/emergency-contact/edit', {
+//       state: {
+//         emergencyData: emergency,
+//         parentData: profile
+//       }
+//     })
+//   }
+
+//   // ============================================================
+//   // TRADE DISPLAY HELPERS
+//   // ============================================================
+  
+//   const getTradeDisplayName = (row) => {
+//     if (row.trade === 'Other' && row.otherTrade) {
+//       return row.otherTrade
+//     }
+//     return row.trade || '—'
+//   }
+
+//   const getSkillsList = (row) => {
+//     if (!row.skills) return []
+//     return Object.keys(row.skills).filter(key => row.skills[key])
+//   }
+
+//   const getResponsibilitiesList = (row) => {
+//     if (!row.responsibilities) return []
+//     return Object.keys(row.responsibilities).filter(key => row.responsibilities[key])
+//   }
+
+//   const getLevelAbbreviation = (level) => {
+//     if (level === 'Helper') return 'H'
+//     if (level === 'Mechanic') return 'M'
+//     if (level === 'Advanced Mechanic') return 'A'
+//     if (level === 'Lead Helper') return 'LH'
+//     if (level === 'Lead') return 'L'
+//     if (level === 'Lead/Foreman') return 'LF'
+//     return level
+//   }
+
+//   const toggleTradeExpansion = (index) => {
+//     setExpandedTrade(expandedTrade === index ? null : index)
+//   }
+
+//   // ============================================================
+//   // RENDER - LOADING STATE
+//   // ============================================================
+  
+//   if (loading) {
+//     return (
+//       <div className="appShell">
+//         <TopNav variant="solid" />
+//         <div style={{ 
+//           display: 'flex', 
+//           justifyContent: 'center', 
+//           alignItems: 'center', 
+//           height: '80vh',
+//           flexDirection: 'column',
+//           gap: '16px'
+//         }}>
+//           <div style={{ 
+//             width: '40px', 
+//             height: '40px', 
+//             border: '3px solid rgba(15, 78, 169, 0.1)',
+//             borderTop: '3px solid #0f4ea9',
+//             borderRadius: '50%',
+//             animation: 'spin 1s linear infinite'
+//           }} />
+//           <p style={{ color: '#17263a' }}>{t('summary.loading')}</p>
+//           <style>{`
+//             @keyframes spin {
+//               0% { transform: rotate(0deg); }
+//               100% { transform: rotate(360deg); }
+//             }
+//           `}</style>
+//         </div>
+//       </div>
+//     )
+//   }
+
+//   // ============================================================
+//   // RENDER - ERROR STATE
+//   // ============================================================
+  
+//   if (error) {
+//     return (
+//       <div className="appShell">
+//         <TopNav variant="solid" />
+//         <div style={{ 
+//           display: 'flex', 
+//           justifyContent: 'center', 
+//           alignItems: 'center', 
+//           height: '80vh',
+//           flexDirection: 'column',
+//           gap: '16px'
+//         }}>
+//           <p style={{ color: '#dc2626', fontSize: '16px' }}>❌ {error}</p>
+//           <button 
+//             onClick={() => navigate('/wizard')}
+//             style={{
+//               padding: '10px 24px',
+//               background: '#0f4ea9',
+//               color: 'white',
+//               border: 'none',
+//               borderRadius: '8px',
+//               cursor: 'pointer'
+//             }}
+//           >
+//             {t('summary.goToWizard')}
+//           </button>
+//         </div>
+//       </div>
+//     )
+//   }
+
+//   // ============================================================
+//   // RENDER - MAIN CONTENT
+//   // ============================================================
+  
+//   return (
+//     <div className="appShell">
+//       <TopNav variant="solid" />
+
+//       <div className="appShellBody appShellBodyVerify">
+//         <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
+//           <div className="sideNavMain">
+//             <div className="sideGroupLabel">{t('summary.workspace')}</div>
+//             <nav className="sideGroup" aria-label="Workspace">
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon" aria-hidden="true"><IconGrid /></span>
+//                 <span className="sideText">{t('summary.overview')}</span>
+//               </span>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon" aria-hidden="true"><IconFolder /></span>
+//                 <span className="sideText">{t('summary.projects')}</span>
+//                 <span className="sideBadge" aria-label="12 projects">12</span>
+//               </span>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon" aria-hidden="true"><IconChart /></span>
+//                 <span className="sideText">{t('summary.revenues')}</span>
+//               </span>
+//               <a className="sideItem sideItemActive" href="#">
+//                 <span className="sideIcon" aria-hidden="true"><IconUser /></span>
+//                 <span className="sideText">{t('summary.profile')}</span>
+//               </a>
+//             </nav>
+//           </div>
+
+//           <div className="sideNavBottom">
+//             <div className="sideGroupLabel">{t('summary.general')}</div>
+//             <nav className="sideGroup" aria-label="General">
+//               <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
+//                 <span className="sideIcon" aria-hidden="true"><IconLogout /></span>
+//                 <span className="sideText">{t('summary.signOut')}</span>
+//               </button>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon" aria-hidden="true"><IconSupport /></span>
+//                 <span className="sideText">{t('summary.support')}</span>
+//               </span>
+//             </nav>
+//           </div>
+//         </aside>
+
+//         <main className="appContent">
+//           <div className="wizardSummaryPage" style={{ padding: '24px', maxWidth: '1200px', margin: '0 auto' }}>
+            
+//             {/* ============================================================
+//             Row 1: Basic Information, Trade Profile, Subscription & Rewards
+//             ============================================================ */}
+//             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+              
+//               {/* Basic Information Card */}
+//               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+//                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.basicInfo')}</span>
+//                   <button 
+//                     type="button" 
+//                     onClick={handleEditBasic}
+//                     style={{ 
+//                       background: 'none', 
+//                       border: 'none', 
+//                       color: '#0f4ea9', 
+//                       cursor: 'pointer',
+//                       padding: '4px 8px',
+//                       borderRadius: '6px',
+//                       transition: 'background 0.2s',
+//                     }}
+//                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+//                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//                   >
+//                     <IconPencil />
+//                   </button>
+//                 </div>
+//                 <div>
+//                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
+//                     {/* ✅ Updated image src with fresh URL */}
+//                     <img 
+//                       src={imageSrc} 
+//                       alt="Profile" 
+//                       style={{ 
+//                         width: '48px', 
+//                         height: '48px', 
+//                         borderRadius: '50%', 
+//                         objectFit: 'cover',
+//                         background: '#f0f0f0'
+//                       }}
+//                       onError={(e) => {
+//                         // ✅ Fallback if image fails to load
+//                         e.target.src = '/assets/worker.avif'
+//                       }}
+//                     />
+//                     <div>
+//                       <div style={{ fontWeight: 600, fontSize: '16px', color: '#17263a' }}>{fullName}</div>
+//                       <span style={{ fontSize: '12px', color: '#e0d616', fontWeight: 500 }}>{t('summary.pending')}</span>
+//                     </div>
+//                   </div>
+//                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>
+//                     <div>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.dob')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.dob)}</div>
+//                     </div>
+//                     <div>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.language')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{language}</div>
+//                     </div>
+//                     <div>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.email')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(basics.emailAddress)}</div>
+//                     </div>
+//                     <div>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.phone')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{formatPhone(basics.mobilePhone)}</div>
+//                     </div>
+//                     <div style={{ gridColumn: '1 / -1' }}>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.address')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(address)}</div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Trade Profile Card - Updated with dynamic trade rows */}
+//               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+//                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.tradeProfile')}</span>
+//                   <button 
+//                     type="button" 
+//                     onClick={handleEditTrade}
+//                     style={{ 
+//                       background: 'none', 
+//                       border: 'none', 
+//                       color: '#0f4ea9', 
+//                       cursor: 'pointer',
+//                       padding: '4px 8px',
+//                       borderRadius: '6px',
+//                       transition: 'background 0.2s',
+//                     }}
+//                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+//                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//                   >
+//                     <IconPencil />
+//                   </button>
+//                 </div>
+//                 <div>
+//                   {tradeRows.length > 0 ? (
+//                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+//                       {/* Show first 2 trades with summary */}
+//                       {tradeRows.slice(0, 2).map((row, index) => {
+//                         const tradeName = getTradeDisplayName(row)
+//                         const skills = getSkillsList(row)
+//                         const responsibilities = getResponsibilitiesList(row)
+//                         const levelAbbr = getLevelAbbreviation(row.level)
+//                         const hasDetails = skills.length > 0 || responsibilities.length > 0
+                        
+//                         return (
+//                           <div key={row.id || index} style={{ 
+//                             padding: '10px 12px',
+//                             background: index % 2 === 0 ? 'rgba(15, 78, 169, 0.03)' : 'transparent',
+//                             borderRadius: '8px',
+//                             border: '1px solid rgba(18, 38, 63, 0.06)',
+//                           }}>
+//                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+//                               <div>
+//                                 <span style={{ fontSize: '14px', fontWeight: 600, color: '#17263a' }}>
+//                                   {tradeName}
+//                                 </span>
+//                                 {row.level && (
+//                                   <span style={{ 
+//                                     fontSize: '11px', 
+//                                     color: '#0f4ea9', 
+//                                     fontWeight: 500,
+//                                     marginLeft: '8px',
+//                                     background: 'rgba(15, 78, 169, 0.08)',
+//                                     padding: '2px 8px',
+//                                     borderRadius: '12px',
+//                                   }}>
+//                                     {levelAbbr}
+//                                   </span>
+//                                 )}
+//                               </div>
+//                               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+//                                 {row.experience && (
+//                                   <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.6)' }}>
+//                                     {row.experience}y
+//                                   </span>
+//                                 )}
+//                                 {hasDetails && (
+//                                   <button
+//                                     onClick={() => toggleTradeExpansion(index)}
+//                                     style={{
+//                                       background: 'none',
+//                                       border: 'none',
+//                                       cursor: 'pointer',
+//                                       color: '#0f4ea9',
+//                                       padding: '2px 4px',
+//                                       display: 'flex',
+//                                       alignItems: 'center',
+//                                       transform: expandedTrade === index ? 'rotate(90deg)' : 'rotate(0deg)',
+//                                       transition: 'transform 0.2s',
+//                                     }}
+//                                   >
+//                                     <IconChevronRight />
+//                                   </button>
+//                                 )}
+//                               </div>
+//                             </div>
+                            
+//                             {/* Expanded details */}
+//                             {expandedTrade === index && (
+//                               <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(18,38,63,0.06)' }}>
+//                                 {skills.length > 0 && (
+//                                   <div style={{ marginBottom: '6px' }}>
+//                                     <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, display: 'block', marginBottom: '4px' }}>
+//                                       {t('summary.skills')}:
+//                                     </span>
+//                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+//                                       {skills.map(skill => (
+//                                         <span key={skill} style={{
+//                                           fontSize: '11px',
+//                                           background: 'rgba(15, 78, 169, 0.06)',
+//                                           color: '#17263a',
+//                                           padding: '2px 8px',
+//                                           borderRadius: '12px',
+//                                         }}>
+//                                           {skill}
+//                                         </span>
+//                                       ))}
+//                                     </div>
+//                                   </div>
+//                                 )}
+//                                 {responsibilities.length > 0 && (
+//                                   <div>
+//                                     <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, display: 'block', marginBottom: '4px' }}>
+//                                       {t('summary.responsibilities')}:
+//                                     </span>
+//                                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+//                                       {responsibilities.map(resp => (
+//                                         <span key={resp} style={{
+//                                           fontSize: '11px',
+//                                           background: 'rgba(15, 78, 169, 0.06)',
+//                                           color: '#17263a',
+//                                           padding: '2px 8px',
+//                                           borderRadius: '12px',
+//                                         }}>
+//                                           {resp}
+//                                         </span>
+//                                       ))}
+//                                     </div>
+//                                   </div>
+//                                 )}
+//                               </div>
+//                             )}
+//                           </div>
+//                         )
+//                       })}
+                      
+//                       {/* Show count of additional trades */}
+//                       {tradeRows.length > 2 && (
+//                         <div style={{ 
+//                           fontSize: '13px', 
+//                           color: 'rgba(23,38,58,0.5)',
+//                           padding: '4px 12px',
+//                           textAlign: 'center',
+//                           borderTop: '1px solid rgba(18,38,63,0.06)',
+//                           marginTop: '4px',
+//                         }}>
+//                           + {tradeRows.length - 2} {t('summary.moreTrades')}
+//                         </div>
+//                       )}
+                      
+//                       {/* Additional Skills/Tools */}
+//                       {additionalSkillsTools && (
+//                         <div style={{ 
+//                           marginTop: '8px',
+//                           padding: '8px 12px',
+//                           background: 'rgba(15, 78, 169, 0.04)',
+//                           borderRadius: '6px',
+//                           border: '1px solid rgba(15, 78, 169, 0.08)',
+//                         }}>
+//                           <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, display: 'block', marginBottom: '2px' }}>
+//                             {t('summary.additionalSkills')}:
+//                           </span>
+//                           <span style={{ fontSize: '13px', color: '#17263a' }}>
+//                             {additionalSkillsTools.length > 80 ? additionalSkillsTools.slice(0, 80) + '...' : additionalSkillsTools}
+//                           </span>
+//                         </div>
+//                       )}
+//                     </div>
+//                   ) : (
+//                     <div style={{ color: 'rgba(23,38,58,0.4)', fontSize: '14px', textAlign: 'center', padding: '12px 0' }}>
+//                       {t('summary.noTradeInfo')}
+//                     </div>
+//                   )}
+//                 </div>
+//               </div>
+
+//               {/* Subscription & Rewards Card */}
+//               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+//                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.subscription')}</span>
+//                 </div>
+//                 <div>
+//                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.activePlan')}</span>
+//                       <span style={{ color: '#17263a', fontWeight: 500 }}>Pro</span>
+//                     </div>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.planTier')}</span>
+//                       <span style={{ color: '#17263a', fontWeight: 500 }}>Professional</span>
+//                     </div>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.renews')}</span>
+//                       <span style={{ color: '#17263a', fontWeight: 500 }}>{t('summary.renewsDate')}</span>
+//                     </div>
+//                   </div>
+//                   <div style={{ marginTop: '12px', padding: '12px', background: 'rgba(15,78,169,0.06)', borderRadius: '8px', textAlign: 'center' }}>
+//                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+//                       <IconTrophy style={{ color: '#f59e0b' }} />
+//                       <span style={{ fontSize: '20px', fontWeight: 700, color: '#0f4ea9' }}>12</span>
+//                       <span style={{ fontSize: '13px', color: 'rgba(23,38,58,0.6)' }}>{t('summary.tradePoints')}</span>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* ============================================================
+//             Row 2: Work History - FIXED TRADE COLUMN WITH MORE ROBUST DATA EXTRACTION
+//             ============================================================ */}
+//             <div className="wizardSummaryWideCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', marginBottom: '20px' }}>
+//               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                 <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.workHistory')}</span>
+//                 <button 
+//                   type="button" 
+//                   onClick={handleEditWorkHistory}
+//                   style={{ 
+//                     background: 'none', 
+//                     border: 'none', 
+//                     color: '#0f4ea9', 
+//                     cursor: 'pointer',
+//                     padding: '4px 8px',
+//                     borderRadius: '6px',
+//                     transition: 'background 0.2s',
+//                   }}
+//                   onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+//                   onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//                 >
+//                   <IconPencil />
+//                 </button>
+//               </div>
+//               <div>
+//                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '8px 12px', borderBottom: '2px solid rgba(18,38,63,0.08)', fontWeight: 600, fontSize: '12px', color: 'rgba(23,38,58,0.5)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+//                   <div>{t('summary.project')}</div>
+//                   <div>{t('summary.company')}</div>
+//                   <div>{t('summary.trade')}</div>
+//                   <div>{t('summary.role')}</div>
+//                 </div>
+//                 {(projects.length > 0 ? projects : fallbackProjects).map((p, idx) => {
+//                   // ✅ MORE ROBUST: Get trade from multiple possible locations
+//                   const projectTrade = p.trade || p.projectTrade || p.primaryTrade || p.tradeType || (p.trade && p.trade.name) || ''
+//                   const projectCompany = p.client || p.company || ''
+                  
+//                   return (
+//                     <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', padding: '10px 12px', borderBottom: idx < (projects.length > 0 ? projects.length - 1 : fallbackProjects.length - 1) ? '1px solid rgba(18,38,63,0.06)' : 'none', fontSize: '14px', color: '#17263a' }}>
+//                       <div>{displayValue(p.name)}</div>
+//                       <div>{displayValue(projectCompany)}</div>
+//                       <div>{displayValue(projectTrade)}</div>
+//                       <div>{displayValue(p.role)}</div>
+//                     </div>
+//                   )
+//                 })}
+//               </div>
+//             </div>
+
+//             {/* ============================================================
+//             Row 3: Availability, Certifications, Tax, Payment
+//             ============================================================ */}
+//             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+              
+//               {/* Availability & Rate Card */}
+//               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+//                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.availabilityRate')}</span>
+//                   <button 
+//                     type="button" 
+//                     onClick={handleEditAvailability}
+//                     style={{ 
+//                       background: 'none', 
+//                       border: 'none', 
+//                       color: '#0f4ea9', 
+//                       cursor: 'pointer',
+//                       padding: '4px 8px',
+//                       borderRadius: '6px',
+//                       transition: 'background 0.2s',
+//                     }}
+//                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+//                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//                   >
+//                     <IconPencil />
+//                   </button>
+//                 </div>
+//                 <div>
+//                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.hourlyRate')}</span>
+//                       <span style={{ color: '#17263a', fontWeight: 500 }}>{displayValue(availability.hourlyRate ? `$${availability.hourlyRate}` : '—')}</span>
+//                     </div>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.travel')}</span>
+//                       <span style={{ color: '#17263a', fontWeight: 500 }}>{availability.willingToTravel === 'yes' ? t('summary.yes') : t('summary.no')}</span>
+//                     </div>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.available')}</span>
+//                       <span style={{ color: '#17263a', fontWeight: 500 }}>{availabilityText}</span>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Certifications & Safety Card */}
+//               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+//                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.certifications')}</span>
+//                   <button 
+//                     type="button" 
+//                     onClick={handleEditCertifications}
+//                     style={{ 
+//                       background: 'none', 
+//                       border: 'none', 
+//                       color: '#0f4ea9', 
+//                       cursor: 'pointer',
+//                       padding: '4px 8px',
+//                       borderRadius: '6px',
+//                       transition: 'background 0.2s',
+//                     }}
+//                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+//                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//                   >
+//                     <IconPencil />
+//                   </button>
+//                 </div>
+//                 <div>
+//                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.certificationsList')}</span>
+//                       <span style={{ color: '#17263a', fontWeight: 500, textAlign: 'right', maxWidth: '60%' }}>{certText}</span>
+//                     </div>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.safety')}</span>
+//                       <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+//                          --
+//                       </span>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Tax Profile Card */}
+//               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+//                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.taxProfile')}</span>
+//                   <button 
+//                     type="button" 
+//                     onClick={handleEditTax}
+//                     style={{ 
+//                       background: 'none', 
+//                       border: 'none', 
+//                       color: '#0f4ea9', 
+//                       cursor: 'pointer',
+//                       padding: '4px 8px',
+//                       borderRadius: '6px',
+//                       transition: 'background 0.2s',
+//                     }}
+//                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+//                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//                   >
+//                     <IconPencil />
+//                   </button>
+//                 </div>
+//                 <div>
+//                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.classification')}</span>
+//                       <span style={{ color: '#17263a', fontWeight: 500 }}>{taxText}</span>
+//                     </div>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.taxVerified')}</span>
+//                       <span style={{ color: '#2fb463', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+//                         --
+//                       </span>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Payment/Bank Details Card */}
+//               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+//                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.paymentDetails')}</span>
+//                   <button 
+//                     type="button" 
+//                     onClick={handleEditPayment}
+//                     style={{ 
+//                       background: 'none', 
+//                       border: 'none', 
+//                       color: '#0f4ea9', 
+//                       cursor: 'pointer',
+//                       padding: '4px 8px',
+//                       borderRadius: '6px',
+//                       transition: 'background 0.2s',
+//                     }}
+//                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+//                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//                   >
+//                     <IconPencil />
+//                   </button>
+//                 </div>
+//                 <div>
+//                   <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>{t('summary.bank')}</span>
+//                       <span style={{ color: '#17263a', fontWeight: 500 }}>{displayValue(bankName)}</span>
+//                     </div>
+//                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+//                       <span style={{ color: 'rgba(23,38,58,0.6)' }}>ACH</span>
+//                       <span style={{ 
+//                         color: achEnabled === t('summary.enabled') ? '#2fb463' : 'rgba(23,38,58,0.6)', 
+//                         fontWeight: 500, 
+//                         display: 'flex', 
+//                         alignItems: 'center', 
+//                         gap: '4px' 
+//                       }}>
+//                         {achEnabled === t('summary.enabled') ? (
+//                           <>
+//                             <IconCheckCircle style={{ width: '16px', height: '16px', color: '#2fb463' }} /> {t('summary.enabled')}
+//                           </>
+//                         ) : (
+//                           t('summary.notEnabled')
+//                         )}
+//                       </span>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* ============================================================
+//             Row 4: Medical Details & Emergency Contact
+//             ============================================================ */}
+//             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+              
+//               {/* Medical Details Card */}
+//               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+//                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.medicalDetails')}</span>
+//                   <button 
+//                     type="button" 
+//                     onClick={handleEditMedical}
+//                     style={{ 
+//                       background: 'none', 
+//                       border: 'none', 
+//                       color: '#0f4ea9', 
+//                       cursor: 'pointer',
+//                       padding: '4px 8px',
+//                       borderRadius: '6px',
+//                       transition: 'background 0.2s',
+//                     }}
+//                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+//                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//                   >
+//                     <IconPencil />
+//                   </button>
+//                 </div>
+//                 <div>
+//                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 16px' }}>
+//                     <div>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.bloodGroup')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(medical.bloodGroup)}</div>
+//                     </div>
+//                     <div>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.allergies')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{allergiesText}</div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Emergency Contact Card */}
+//               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
+//                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+//                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.emergencyContact')}</span>
+//                   <button 
+//                     type="button" 
+//                     onClick={handleEditEmergency}
+//                     style={{ 
+//                       background: 'none', 
+//                       border: 'none', 
+//                       color: '#0f4ea9', 
+//                       cursor: 'pointer',
+//                       padding: '4px 8px',
+//                       borderRadius: '6px',
+//                       transition: 'background 0.2s',
+//                     }}
+//                     onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+//                     onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//                   >
+//                     <IconPencil />
+//                   </button>
+//                 </div>
+//                 <div>
+//                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '4px 16px' }}>
+//                     <div>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.name')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(emergency.emergencyContactName)}</div>
+//                     </div>
+//                     <div>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.relationship')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{displayValue(emergency.emergencyContactRelationship)}</div>
+//                     </div>
+//                     <div>
+//                       <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)' }}>{t('summary.phone')}</span>
+//                       <div style={{ fontSize: '14px', color: '#17263a' }}>{formatPhone(emergency.emergencyContactPhone)}</div>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             </div>
+
+//             {/* ============================================================
+//             Footer Buttons
+//             ============================================================ */}
+//           </div>
+//         </main>
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default WorkerSummaryPage
+
+
+
+
+
+
+
+
+
+
+
+
 // src/worker/pages/WorkerSummaryPage.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -6937,6 +8055,24 @@ function IconChevronRight(props) {
   )
 }
 
+function IconCheck(props) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
+function IconWrench(props) {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+      <path d="M22 6.5L17.5 11 13 6.5 17.5 2 22 6.5z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <path d="M4 20L12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+      <path d="M12 12l-4 4 4 4 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+  )
+}
+
 export function WorkerSummaryPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -6951,6 +8087,7 @@ export function WorkerSummaryPage() {
   const [profileImage, setProfileImage] = useState('')
   const [imageLoading, setImageLoading] = useState(false)
   const [expandedTrade, setExpandedTrade] = useState(null)
+  const [expandedTools, setExpandedTools] = useState(false)
 
   // ============================================================
   // ✅ GET FRESH PROFILE IMAGE URL
@@ -7007,7 +8144,6 @@ export function WorkerSummaryPage() {
             const freshUrl = await getFreshProfileImage(basics.profileImageKey)
             if (freshUrl) {
               setProfileImage(freshUrl)
-              // ✅ Also update the profile data with fresh URL
               setProfile(prev => ({
                 ...prev,
                 basics: {
@@ -7016,11 +8152,9 @@ export function WorkerSummaryPage() {
                 }
               }))
             } else if (basics.profilePreview) {
-              // Fallback to stored URL (might be expired)
               setProfileImage(basics.profilePreview)
             }
           } else {
-            // No profile image
             setProfileImage('/assets/worker.avif')
           }
           
@@ -7054,9 +8188,12 @@ export function WorkerSummaryPage() {
   const payment = profile.payment || {}
   const emergency = profile.emergency || {}
 
-  // ✅ Get trade rows from trade data
-  const tradeRows = trade.tradeRows || []
-  const additionalSkillsTools = trade.additionalSkillsTools || ''
+  // ✅ Get trade data - combined from WizardStep2 and WizardStep3
+  const mainTrade = trade.mainTrade || ''
+  const skillGroups = trade.skillGroups || {}
+  const skillDetails = trade.skillDetails || {}
+  const toolsCertifications = trade.toolsCertifications || {}
+  const heavyEquipment = trade.heavyEquipment || {}
 
   // ============================================================
   // HELPER FUNCTIONS
@@ -7111,6 +8248,27 @@ export function WorkerSummaryPage() {
   // ✅ Use profileImage state for the image src
   const imageSrc = profileImage || basics.profilePreview || "/assets/worker.avif"
 
+  // ✅ Get selected tools count
+  const selectedToolsCount = Object.values(toolsCertifications).filter(v => v === true).length
+  const totalToolsCount = Object.keys(toolsCertifications).length
+
+  // ✅ Get selected heavy equipment count
+  const selectedHeavyCount = Object.values(heavyEquipment).filter(v => v === true).length
+  const totalHeavyCount = Object.keys(heavyEquipment).length
+
+  // ✅ Get skill groups with their details
+  const getSkillGroupsWithDetails = () => {
+    const groups = Object.keys(skillGroups).filter(key => skillGroups[key] === true)
+    return groups.map(group => ({
+      name: group,
+      experience: skillDetails[group]?.experience || '',
+      years: skillDetails[group]?.years || '',
+      skills: skillDetails[group]?.skills || {}
+    }))
+  }
+
+  const skillGroupsList = getSkillGroupsWithDetails()
+
   // ============================================================
   // NAVIGATION HANDLERS
   // ============================================================
@@ -7124,21 +8282,20 @@ export function WorkerSummaryPage() {
     })
   }
 
-const handleEditTrade = () => {
-  // Navigate to the combined trade profile edit page
-  navigate('/trade-profile/edit', {
-    state: {
-      tradeData: {
-        mainTrade: trade.mainTrade || '',
-        skillGroups: trade.skillGroups || {},
-        skillDetails: trade.skillDetails || {},
-        toolsCertifications: trade.toolsCertifications || {},
-        heavyEquipment: trade.heavyEquipment || {},
-      },
-      parentData: profile
-    }
-  })
-}
+  const handleEditTrade = () => {
+    navigate('/trade-profile/edit', {
+      state: {
+        tradeData: {
+          mainTrade: trade.mainTrade || '',
+          skillGroups: trade.skillGroups || {},
+          skillDetails: trade.skillDetails || {},
+          toolsCertifications: trade.toolsCertifications || {},
+          heavyEquipment: trade.heavyEquipment || {},
+        },
+        parentData: profile
+      }
+    })
+  }
 
   const handleEditWorkHistory = () => {
     navigate('/work-history/edit', {
@@ -7207,35 +8364,23 @@ const handleEditTrade = () => {
   // TRADE DISPLAY HELPERS
   // ============================================================
   
-  const getTradeDisplayName = (row) => {
-    if (row.trade === 'Other' && row.otherTrade) {
-      return row.otherTrade
-    }
-    return row.trade || '—'
-  }
-
-  const getSkillsList = (row) => {
-    if (!row.skills) return []
-    return Object.keys(row.skills).filter(key => row.skills[key])
-  }
-
-  const getResponsibilitiesList = (row) => {
-    if (!row.responsibilities) return []
-    return Object.keys(row.responsibilities).filter(key => row.responsibilities[key])
-  }
-
   const getLevelAbbreviation = (level) => {
     if (level === 'Helper') return 'H'
-    if (level === 'Mechanic') return 'M'
-    if (level === 'Advanced Mechanic') return 'A'
-    if (level === 'Lead Helper') return 'LH'
+    if (level === 'Apprentice') return 'A'
+    if (level === 'Skilled Worker') return 'SW'
+    if (level === 'Journeyman/Mechanic') return 'J'
     if (level === 'Lead') return 'L'
+    if (level === 'Foreman') return 'F'
     if (level === 'Lead/Foreman') return 'LF'
     return level
   }
 
   const toggleTradeExpansion = (index) => {
     setExpandedTrade(expandedTrade === index ? null : index)
+  }
+
+  const toggleToolsExpansion = () => {
+    setExpandedTools(!expandedTools)
   }
 
   // ============================================================
@@ -7389,7 +8534,6 @@ const handleEditTrade = () => {
                 </div>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                    {/* ✅ Updated image src with fresh URL */}
                     <img 
                       src={imageSrc} 
                       alt="Profile" 
@@ -7401,7 +8545,6 @@ const handleEditTrade = () => {
                         background: '#f0f0f0'
                       }}
                       onError={(e) => {
-                        // ✅ Fallback if image fails to load
                         e.target.src = '/assets/worker.avif'
                       }}
                     />
@@ -7435,7 +8578,7 @@ const handleEditTrade = () => {
                 </div>
               </div>
 
-              {/* Trade Profile Card - Updated with dynamic trade rows */}
+              {/* ✅ UPDATED Trade Profile Card - Combines WizardStep2 & WizardStep3 */}
               <div className="wizardSummaryCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                   <span style={{ fontSize: '16px', fontWeight: 600, color: '#17263a' }}>{t('summary.tradeProfile')}</span>
@@ -7458,153 +8601,207 @@ const handleEditTrade = () => {
                   </button>
                 </div>
                 <div>
-                  {tradeRows.length > 0 ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {/* Show first 2 trades with summary */}
-                      {tradeRows.slice(0, 2).map((row, index) => {
-                        const tradeName = getTradeDisplayName(row)
-                        const skills = getSkillsList(row)
-                        const responsibilities = getResponsibilitiesList(row)
-                        const levelAbbr = getLevelAbbreviation(row.level)
-                        const hasDetails = skills.length > 0 || responsibilities.length > 0
-                        
-                        return (
-                          <div key={row.id || index} style={{ 
-                            padding: '10px 12px',
-                            background: index % 2 === 0 ? 'rgba(15, 78, 169, 0.03)' : 'transparent',
-                            borderRadius: '8px',
-                            border: '1px solid rgba(18, 38, 63, 0.06)',
+                  {/* Main Trade */}
+                  {mainTrade ? (
+                    <div style={{ marginBottom: '12px' }}>
+                      <div style={{ 
+                        display: 'inline-block',
+                        padding: '4px 16px',
+                        background: 'rgba(15, 78, 169, 0.08)',
+                        border: '1px solid rgba(15, 78, 169, 0.15)',
+                        borderRadius: '20px',
+                        fontSize: '13px',
+                        fontWeight: 600,
+                        color: '#0f4ea9',
+                      }}>
+                        {mainTrade}
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ color: 'rgba(23,38,58,0.4)', fontSize: '14px', textAlign: 'center', padding: '8px 0' }}>
+                      {t('summary.noTradeInfo')}
+                    </div>
+                  )}
+
+                  {/* Skill Groups */}
+                  {skillGroupsList.length > 0 && (
+                    <div style={{ marginBottom: '10px' }}>
+                      <div style={{ 
+                        fontSize: '12px', 
+                        fontWeight: 600, 
+                        color: 'rgba(23,38,58,0.5)',
+                        marginBottom: '4px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        {t('wizard.step2.skillGroups')}
+                      </div>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                        {skillGroupsList.slice(0, 3).map((group, idx) => (
+                          <span key={idx} style={{
+                            fontSize: '12px',
+                            background: 'rgba(15, 78, 169, 0.06)',
+                            color: '#17263a',
+                            padding: '2px 10px',
+                            borderRadius: '12px',
+                            border: '1px solid rgba(15, 78, 169, 0.08)',
                           }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <div>
-                                <span style={{ fontSize: '14px', fontWeight: 600, color: '#17263a' }}>
-                                  {tradeName}
+                            {group.name}
+                            {group.experience && (
+                              <span style={{ 
+                                marginLeft: '4px',
+                                fontSize: '10px',
+                                color: '#0f4ea9',
+                                fontWeight: 500
+                              }}>
+                                ({group.experience})
+                              </span>
+                            )}
+                          </span>
+                        ))}
+                        {skillGroupsList.length > 3 && (
+                          <span style={{
+                            fontSize: '12px',
+                            color: 'rgba(23,38,58,0.5)',
+                            padding: '2px 10px',
+                          }}>
+                            +{skillGroupsList.length - 3} more
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Tools & Certifications */}
+                  {totalToolsCount > 0 && (
+                    <div style={{ marginBottom: '6px' }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between',
+                        cursor: 'pointer',
+                        padding: '4px 0',
+                        onClick={toggleToolsExpansion}
+                      }}>
+                        <div style={{ 
+                          fontSize: '12px', 
+                          fontWeight: 600, 
+                          color: 'rgba(23,38,58,0.5)',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}>
+                          <IconWrench style={{ color: 'rgba(23,38,58,0.4)' }} />
+                          {t('wizard.step3.toolsCertifications')}
+                          <span style={{
+                            fontSize: '11px',
+                            color: '#2fb463',
+                            fontWeight: 500,
+                          }}>
+                            ({selectedToolsCount}/{totalToolsCount})
+                          </span>
+                        </div>
+                        <IconChevronRight style={{ 
+                          transform: expandedTools ? 'rotate(90deg)' : 'rotate(0deg)',
+                          transition: 'transform 0.2s',
+                          color: 'rgba(23,38,58,0.4)'
+                        }} />
+                      </div>
+                      
+                      {expandedTools && (
+                        <div style={{ 
+                          marginTop: '6px',
+                          padding: '8px 10px',
+                          background: 'rgba(15, 78, 169, 0.03)',
+                          borderRadius: '6px',
+                          border: '1px solid rgba(15, 78, 169, 0.06)',
+                        }}>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                            {Object.keys(toolsCertifications)
+                              .filter(key => toolsCertifications[key] === true)
+                              .slice(0, 8)
+                              .map((tool, idx) => (
+                                <span key={idx} style={{
+                                  fontSize: '11px',
+                                  background: 'rgba(47, 180, 99, 0.08)',
+                                  color: '#065f46',
+                                  padding: '2px 8px',
+                                  borderRadius: '12px',
+                                  border: '1px solid rgba(47, 180, 99, 0.1)',
+                                }}>
+                                  <IconCheck style={{ width: '10px', height: '10px', marginRight: '2px' }} />
+                                  {tool}
                                 </span>
-                                {row.level && (
-                                  <span style={{ 
-                                    fontSize: '11px', 
-                                    color: '#0f4ea9', 
-                                    fontWeight: 500,
-                                    marginLeft: '8px',
-                                    background: 'rgba(15, 78, 169, 0.08)',
-                                    padding: '2px 8px',
-                                    borderRadius: '12px',
-                                  }}>
-                                    {levelAbbr}
-                                  </span>
-                                )}
-                              </div>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                {row.experience && (
-                                  <span style={{ fontSize: '12px', color: 'rgba(23,38,58,0.6)' }}>
-                                    {row.experience}y
-                                  </span>
-                                )}
-                                {hasDetails && (
-                                  <button
-                                    onClick={() => toggleTradeExpansion(index)}
-                                    style={{
-                                      background: 'none',
-                                      border: 'none',
-                                      cursor: 'pointer',
-                                      color: '#0f4ea9',
-                                      padding: '2px 4px',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      transform: expandedTrade === index ? 'rotate(90deg)' : 'rotate(0deg)',
-                                      transition: 'transform 0.2s',
-                                    }}
-                                  >
-                                    <IconChevronRight />
-                                  </button>
-                                )}
-                              </div>
-                            </div>
-                            
-                            {/* Expanded details */}
-                            {expandedTrade === index && (
-                              <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid rgba(18,38,63,0.06)' }}>
-                                {skills.length > 0 && (
-                                  <div style={{ marginBottom: '6px' }}>
-                                    <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, display: 'block', marginBottom: '4px' }}>
-                                      {t('summary.skills')}:
-                                    </span>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                                      {skills.map(skill => (
-                                        <span key={skill} style={{
-                                          fontSize: '11px',
-                                          background: 'rgba(15, 78, 169, 0.06)',
-                                          color: '#17263a',
-                                          padding: '2px 8px',
-                                          borderRadius: '12px',
-                                        }}>
-                                          {skill}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                                {responsibilities.length > 0 && (
-                                  <div>
-                                    <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, display: 'block', marginBottom: '4px' }}>
-                                      {t('summary.responsibilities')}:
-                                    </span>
-                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
-                                      {responsibilities.map(resp => (
-                                        <span key={resp} style={{
-                                          fontSize: '11px',
-                                          background: 'rgba(15, 78, 169, 0.06)',
-                                          color: '#17263a',
-                                          padding: '2px 8px',
-                                          borderRadius: '12px',
-                                        }}>
-                                          {resp}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
+                              ))}
+                            {Object.keys(toolsCertifications).filter(key => toolsCertifications[key] === true).length > 8 && (
+                              <span style={{
+                                fontSize: '11px',
+                                color: 'rgba(23,38,58,0.5)',
+                                padding: '2px 8px',
+                              }}>
+                                +{Object.keys(toolsCertifications).filter(key => toolsCertifications[key] === true).length - 8} more
+                              </span>
                             )}
                           </div>
-                        )
-                      })}
-                      
-                      {/* Show count of additional trades */}
-                      {tradeRows.length > 2 && (
-                        <div style={{ 
-                          fontSize: '13px', 
-                          color: 'rgba(23,38,58,0.5)',
-                          padding: '4px 12px',
-                          textAlign: 'center',
-                          borderTop: '1px solid rgba(18,38,63,0.06)',
-                          marginTop: '4px',
-                        }}>
-                          + {tradeRows.length - 2} {t('summary.moreTrades')}
-                        </div>
-                      )}
-                      
-                      {/* Additional Skills/Tools */}
-                      {additionalSkillsTools && (
-                        <div style={{ 
-                          marginTop: '8px',
-                          padding: '8px 12px',
-                          background: 'rgba(15, 78, 169, 0.04)',
-                          borderRadius: '6px',
-                          border: '1px solid rgba(15, 78, 169, 0.08)',
-                        }}>
-                          <span style={{ fontSize: '11px', color: 'rgba(23,38,58,0.5)', fontWeight: 500, display: 'block', marginBottom: '2px' }}>
-                            {t('summary.additionalSkills')}:
-                          </span>
-                          <span style={{ fontSize: '13px', color: '#17263a' }}>
-                            {additionalSkillsTools.length > 80 ? additionalSkillsTools.slice(0, 80) + '...' : additionalSkillsTools}
-                          </span>
                         </div>
                       )}
                     </div>
-                  ) : (
-                    <div style={{ color: 'rgba(23,38,58,0.4)', fontSize: '14px', textAlign: 'center', padding: '12px 0' }}>
-                      {t('summary.noTradeInfo')}
+                  )}
+
+                  {/* Heavy Equipment (Civil only) */}
+                  {totalHeavyCount > 0 && (
+                    <div style={{ marginTop: '4px' }}>
+                      <div style={{ 
+                        fontSize: '11px', 
+                        color: 'rgba(23,38,58,0.5)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
+                      }}>
+                        🚜 {t('wizard.step3.heavyEquipment')}
+                        <span style={{
+                          fontSize: '11px',
+                          color: '#2fb463',
+                          fontWeight: 500,
+                        }}>
+                          ({selectedHeavyCount}/{totalHeavyCount})
+                        </span>
+                      </div>
+                      {selectedHeavyCount > 0 && (
+                        <div style={{ 
+                          display: 'flex', 
+                          flexWrap: 'wrap', 
+                          gap: '4px',
+                          marginTop: '4px'
+                        }}>
+                          {Object.keys(heavyEquipment)
+                            .filter(key => heavyEquipment[key] === true)
+                            .slice(0, 4)
+                            .map((item, idx) => (
+                              <span key={idx} style={{
+                                fontSize: '10px',
+                                background: 'rgba(15, 78, 169, 0.06)',
+                                color: '#17263a',
+                                padding: '1px 8px',
+                                borderRadius: '10px',
+                                border: '1px solid rgba(15, 78, 169, 0.08)',
+                              }}>
+                                {item}
+                              </span>
+                            ))}
+                          {Object.keys(heavyEquipment).filter(key => heavyEquipment[key] === true).length > 4 && (
+                            <span style={{
+                              fontSize: '10px',
+                              color: 'rgba(23,38,58,0.5)',
+                              padding: '1px 8px',
+                            }}>
+                              +{Object.keys(heavyEquipment).filter(key => heavyEquipment[key] === true).length - 4}
+                            </span>
+                          )}
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -7642,7 +8839,7 @@ const handleEditTrade = () => {
             </div>
 
             {/* ============================================================
-            Row 2: Work History - FIXED TRADE COLUMN WITH MORE ROBUST DATA EXTRACTION
+            Row 2: Work History
             ============================================================ */}
             <div className="wizardSummaryWideCard" style={{ padding: '20px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white', marginBottom: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -7673,7 +8870,6 @@ const handleEditTrade = () => {
                   <div>{t('summary.role')}</div>
                 </div>
                 {(projects.length > 0 ? projects : fallbackProjects).map((p, idx) => {
-                  // ✅ MORE ROBUST: Get trade from multiple possible locations
                   const projectTrade = p.trade || p.projectTrade || p.primaryTrade || p.tradeType || (p.trade && p.trade.name) || ''
                   const projectCompany = p.client || p.company || ''
                   
@@ -7942,10 +9138,6 @@ const handleEditTrade = () => {
                 </div>
               </div>
             </div>
-
-            {/* ============================================================
-            Footer Buttons
-            ============================================================ */}
           </div>
         </main>
       </div>
