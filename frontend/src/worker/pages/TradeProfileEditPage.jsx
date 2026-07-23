@@ -1,3 +1,6243 @@
+// // src/worker/pages/TradeProfileEditPage.jsx
+// import { useState, useEffect } from 'react'
+// import { useNavigate, useLocation } from 'react-router-dom'
+// import { useTranslation } from 'react-i18next'
+// import { TopNav } from '../../common/components/TopNav'
+// import { SelectField, TextField } from '../../common/components/TextField'
+// import workerService from '../services/workerService'
+
+// // Icons
+// function IconGrid(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconFolder(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconChart(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconLogout(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconSupportIcon(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-.9-6.4h1.8V17h-1.8v-1.4zm1.8-2.2h-1.8c0-2.6 3-2.3 3-4.4 0-1.1-.9-1.8-2.1-1.8-1.1 0-2 .7-2.1 1.8H8.1c.1-2.1 1.9-3.6 4-3.6 2.3 0 3.9 1.4 3.9 3.5 0 2.7-3 2.7-3 4.5z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconUserIcon(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor" />
+//     </svg>
+//   )
+// }
+
+// function IconArrowLeft(props) {
+//   return (
+//     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//     </svg>
+//   )
+// }
+
+// function IconPlus(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M12 4v16M4 12h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+//     </svg>
+//   )
+// }
+
+// function IconTrash(props) {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
+//       <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+//     </svg>
+//   )
+// }
+
+// // ============================================================
+// // ✅ MAIN TRADES from PDF
+// // ============================================================
+
+// const MAIN_TRADES = [
+//   'Interiors',
+//   'HVAC/Mechanical',
+//   'Electrical / Power',
+//   'Plumbing / Piping',
+//   'Concrete / Formwork / Rebar / Flatwork',
+//   'Civil / Sitework / Earthwork / Utilities',
+//   'Asphalt / Paving Work',
+//   'Landscaping / Exterior Improvements',
+//   'Roofing / Waterproofing',
+//   'General Labor / Site Support / Material Handling',
+//   'Demolition / Selective Demo / Abatement Support',
+//   'Masonry / Stucco / EIFS Systems',
+//   'Structural Steel / Misc. Metals / Welding',
+//   'Carpentry / Rough Carpentry / Wood Framing / Blocking Systems',
+//   'Millwork / Cabinets / Finish Carpentry',
+//   'Flooring / Tile / Resilient / Carpet Systems',
+//   'Painting / Coatings / Wallcovering Systems',
+//   'Doors / Frames / Hardware / Openings Systems',
+//   'Glass / Glazing / Storefront',
+//   'Fire Protection / Sprinkler Systems',
+//   'Firestopping / Fireproofing / Joint Sealants',
+//   'Low Voltage / Data / Security / Fire Alarm',
+//   'Division 10 Specialties / Accessories / Signage Systems',
+//   'Equipment / Specialty Installations / Owner-Furnished Equipment Systems',
+// ]
+
+// // ✅ SKILL GROUPS mapped to each Main Trade
+// const SKILL_GROUPS = {
+//   'Interiors': [
+//     'Metal Framing',
+//     'Drywall Hanging',
+//     'Drywall Finishing',
+//     'Acoustical Ceilings / ACT',
+//     'Interior Insulation',
+//     'FRP / Wall Panels',
+//     'Doors, Frames & Hardware',
+//     'Division 10 Accessories',
+//     'Interior Punch / Patching',
+//     'Interior Labor / Material Handling',
+//   ],
+//   'HVAC/Mechanical': [
+//     'HVAC Helper / Mechanical Labor',
+//     'Ductwork / Sheet Metal Installation',
+//     'HVAC Equipment Installation',
+//     'HVAC Service / Repair',
+//     'HVAC Startup / Commissioning',
+//     'HVAC Controls / BAS',
+//     'Refrigeration',
+//     'Hydronic / Mechanical Piping',
+//     'Air Distribution / Diffusers / Grilles',
+//     'HVAC Punch / Troubleshooting / Final Support',
+//   ],
+//   'Electrical / Power': [
+//     'Electrical Helper / Material Handling',
+//     'Electrical Rough-In',
+//     'Conduit / Raceway Installation',
+//     'Wire Pulling / Cabling',
+//     'Boxes / Devices / Trim-Out',
+//     'Lighting / Fixtures',
+//     'Panels / Switchgear / Distribution',
+//     'Temporary Power',
+//     'Underground Electrical',
+//     'Electrical Service / Troubleshooting',
+//     'Industrial Electrical',
+//     'Electrical Punch / Final Support',
+//   ],
+//   'Plumbing / Piping': [
+//     'Plumbing Helper / Material Handling',
+//     'Underground Plumbing',
+//     'Plumbing Rough-In',
+//     'Drain / Waste / Vent (DWV)',
+//     'Domestic Water Lines',
+//     'Fixture Installation / Trim-Out',
+//     'Gas Piping',
+//     'Medical Gas',
+//     'Pipefitting / Mechanical Piping',
+//     'Testing / Inspection Support',
+//     'Service Plumbing / Repair',
+//     'Plumbing Punch / Final Support',
+//   ],
+//   'Concrete / Formwork / Rebar / Flatwork': [
+//     'Concrete Helper / General Concrete Labor',
+//     'Formwork / Form Carpenter',
+//     'Rebar / Reinforcement',
+//     'Concrete Pour Support',
+//     'Concrete Finishing',
+//     'Flatwork / Slabs',
+//     'Sidewalks / Curbs / Site Concrete',
+//     'Foundations / Footings / Grade Beams',
+//     'Concrete Sawcutting / Core Drilling',
+//     'Concrete Repair / Patch / Demo',
+//     'Concrete Pump Support',
+//     'Tilt-Up / Precast Support',
+//     'Concrete Punch / Cleanup / Final Support',
+//   ],
+//   'Civil / Sitework / Earthwork / Utilities': [
+//     'General Site Labor / Civil Labor',
+//     'Earthwork / Grading',
+//     'Excavation / Trenching',
+//     'Pipe Layer / Underground Utilities',
+//     'Storm Drain / Sewer / Water Utilities',
+//     'Utility Installation Support',
+//     'Erosion Control',
+//     'Equipment Spotter / Grade Checker',
+//     'Traffic Control / Flagging',
+//     'Site Cleanup / Final Grading',
+//   ],
+//   'Asphalt / Paving Work': [
+//     'Asphalt Helper / Labor',
+//     'Base Prep / Surface Prep',
+//     'Asphalt Paving Crew',
+//     'Raking / Lute Work',
+//     'Screed / Paver Operation',
+//     'Roller / Compaction',
+//     'Milling Support',
+//     'Asphalt Patch / Repair',
+//     'Sealcoating',
+//     'Crack Filling',
+//     'Striping / Pavement Marking',
+//     'Wheel Stops / Bollards / Signs',
+//     'Asphalt Cleanup / Punch',
+//   ],
+//   'Landscaping / Exterior Improvements': [
+//     'Landscape Labor / Exterior Helper',
+//     'Planting / Trees / Shrubs',
+//     'Sod / Turf Installation',
+//     'Mulch / Rock / Ground Cover',
+//     'Irrigation Support',
+//     'Landscape Drainage Support',
+//     'Fencing / Gates',
+//     'Exterior Site Amenities',
+//     'Pavers / Landscape Hardscape',
+//     'Retaining Wall Support',
+//     'Playground / Outdoor Equipment Support',
+//     'Exterior Cleanup / Final Appearance',
+//     'Maintenance / Landscape Service',
+//     'Exterior Punch / Final Corrections',
+//   ],
+//   'Roofing / Waterproofing': [
+//     'Roofing Helper / Roof Labor',
+//     'Roof Tear-Off / Demo',
+//     'Commercial Flat Roofing',
+//     'TPO / PVC / EPDM Membrane',
+//     'Built-Up / Modified Bitumen',
+//     'Roof Insulation / Cover Board',
+//     'Metal Roofing',
+//     'Flashing / Sheet Metal Flashing',
+//     'Roof Penetrations / Curbs',
+//     'Waterproofing',
+//     'Caulking / Sealants',
+//     'Roof Repair / Leak Investigation',
+//     'Roof Safety / Material Handling',
+//     'Roof Punch / Final Support',
+//   ],
+//   'General Labor / Site Support / Material Handling': [
+//     'General Site Labor',
+//     'Material Handling / Stocking',
+//     'Loading / Unloading',
+//     'Jobsite Cleanup / Rough Clean',
+//     'Trash / Debris Control',
+//     'Temporary Protection',
+//     'Site Logistics / Delivery Support',
+//     'Fire Watch / Spotter',
+//     'Forklift / Material Equipment Support',
+//     'Multi-Trade Helper Support',
+//     'Punch Support Labor',
+//     'Closeout / Turnover Support',
+//   ],
+//   'Demolition / Selective Demo / Abatement Support': [
+//     'Demo Helper / Demo Labor',
+//     'Interior Selective Demo',
+//     'Wall / Ceiling / Partition Demo',
+//     'Flooring / Surface Removal',
+//     'Concrete Demo / Chipping / Jackhammer Support',
+//     'Sawcut / Core Drill Demo Support',
+//     'Debris Removal / Loadout',
+//     'Salvage / Material Separation',
+//     'Dust Control / Temporary Protection',
+//     'Demo Tool / Small Equipment Support',
+//     'Abatement Support / Environmental Containment',
+//     'Occupied Building / Night Demo',
+//     'Demo Punch / Final Cleanup',
+//   ],
+//   'Masonry / Stucco / EIFS Systems': [
+//     'Masonry Helper / Mason Tender',
+//     'CMU / Block Masonry',
+//     'Brick Masonry',
+//     'Stone Veneer / Manufactured Stone',
+//     'Grout / Reinforcement Support',
+//     'Scaffold / Material Staging',
+//     'Masonry Cutting / Sawing / Drilling',
+//     'Masonry Repair / Restoration',
+//     'Stucco / Plaster Systems',
+//     'EIFS Systems',
+//     'Sealants / Weather Interface',
+//     'Masonry Punch / Cleanup',
+//   ],
+//   'Structural Steel / Misc. Metals / Welding': [
+//     'Steel Helper / Ironworker Helper',
+//     'Structural Steel Erection',
+//     'Bolt-Up / Connecting',
+//     'Metal Decking / Joist Support',
+//     'Field Welding',
+//     'Shop Welding / Fabrication Support',
+//     'Miscellaneous Metals Installation',
+//     'Stairs / Railings / Handrails',
+//     'Ornamental / Architectural Metals',
+//     'Rigging / Signaling / Hoisting Support',
+//     'Cutting / Grinding / Torch Work',
+//     'Steel Repair / Retrofit / Punch',
+//     'Fireproofing Interface Support',
+//     'Steel Cleanup / Material Staging',
+//   ],
+//   'Carpentry / Rough Carpentry / Wood Framing / Blocking Systems': [
+//     'Carpenter Helper / Rough Carpentry Support',
+//     'Wood Wall Framing',
+//     'Floor / Ceiling Joist Framing',
+//     'Roof Framing / Truss Installation',
+//     'Blocking / Backing / Nailers',
+//     'Plywood / OSB Sheathing / Subfloor',
+//     'Rough Openings / Bucks / Curbs / Supports',
+//     'Framing Layout / Plan Reading',
+//     'Temporary Carpentry / Barricades / Hoardings',
+//     'Exterior Wood Framing / Decks / Wood Structures',
+//     'Prefabricated / Panelized Wood Framing',
+//     'Rough Stairs / Ramps / Platforms',
+//     'Rough Carpentry Repair / Retrofit / Punch',
+//   ],
+//   'Millwork / Cabinets / Finish Carpentry': [
+//     'Finish Carpentry Helper / Millwork Material Support',
+//     'Casework / Cabinet Installation',
+//     'Laboratory / Healthcare / Institutional Casework',
+//     'Architectural Millwork / Custom Woodwork Installation',
+//     'Finish Trim / Mouldings / Base / Casing',
+//     'Countertops / Laminate / Solid Surface Installation',
+//     'Wood Wall Panels / Veneer / Slat / Feature Systems',
+//     'Shelving / Closets / Storage Systems',
+//     'Reception Desks / Nurse Stations / Built-Ins / Service Counters',
+//     'Cabinet Hardware / Millwork Accessories',
+//     'Layout / Field Measurement / Scribing / Templating',
+//     'Shop Fabrication / Assembly Support',
+//     'Field Modification / Cutting / Fitting / Repair',
+//     'Millwork Punch / Adjustment / Protection / Closeout',
+//   ],
+//   'Flooring / Tile / Resilient / Carpet Systems': [
+//     'Flooring Helper / Material Support',
+//     'Flooring Removal / Tear-Out',
+//     'Floor Preparation / Substrate Correction',
+//     'Moisture Testing / Mitigation / Underlayment',
+//     'Ceramic / Porcelain Floor Tile Installation',
+//     'Wall Tile / Wet-Area / Shower Systems',
+//     'Natural Stone / Large-Format / Specialty Tile',
+//     'LVT / LVP / Resilient Plank and Tile',
+//     'VCT / Commercial Resilient Tile',
+//     'Sheet Vinyl / Linoleum / Heat-Welded Flooring',
+//     'Carpet / Broadloom / Carpet Tile',
+//     'Rubber / Athletic / Specialty Resilient Flooring',
+//     'Wood / Engineered Wood / Laminate Flooring',
+//     'Resinous / Epoxy / Urethane Flooring Systems',
+//     'Terrazzo / Cementitious / Poured Specialty Flooring',
+//     'Polished Concrete / Densified / Decorative Concrete Flooring',
+//     'Base / Cove Base / Transitions / Flooring Accessories',
+//     'Flooring Repair / Punch / Protection / Closeout',
+//   ],
+//   'Painting / Coatings / Wallcovering Systems': [
+//     'Painting Helper / Material Support',
+//     'Surface Protection / Masking / Jobsite Setup',
+//     'Surface Preparation / Minor Patching / Sanding',
+//     'Interior Brush / Roll Painting',
+//     'Exterior Painting / Building Facades',
+//     'Spray Application / Airless / HVLP / Conventional',
+//     'Wood Stain / Clear Finish / Lacquer Systems',
+//     'Metal Surface Preparation / Primers / DTM Coatings',
+//     'Industrial / High-Performance Protective Coatings',
+//     'Elastomeric / Masonry / Concrete Vertical Coatings',
+//     'Commercial Wallcovering / Vinyl / Fabric Systems',
+//     'Decorative / Faux / Specialty Finish Systems',
+//     'Interior Safety Marking / Equipment / Floor-Line Painting',
+//     'Coating Removal / Pressure Washing / Abrasive Surface Preparation',
+//     'Color Matching / Mockups / Layout / Quality-Control Support',
+//     'Painting Repair / Touch-Up / Punch / Closeout',
+//   ],
+//   'Doors / Frames / Hardware / Openings Systems': [
+//     'Door / Frame / Hardware Helper / Material Support',
+//     'Layout / Field Measurement / Opening Verification',
+//     'Hollow Metal Frame Installation',
+//     'Wood / Specialty Frame / Prehung Unit Installation',
+//     'Hollow Metal Door Installation',
+//     'Wood Door Installation / Field Fitting / Machining',
+//     'Architectural / Finish Hardware Installation',
+//     'Electrified Hardware / Access-Control Door Interface',
+//     'Automatic Door Operators / Accessible Entrance Systems',
+//     'Fire-Rated / Smoke / Egress Opening Assemblies',
+//     'Keying / Cylinders / Cores / Locksmith Support',
+//     'Overhead / Sectional / Coiling / Rolling Doors',
+//     'Specialty / Security / Acoustic / Lead-Lined / Detention / Cleanroom Doors',
+//     'Field Modification / Machining / Welding / Repair',
+//     'Door / Frame / Hardware Punch / Commissioning / Closeout',
+//   ],
+//   'Glass / Glazing / Storefront': [
+//     'Glazing Helper / Material Handling',
+//     'Layout / Field Measurement / Opening Verification',
+//     'Shop Fabrication / Aluminum Frame Assembly',
+//     'Glass Cutting / Edgework / Shop Handling',
+//     'Storefront Framing / Aluminum Entrances',
+//     'Curtain Wall / Window Wall Systems',
+//     'Commercial Windows / Punched Openings',
+//     'Interior Glass / Office Partitions',
+//     'Heavy Glass / Frameless Entrances',
+//     'Mirrors / Decorative / Interior Specialty Glass',
+//     'Glass Railings / Guards',
+//     'Skylights / Canopies / Overhead Glazing',
+//     'Specialty Glass / IGUs / Spandrel / Rated / Security Systems',
+//     'Structural Silicone / Wet Glazing / Gaskets / Sealants',
+//     'Glass Setting / Lifting / Rigging / Vacuum Equipment',
+//     'Service / Replacement / Emergency Board-Up',
+//     'Water Testing / Air Leakage / Diagnostic Support',
+//     'Glass / Glazing Punch / Adjustment / Closeout',
+//   ],
+//   'Fire Protection / Sprinkler Systems': [
+//     'Fire Sprinkler Helper / Material Support',
+//     'Field Layout / Measurement / Coordination',
+//     'Shop Fabrication / Pipe Preparation',
+//     'Aboveground Mains / Cross Mains / Branch Lines',
+//     'Hangers / Supports / Seismic Bracing',
+//     'Drops / Armovers / Flexible Connections',
+//     'Sprinkler Heads / Nozzles / Trim',
+//     'Risers / Control Valves / Test & Drain Assemblies',
+//     'Standpipe / Hose Valve Systems',
+//     'FDC / Backflow / Water-Supply Interface',
+//     'Fire Pump / Pump Room / Water Storage Interface',
+//     'Underground Fire Service / Private Fire Main',
+//     'Dry Pipe / Preaction / Deluge / Specialty Water-Based Systems',
+//     'Storage / ESFR / In-Rack / High-Challenge Systems',
+//     'Tenant Improvement / Relocation / System Modification',
+//     'Service / Repair / Emergency Impairment Support',
+//     'Inspection / Testing / Maintenance (ITM) Support',
+//     'Hydrostatic / Flushing / Acceptance Test Support',
+//     'Water-Based Systems Layout / CAD / Submittal / As-Built Support',
+//     'Fire Sprinkler Punch / Labeling / Closeout',
+//   ],
+//   'Firestopping / Fireproofing / Joint Sealants': [
+//     'Passive Fire Protection Helper / Material Support',
+//     'Layout / Survey / Barrier / Opening Verification',
+//     'Metallic Pipe Penetration Firestopping',
+//     'Combustible / Nonmetallic Pipe Penetration Firestopping',
+//     'Cable / Conduit / Cable Tray / Busway Penetrations',
+//     'Mechanical / Duct / Damper / Mixed-Service Penetrations',
+//     'Membrane Penetrations / Electrical Boxes / Putty Pads',
+//     'Firestop Devices / Sleeves / Collars / Wrap Strips / Cast-In Systems',
+//     'Fire-Resistive Construction Joints / Head-of-Wall / Floor-to-Wall',
+//     'Perimeter Fire Containment / Edge-of-Slab / Curtain Wall',
+//     'Smoke / Acoustical / Draft Sealants',
+//     'Architectural Joint Sealants / Expansion / Control / Perimeter Joints',
+//     'SFRM - Spray-Applied Fire-Resistive Materials',
+//     'IFRM / Intumescent Fire-Resistive Coatings',
+//     'Board / Blanket / Encasement Fire Protection',
+//     'Fireproofing Surface Prep / Masking / Mixing / Pump Support',
+//     'Fireproofing Patch / Repair / Retrofit',
+//     'Firestop / Joint Sealant Removal / Repair / Retrofit',
+//     'Inspection / QA / Thickness / Adhesion / Documentation Support',
+//     'Labeling / Photo Records / Punch / Closeout / Maintenance',
+//   ],
+//   'Low Voltage / Data / Security / Fire Alarm': [
+//     'Low Voltage Helper / Material Support',
+//     'Pathways / Supports / Cable Management',
+//     'Structured Cabling - Copper',
+//     'Fiber Optic Cabling',
+//     'Backbone / Riser / Campus / Outside Plant Communications',
+//     'Telecom Rooms / Racks / Cabinets / Patch Panels',
+//     'Testing / Certification / Labeling / Documentation',
+//     'Network Equipment Physical Installation / Smart Hands',
+//     'Audio / Visual Systems',
+//     'Paging / Public Address / Intercom / Clock / Bell Systems',
+//     'Video Surveillance / CCTV',
+//     'Access Control / Door Security Electronics',
+//     'Intrusion / Duress / Perimeter Detection',
+//     'Fire Alarm Device / Circuit Installation',
+//     'Fire Alarm Panels / Interfaces / Programming / Commissioning',
+//     'Fire Alarm Inspection / Testing / Service',
+//     'Nurse Call / Healthcare Communications',
+//     'DAS / BDA / ERCES / In-Building Wireless',
+//     'BAS / Controls Low-Voltage Cabling Support',
+//     'Service / Troubleshooting / Moves-Adds-Changes',
+//     'Low Voltage Punch / As-Builts / Closeout',
+//   ],
+//   'Division 10 Specialties / Accessories / Signage Systems': [
+//     'Division 10 Helper / Material Support',
+//     'Layout / Field Measurement / Blocking & Substrate Verification',
+//     'Toilet Compartments / Urinal Screens / Privacy Partitions',
+//     'Toilet / Bath / Shower Accessories',
+//     'Lockers / Benches / Wardrobe / Storage Specialties',
+//     'Wall / Door Protection Systems',
+//     'Architectural Signage / Room Identification / Wayfinding / Directories',
+//     'Visual Display Surfaces / Markerboards / Taskboards / Display Cases',
+//     'Fire Extinguisher Cabinets / Emergency Cabinets / Safety Specialties',
+//     'Postal Specialties / Mailboxes / Parcel Lockers',
+//     'Cubicle Curtain / Track / Privacy Systems',
+//     'Operable / Folding / Accordion Partitions',
+//     'Wire-Mesh Partitions / Security Cages / Storage Enclosures',
+//     'Manufactured Shelving / Modular Storage Assemblies',
+//     'Flagpoles / Manufactured Flagpole Accessories',
+//     'Specialty Repair / Replacement / Service',
+//     'Division 10 Punch / Protection / Labeling / Closeout',
+//   ],
+//   'Equipment / Specialty Installations / Owner-Furnished Equipment Systems': [
+//     'Equipment Installation Helper / Material Support',
+//     'Receiving / Inventory / Staging / Damage Documentation',
+//     'Layout / Field Measurement / Utility / Substrate Verification',
+//     'Commercial Kitchen / Foodservice Equipment',
+//     'Commercial Laundry Equipment',
+//     'Loading Dock / Material Handling Equipment',
+//     'Laboratory / Scientific / Educational Equipment',
+//     'Healthcare / Medical / Sterile-Processing Equipment Support',
+//     'Athletic / Gymnasium / Recreation Equipment',
+//     'Theater / Stage / Auditorium / Fixed Seating Equipment',
+//     'Appliances / Hospitality / Residential-Type Equipment',
+//     'Waste Handling / Compactors / Balers / Chutes',
+//     'Vehicle Service / Maintenance / Wash Equipment',
+//     'Conveyors / Sortation / Warehouse Material-Handling Equipment',
+//     'Industrial / Process / Manufacturing Equipment Setting / Millwright',
+//     'Retail / Display / Merchandising / Refrigerated Case Physical Installation',
+//     'Equipment Anchoring / Seismic Restraint / Guards / Supports',
+//     'Equipment Startup / Manufacturer Technician / User Training Support',
+//     'Equipment Service / Warranty / Repair',
+//     'Equipment Punch / Protection / Documentation / Closeout',
+//   ],
+// }
+
+// // ✅ SKILL_DETAILS - Complete for ALL Trades
+// const SKILL_DETAILS = {
+//   'Metal Framing': [
+//     'Layout walls',
+//     'Install top/bottom track',
+//     'Install metal studs',
+//     'Frame soffits',
+//     'Frame ceilings',
+//     'Install backing/blocking',
+//     'Read basic layout',
+//     'Use laser/level',
+//     'Fire-rated framing',
+//   ],
+//   'Drywall Hanging': [
+//     'Hang drywall sheets',
+//     'Measure and cut drywall',
+//     'Install on metal framing',
+//     'Install on wood framing',
+//     'Install ceiling drywall',
+//     'Install shaft wall',
+//     'Install fire-rated assemblies',
+//     'Install exterior sheathing / DensGlass',
+//     'Patch/replace boards',
+//     'Use screw gun/basic tools',
+//   ],
+//   'Drywall Finishing': [
+//     'Tape and bed',
+//     'Apply joint compound',
+//     'First/second/skim coat',
+//     'Sand drywall',
+//     'Level 4 finish',
+//     'Level 5 finish',
+//     'Patch and repair',
+//     'Texture matching',
+//     'Corner bead',
+//     'Use automatic tools',
+//   ],
+//   'Acoustical Ceilings / ACT': [
+//     'Install ceiling grid',
+//     'Install ceiling tile',
+//     'Layout ceiling grid',
+//     'Cut border tile',
+//     'Install tegular tile',
+//     'Install reveal edge tile',
+//     'Install hanger wires',
+//     'Repair grid/tile',
+//     'Cloud ceilings',
+//     'Specialty ceiling systems',
+//   ],
+//   'Interior Insulation': [
+//     'Install batt insulation',
+//     'Install sound insulation',
+//     'Install fire/safing insulation',
+//     'Cut/fit insulation',
+//     'Work above ceiling areas',
+//     'Coordinate with drywall/MEP',
+//   ],
+//   'FRP / Wall Panels': [
+//     'Install FRP panels',
+//     'Cut panels',
+//     'Install trim pieces',
+//     'Use adhesive',
+//     'Panel layout',
+//     'Wall protection panels',
+//     'Clean finish seams',
+//   ],
+//   'Doors, Frames & Hardware': [
+//     'Install hollow metal frames',
+//     'Install wood doors',
+//     'Install hardware',
+//     'Install closers',
+//     'Install locks/latches',
+//     'Adjust doors',
+//     'Read door schedule',
+//     'Punch/repair doors',
+//   ],
+//   'Division 10 Accessories': [
+//     'Install toilet accessories',
+//     'Install toilet partitions',
+//     'Install lockers',
+//     'Install signage',
+//     'Install wall protection',
+//     'Install corner guards',
+//     'Install whiteboards/tackboards',
+//   ],
+//   'Interior Punch / Patching': [
+//     'Drywall patching',
+//     'Texture repair',
+//     'Paint touch-up support',
+//     'Ceiling tile replacement',
+//     'Door/hardware adjustments',
+//     'Final punch support',
+//     'Small repair work',
+//   ],
+//   'Interior Labor / Material Handling': [
+//     'Unload materials',
+//     'Move drywall/metal studs',
+//     'Stock rooms',
+//     'Clean work areas',
+//     'Assist installers',
+//     'Protect finishes',
+//     'Jobsite cleanup',
+//   ],
+//   'HVAC Helper / Mechanical Labor': [
+//     'Carry and stage duct/materials',
+//     'Unload HVAC materials',
+//     'Assist mechanics/installers',
+//     'Basic demolition/removal',
+//     'Clean mechanical rooms/work areas',
+//     'Install hangers/supports with direction',
+//     'Seal duct with mastic/tape',
+//     'Basic insulation support',
+//     'Use basic hand tools',
+//     'Follow layout under supervision',
+//   ],
+//   'Ductwork / Sheet Metal Installation': [
+//     'Install rectangular duct',
+//     'Install spiral/round duct',
+//     'Install flex duct',
+//     'Layout duct runs',
+//     'Measure and cut sheet metal',
+//     'Install hangers and supports',
+//     'Seal duct joints',
+//     'Install fire/smoke dampers with direction',
+//     'Install VAV boxes with direction',
+//     'Read basic mechanical plans',
+//   ],
+//   'HVAC Equipment Installation': [
+//     'Set rooftop units (RTUs)',
+//     'Set split systems',
+//     'Set air handlers',
+//     'Install mini-splits',
+//     'Install exhaust fans',
+//     'Install unit heaters',
+//     'Connect duct to equipment',
+//     'Assist with crane/lift coordination',
+//     'Install curbs/accessories with direction',
+//     'Anchor and level equipment',
+//   ],
+//   'HVAC Service / Repair': [
+//     'Troubleshoot no cooling/no heat',
+//     'Check refrigerant pressures',
+//     'Replace filters/belts',
+//     'Replace motors/capacitors/contactors',
+//     'Diagnose electrical issues',
+//     'Use multimeter',
+//     'Perform preventive maintenance',
+//     'Clean coils',
+//     'Check thermostats',
+//     'Document service findings',
+//   ],
+//   'HVAC Startup / Commissioning': [
+//     'Start up equipment',
+//     'Verify sequence of operation',
+//     'Check airflow basics',
+//     'Check refrigerant charge',
+//     'Verify electrical readings',
+//     'Complete startup checklist',
+//     'Coordinate with controls',
+//     'Support TAB/air balance',
+//     'Document deficiencies',
+//     'Assist commissioning team',
+//   ],
+//   'HVAC Controls / BAS': [
+//     'Install thermostats/sensors',
+//     'Pull low-voltage/control wire',
+//     'Terminate control wiring',
+//     'Install actuators',
+//     'Install control panels',
+//     'Basic BAS troubleshooting',
+//     'Point-to-point checkout',
+//     'Read controls drawings',
+//     'Coordinate with mechanical startup',
+//     'Support programming/commissioning team',
+//   ],
+//   'Refrigeration': [
+//     'Install refrigeration lines',
+//     'Braze copper',
+//     'Pressure test lines',
+//     'Evacuate system',
+//     'Charge refrigerant',
+//     'Troubleshoot refrigeration equipment',
+//     'Install walk-in cooler/freezer components',
+//     'Replace compressors/components',
+//     'Use gauges/vacuum pump',
+//     'Recover refrigerant',
+//   ],
+//   'Hydronic / Mechanical Piping': [
+//     'Install hydronic piping',
+//     'Install chilled water/hot water piping',
+//     'Install condensate piping',
+//     'Thread pipe',
+//     'Solder/braze copper',
+//     'Install valves/strainders',
+//     'Install pipe supports',
+//     'Pressure test piping',
+//   ],
+//   'Air Distribution / Diffusers / Grilles': [
+//     'Install diffusers',
+//     'Install grilles/registers',
+//     'Install returns',
+//     'Cut in ceiling diffusers',
+//     'Coordinate with ACT ceilings',
+//     'Install flex connections',
+//     'Adjust diffuser layout with direction',
+//     'Replace damaged grilles',
+//     'Support final trim',
+//     'Punch list air devices',
+//   ],
+//   'HVAC Punch / Troubleshooting / Final Support': [
+//     'Complete punch list items',
+//     'Replace missing/damaged parts',
+//     'Seal air leaks',
+//     'Adjust supports/hangers',
+//     'Fix insulation gaps',
+//     'Assist final inspections',
+//     'Support startup corrections',
+//     'Clean equipment/work areas',
+//     'Document completed punch',
+//     'Return for service calls',
+//   ],
+//   'Electrical Helper / Material Handling': [
+//     'Assist electricians',
+//     'Carry and stage electrical materials',
+//     'Pull wire under supervision',
+//     'Install basic supports under supervision',
+//     'Clean work areas and remove debris',
+//     'Identify basic electrical materials',
+//     'Use basic hand tools',
+//     'Operate ladders safely under supervision',
+//     'Help with device/fixture trim',
+//     'Follow foreman instructions and safety requirements',
+//   ],
+//   'Electrical Rough-In': [
+//     'Layout boxes from plans',
+//     'Install outlet/switch boxes',
+//     'Install junction boxes',
+//     'Install MC cable / armored cable',
+//     'Install branch circuit rough-in',
+//     'Drill holes / route cable where allowed',
+//     'Install supports and straps',
+//     'Rough-in walls and ceilings',
+//     'Read basic electrical drawings',
+//     'Coordinate rough-in with framing, drywall, HVAC, and plumbing',
+//   ],
+//   'Conduit / Raceway Installation': [
+//     'Install EMT conduit',
+//     'Bend EMT conduit',
+//     'Install rigid conduit',
+//     'Install PVC conduit',
+//     'Install flex conduit',
+//     'Install cable tray',
+//     'Install raceway / wiremold',
+//     'Thread conduit / use threading equipment',
+//     'Install conduit hangers and supports',
+//     'Layout conduit runs from plans',
+//     'Coordinate conduit with other trades',
+//   ],
+//   'Wire Pulling / Cabling': [
+//     'Pull branch circuit wire',
+//     'Pull feeder wire',
+//     'Set up wire reels / tugger support',
+//     'Label circuits and conductors',
+//     'Terminate basic branch circuits',
+//     'Megger / testing support if qualified',
+//     'Install grounding conductors',
+//     'Organize wire in panels / boxes',
+//     'Pull wire in conduit',
+//     'Follow conductor color coding',
+//   ],
+//   'Boxes / Devices / Trim-Out': [
+//     'Install receptacles',
+//     'Install switches',
+//     'Install GFCI devices',
+//     'Install cover plates',
+//     'Terminate devices',
+//     'Install junction box covers',
+//     'Label devices / circuits',
+//     'Troubleshoot device issues',
+//     'Final device punch support',
+//   ],
+//   'Lighting / Fixtures': [
+//     'Install light fixtures',
+//     'Install recessed lights',
+//     'Install exit signs / emergency lights',
+//     'Install lighting controls',
+//     'Hang fixtures safely',
+//     'Connect fixtures',
+//     'Troubleshoot lighting circuits',
+//     'Install fixture whips',
+//     'Coordinate with ceiling grid / ACT installers',
+//     'Final lighting punch',
+//   ],
+//   'Panels / Switchgear / Distribution': [
+//     'Assist panel installation',
+//     'Terminate breakers / circuits if qualified',
+//     'Install panel schedules / labels',
+//     'Dress panels neatly',
+//     'Install disconnects',
+//     'Assist transformer installation',
+//     'Assist switchgear installation',
+//     'Install grounding and bonding support',
+//     'Support testing and energization',
+//   ],
+//   'Temporary Power': [
+//     'Install temporary power panels',
+//     'Run temporary power circuits',
+//     'Install temporary lighting',
+//     'Maintain temporary power',
+//     'Troubleshoot temporary power issues',
+//     'Remove temporary power at closeout',
+//   ],
+//   'Underground Electrical': [
+//     'Install underground PVC conduit',
+//     'Install duct bank support',
+//     'Install pull boxes / handholes support',
+//     'Pull underground feeders',
+//     'Coordinate trench / backfill with civil crews',
+//     'Install grounding support',
+//     'Work safely around trenches',
+//   ],
+//   'Electrical Service / Troubleshooting': [
+//     'Troubleshoot circuits',
+//     'Troubleshoot outlets / devices',
+//     'Troubleshoot lighting issues',
+//     'Use multimeter / basic testing tools',
+//     'Replace breakers / devices if qualified',
+//     'Repair damaged conduit / wiring',
+//     'Complete service call notes',
+//     'Support occupied building service work',
+//   ],
+//   'Industrial Electrical': [
+//     'Install industrial conduit / cable tray',
+//     'Assist motor control wiring',
+//     'Install disconnects / starters support',
+//     'Work around industrial equipment',
+//     'Shutdown / outage support',
+//     'Troubleshoot industrial circuits if qualified',
+//     'Read industrial drawings / one-lines',
+//     'Support lockout/tagout procedures',
+//   ],
+//   'Electrical Punch / Final Support': [
+//     'Complete electrical punch list items',
+//     'Replace damaged devices / covers',
+//     'Label panels / circuits',
+//     'Support final inspections',
+//     'Final lighting and device check',
+//     'Clean electrical rooms / equipment areas',
+//     'Assist with closeout support',
+//   ],
+//   'Plumbing Helper / Material Handling': [
+//     'Carry and stage pipe/materials',
+//     'Assist plumbers with layout',
+//     'Cut pipe under direction',
+//     'Install hangers/supports under direction',
+//     'Clean work areas',
+//     'Operate basic hand tools',
+//     'Load/unload fixtures',
+//     'Help with testing setup',
+//     'Use ladders safely',
+//     'Assist with punch work',
+//   ],
+//   'Underground Plumbing': [
+//     'Install underground drain pipe',
+//     'Install underground water lines',
+//     'Lay pipe in trenches',
+//     'Set pipe slope/grade under direction',
+//     'Install sleeves and penetrations',
+//     'Work with trench boxes/shoring awareness',
+//     'Backfill support',
+//     'Locate cleanouts',
+//     'Read basic underground layout',
+//     'Support pressure/leak testing',
+//   ],
+//   'Plumbing Rough-In': [
+//     'Rough-in bathrooms',
+//     'Install water lines',
+//     'Install drain lines',
+//     'Install vent lines',
+//     'Install hangers and supports',
+//     'Install tubs/shower valves/carriers',
+//     'Run pipe through walls and ceilings',
+//     'Read basic plumbing plans',
+//     'Coordinate with framing and MEP',
+//     'Prepare work for inspection',
+//   ],
+//   'Drain / Waste / Vent (DWV)': [
+//     'Install PVC/ABS/cast iron drain pipe',
+//     'Install vent piping',
+//     'Install cleanouts',
+//     'Install traps and waste arms',
+//     'Maintain slope for drainage',
+//     'Cut and join DWV pipe',
+//     'Support/hang DWV pipe',
+//     'Test DWV lines',
+//     'Troubleshoot drainage issues',
+//     'Repair/replace DWV sections',
+//   ],
+//   'Domestic Water Lines': [
+//     'Install copper water lines',
+//     'Install PEX/CPVC water lines',
+//     'Install valves and shutoffs',
+//     'Install hot/cold water lines',
+//     'Install pipe insulation',
+//     'Pressure test water lines',
+//     'Repair leaks',
+//     'Install supports/hangers',
+//     'Read water riser diagrams',
+//     'Connect water lines to fixtures',
+//   ],
+//   'Fixture Installation / Trim-Out': [
+//     'Set toilets',
+//     'Install sinks/lavatories',
+//     'Install faucets',
+//     'Install urinals',
+//     'Install water closets',
+//     'Install shower trim',
+//     'Connect supply lines',
+//     'Connect drains/traps',
+//     'Install flush valves',
+//     'Perform fixture punch and adjustments',
+//   ],
+//   'Gas Piping': [
+//     'Install gas pipe under direction',
+//     'Thread/cut gas pipe',
+//     'Install gas valves',
+//     'Install supports',
+//     'Pressure test gas lines',
+//     'Connect gas equipment under supervision',
+//     'Read gas piping layout',
+//     'Identify shutoffs',
+//     'Leak check support',
+//     'Follow gas safety procedures',
+//   ],
+//   'Medical Gas': [
+//     'Assist with medical gas installation',
+//     'Install medical gas pipe under certified supervision',
+//     'Support brazing/prep work',
+//     'Install hangers/supports',
+//     'Label medical gas lines',
+//     'Support pressure testing',
+//     'Support certification/testing team',
+//     'Read med gas routing',
+//     'Work in healthcare environment',
+//     'Follow cleanliness protocols',
+//   ],
+//   'Pipefitting / Mechanical Piping': [
+//     'Install mechanical piping',
+//     'Install threaded pipe',
+//     'Install grooved pipe',
+//     'Install hangers/supports',
+//     'Install valves/strainers',
+//     'Connect pumps/equipment under direction',
+//     'Read basic piping drawings',
+//     'Pressure test piping',
+//     'Repair pipe leaks',
+//     'Coordinate with HVAC/mechanical systems',
+//   ],
+//   'Testing / Inspection Support': [
+//     'Set up pressure tests',
+//     'Set up water tests',
+//     'Support smoke/air tests when applicable',
+//     'Document test areas',
+//     'Assist inspector walkthroughs',
+//     'Prepare lines for inspection',
+//     'Find and mark leaks',
+//     'Support retesting',
+//     'Track punch items',
+//     'Clean and restore test areas',
+//   ],
+//   'Service Plumbing / Repair': [
+//     'Troubleshoot leaks',
+//     'Repair clogged drains',
+//     'Replace fixtures',
+//     'Replace valves',
+//     'Repair water lines',
+//     'Repair drains',
+//     'Service water heaters under direction',
+//     'Diagnose basic plumbing issues',
+//     'Communicate service findings',
+//     'Perform small repair work',
+//   ],
+//   'Plumbing Punch / Final Support': [
+//     'Complete fixture punch items',
+//     'Adjust flush valves/faucets',
+//     'Repair leaks after inspection',
+//     'Install missing trim',
+//     'Replace damaged parts',
+//     'Label valves/cleanouts',
+//     'Support final inspection',
+//     'Clean plumbing work areas',
+//     'Complete owner punch list',
+//     'Assist closeout corrections',
+//   ],
+//   'Concrete Helper / General Concrete Labor': [
+//     'Move concrete materials',
+//     'Assist finishers',
+//     'Shovel and rake concrete',
+//     'Clean tools and forms',
+//     'Set up pour area',
+//     'Carry forms/rebar/mesh',
+//     'Water and cure concrete',
+//     'Install vapor barrier support',
+//     'Clean jobsite after pour',
+//     'Follow foreman direction safely',
+//   ],
+//   'Formwork / Form Carpenter': [
+//     'Build concrete forms',
+//     'Set forms',
+//     'Brace forms',
+//     'Strip forms',
+//     'Layout forms',
+//     'Set stakes/string lines',
+//     'Build footing forms',
+//     'Build grade beam forms',
+//     'Install form ties / hardware',
+//     'Repair/adjust forms before pour',
+//   ],
+//   'Rebar / Reinforcement': [
+//     'Tie rebar',
+//     'Place rebar',
+//     'Install dowels',
+//     'Install wire mesh',
+//     'Place chairs/spacers',
+//     'Read basic rebar layout',
+//     'Support pre-pour inspection',
+//     'Cut/bend rebar under direction',
+//     'Install reinforcement in footings/slabs',
+//     'Maintain cover and spacing',
+//   ],
+//   'Concrete Pour Support': [
+//     'Assist during concrete pour',
+//     'Guide chute or hose',
+//     'Rake concrete',
+//     'Vibrate concrete under direction',
+//     'Manage pour area cleanup',
+//     'Help finishers during pour',
+//     'Place concrete around embeds',
+//     'Support pump hose crew',
+//     'Control edges during pour',
+//     'Communicate with truck/pump crew',
+//   ],
+//   'Concrete Finishing': [
+//     'Bull float concrete',
+//     'Hand trowel finish',
+//     'Broom finish',
+//     'Edge concrete',
+//     'Use power trowel',
+//     'Finish slabs',
+//     'Finish sidewalks/curbs',
+//     'Apply control joint layout support',
+//     'Patch surface defects',
+//     'Work with concrete finishing tools',
+//   ],
+//   'Flatwork / Slabs': [
+//     'Prepare slab area',
+//     'Set screed guides',
+//     'Screed concrete',
+//     'Finish slab surface',
+//     'Install vapor barrier support',
+//     'Install wire mesh support',
+//     'Layout/control joints',
+//     'Sawcut slab joints',
+//     'Cure slabs',
+//     'Repair slab defects',
+//   ],
+//   'Sidewalks / Curbs / Site Concrete': [
+//     'Form sidewalks',
+//     'Pour sidewalks',
+//     'Finish sidewalks',
+//     'Set curb forms',
+//     'Finish curbs/gutters',
+//     'Broom finish exterior concrete',
+//     'Install expansion joints',
+//     'Repair exterior concrete',
+//     'Support ADA ramps',
+//     'Clean site concrete areas',
+//   ],
+//   'Foundations / Footings / Grade Beams': [
+//     'Build footing forms',
+//     'Set grade beam forms',
+//     'Place rebar in footings',
+//     'Assist foundation pour',
+//     'Vibrate foundation concrete under direction',
+//     'Strip foundation forms',
+//     'Patch honeycomb/voids',
+//     'Support anchor bolt placement',
+//     'Prepare foundation area',
+//     'Support pre-pour inspection',
+//   ],
+//   'Concrete Sawcutting / Core Drilling': [
+//     'Sawcut control joints',
+//     'Use walk-behind saw',
+//     'Use handheld concrete saw',
+//     'Core drill under direction',
+//     'Mark sawcut lines',
+//     'Manage slurry/dust cleanup',
+//     'Follow silica control procedures',
+//     'Cut openings under direction',
+//     'Support demo cuts',
+//     'Maintain saw/core equipment safely',
+//   ],
+//   'Concrete Repair / Patch / Demo': [
+//     'Chip concrete',
+//     'Patch concrete',
+//     'Repair surface defects',
+//     'Grind concrete',
+//     'Remove damaged concrete',
+//     'Prepare repair areas',
+//     'Apply patch material',
+//     'Repair edges/corners',
+//     'Clean repair areas',
+//     'Support small concrete demo',
+//   ],
+//   'Concrete Pump Support': [
+//     'Assist pump setup',
+//     'Support pump hose crew',
+//     'Manage hose movement',
+//     'Guide hose safely',
+//     'Communicate with pump operator',
+//     'Clean pump hose area',
+//     'Support pump washout',
+//     'Maintain safe pour path',
+//     'Help during high-volume pours',
+//     'Follow pump safety procedures',
+//   ],
+//   'Tilt-Up / Precast Support': [
+//     'Assist panel prep',
+//     'Place embeds/inserts under direction',
+//     'Support panel pour',
+//     'Patch panel defects',
+//     'Clean panel casting area',
+//     'Support precast/tilt-up crew',
+//     'Handle rigging area support only if authorized',
+//     'Follow lift-zone safety rules',
+//     'Assist layout under direction',
+//     'Support panel finishing',
+//   ],
+//   'Concrete Punch / Cleanup / Final Support': [
+//     'Complete concrete punch items',
+//     'Patch chips/cracks',
+//     'Clean slab areas',
+//     'Remove debris',
+//     'Grind small defects',
+//     'Touch up edges',
+//     'Clean forms/materials',
+//     'Support final inspection',
+//     'Repair minor surface issues',
+//     'Assist closeout cleanup',
+//   ],
+//   'General Site Labor / Civil Labor': [
+//     'Move site materials',
+//     'Shovel / rake soil or rock',
+//     'Assist grading crew',
+//     'Assist trench crew',
+//     'Load / unload materials',
+//     'Use hand tools',
+//     'Use small compaction tools',
+//     'Spot equipment basic',
+//     'Site cleanup',
+//     'Install stakes / basic layout support',
+//     'Assist utility crew',
+//     'Prepare work area',
+//   ],
+//   'Earthwork / Grading': [
+//     'Rough grading support',
+//     'Fine grading support',
+//     'Backfill areas',
+//     'Compact soil',
+//     'Read grade stakes basic',
+//     'Use laser level basic',
+//     'Set grade stakes support',
+//     'Prepare subgrade',
+//     'Spread base material',
+//     'Check low/high areas',
+//     'Work with dozer/loader crew',
+//     'Final grade cleanup',
+//   ],
+//   'Excavation / Trenching': [
+//     'Assist excavation',
+//     'Dig by hand around utilities',
+//     'Prepare trenches',
+//     'Clean trench bottom',
+//     'Install bedding material',
+//     'Backfill trench',
+//     'Compact trench backfill',
+//     'Potholing / daylighting support',
+//     'Trench box awareness',
+//     'Trench safety support',
+//     'Spot excavator',
+//     'Mark trench area support',
+//   ],
+//   'Pipe Layer / Underground Utilities': [
+//     'Lay utility pipe',
+//     'Set pipe bedding',
+//     'Install storm pipe',
+//     'Install sewer pipe',
+//     'Install waterline support',
+//     'Install fittings',
+//     'Set pipe grade with laser',
+//     'Connect pipe sections',
+//     'Set manholes support',
+//     'Set catch basins / inlets support',
+//     'Install valves / hydrant support',
+//     'Backfill around pipe',
+//   ],
+//   'Storm Drain / Sewer / Water Utilities': [
+//     'Storm drain installation support',
+//     'Sanitary sewer support',
+//     'Waterline support',
+//     'Fire line support',
+//     'Set structures support',
+//     'Adjust manholes support',
+//     'Install cleanouts support',
+//     'Install utility fittings',
+//     'Pressure test support',
+//     'Leak repair support',
+//     'Utility trench cleanup',
+//     'Inspection support',
+//   ],
+//   'Utility Installation Support': [
+//     'Bedding pipe',
+//     'Haul pipe/materials',
+//     'Prepare fittings',
+//     'Assist pipe crew',
+//     'Measure pipe lengths',
+//     'Cut pipe support',
+//     'Install warning tape',
+//     'Install tracer wire support',
+//     'Utility cleanup',
+//     'Backfill utility trench',
+//     'Compact utility trench',
+//     'Assist utility inspection',
+//   ],
+//   'Erosion Control': [
+//     'Install silt fence',
+//     'Install inlet protection',
+//     'Install wattles',
+//     'Install erosion blanket',
+//     'Maintain SWPPP BMPs',
+//     'Clean stormwater inlets',
+//     'Repair erosion controls',
+//     'Install construction entrance support',
+//     'Sediment cleanup',
+//     'Slope protection support',
+//     'Fence/stake support',
+//     'Remove erosion controls',
+//   ],
+//   'Equipment Spotter / Grade Checker': [
+//     'Spot excavator',
+//     'Spot loader',
+//     'Spot trucks',
+//     'Communicate with operators',
+//     'Use hand signals',
+//     'Check grade with laser',
+//     'Read grade stakes',
+//     'Mark elevations basic',
+//     'Check trench depth',
+//     'Check pipe slope support',
+//     'Work around active equipment',
+//     'Traffic / equipment awareness',
+//   ],
+//   'Traffic Control / Flagging': [
+//     'Flag traffic',
+//     'Set cones/signs',
+//     'Lane closure support',
+//     'Pedestrian control',
+//     'Spot trucks entering site',
+//     'Direct delivery traffic',
+//     'Work zone setup support',
+//     'Work zone cleanup',
+//     'Night work traffic support',
+//     'Follow traffic control plan',
+//     'Use radio communication',
+//     'Safety watch',
+//   ],
+//   'Site Cleanup / Final Grading': [
+//     'Final site cleanup',
+//     'Remove debris',
+//     'Rake/level areas',
+//     'Clean around utilities',
+//     'Backfill low spots',
+//     'Prepare area for next trade',
+//     'Sweep / cleanup site access',
+//     'Remove excess material',
+//     'Support punch list',
+//     'Clean around structures',
+//     'Final grade support',
+//     'Load-out cleanup',
+//   ],
+//   'Asphalt Helper / Labor': [
+//     'Move tools/materials',
+//     'Set cones / barricades',
+//     'Clean paving area',
+//     'Shovel asphalt basic',
+//     'Assist rake/lute workers',
+//     'Edge cleanup',
+//     'Truck spotter support',
+//     'Sweep / blow surface',
+//     'Load-out / cleanup',
+//     'Assist paving crew',
+//     'Carry asphalt hand tools',
+//     'Basic PPE / safety support',
+//   ],
+//   'Base Prep / Surface Prep': [
+//     'Clean surface before asphalt',
+//     'Sweep / blow debris',
+//     'Apply tack coat support',
+//     'Edge prep',
+//     'Base patch prep',
+//     'Minor base leveling',
+//     'Mark paving limits',
+//     'Remove loose material',
+//     'Prep for sealcoat',
+//     'Prep for patch',
+//     'Prepare parking lot areas',
+//     'Surface cleanup before paving',
+//   ],
+//   'Asphalt Paving Crew': [
+//     'Support paver operations',
+//     'Assist with hot mix asphalt',
+//     'Shovel asphalt at edges',
+//     'Truck dump support',
+//     'Spot asphalt trucks',
+//     'Clean around paver',
+//     'Edge feathering support',
+//     'Mat cleanup',
+//     'Communicate with crew',
+//     'Work around hot mix',
+//     'Support paving layout',
+//     'Assist production flow',
+//   ],
+//   'Raking / Lute Work': [
+//     'Rake asphalt',
+//     'Lute asphalt',
+//     'Spread hot mix by hand',
+//     'Feather edges',
+//     'Handwork behind paver',
+//     'Fix low/high spots',
+//     'Shape asphalt near structures',
+//     'Clean joints/edges',
+//     'Use asphalt lute',
+//     'Use rake/shovel',
+//     'Work around curbs/edges',
+//     'Patch handwork',
+//   ],
+//   'Screed / Paver Operation': [
+//     'Assist paver operator',
+//     'Run screed support',
+//     'Set mat depth support',
+//     'Monitor asphalt mat',
+//     'Adjust screed basic',
+//     'Check grade/slope basic',
+//     'Coordinate with trucks',
+//     'Watch edges',
+//     'Paver cleanup',
+//     'Paver setup support',
+//     'Paver breakdown support',
+//     'Production paving support',
+//   ],
+//   'Roller / Compaction': [
+//     'Operate roller',
+//     'Steel wheel roller',
+//     'Pneumatic roller',
+//     'Compact asphalt mat',
+//     'Compact asphalt patch',
+//     'Breakdown rolling',
+//     'Intermediate rolling',
+//     'Finish rolling',
+//     'Avoid roller marks',
+//     'Work behind paver',
+//     'Compact edges',
+//     'Roll parking lot / drive lanes',
+//   ],
+//   'Milling Support': [
+//     'Support milling crew',
+//     'Clean millings',
+//     'Sweep after milling',
+//     'Load millings support',
+//     'Traffic control support',
+//     'Mark milling limits',
+//     'Spot milling machine',
+//     'Prep milled surface',
+//     'Edge cleanup after milling',
+//     'Haul-off support',
+//     'Milling water truck support',
+//     'Milling punch cleanup',
+//   ],
+//   'Asphalt Patch / Repair': [
+//     'Sawcut patch area',
+//     'Remove failed asphalt',
+//     'Clean patch area',
+//     'Apply tack support',
+//     'Place hot mix patch',
+//     'Rake patch',
+//     'Compact patch',
+//     'Feather patch edges',
+//     'Pothole repair',
+//     'Utility cut patch',
+//     'Cold patch support',
+//     'Patch cleanup',
+//   ],
+//   'Sealcoating': [
+//     'Surface prep for sealcoat',
+//     'Apply sealcoat by squeegee',
+//     'Apply sealcoat by spray',
+//     'Mix sealcoat support',
+//     'Edge sealcoat areas',
+//     'Protect buildings/curbs',
+//     'Set cones/barricades',
+//     'Clean overspray',
+//     'Use squeegee tools',
+//     'Use spray system support',
+//     'Parking lot closure support',
+//     'Sealcoat cleanup',
+//   ],
+//   'Crack Filling': [
+//     'Clean cracks',
+//     'Blow out cracks',
+//     'Apply crack filler',
+//     'Route cracks basic',
+//     'Heat/apply material support',
+//     'Scrape excess material',
+//     'Seal around cracks',
+//     'Parking lot crack fill',
+//     'Roadway crack fill support',
+//     'Use crack fill equipment support',
+//     'Prep before sealcoat',
+//     'Cleanup after crack fill',
+//   ],
+//   'Striping / Pavement Marking': [
+//     'Layout parking stalls',
+//     'Paint parking lines',
+//     'Paint arrows',
+//     'Paint ADA markings',
+//     'Paint fire lanes',
+//     'Use striping machine',
+//     'Use stencils',
+//     'Chalk line layout',
+//     'Measure parking layout',
+//     'Install pavement markings',
+//     'Paint curbs',
+//     'Striping cleanup',
+//   ],
+//   'Wheel Stops / Bollards / Signs': [
+//     'Install wheel stops',
+//     'Anchor wheel stops',
+//     'Install bollards support',
+//     'Install parking signs',
+//     'Drill anchors',
+//     'Layout parking accessories',
+//     'Remove old wheel stops',
+//     'Replace signs/posts',
+//     'Set parking lot accessories',
+//     'Use basic concrete anchors',
+//     'Clean accessory area',
+//     'Punch list support',
+//   ],
+//   'Asphalt Cleanup / Punch': [
+//     'Final asphalt cleanup',
+//     'Remove cones/barricades',
+//     'Clean edges',
+//     'Sweep parking lot',
+//     'Remove loose asphalt',
+//     'Touch-up patch areas',
+//     'Support striping prep',
+//     'Load-out tools/materials',
+//     'Clean around drains/curbs',
+//     'Punch list support',
+//     'Remove debris',
+//     'Final project cleanup',
+//   ],
+//   'Landscape Labor / Exterior Helper': [
+//     'Move landscape materials',
+//     'Load/unload plants, mulch, rock, sod, and tools',
+//     'Dig holes and trenches by hand',
+//     'Assist planting crews',
+//     'Assist irrigation crews',
+//     'Assist fence or site amenity installers',
+//     'General exterior cleanup',
+//     'Use shovel, rake, wheelbarrow, and basic hand tools',
+//   ],
+//   'Planting / Trees / Shrubs': [
+//     'Plant trees',
+//     'Plant shrubs',
+//     'Plant flowers or small plants',
+//     'Prepare planting holes',
+//     'Backfill and compact around plantings',
+//     'Stake trees',
+//     'Install edging around planting beds',
+//     'Water new plantings',
+//     'Read simple planting layout or plant schedule',
+//   ],
+//   'Sod / Turf Installation': [
+//     'Prepare soil for sod',
+//     'Lay sod rolls',
+//     'Cut and fit sod edges',
+//     'Roll sod',
+//     'Water sod after installation',
+//     'Repair damaged turf areas',
+//     'Install seed or straw where applicable',
+//     'Clean turf areas after installation',
+//   ],
+//   'Mulch / Rock / Ground Cover': [
+//     'Install mulch',
+//     'Install decorative rock',
+//     'Install ground cover fabric',
+//     'Spread soil or topsoil',
+//     'Install edging',
+//     'Shape planting beds',
+//     'Clean and finish landscape beds',
+//     'Load and move bulk materials',
+//   ],
+//   'Irrigation Support': [
+//     'Install irrigation pipe',
+//     'Assist trenching for irrigation lines',
+//     'Install sprinkler heads under supervision',
+//     'Install drip line under supervision',
+//     'Backfill irrigation trenches',
+//     'Repair simple irrigation lines',
+//     'Assist with irrigation testing',
+//     'Identify basic irrigation components',
+//   ],
+//   'Landscape Drainage Support': [
+//     'Install landscape drain pipe',
+//     'Assist French drain installation',
+//     'Install catch basins under supervision',
+//     'Place gravel around drainage pipe',
+//     'Backfill drainage trenches',
+//     'Clean drainage areas',
+//     'Assist with grading for drainage',
+//     'Repair minor landscape drainage issues',
+//   ],
+//   'Fencing / Gates': [
+//     'Install fence panels',
+//     'Install gates',
+//     'Install chain link support',
+//     'Install basic hardware',
+//     'Assist with layout and string lines',
+//     'Set fence posts',
+//     'Install temporary fencing',
+//     'Install wood fence support',
+//     'Repair fence sections',
+//   ],
+//   'Exterior Site Amenities': [
+//     'Install benches under supervision',
+//     'Install trash receptacles',
+//     'Install site signage support',
+//     'Assemble exterior amenities',
+//     'Install bike racks under supervision',
+//     'Install bollards under supervision',
+//     'Install wheel stops support',
+//     'Final alignment and cleanup around amenities',
+//   ],
+//   'Pavers / Landscape Hardscape': [
+//     'Prepare base for pavers',
+//     'Cut pavers under supervision',
+//     'Spread sand or setting bed',
+//     'Fill joints',
+//     'Assist hardscape layout',
+//     'Set pavers',
+//     'Install edge restraints',
+//     'Compact pavers',
+//     'Repair paver areas',
+//   ],
+//   'Retaining Wall Support': [
+//     'Carry and stage wall blocks',
+//     'Prepare base',
+//     'Install drainage stone behind wall',
+//     'Compact wall base',
+//     'Assist retaining wall layout',
+//     'Set landscape wall blocks under supervision',
+//     'Backfill wall area',
+//     'Clean retaining wall work area',
+//   ],
+//   'Playground / Outdoor Equipment Support': [
+//     'Unload playground components',
+//     'Assist setting posts or anchors',
+//     'Move rubber mulch or surface material',
+//     'Assist outdoor equipment installers',
+//     'Assist equipment assembly',
+//     'Install safety surfacing support',
+//     'Final cleanup around playground',
+//     'Follow layout under supervision',
+//   ],
+//   'Exterior Cleanup / Final Appearance': [
+//     'Pick up debris',
+//     'Remove landscape waste',
+//     'Final site appearance cleanup',
+//     'Prepare exterior for turnover',
+//     'Sweep exterior areas',
+//     'Clean around sidewalks and curbs',
+//     'Pressure wash support',
+//     'Touch up landscape beds',
+//   ],
+//   'Maintenance / Landscape Service': [
+//     'Mowing support',
+//     'Blowing debris',
+//     'Seasonal cleanup',
+//     'Basic irrigation checks',
+//     'Trimming / edging support',
+//     'Weed control support',
+//     'Plant replacement support',
+//     'Routine landscape service support',
+//   ],
+//   'Exterior Punch / Final Corrections': [
+//     'Repair damaged sod',
+//     'Fix mulch/rock areas',
+//     'Clean final exterior punch items',
+//     'Support final walkthrough corrections',
+//     'Replace plants',
+//     'Correct fence or gate issues under supervision',
+//     'Touch up pavers/hardscape',
+//     'Complete owner/GC punch list items',
+//   ],
+//   'Roofing Helper / Roof Labor': [
+//     'Carry roofing material',
+//     'Load/unload roof materials',
+//     'Clean roof areas',
+//     'Assist roof crew',
+//     'Set up tools/materials',
+//     'Move insulation/cover board',
+//     'Assist with debris',
+//     'Basic roof safety awareness',
+//   ],
+//   'Roof Tear-Off / Demo': [
+//     'Remove old membrane',
+//     'Remove insulation/cover board',
+//     'Tear off shingles/roof layers',
+//     'Load debris',
+//     'Use tear-off tools',
+//     'Clean deck',
+//     'Protect roof drains/openings',
+//     'Prepare area for new roof system',
+//   ],
+//   'Commercial Flat Roofing': [
+//     'Work on flat roofs',
+//     'Prepare substrate',
+//     'Install roof layers',
+//     'Assist layout',
+//     'Use adhesives/fasteners',
+//     'Work around drains/penetrations',
+//     'Read basic roof details',
+//     'Follow roof safety protocols',
+//   ],
+//   'TPO / PVC / EPDM Membrane': [
+//     'Roll out membrane',
+//     'Position sheets',
+//     'Heat-weld seams',
+//     'Install adhesives',
+//     'Patch membrane',
+//     'Install termination bar',
+//     'Flash seams',
+//     'Repair membrane punctures',
+//     'Use hand welder/robot welder if experienced',
+//   ],
+//   'Built-Up / Modified Bitumen': [
+//     'Install base sheets',
+//     'Install cap sheets',
+//     'Apply torch if qualified',
+//     'Assist hot asphalt system',
+//     'Install modified bitumen',
+//     'Patch mod-bit',
+//     'Work around flashing details',
+//     'Hot work awareness',
+//   ],
+//   'Roof Insulation / Cover Board': [
+//     'Install insulation boards',
+//     'Install cover board',
+//     'Cut boards',
+//     'Stagger joints',
+//     'Fasten/adhered boards',
+//     'Taper insulation support',
+//     'Maintain clean substrate',
+//     'Protect materials from weather',
+//   ],
+//   'Metal Roofing': [
+//     'Install metal panels',
+//     'Install fasteners',
+//     'Install trim',
+//     'Cut panels',
+//     'Install closures',
+//     'Support standing seam work',
+//     'Repair metal panels',
+//     'Work with metal roof layout',
+//   ],
+//   'Flashing / Sheet Metal Flashing': [
+//     'Install edge metal',
+//     'Install coping',
+//     'Install counterflashing',
+//     'Flash curbs',
+//     'Flash parapets',
+//     'Install termination bar',
+//     'Seal flashing joints',
+//     'Work with sheet metal roof details',
+//   ],
+//   'Roof Penetrations / Curbs': [
+//     'Flash penetrations',
+//     'Install/assist roof curbs',
+//     'Seal pipe boots',
+//     'Support rooftop openings',
+//     'Coordinate around RTUs',
+//     'Patch around vents/drains',
+//     'Protect roof penetrations',
+//   ],
+//   'Waterproofing': [
+//     'Apply liquid waterproofing',
+//     'Install sheet waterproofing',
+//     'Prep surfaces',
+//     'Apply primer',
+//     'Seal joints',
+//     'Waterproof walls/decks',
+//     'Patch waterproofing',
+//     'Protect waterproofed areas',
+//   ],
+//   'Caulking / Sealants': [
+//     'Apply sealant',
+//     'Caulk joints',
+//     'Tool sealant',
+//     'Prep surfaces',
+//     'Remove old sealant',
+//     'Install backer rod',
+//     'Seal perimeter details',
+//     'Weatherproof exterior joints',
+//   ],
+//   'Roof Repair / Leak Investigation': [
+//     'Find leak locations',
+//     'Patch seams',
+//     'Repair punctures',
+//     'Repair flashing',
+//     'Clear drains',
+//     'Fix loose membrane',
+//     'Perform temporary leak repair',
+//     'Document problem areas',
+//   ],
+//   'Roof Safety / Material Handling': [
+//     'Assist fall protection setup',
+//     'Maintain roof access area',
+//     'Material staging',
+//     'Keep roof clean',
+//     'Spot material movement',
+//     'Weather safety awareness',
+//     'Use PPE properly',
+//   ],
+//   'Roof Punch / Final Support': [
+//     'Clean roof',
+//     'Complete small patches',
+//     'Seal exposed details',
+//     'Check terminations',
+//     'Support inspection corrections',
+//     'Remove debris',
+//     'Final roof walk support',
+//   ],
+//   'General Site Labor': [
+//     'Carry materials',
+//     'Set up work area',
+//     'Assist multiple trades',
+//     'Move tools and supplies',
+//     'Break down work area',
+//     'Follow jobsite directions',
+//     'Assist foreman or crew lead',
+//     'Basic site support',
+//   ],
+//   'Material Handling / Stocking': [
+//     'Stock drywall or materials',
+//     'Use hand truck/dolly',
+//     'Protect stored materials',
+//     'Stage materials by floor/zone',
+//     'Organize material laydown area',
+//     'Move palletized materials',
+//     'Count or label materials',
+//   ],
+//   'Loading / Unloading': [
+//     'Unload trucks',
+//     'Direct unloading area',
+//     'Secure materials after delivery',
+//     'Load debris or materials',
+//     'Move materials from dock',
+//     'Assist delivery driver',
+//     'Manual lifting/team lifting',
+//   ],
+//   'Jobsite Cleanup / Rough Clean': [
+//     'Sweep work area',
+//     'Use broom/shovel/scraper',
+//     'Support daily cleanup',
+//     'Remove trash from floors',
+//     'Dust control support',
+//     'Rough clean rooms/corridors',
+//     'Keep pathways clear',
+//   ],
+//   'Trash / Debris Control': [
+//     'Move trash carts',
+//     'Separate recyclable materials',
+//     'Final debris pass',
+//     'Collect debris piles',
+//     'Remove packaging',
+//     'Dumpster support',
+//     'Clean after trade work',
+//   ],
+//   'Temporary Protection': [
+//     'Install floor protection',
+//     'Install plastic protection',
+//     'Maintain protected paths',
+//     'Install wall protection',
+//     'Protect doors/hardware',
+//     'Cover finished surfaces',
+//     'Remove protection at closeout',
+//   ],
+//   'Site Logistics / Delivery Support': [
+//     'Guide deliveries',
+//     'Move materials between areas',
+//     'Help with site setup',
+//     'Stage materials by zone',
+//     'Support lift/material scheduling',
+//     'Coordinate with foreman',
+//     'Maintain access paths',
+//   ],
+//   'Fire Watch / Spotter': [
+//     'Perform fire watch if assigned',
+//     'Maintain safe distance zones',
+//     'Support confined/path control',
+//     'Watch hot work area',
+//     'Use radio/hand signals',
+//     'Spot equipment movement',
+//     'Report unsafe conditions',
+//   ],
+//   'Forklift / Material Equipment Support': [
+//     'Operate forklift if certified',
+//     'Use dolly',
+//     'Inspect basic equipment before use',
+//     'Operate pallet jack',
+//     'Load/unload pallets',
+//     'Use material cart',
+//     'Move material safely',
+//   ],
+//   'Multi-Trade Helper Support': [
+//     'Assist drywall crew',
+//     'Hold materials/tools',
+//     'Do not perform licensed trade work unless qualified',
+//     'Assist concrete crew',
+//     'Clean behind trades',
+//     'Assist plumbing/electrical/HVAC crew',
+//     'Basic helper tasks only',
+//   ],
+//   'Punch Support Labor': [
+//     'Move materials for punch crew',
+//     'Remove protection',
+//     'Patch support preparation',
+//     'Clean finished spaces',
+//     'Help with final corrections',
+//     'Support owner walk prep',
+//     'Closeout material movement',
+//   ],
+//   'Closeout / Turnover Support': [
+//     'Final site cleaning support',
+//     'Remove temporary items',
+//     'Move leftover materials',
+//     'Support turnover checklist',
+//     'Clean access paths',
+//     'Assist final walk area prep',
+//     'Final trash removal',
+//   ],
+//   'Demo Helper / Demo Labor': [
+//     'Carry materials',
+//     'Move debris',
+//     'Protect paths',
+//     'Assist demo crew',
+//     'Clean work area',
+//     'Support dumpsters',
+//     'Basic hand tools',
+//     'Sweep/vacuum',
+//     'Remove light debris',
+//     'Follow foreman directions',
+//   ],
+//   'Interior Selective Demo': [
+//     'Remove cabinets',
+//     'Remove casework',
+//     'Remove non-structural walls',
+//     'Remove trim/base',
+//     'Remove doors/frames',
+//     'Remove fixtures not requiring licensed trade',
+//     'Careful removal around existing areas',
+//     'Protect adjacent finishes',
+//   ],
+//   'Wall / Ceiling / Partition Demo': [
+//     'Remove drywall',
+//     'Remove ACT ceiling tile',
+//     'Remove ceiling grid',
+//     'Remove insulation',
+//     'Remove metal studs',
+//     'Remove partitions',
+//     'Remove soffits',
+//     'Pull fasteners',
+//     'Separate materials for disposal',
+//   ],
+//   'Flooring / Surface Removal': [
+//     'Remove carpet',
+//     'Remove VCT/LVT',
+//     'Remove tile',
+//     'Scrape adhesive',
+//     'Remove rubber base',
+//     'Use floor scraper',
+//     'Prepare floor for next trade',
+//     'Bag/dispose flooring debris',
+//   ],
+//   'Concrete Demo / Chipping / Jackhammer Support': [
+//     'Use jackhammer',
+//     'Chip concrete',
+//     'Break small pads',
+//     'Remove curb/sidewalk sections',
+//     'Assist sawcutting',
+//     'Haul concrete debris',
+//     'Use wheelbarrow/cart',
+//     'Support dust control',
+//   ],
+//   'Sawcut / Core Drill Demo Support': [
+//     'Assist sawcut layout',
+//     'Support wet sawcut',
+//     'Manage slurry',
+//     'Core drill support',
+//     'Protect work area',
+//     'Support openings for MEP',
+//     'Cleanup after cutting/coring',
+//   ],
+//   'Debris Removal / Loadout': [
+//     'Load dumpsters',
+//     'Use debris carts',
+//     'Operate trash chute support',
+//     'Segregate debris',
+//     'Maintain loadout route',
+//     'Coordinate debris pickup',
+//     'Sweep/HEPA vacuum where required',
+//   ],
+//   'Salvage / Material Separation': [
+//     'Identify materials to save',
+//     'Remove without damage',
+//     'Label materials',
+//     'Stack/store salvage',
+//     'Separate recycling',
+//     'Separate metal/wood/drywall/concrete debris',
+//   ],
+//   'Dust Control / Temporary Protection': [
+//     'Install plastic barriers',
+//     'Install floor protection',
+//     'Zip wall setup',
+//     'Tack mats',
+//     'HEPA vacuum',
+//     'Dust monitoring support',
+//     'Protect occupied areas',
+//     'Maintain clean access routes',
+//   ],
+//   'Demo Tool / Small Equipment Support': [
+//     'Demo saw support',
+//     'Chipping hammer',
+//     'Roto-hammer',
+//     'Grinder',
+//     'Floor scraper',
+//     'HEPA vacuum',
+//     'Small skid/forklift support if certified',
+//     'Safe extension cord/tool setup',
+//   ],
+//   'Abatement Support / Environmental Containment': [
+//     'Containment setup',
+//     'Poly sheeting',
+//     'Decon support',
+//     'Negative-air machine support',
+//     'HEPA cleaning',
+//     'Waste bagging support',
+//   ],
+//   'Occupied Building / Night Demo': [
+//     'Quiet demo support',
+//     'Off-hours work',
+//     'Maintain dust/noise controls',
+//     'Protect public areas',
+//     'Clean before turnover',
+//     'Work around active occupants',
+//     'Follow access restrictions',
+//   ],
+//   'Demo Punch / Final Cleanup': [
+//     'Final sweep',
+//     'Debris check',
+//     'Remove leftover fasteners',
+//     'Patch-prep cleanup',
+//     'Turn over area to next trade',
+//     'Remove temporary protection when approved',
+//   ],
+//   'Masonry Helper / Mason Tender': [
+//     'Mix mortar',
+//     'Stock scaffold',
+//     'Clean mortar boards',
+//     'Operate mixer',
+//     'Clean work area',
+//     'Carry block / brick / stone',
+//     'Set up materials',
+//     'Assist mason',
+//     'Basic layout support',
+//   ],
+//   'CMU / Block Masonry': [
+//     'Lay CMU block',
+//     'Install corners',
+//     'Install control joints',
+//     'Cut block',
+//     'Build block walls',
+//     'Set bond / courses',
+//     'Install lintels',
+//     'Read basic masonry layout',
+//     'Install anchors / ties',
+//   ],
+//   'Brick Masonry': [
+//     'Lay brick',
+//     'Set corners / leads',
+//     'Install brick veneer',
+//     'Maintain bond pattern',
+//     'Tool joints',
+//     'Cut brick',
+//     'Install ties / anchors',
+//     'Clean brick face',
+//   ],
+//   'Stone Veneer / Manufactured Stone': [
+//     'Cut stone',
+//     'Point joints',
+//     'Clean stone face',
+//     'Apply mortar bed',
+//     'Install lath support if applicable',
+//     'Repair stone veneer',
+//   ],
+//   'Grout / Reinforcement Support': [
+//     'Place grout',
+//     'Support grout pours',
+//     'Install wire reinforcement',
+//     'Assist inspection prep',
+//     'Install rebar/dowels in masonry',
+//     'Vibrate grout if required',
+//     'Clean cells before grout',
+//   ],
+//   'Scaffold / Material Staging': [
+//     'Stock scaffold',
+//     'Stage mortar / block / brick',
+//     'Maintain safe access',
+//     'Move masonry materials',
+//     'Assist scaffold setup',
+//     'Use forklift/telehandler support if qualified',
+//   ],
+//   'Masonry Cutting / Sawing / Drilling': [
+//     'Use masonry saw',
+//     'Grind joints',
+//     'Core drill support',
+//     'Use silica controls',
+//     'Cut block/brick/stone',
+//     'Drill anchors',
+//     'Control dust/water',
+//   ],
+//   'Masonry Repair / Restoration': [
+//     'Repoint mortar joints',
+//     'Replace damaged units',
+//     'Repair cracks',
+//     'Restoration prep',
+//     'Patch masonry',
+//     'Clean masonry',
+//     'Match existing work',
+//   ],
+//   'Stucco / Plaster Systems': [
+//     'Install lath',
+//     'Apply brown coat',
+//     'Float / texture stucco',
+//     'Install accessories / trims',
+//     'Apply scratch coat',
+//     'Apply finish coat',
+//     'Patch stucco',
+//     'Mix plaster/stucco materials',
+//   ],
+//   'EIFS Systems': [
+//     'Install foam board',
+//     'Apply base coat',
+//     'Apply finish coat',
+//     'Patch EIFS',
+//     'Rasp foam',
+//     'Embed mesh',
+//     'Install trims / starter track',
+//     'Seal transitions',
+//   ],
+//   'Sealants / Weather Interface': [
+//     'Apply sealants',
+//     'Seal masonry transitions',
+//     'Weatherproof openings',
+//     'Backer rod install',
+//     'Caulk joints',
+//     'Touch-up sealant work',
+//   ],
+//   'Masonry Punch / Cleanup': [
+//     'Final cleaning',
+//     'Remove excess mortar',
+//     'Clean site areas',
+//     'Patch small defects',
+//     'Touch-up joints',
+//     'Support final corrections',
+//   ],
+//   'Steel Helper / Ironworker Helper': [
+//     'Carry/stage bolts and tools',
+//     'Move steel components under direction',
+//     'Assist ironworkers/connectors',
+//     'Hold tag lines',
+//     'Clean steel work area',
+//     'Help unload steel deliveries',
+//     'Spot equipment/crew movements',
+//     'Use basic hand tools',
+//     'Support bolt staging',
+//     'Assist with punch and cleanup',
+//   ],
+//   'Structural Steel Erection': [
+//     'Assist setting columns',
+//     'Assist setting beams',
+//     'Assist setting joists',
+//     'Connect structural members under direction',
+//     'Align structural steel',
+//     'Install temporary bolts',
+//     'Work from lift/scaffold where allowed',
+//     'Read basic erection marks',
+//     'Support crane picks',
+//     'Understand jobsite steel erection sequence',
+//   ],
+//   'Bolt-Up / Connecting': [
+//     'Install bolts',
+//     'Tighten bolts',
+//     'Use spud wrench',
+//     'Use impact wrench',
+//     'Align holes',
+//     'Install washers/nuts',
+//     'Snug-tight bolts',
+//     'Support torque/tensioning process',
+//     'Install connection plates',
+//     'Assist connector/lead ironworker',
+//   ],
+//   'Metal Decking / Joist Support': [
+//     'Install metal deck',
+//     'Stage deck bundles',
+//     'Place deck sheets',
+//     'Fasten deck under direction',
+//     'Cut deck openings under direction',
+//     'Assist joist installation',
+//     'Install closure angles/support pieces',
+//     'Patch deck',
+//     'Work safely at heights',
+//     'Coordinate with fall protection',
+//   ],
+//   'Field Welding': [
+//     'Field weld steel components',
+//     'Tack weld',
+//     'Weld plates/angles/brackets',
+//     'Weld handrails/guardrails',
+//     'Weld stairs/landings support',
+//     'Repair welds',
+//     'Grind welds',
+//     'Read basic weld symbols',
+//     'Use SMAW/stick welding',
+//     'Use MIG/FCAW where applicable',
+//     'Maintain hot work area',
+//     'Provide welding cert if required',
+//   ],
+//   'Shop Welding / Fabrication Support': [
+//     'Measure/cut metal',
+//     'Fit metal pieces',
+//     'Prep weld joints',
+//     'Grind/cut/drill steel',
+//     'Fabricate small brackets',
+//     'Assist with prefabrication',
+//     'Layout simple assemblies',
+//     'Clean welds',
+//     'Use shop tools safely',
+//     'Support jobsite-related fabrication',
+//   ],
+//   'Miscellaneous Metals Installation': [
+//     'Install embeds',
+//     'Install plates',
+//     'Install angles',
+//     'Install lintels',
+//     'Install ladders',
+//     'Install bollards',
+//     'Install frames/brackets',
+//     'Install access panels/metal frames',
+//     'Drill/anchor metal items',
+//     'Set small metal assemblies',
+//     'Adjust misc metal items',
+//   ],
+//   'Stairs / Railings / Handrails': [
+//     'Install metal stairs',
+//     'Install stair pans',
+//     'Install landings',
+//     'Install guardrails',
+//     'Install handrails',
+//     'Install grab rails',
+//     'Install railing posts',
+//     'Weld/bolt rails',
+//     'Adjust rail alignment',
+//     'Punch rail/stair work',
+//   ],
+//   'Ornamental / Architectural Metals': [
+//     'Install decorative metal',
+//     'Install stainless/aluminum railings',
+//     'Install architectural metal panels',
+//     'Install trim/accent metals',
+//     'Align visible metal components',
+//     'Protect finished metal surfaces',
+//     'Touch-up small areas',
+//     'Coordinate with finish trades',
+//     'Install specialty metal items',
+//   ],
+//   'Rigging / Signaling / Hoisting Support': [
+//     'Rig steel pieces under direction',
+//     'Use slings/chokers under qualified supervision',
+//     'Signal crane if qualified',
+//     'Hold tag line',
+//     'Guide steel during pick',
+//     'Inspect rigging visually under direction',
+//     'Coordinate pick area',
+//     'Stay clear of suspended loads',
+//     'Support lift plan execution',
+//     'Communicate with operator/foreman',
+//   ],
+//   'Cutting / Grinding / Torch Work': [
+//     'Cut steel with grinder',
+//     'Grind welds',
+//     'Drill steel',
+//     'Use chop saw/band saw',
+//     'Torch cut if qualified',
+//     'Prep steel edges',
+//     'Remove burrs',
+//     'Cut bolts/anchors',
+//     'Maintain hot work awareness',
+//     'Set fire watch when required',
+//   ],
+//   'Steel Repair / Retrofit / Punch': [
+//     'Modify existing steel',
+//     'Repair misc metals',
+//     'Patch welds',
+//     'Adjust rails/stairs',
+//     'Replace damaged parts',
+//     'Field fit pieces',
+//     'Install supplemental plates',
+//     'Punch list corrections',
+//     'Tighten/replace bolts',
+//     'Final metal touch-up support',
+//   ],
+//   'Fireproofing Interface Support': [
+//     'Protect steel before fireproofing',
+//     'Remove temporary items from steel',
+//     'Coordinate steel punch before fireproofing',
+//     'Support access for fireproofing crew',
+//     'Clean steel areas',
+//     'Identify areas needing repair before cover-up',
+//     'Do not perform spray fireproofing unless cross-skilled',
+//   ],
+//   'Steel Cleanup / Material Staging': [
+//     'Sort bolts/hardware',
+//     'Stage steel by area',
+//     'Move small metal components',
+//     'Clean welding debris',
+//     'Remove scrap metal',
+//     'Organize tools',
+//     'Support closeout cleanup',
+//     'Protect finished surfaces',
+//   ],
+//   'Carpenter Helper / Rough Carpentry Support': [
+//     'Stage lumber and panels',
+//     'Assist measuring and marking',
+//     'Assist fastening and bracing',
+//     'Use basic hand tools',
+//     'Carry and distribute materials',
+//     'Support cut station',
+//     'Clean carpentry work areas',
+//     'Help set temporary protection',
+//   ],
+//   'Wood Wall Framing': [
+//     'Frame wood walls',
+//     'Install studs',
+//     'Install headers',
+//     'Frame wall openings',
+//     'Frame exterior walls',
+//     'Read basic wall framing plans',
+//     'Install top and bottom plates',
+//     'Build corners and intersections',
+//     'Install king and jack studs',
+//     'Plumb and brace walls',
+//     'Frame interior partitions',
+//     'Use nailer / saw / impact tools',
+//   ],
+//   'Floor / Ceiling Joist Framing': [
+//     'Install floor joists',
+//     'Install rim board',
+//     'Install blocking/bridging',
+//     'Frame floor openings',
+//     'Read joist layout',
+//     'Install ceiling joists',
+//     'Install joist hangers',
+//     'Install I-joists or LVL members',
+//     'Support subfloor installation',
+//     'Repair damaged joist areas',
+//   ],
+//   'Roof Framing / Truss Installation': [
+//     'Set roof trusses',
+//     'Install permanent truss bracing',
+//     'Install roof blocking',
+//     'Install outlookers / lookouts',
+//     'Read truss placement drawings',
+//     'Install temporary truss bracing',
+//     'Frame roof openings',
+//     'Frame rafters',
+//     'Work from lift/scaffold',
+//     'Support crane/truss placement',
+//   ],
+//   'Blocking / Backing / Nailers': [
+//     'Install plywood backing',
+//     'Install nailers',
+//     'Install backing for casework/millwork',
+//     'Install ceiling/soft blocking',
+//     'Cut and fit blocking',
+//     'Install solid wood blocking',
+//     'Install backing for accessories',
+//     'Install MEP support blocking',
+//     'Layout from coordination drawings',
+//     'Repair missing backing',
+//   ],
+//   'Plywood / OSB Sheathing / Subfloor': [
+//     'Install wall sheathing',
+//     'Install subfloor panels',
+//     'Follow fastening pattern',
+//     'Install edge blocking',
+//     'Work with fire-treated panels',
+//     'Install roof sheathing',
+//     'Cut panel openings',
+//     'Apply panel adhesive',
+//     'Repair damaged panels',
+//     'Use panel saw/circular saw',
+//   ],
+//   'Rough Openings / Bucks / Curbs / Supports': [
+//     'Frame door openings',
+//     'Install wood bucks',
+//     'Build roof/equipment curbs',
+//     'Adjust rough-opening size',
+//     'Verify opening dimensions',
+//     'Frame window openings',
+//     'Build equipment supports',
+//     'Frame MEP penetrations',
+//     'Install headers/sills',
+//     'Repair opening framing',
+//   ],
+//   'Framing Layout / Plan Reading': [
+//     'Read framing plans',
+//     'Layout walls',
+//     'Establish control lines',
+//     'Verify square and dimensions',
+//     'Identify framing conflicts',
+//     'Read dimensions/details',
+//     'Layout openings',
+//     'Use laser / chalk line',
+//     'Coordinate backing locations',
+//     'Direct framing crew layout',
+//   ],
+//   'Temporary Carpentry / Barricades / Hoardings': [
+//     'Build temporary partitions',
+//     'Install temporary doors',
+//     'Build temporary ramps',
+//     'Create dust-control barriers',
+//     'Remove temporary carpentry',
+//     'Build hoardings',
+//     'Build protection boxes',
+//     'Install temporary railings',
+//     'Install temporary plywood protection',
+//     'Work in occupied areas',
+//   ],
+//   'Exterior Wood Framing / Decks / Wood Structures': [
+//     'Frame decks',
+//     'Install wood posts/beams',
+//     'Frame canopies',
+//     'Install exterior sheathing',
+//     'Repair exterior wood framing',
+//     'Install deck joists',
+//     'Build exterior platforms',
+//     'Frame exterior stairs/ramps',
+//     'Install treated lumber',
+//     'Work in weather exposure',
+//   ],
+//   'Prefabricated / Panelized Wood Framing': [
+//     'Set wall panels',
+//     'Install panel connections',
+//     'Set floor/roof components',
+//     'Coordinate crane/telehandler support',
+//     'Install panel hardware',
+//     'Align panelized walls',
+//     'Brace panels',
+//     'Follow shop/erection drawings',
+//     'Repair panel framing',
+//     'Work with modular components',
+//   ],
+//   'Rough Stairs / Ramps / Platforms': [
+//     'Build rough stairs',
+//     'Build landings',
+//     'Build work platforms',
+//     'Install plywood walking surfaces',
+//     'Verify basic dimensions',
+//     'Cut/install stringers',
+//     'Build temporary ramps',
+//     'Install rough guardrails',
+//     'Repair stairs/ramps',
+//     'Support accessibility transitions',
+//   ],
+//   'Rough Carpentry Repair / Retrofit / Punch': [
+//     'Repair framing',
+//     'Add missing blocking',
+//     'Repair sheathing/subfloor',
+//     'Install retrofit supports',
+//     'Remove/replace rough carpentry',
+//     'Replace damaged studs',
+//     'Adjust openings',
+//     'Correct wall alignment',
+//     'Complete punch corrections',
+//     'Work from approved repair details',
+//   ],
+//   'Finish Carpentry Helper / Millwork Material Support': [
+//     'Receive and check labeled materials',
+//     'Stage materials by room / floor / zone',
+//     'Unpack and inspect for visible damage',
+//     'Assist holding / leveling / shimming',
+//     'Remove packaging and clean work areas',
+//     'Unload and move cabinets / tops / panels / trim',
+//     'Protect finished faces and edges',
+//     'Organize hardware / fasteners / adhesives',
+//     'Set up tools / cords / vacuums',
+//     'Support final protection / material return',
+//   ],
+//   'Casework / Cabinet Installation': [
+//     'Read cabinet elevations / shop drawings',
+//     'Install base cabinets',
+//     'Install tall cabinets / pantry units',
+//     'Join cabinet runs and align faces',
+//     'Install toe kicks / base closures',
+//     'Verify backing before fastening',
+//     'Install finish trim at casework edges',
+//     'Lay out cabinet runs and elevations',
+//     'Install wall cabinets',
+//     'Level / plumb / shim / anchor cabinets',
+//     'Install fillers / scribes / end panels',
+//     'Install shelves / adjustable systems',
+//     'Coordinate openings with MEP locations',
+//     'Adjust cabinet doors and drawers',
+//   ],
+//   'Laboratory / Healthcare / Institutional Casework': [
+//     'Install laboratory casework',
+//     'Install healthcare / nurse-station components',
+//     'Install specialty upper / reagent shelving',
+//     'Follow room and equipment numbering',
+//     'Install specialty fillers and closures',
+//     'Protect phased-turnover casework',
+//     'Install classroom / educational casework',
+//     'Install institutional cabinets / built-in storage',
+//     'Coordinate sinks / fixtures / equipment / utilities',
+//     'Verify system anchorage and clearances',
+//     'Work in occupied / controlled environments',
+//     'Complete specialty-system punch',
+//   ],
+//   'Architectural Millwork / Custom Woodwork Installation': [
+//     'Read architectural millwork shop drawings',
+//     'Install feature surrounds / columns / pilasters',
+//     'Install decorative panels / custom closures',
+//     'Sequence components by labels / elevations',
+//     'Scribe custom components to field conditions',
+//     'Coordinate interfaces with adjacent construction',
+//     'Install custom built-ins',
+//     'Install custom trims / moulded assemblies',
+//     'Install benches / custom seating components',
+//     'Align grain / veneer / reveals / joints',
+//     'Install concealed cleats / brackets',
+//     'Perform high-finish field fitting',
+//   ],
+//   'Finish Trim / Mouldings / Base / Casing': [
+//     'Install wood / composite base',
+//     'Install crown moulding',
+//     'Install window stools / aprons',
+//     'Miter / cope / scarf finish joints',
+//     'Fasten trim with approved nails / adhesives',
+//     'Maintain consistent profiles / reveals',
+//     'Install finish casing',
+//     'Install chair rail / picture rail',
+//     'Install trim returns / transitions',
+//     'Scribe trim to walls / floors / ceilings',
+//     'Prepare minor fastener locations for touch-up',
+//     'Repair or replace damaged finish trim',
+//   ],
+//   'Countertops / Laminate / Solid Surface Installation': [
+//     'Verify supports and countertop dimensions',
+//     'Install solid-surface countertops when qualified',
+//     'Scribe countertop edges',
+//     'Install supports / brackets / substrates',
+//     'Apply approved adhesives / seam materials',
+//     'Protect finished countertop surfaces',
+//     'Install plastic-laminate countertops',
+//     'Install backsplashes / side splashes',
+//     'Join field seams / align surfaces',
+//     'Cut approved sink / fixture / equipment openings',
+//     'Polish solid-surface seams when qualified',
+//     'Coordinate openings without making MEP connections',
+//   ],
+//   'Wood Wall Panels / Veneer / Slat / Feature Systems': [
+//     'Read panel elevations / sequencing diagrams',
+//     'Install wood / veneer wall panels',
+//     'Install wood slat / acoustic wood panels',
+//     'Align grain / joints / reveals',
+//     'Install trims / corners / caps',
+//     'Protect finished panel surfaces',
+//     'Lay out panel grids / reveals',
+//     'Install laminate / decorative panels',
+//     'Install cleats / rails / clips',
+//     'Cut panels around openings / devices',
+//     'Scribe panels to adjacent construction',
+//     'Repair / replace damaged panel sections',
+//   ],
+//   'Shelving / Closets / Storage Systems': [
+//     'Install fixed shelving',
+//     'Install closet systems / organizers',
+//     'Install rods / brackets / cleats',
+//     'Install finished end panels / closures',
+//     'Verify support / anchorage requirements',
+//     'Install adjustable shelving / standards',
+//     'Install cubbies / built-in storage',
+//     'Level and align shelf runs',
+//     'Cut and fit shelves',
+//     'Adjust shelves / accessories during punch',
+//   ],
+//   'Reception Desks / Nurse Stations / Built-Ins / Service Counters': [
+//     'Install reception-desk components',
+//     'Install nurse-station components',
+//     'Install cash wraps / service counters',
+//     'Install transaction tops / supports',
+//     'Align faces / reveals / tops / panel joints',
+//     'Install fillers / closures / finished ends',
+//     'Protect phased-turnover stations',
+//     'Install banquettes / built-in seating',
+//     'Sequence multi-piece assemblies',
+//     'Coordinate power / data / equipment openings',
+//     'Field-fit complex components',
+//     'Complete final adjustments / punch',
+//   ],
+//   'Cabinet Hardware / Millwork Accessories': [
+//     'Install cabinet hinges',
+//     'Install pulls / knobs / handles',
+//     'Install shelf pins / standards / supports',
+//     'Install grommets / approved inserts',
+//     'Replace damaged / missing hardware',
+//     'Install drawer slides',
+//     'Install cabinet locks / catches',
+//     'Install soft-close / specialty mechanisms',
+//     'Adjust door and drawer alignment',
+//     'Verify final hardware operation',
+//   ],
+//   'Layout / Field Measurement / Scribing / Templating': [
+//     'Read plans / elevations / millwork shop drawings',
+//     'Establish cabinet / millwork elevation lines',
+//     'Check level / plumb / square',
+//     'Create field templates',
+//     'Use laser / level / tape / story pole',
+//     'Coordinate installation sequence',
+//     'Verify field dimensions',
+//     'Lay out cabinet runs / panels / tops / built-ins',
+//     'Identify out-of-tolerance field conditions',
+//     'Scribe fillers / panels / trim / countertops',
+//     'Document dimensions / discrepancies',
+//     'Lead layout for installation crew',
+//   ],
+//   'Shop Fabrication / Assembly Support': [
+//     'Read cut lists / shop drawings',
+//     'Apply plastic laminate',
+//     'Assemble cabinet boxes / components',
+//     'Sand and prepare components',
+//     'Use edge-bander when qualified',
+//     'Install shop hardware / preassembled components',
+//     'Perform shop quality checks',
+//     'Cut plywood / MDF / particleboard / hardwood',
+//     'Apply edge banding',
+//     'Fabricate fillers / panels / toe kicks / trim',
+//     'Use table saw / panel saw / miter saw / router when qualified',
+//     'Operate CNC when specifically qualified',
+//     'Label and package for field delivery',
+//   ],
+//   'Field Modification / Cutting / Fitting / Repair': [
+//     'Modify cabinet dimensions with approval',
+//     'Scribe and trim fillers / panels / shelves / tops',
+//     'Replace damaged doors / drawers / panels / trim',
+//     'Correct fit at walls / floors / ceilings / columns',
+//     'Perform approved laminate / edge repairs',
+//     'Cut cabinets / panels for approved MEP openings',
+//     'Repair chips / scratches / minor finish damage',
+//     'Rework misaligned cabinet runs',
+//     'Install reinforcement / support when directed',
+//     'Document defects requiring shop replacement',
+//   ],
+//   'Millwork Punch / Adjustment / Protection / Closeout': [
+//     'Adjust cabinet doors and drawers',
+//     'Tighten / replace hardware',
+//     'Correct minor alignment / fit issues',
+//     'Align reveals and finished edges',
+//     'Install missing shelves / fillers / trim / accessories',
+//     'Perform approved touch-up support',
+//     'Clean finished millwork surfaces',
+//     'Remove labels / packaging / debris',
+//     'Support owner / architect inspection',
+//     'Install / maintain protective coverings',
+//     'Complete room-by-room punch verification',
+//     'Document unresolved damage / replacement items',
+//   ],
+//   'Flooring Helper / Material Support': [
+//     'Receive and verify flooring material deliveries',
+//     'Mix approved mortar, grout, patch, leveler, or adhesive under direction',
+//     'Maintain clean work area and remove packaging/waste',
+//     'Operate basic carts, dollies, vacuums, and non-specialty support tools',
+//     'Move and stage tile, carpet, resilient flooring, adhesives, underlayment, and tools',
+//     'Protect finished surfaces and adjacent work',
+//     'Assist installers with cuts, measurements, layout marks, and material handling',
+//   ],
+//   'Flooring Removal / Tear-Out': [
+//     'Remove carpet tile and adhesive-backed carpet',
+//     'Remove VCT, LVT/LVP, rubber, sheet goods, or laminate flooring',
+//     'Remove rubber/vinyl base, cove base, and flooring accessories',
+//     'Sort, load out, and stage flooring debris',
+//     'Remove broadloom carpet, pad, tack strip, and transitions',
+//     'Remove ceramic/porcelain floor tile and setting bed',
+//     'Scrape or mechanically remove residual adhesive and thinset',
+//   ],
+//   'Floor Preparation / Substrate Correction': [
+//     'Clean, scrape, vacuum, and mechanically prepare substrates',
+//     'Apply skim coat / feather finish',
+//     'Grind high spots and remove coatings/adhesives with floor grinder',
+//     'Install plywood underlayment, cement board, or approved substrate panels',
+//     'Check flatness, elevation, and substrate readiness',
+//     'Patch holes, cracks, joints, low spots, and minor substrate defects',
+//     'Mix and place self-leveling underlayment',
+//     'Shot blast or mechanically profile concrete substrates',
+//     'Prime substrate for adhesive, leveler, moisture system, or finish flooring',
+//   ],
+//   'Moisture Testing / Mitigation / Underlayment': [
+//     'Perform or support concrete moisture testing',
+//     'Apply approved moisture-mitigation primer or epoxy system',
+//     'Install uncoupling membrane',
+//     'Install vapor retarder or approved flooring underlayment',
+//     'Document readings and test locations',
+//     'Install crack-isolation membrane',
+//     'Install acoustic or sound-control underlayment',
+//     'Prepare and place pumped or hand-mixed self-leveler',
+//   ],
+//   'Ceramic / Porcelain Floor Tile Installation': [
+//     'Read tile layout and establish control lines',
+//     'Install ceramic, porcelain, quarry, or mosaic floor tile',
+//     'Maintain joint alignment, pattern, elevation, and lippage control',
+//     'Grout, clean, and finish tile floors',
+//     'Repair or replace damaged floor tile',
+//     'Mix and apply thinset mortar',
+//     'Cut tile with wet saw, snap cutter, grinder, or specialty tools',
+//     'Install movement joints and perimeter gaps as directed',
+//     'Install tile stair treads, landings, and trim pieces',
+//   ],
+//   'Wall Tile / Wet-Area / Shower Systems': [
+//     'Lay out wall tile elevations, patterns, and control lines',
+//     'Install cement board or tile backer components within tile scope',
+//     'Install shower pans, curbs, niches, benches, and drains within tile scope',
+//     'Install epoxy grout or chemical-resistant grout',
+//     'Install wall tile, wainscot, backsplashes, and vertical tile assemblies',
+//     'Install approved liquid or sheet waterproofing directly under tile',
+//     'Cut and finish penetrations, corners, edges, and trim profiles',
+//     'Caulk tile changes of plane and finish wet-area joints',
+//   ],
+//   'Natural Stone / Large-Format / Specialty Tile': [
+//     'Install marble, granite, limestone, travertine, or other natural stone tile',
+//     'Use leveling systems and lippage-control methods',
+//     'Install complex patterns, mosaics, medallions, or feature tile',
+//     'Perform stone/tile edge finishing and minor field polishing',
+//     'Install large-format tile or gauged porcelain panels',
+//     'Back-butter, mechanically support, or install specialty mortars as required',
+//     'Use suction cups, handling frames, panel cutters, or rail saws',
+//     'Install epoxy grout or high-performance setting systems',
+//   ],
+//   'LVT / LVP / Resilient Plank and Tile': [
+//     'Lay out plank/tile pattern and starting lines',
+//     'Install click-lock or floating resilient plank',
+//     'Cut and fit around walls, columns, doors, and penetrations',
+//     'Install borders, patterns, insets, or directional layouts',
+//     'Install glue-down LVT/LVP',
+//     'Install loose-lay or pressure-sensitive systems',
+//     'Roll flooring and verify bond/adhesive transfer',
+//     'Replace damaged planks/tiles and perform punch repairs',
+//   ],
+//   'VCT / Commercial Resilient Tile': [
+//     'Lay out VCT grid and establish control lines',
+//     'Install VCT in straight, checkerboard, border, or pattern layouts',
+//     'Roll installed VCT and verify bond',
+//     'Clean adhesive residue and protect completed VCT',
+//     'Apply VCT adhesive and observe open time',
+//     'Cut and fit VCT around obstructions and edges',
+//     'Replace individual VCT units and repair damaged areas',
+//   ],
+//   'Sheet Vinyl / Linoleum / Heat-Welded Flooring': [
+//     'Measure, pattern, cut, and fit sheet flooring',
+//     'Scribe seams, walls, penetrations, and fixtures',
+//     'Install integral flash cove',
+//     'Install sheet flooring in healthcare, laboratory, or controlled environments',
+//     'Install sheet vinyl or linoleum with approved adhesive',
+//     'Groove and heat-weld seams',
+//     'Install cove former, cap strip, and termination details',
+//     'Repair seams, bubbles, damaged areas, or flash-cove details',
+//   ],
+//   'Carpet / Broadloom / Carpet Tile': [
+//     'Lay out carpet tile pattern and direction',
+//     'Install broadloom carpet with direct glue-down method',
+//     'Cut, seam, and join broadloom carpet',
+//     'Install glue-down carpet tile',
+//     'Install stretch-in carpet with tack strip and cushion',
+//     'Install carpet on stairs, landings, and transitions',
+//   ],
+//   'Rubber / Athletic / Specialty Resilient Flooring': [
+//     'Install rubber tile or rolled rubber flooring',
+//     'Install rubber stair treads, risers, or landing material',
+//     'Install cork or comparable specialty resilient flooring',
+//     'Heat weld or chemically weld seams where required',
+//     'Install rubber sheet flooring and seams',
+//     'Install athletic sheet, tile, pad, or performance flooring systems',
+//     'Apply manufacturer-approved adhesives and roll systems',
+//     'Repair specialty resilient flooring',
+//   ],
+//   'Wood / Engineered Wood / Laminate Flooring': [
+//     'Install nail-down or staple-down wood flooring',
+//     'Install floating engineered wood or laminate flooring',
+//     'Cut, fit, and undercut around openings and obstructions',
+//     'Install stair nosings or matching wood-floor accessories',
+//     'Install glue-down engineered wood flooring',
+//     'Lay out rows, patterns, transitions, and expansion gaps',
+//     'Install acoustic underlayment or approved vapor-control layer',
+//     'Sand, screen, stain, or refinish wood flooring',
+//   ],
+//   'Resinous / Epoxy / Urethane Flooring Systems': [
+//     'Mechanically prepare substrate for resinous flooring',
+//     'Apply primer, body coat, broadcast aggregate/flakes, and topcoat',
+//     'Install quartz-broadcast, flake, mortar, or high-build systems',
+//     'Perform non-slip texture, line marking, or decorative finish within floor system',
+//     'Mix multi-component epoxy, urethane, polyaspartic, or resin systems',
+//     'Install integral resinous cove base',
+//     'Control batch timing, pot life, coverage, and recoat windows',
+//     'Repair delamination, pinholes, damage, or failed resinous areas',
+//   ],
+//   'Terrazzo / Cementitious / Poured Specialty Flooring': [
+//     'Install divider strips, control lines, and terrazzo layout components',
+//     'Seed/broadcast aggregates and finish poured systems',
+//     'Install precast terrazzo base, stairs, or accessories',
+//     'Support poured cementitious decorative or specialty flooring',
+//     'Mix and place epoxy or cementitious terrazzo matrix and aggregate',
+//     'Grind, grout, polish, and seal terrazzo',
+//     'Perform patches, color matching, and terrazzo repairs',
+//   ],
+//   'Polished Concrete / Densified / Decorative Concrete Flooring': [
+//     'Evaluate cured slab condition for polishing scope',
+//     'Perform coarse grinding, honing, and polishing sequences',
+//     'Expose cream, salt-and-pepper, or aggregate finish as directed',
+//     'Burnish and complete final polished-concrete finish',
+//     'Operate planetary grinder/polisher and dust extraction equipment',
+//     'Apply densifier, stain, dye, guard, or sealer',
+//     'Fill joints, pinholes, and minor surface imperfections within polish scope',
+//   ],
+//   'Base / Cove Base / Transitions / Flooring Accessories': [
+//     'Install rubber or vinyl cove base',
+//     'Install reducers, transition strips, thresholds, and edge trims',
+//     'Install cap strip, cove former, and flash-cove accessories',
+//     'Repair or replace damaged base/accessories',
+//     'Install carpet base or specialty resilient base',
+//     'Install stair nosings, treads, risers, and accessory trims',
+//     'Scribe, miter, cope, and fit corners and terminations',
+//   ],
+//   'Flooring Repair / Punch / Protection / Closeout': [
+//     'Replace damaged tile, plank, VCT, carpet tile, sheet flooring, or base',
+//     'Repair grout, caulk, trim, or finish defects within flooring scope',
+//     'Install temporary floor protection after completion',
+//     'Coordinate small occupied-area repairs or service calls',
+//     'Correct loose edges, open seams, transitions, bubbles, or adhesive failure',
+//     'Perform final cleaning appropriate to installed flooring',
+//     'Complete room-by-room punch lists and document corrections',
+//   ],
+//   'Painting Helper / Material Support': [
+//     'Receive and stage paint, primers, coatings, wallcovering, tools, ladders, and protection materials',
+//     'Open, stir, strain, and mix products under direction',
+//     'Clean brushes, rollers, sprayers, buckets, and work areas',
+//     'Perform basic sanding, scraping, and cleanup under supervision',
+//     'Carry, organize, and distribute materials to rooms, floors, elevations, or work areas',
+//     'Set up drop cloths, plastic, masking materials, and basic work areas',
+//     'Assist with ladders, mobile scaffold, lifts, hoses, cords, and material movement',
+//   ],
+//   'Surface Protection / Masking / Jobsite Setup': [
+//     'Protect floors, doors, frames, glass, fixtures, casework, furniture, and equipment',
+//     'Build plastic containment or temporary dust/overspray barriers for painting scope',
+//     'Lay drop cloths, rosin paper, floor protection, and reusable protection systems',
+//     'Maintain clean paths and protect occupied-area circulation',
+//     'Mask straight lines, edges, hardware, glazing, ceilings, trim, and adjacent finishes',
+//     'Set up negative-air or ventilation support when directed and permitted',
+//     'Remove masking and protection without damaging completed work',
+//   ],
+//   'Surface Preparation / Minor Patching / Sanding': [
+//     'Clean dust, grease, residue, chalk, mildew, and loose contaminants before coating',
+//     'Sand drywall, plaster, wood, metal, or previously painted surfaces for adhesion',
+//     "Apply painter's caulk at trim, joints, and small gaps",
+//     'Degloss glossy surfaces and prepare existing coatings for repainting',
+//     'Scrape loose paint and feather edges',
+//     'Fill nail holes, minor dents, small cracks, and localized surface defects',
+//     'Spot-prime repaired, stained, porous, or exposed areas',
+//     'Identify visible adhesion, moisture, or substrate concerns and escalate',
+//   ],
+//   'Interior Brush / Roll Painting': [
+//     'Cut in walls, ceilings, corners, trim, doors, frames, and transitions',
+//     'Apply primer, intermediate coats, and finish coats',
+//     'Maintain clean lines and protect adjacent finished surfaces',
+//     'Work from ladders, baker scaffold, or lifts when selected and qualified',
+//     'Roll walls and ceilings with consistent coverage and texture',
+//     'Paint drywall, plaster, masonry, wood, metal, doors, frames, and trim',
+//     'Back-roll sprayed surfaces when required',
+//     'Perform room-by-room, phased, occupied, night-shift, or turnover painting',
+//   ],
+//   'Exterior Painting / Building Facades': [
+//     'Pressure-clean or prepare exterior substrates before painting',
+//     'Brush, roll, or spray exterior surfaces',
+//     'Apply elastomeric or masonry coatings when selected',
+//     'Protect landscaping, pavement, glazing, roofing, and adjacent public areas',
+//     'Apply primer and finish coats to masonry, stucco, siding, wood, metal, soffits, and trim',
+//     'Work from ladders, scaffolds, lifts, swing-stage, or roof-adjacent access systems',
+//     'Maintain wet edge and finish consistency under weather conditions',
+//   ],
+//   'Spray Application / Airless / HVLP / Conventional': [
+//     'Set up and operate airless spray equipment',
+//     'Select tip/nozzle, pressure, fan pattern, and filters for product and finish',
+//     'Apply dry-fall coatings to open ceilings or industrial interiors',
+//     'Back-roll or back-brush sprayed coatings when required',
+//     'Set up and operate HVLP or conventional spray equipment',
+//     'Spray walls, ceilings, decks, structural members, doors, frames, cabinets, or equipment',
+//     'Control overspray, masking, ventilation, and spray-zone access',
+//     'Flush, clean, troubleshoot, and maintain spray equipment',
+//   ],
+//   'Wood Stain / Clear Finish / Lacquer Systems': [
+//     'Prepare wood by sanding, cleaning, conditioning, and sample testing',
+//     'Apply sealer, lacquer, varnish, shellac, polyurethane, or clear finish',
+//     'Match stain color and prepare approval samples or mockups',
+//     'Repair scratches, blend finishes, and perform touch-up',
+//     'Apply wiping stain, penetrating stain, dye, or gel stain',
+//     'Brush, wipe, pad, or spray wood-finishing products',
+//     'Finish doors, frames, trim, casework, panels, railings, or architectural woodwork',
+//   ],
+//   'Metal Surface Preparation / Primers / DTM Coatings': [
+//     'Remove rust, mill scale, loose coating, grease, and contaminants from metal',
+//     'Prepare galvanized, aluminum, ferrous, and previously coated metal',
+//     'Apply direct-to-metal enamel, acrylic, alkyd, epoxy, or urethane systems',
+//     'Measure wet or dry film thickness when trained',
+//     'Hand-tool or power-tool clean steel and metal surfaces',
+//     'Apply rust-inhibitive, bonding, zinc-rich, or other approved metal primers',
+//     'Coat doors, frames, railings, stairs, structural members, equipment, and miscellaneous metals',
+//   ],
+//   'Industrial / High-Performance Protective Coatings': [
+//     'Read coating data sheets, mix ratios, induction times, pot life, and recoat windows',
+//     'Apply corrosion-control coatings to structural steel, piping, tanks, equipment, or process areas',
+//     'Use wet-film or dry-film thickness gauges when trained',
+//     'Apply chemical-resistant, abrasion-resistant, anti-graffiti, or specialty maintenance coatings',
+//     'Mix and apply multi-component epoxy, urethane, polyaspartic, or protective systems',
+//     'Perform stripe coats at edges, welds, bolts, and difficult geometry',
+//     'Work under ventilation, respirator, confined-space, or chemical-exposure protocols when qualified',
+//     'Document batch, environmental, surface-prep, and coat information when assigned',
+//   ],
+//   'Elastomeric / Masonry / Concrete Vertical Coatings': [
+//     'Apply block filler, masonry primer, breathable coating, or concrete primer',
+//     'Apply anti-carbonation, weather-resistant, or specialty concrete wall coatings',
+//     'Bridge minor surface checking within manufacturer limits',
+//     'Perform compatible touch-up and repairs to coated masonry surfaces',
+//     'Apply elastomeric coatings to exterior walls and facades',
+//     'Brush, roll, or spray CMU, brick, stucco, precast, and vertical concrete',
+//     'Maintain specified film build and coverage on porous substrates',
+//   ],
+//   'Commercial Wallcovering / Vinyl / Fabric Systems': [
+//     'Measure walls, calculate drops, and plan pattern placement',
+//     'Cut, book, paste, and install commercial vinyl wallcovering',
+//     'Install fabric, grasscloth, paper, or specialty wallcovering systems',
+//     'Use paste machine or table application methods',
+//     'Prepare substrate and apply approved primer/sealer',
+//     'Install Type I, Type II, or Type III commercial vinyl when selected',
+//     'Match patterns, double-cut seams, trim edges, and work around openings',
+//     'Remove and repair wallcovering, bubbles, seams, corners, or damage',
+//   ],
+//   'Decorative / Faux / Specialty Finish Systems': [
+//     'Apply glazing, washes, metallic, pearlescent, or layered decorative finishes',
+//     'Apply decorative texture coatings or specialty plasters when selected',
+//     'Apply murals, graphics, stencils, or decorative layouts when selected',
+//     'Apply faux wood, stone, marble, or other decorative effects',
+//     'Create samples, mockups, and approved finish boards',
+//     'Repair and blend specialty finishes',
+//   ],
+//   'Interior Safety Marking / Equipment / Floor-Line Painting': [
+//     'Lay out interior aisle, equipment, hazard, dock, and safety markings',
+//     'Apply approved floor-line, traffic, or equipment marking paint/coating',
+//     'Work around operating facilities under phased or shutdown conditions',
+//     'Differentiate interior safety marking from parking-lot/roadway striping',
+//     'Mask and apply straight lines, symbols, arrows, numbers, or color zones',
+//     'Use striping machines, stencils, or spray equipment for interior markings',
+//     'Repair or refresh existing interior markings',
+//   ],
+//   'Coating Removal / Pressure Washing / Abrasive Surface Preparation': [
+//     'Pressure-wash exterior, masonry, concrete, metal, or equipment surfaces',
+//     'Use chemical strippers when selected and permitted',
+//     'Collect debris, spent abrasive, wastewater, and removed coating residue',
+//     'Recognize and stop work for suspected lead, asbestos, or regulated coating conditions',
+//     'Scrape, sand, grind, needle-scale, wire-wheel, or mechanically remove coatings',
+//     'Support abrasive blasting or operate blasting equipment when specifically qualified',
+//     'Establish containment and protect adjacent operations during removal',
+//   ],
+//   'Color Matching / Mockups / Layout / Quality-Control Support': [
+//     'Verify labels, colors, sheen, product, batch, and approved finish schedule',
+//     'Lay out color breaks, accent walls, cut lines, graphics, and room/area sequencing',
+//     'Use wet-film or dry-film gauges when trained',
+//     'Coordinate approved samples with superintendent, owner, or designer when assigned',
+//     'Create brush, roll, spray, stain, wallcovering, or specialty-finish mockups',
+//     'Perform visual coverage, sheen, texture, and defect checks',
+//     'Track touch-up colors, attic stock, labels, and closeout materials',
+//   ],
+//   'Painting Repair / Touch-Up / Punch / Closeout': [
+//     'Repair scratches, chips, roller marks, holidays, overspray, flashing, and minor defects',
+//     'Touch up walls, ceilings, trim, doors, frames, railings, equipment, and coated surfaces',
+//     'Remove protection and clean paint/coating residue from adjacent finishes',
+//     'Complete room, area, floor, or project punch lists',
+//     'Blend color, sheen, texture, and application pattern',
+//     'Repair wallcovering seams, bubbles, corners, and localized damage when selected',
+//     'Label, organize, and turn over attic stock, colors, and product information',
+//   ],
+//   'Door / Frame / Hardware Helper / Material Support': [
+//     'Receive, verify, stage, and protect door/frame/hardware components by room and opening',
+//     'Move, stack, and support doors, frames, hardware kits, and accessories without damaging finish',
+//     'Sort and lay out hardware kits, keys, cylinders, gasketing, stops, and hinges for installation',
+//     'Assist installers with layout marks, lifts, tool staging, shims, fasteners, and work-area protection',
+//     'Maintain clean work areas and protect doors/frames from adjacent trades and finishing operations',
+//     'Assist with basic frame assembly, knockdown setup, and hardware preparation as directed',
+//   ],
+//   'Layout / Field Measurement / Opening Verification': [
+//     'Verify opening width, height, depth, wall thickness, rough opening, and floor conditions',
+//     'Confirm fire-ratings, smoke/draft labels, acoustical requirements, and specialty assembly designations',
+//     'Check anchorage conditions, backing, substrates, floor flatness, and overhead clearances',
+//     'Coordinate adjacent wall, ceiling, floor, and MEP work that affects opening assembly',
+//     'Mark opening location, height reference, hinge side, and access/egress requirements for installation',
+//     'Document discrepancies and coordinate resolution before installation',
+//   ],
+//   'Hollow Metal Frame Installation': [
+//     'Set knockdown, welded, or welded/knockdown frames in approved openings',
+//     'Plumb, square, anchor, shim, weld, grout, and brace frames for finished conditions',
+//     'Install approved anchors, grout inserts, weld plates, or specialty frame attachments',
+//     'Install double-egress, pair, or specialty frame assemblies with approved mullion/dutchman/dustproof components',
+//     'Coordinate frame installation with fire-rated wall assemblies, smoke/draft seals, and rated construction',
+//     'Adjust frame alignment and correct sweep, stop, and reveal conditions before doors/hardware go on',
+//   ],
+//   'Wood / Specialty Frame / Prehung Unit Installation': [
+//     'Assemble and install wood frames, jambs, stops, brickmould, and specialty millwork components',
+//     'Set prehung door units in approved openings',
+//     'Plumb, shim, anchor, fasten, and adjust prehung assemblies to wall conditions and clearance requirements',
+//     'Coordinate specialty wood-frame conditions and fire/access ratings with approved shop details',
+//     'Apply temporary protection for finished jambs and prefinished components',
+//     'Adjust prehung units and prepare for hardware and final adjustments',
+//   ],
+//   'Hollow Metal Door Installation': [
+//     'Hang hollow metal doors, single or pair, in approved frames',
+//     'Install pivot or hinge locations, hardware prep, factory-installed reinforcement, and template conditions',
+//     'Set clearances, alignment, and gasketing for fire, smoke, acoustic, and egress requirements',
+//     'Grind, drill, mortise, cut, or modify factory prep only when approved and within project scope',
+//     'Adjust hinge alignment, door drop/swing, latch engagement, and door/clearance/overlap conditions',
+//     'Repair or replace damaged hollow metal doors, frame stops, and prep locations',
+//   ],
+//   'Wood Door Installation / Field Fitting / Machining': [
+//     'Hang wood doors, veneer/plastic laminate/architectural faces, single or pair, in approved frames',
+//     'Mortise, bore, rout, edge, fit, and machine wood doors for hinges, locksets, closers, and accessories',
+//     'Machining and fitting wood doors by project-approved methods with finished edges and exposed conditions',
+//     'Fit gasketing, astragals, sill conditions, and edge details for acoustic/fire/smoke assembly requirements',
+//     'Field-fit to irregular frames, cut/plane/sand door edges while maintaining factory finish and required clearances',
+//     'Repair edge damage, delamination, finish chips, and minor defects before or during punch, or identify for replacement',
+//   ],
+//   'Architectural / Finish Hardware Installation': [
+//     'Install hinges, pivots, continuous hinges, spring hinges, and intermediate hardware',
+//     'Install locksets, mortise locks, cylindrical locks, exit devices, closers, overhead stops, and door holders',
+//     'Install kickplates, push plates, pulls, mop plates, edge guards, and protective/function hardware',
+//     'Install gasketing, astragals, coordinators, flushbolts, dustproofs, and door/frame specialty accessories',
+//     'Set and adjust lock/trim functions, key cylinders, core removal, and final hardware operation',
+//     'Coordinate installation with threshold, sill, and door/floor conditions for closing and latching',
+//   ],
+//   'Electrified Hardware / Access-Control Door Interface': [
+//     'Install electrified locksets, strike plates, power transfer devices, door position/contact and request-to-exit devices',
+//     'Install wired and wireless door hardware components for access control and electronic door release',
+//     'Coordinate and physically install electrified hardware to approved electrical and low-voltage requirements',
+//     'Test door-hardware operation for normal mechanical function, egress, latching, locking, and release modes',
+//     'Provide and maintain sequence, access, and egress coordination when integrated with low-voltage controls',
+//     'Replace electrified hardware components and test functions as part of punch or service calls',
+//   ],
+//   'Automatic Door Operators / Accessible Entrance Systems': [
+//     'Install automatic door operators for swing, sliding, folding, or balanced door systems',
+//     'Install actuators, push plates, sensors, mats, and activation interface devices',
+//     'Set operation speed, opening/closing force, hold-open time, and code-required safety functions',
+//     'Test activation, obstruction sensing, power assist, egress, and required accessible entrance functions',
+//     'Coordinate power, low-voltage, and control interface connections with qualified electrical and controls trades',
+//     'Service, adjust, repair, and respond to automatic entrance punch/service issues',
+//   ],
+//   'Fire-Rated / Smoke / Egress Opening Assemblies': [
+//     'Identify approved fire-rated, smoke/draft-rated, and egress assembly requirements from plans and label',
+//     'Install fire-rated frames, doors, hardware, gasketing, and accessories under approved system and label requirements',
+//     'Confirm required fire-rating, hose-stream, smoke-seal, and positive-pressure testing conditions',
+//     'Apply required labels, tags, and documentation to door, frame, hardware, and assembly components',
+//     'Support acceptance, inspection, and third-party verification of fire/smoke/egress assemblies',
+//     'Replace door/frame/hardware components of existing rated assemblies when damaged or modified by other trades',
+//   ],
+//   'Keying / Cylinders / Cores / Locksmith Support': [
+//     'Install cylinders, cores, key systems, and approved master-keying components under lock-supply requirements',
+//     'Set approved key system, master keys, construction keys, grand master, and change-key levels',
+//     'Support locksmith service for door-hardware keyed cylinders, rekeying, and core replacement',
+//     'Coordinate construction-use keys and permanent key systems for turnover and building-management acceptance',
+//     'Service locks, cylinder issues, pin/spring changes, restricted-keyway, and access-control hardware integration',
+//     'Install/repair door hardware condition and key cylinder function to support locksmith/change-order requirements',
+//   ],
+//   'Overhead / Sectional / Coiling / Rolling Doors': [
+//     'Install sectional overhead doors, tracks, springs, hardware, motors, and related components',
+//     'Install coiling doors, rolling service doors, fire shutters, and counter shutters with support and manufacturer components',
+//     'Set and balance spring tension, track alignment, chain hoist, or operator-driven systems per manufacturer',
+//     'Install ancillary components such as vision lites, pass doors, opening/damper enclosures, and weather seals',
+//     'Coordinate with fire-rated shutter and coiling-door approval and manufacturer documentation',
+//     'Service, repair, replace, and adjust overhead and coiling door components',
+//   ],
+//   'Specialty / Security / Acoustic / Lead-Lined / Detention / Cleanroom Doors': [
+//     'Install acoustic-rated and sound-dampening door assemblies, gasketing, and acoustic seals',
+//     'Install lead-lined doors and frames for radiological/healthcare applications with physical supports and alignment',
+//     'Install detention/security doors, frames, hinges, hardware, locking/electrified devices, and approved accessories',
+//     'Install cleanroom, hospital, sterile, or control-area doors with gasketing, pressure-balance, and environmental seals',
+//     'Coordinate physically heavy and specialty door conditions with field reinforcing, lifting, and manufacturer support',
+//     'Repair/replace specialty door components and maintain environmental/detention/security functional requirements',
+//   ],
+//   'Field Modification / Machining / Welding / Repair': [
+//     'Modify/fit frames, doors, hardware, and associated components in the field when approved',
+//     'Perform field grinding, metal removal, welding, brazing, and equipment modifications when selected and qualified',
+//     'Cut, weld, grind, and repair hollow metal doors, frames, and misc metal opening components',
+//     'Machine, drill, rout, and install hidden hardware, concealed closer devices, and specialty security hardware',
+//     'Use metal and wood field-modification equipment, weld, torch, and material handling in occupied/night shift areas',
+//     'Correct manufacturer/modification defects, damaged stops, hinges, anchors, and prepare for finished hardware/accessory installation',
+//   ],
+//   'Door / Frame / Hardware Punch / Commissioning / Closeout': [
+//     'Adjust doors, frames, hinges, hardware, thresholds, stops, gasketing, and accessory items',
+//     'Replace damaged components, locks, cylinder/cores, door glazing, astragals, signs, and physical parts',
+//     'Verify proper operation of doors, hardware, electrified components, automatic operators, and fire/smoke/egress conditions',
+//     'Complete owner, architect, and punch-list items for openings and hardware delivery',
+//     'Protect completed doors/frames/hardware and coordinate turnover/cleaning services',
+//     'Provide operation, maintenance, keying, and access-control turnover documentation',
+//   ],
+//   'Glazing Helper / Material Handling': [
+//     'Receive, inventory, inspect, and stage glass, frames, hardware, sealants, and glazing accessories',
+//     'Unload, move, position, and protect glass units, IGUs, lites, and framed systems using approved equipment and lifting methods',
+//     'Sort and organize aluminum frame members, hardware, gaskets, seals, fasteners, and closure systems',
+//     'Maintain clean work areas and protect installed/stock glass from impact, scratches, and chemical damage',
+//     'Assist glaziers with layout, setting, gasketing, sealant application, and glass handling operations',
+//   ],
+//   'Layout / Field Measurement / Opening Verification': [
+//     'Verify opening width, height, depth, squareness, and structure/rough opening conditions',
+//     'Confirm structural anchorage, mullion locations, floor-to-floor heights, slab edges, and structural support',
+//     'Check interface between adjacent curtain-wall, storefront, window, wall, ceiling, and floor systems',
+//     'Measure and mark glass/glazing system field dimensions and transfer to shop/fabrication documentation',
+//     'Coordinate with structural, MEP, and finish trades for routing, clearance, and anchorage access',
+//     'Report field discrepancies and update layout drawings with RFI and change documentation',
+//   ],
+//   'Shop Fabrication / Aluminum Frame Assembly': [
+//     'Cut, punch, drill, rout, and machine aluminum frame members to approved shop/assembly drawings',
+//     'Assemble storefront, curtain-wall, window, door, and specialty metal frame components',
+//     'Install hardware anchors, clip systems, pressure plates, caps, covers, and trim components',
+//     'Apply sealant/backer, gaskets, and accessories in frame assembly when specified',
+//     'Label, protect, inventory, and prepare assemblies for field installation',
+//     'Operate fabrication equipment when trained and authorized within safety and quality requirements',
+//   ],
+//   'Glass Cutting / Edgework / Shop Handling': [
+//     'Cut, score, break, and size glass lites when field/shop glass fabrication is allowed and qualified',
+//     'Polish, seam, edge, and finish glass to required size, profile, and edge detail for exposed and encapsulated conditions',
+//     'Cut, drill, notch, or shape glass for specialty hardware, hinges, lock cutouts, and mounted accessories',
+//     'Handle glass using suction cups, lifting frames, edge protection, and glass carts during shop and field activities',
+//     'Mark, label, crate, protect, and prepare glass for shipment and installation',
+//   ],
+//   'Storefront Framing / Aluminum Entrances': [
+//     'Install storefront framing, mullions, transoms, headers, sills, and floor tracks',
+//     'Set storefront door frames, hardware, closers, hinges, and egress devices on storefront systems',
+//     'Install aluminum entrances, sliding doors, swing doors, and specialty access control systems in low-rise applications',
+//     'Assemble and install storefront components with approved anchors, fasteners, and structural connections',
+//     'Coordinate storefront systems with curtain-wall, window, and storefront entrances for interior/exterior design',
+//     'Apply approved sealants at perimeter and assembly joints to maintain water, air, and structural performance',
+//   ],
+//   'Curtain Wall / Window Wall Systems': [
+//     'Set and install curtain-wall framing, mullions, transoms, spandrel panels, and vision glass',
+//     'Install pressure plates, caps, gaskets, splice connections, and structural/thermal barrier components',
+//     'Install stick-built curtain wall, unitized systems, or prefabricated frame assemblies as project requires',
+//     'Set and anchor curtain-wall mullions, anchors, and support components to the structure/slab edges',
+//     'Coordinate with spandrel, backpan, insulation, firestopping, and perimeter/thermal protection systems',
+//     'Install approved sealant and gasketing at frame/glass interfaces, joints, and termination conditions',
+//   ],
+//   'Commercial Windows / Punched Openings': [
+//     'Install fixed and operable commercial window units in punched, ribbon, and field opening conditions',
+//     'Set window frames, anchors, jamb extensions, perimeter components, and integral fin systems',
+//     'Install windows with approved weather-resistive barrier, flashing, tape, or fluid-applied systems',
+//     'Operate, adjust, test, and lock windows, and apply required hardware and occupant controls',
+//     'Coordinate window installation with neighboring cladding, waterproofing, and building envelope systems',
+//     'Service and repair commercial windows and replace failed IGUs/glass components',
+//   ],
+//   'Interior Glass / Office Partitions': [
+//     'Install interior glass partitions, sliders, full-height glass, and aluminum/wood framing',
+//     'Install frameless all-glass entrances and interior glass systems with approved hardware and closures',
+//     'Set interior glass walls in drywall, floor, ceiling, and finish-grade applications',
+//     'Install privacy systems, switchable glass, and acoustic partitions as required by specialty project documents',
+//     'Apply approved sealant and gasketing at interior glass transitions without requiring structural glazing application',
+//     'Coordinate interior glass with MEP devices, outlets, switches, and approved wall/ceiling floor systems',
+//   ],
+//   'Heavy Glass / Frameless Entrances': [
+//     'Install frameless all-glass entrances, sliding doors, swing doors, and door assemblies using approved hardware',
+//     'Set glass doors in approved floor closures, top rails, bottom rails, and specialty pivot and hinge systems',
+//     'Install access-control hardware, locks, closers, automatic operators, and egress functions on glass doors',
+//     'Attach hardware to glass, including patch fittings, hinges, floor rails, lever and touch-bar systems',
+//     'Coordinate all-glass storefront and entrance/exit systems with building exterior structural and weatherproofing features',
+//   ],
+//   'Mirrors / Decorative / Interior Specialty Glass': [
+//     'Install mirrors, wall-to-wall mirrors, and specialty finished glass in interior locations',
+//     'Install decorative glass, colored/patterned glass, and etched/printed/backlit interior applications',
+//     'Set mirrors on cabinets, built-ins, retail displays, and millwork features in finish-scope installations',
+//     'Install decorative glass and mirrors using approved adhesives, clip systems, and mounting components',
+//     'Handle/protect mirror and specialty glass surfaces, eliminate and prevent scratches, etching, and deterioration',
+//   ],
+//   'Glass Railings / Guards': [
+//     'Install glass railings, guards, handrails, windbreakers, and/or glass infill panels at stairs/ramps/exterior decks',
+//     'Set glass panels in base shoes, stanchions, brackets, and structural posts with clamped hardware',
+//     'Install specified code-compliant tempered/laminated/ballistic glass panels as guard components',
+//     'Set and seal glass rail/guard base, cap, joint, and transition conditions as required by finished details',
+//     'Meet safety/guardrail requirements and coordinate field tests and verified installation inspection reports',
+//   ],
+//   'Skylights / Canopies / Overhead Glazing': [
+//     'Install structural skylights, glass canopies, overhead glazing, and thermally broken/curtain-wall systems',
+//     'Assemble and install skylight/glass canopy frames and rafters/mullion support over openings in roofs and building entrances',
+//     'Set and seal glazing panels, gaskets, pressure plates, caps, and architectural trim for overhead/sloped assemblies',
+//     'Coordinate structural anchorage, welding, and manufacturer support of canopies/skylights with roof/wall/structural conditions',
+//     'Seal overhead and canopy panel joints, edge conditions, and termination conditions for water/air/structural performance',
+//   ],
+//   'Specialty Glass / IGUs / Spandrel / Rated / Security Systems': [
+//     'Install laminated, tempered, heat-strengthened, IGUs, and specialty glass for insulation, sound/security requirements',
+//     'Handle, inspect, set, and install spandrel glass, backpans, heat-treated/coated glass for curtain-wall/spandrel applications',
+//     'Install rated glass assemblies for fire-resistive/ballistic/forced-entry/hurricane-rated systems and components',
+//     'Set specialty security glass, detention glass, and blast-resistant glass/systems in approved conditions',
+//     'Coordinate specialty glass with structural, fireproofing, ballistic, and security systems to meet project approval status',
+//     'Service/replace special glass systems when damaged/delaminated in specialty applications, and refer to manufacturer for complex replacement/repair',
+//   ],
+//   'Structural Silicone / Wet Glazing / Gaskets / Sealants': [
+//     'Apply structural silicone, weatherseal, gaskets, and glazing sealants at frame/glass interfaces',
+//     'Install wet-glaze sealant and tape systems, including backer rod, primer, and tooled sealant beads',
+//     'Install dry-glaze gaskets, tapes, and sheet-applied compression seals in exterior/interior glazing applications',
+//     'Tool/trim sealant to acceptable depth, width, angle, and appearance in finished visible sealing conditions',
+//     'Confirm adhesion, temperature, and compatibility with glass/frame/primer/sealant and structural glazing requirements',
+//     'Remove/replace failed glazing sealant systems and coordinate field inspection/retesting on specialty systems',
+//   ],
+//   'Glass Setting / Lifting / Rigging / Vacuum Equipment': [
+//     'Use manual glass suction cups, lifting frames, manipulators, vacuum lifters, and construction lifts/hoists',
+//     'Set, position, and place glass into fixed/operable hardware without damage to edges, surfaces, or coatings',
+//     'Assist with fork/clamp/choker crane rigging and glass placement under qualified supervision/approved lifting plan',
+//     'Apply approved equipment and methods for interior/exterior glass setting and placement in high-access locations',
+//     'Support glass lifting and rigging team with tags, spotting, and guide lines for construction level changes and high-level placements',
+//     'Report rigging/equipment condition and secure glass/equipment at the end of shifts to prevent wind/impact loss',
+//   ],
+//   'Service / Replacement / Emergency Board-Up': [
+//     'Respond to glass damage, breakage, failure, and remove/replace window/storefront/curtain-wall/entry/glass components',
+//     'Perform emergency board-up and protect openings after intentional/accidental glass failure',
+//     'Coordinate glass replacement in occupied, retail, healthcare, secure, and active-use facilities',
+//     'Remove and replace broken/seal-failed IGUs, glass panels, hardware, and sealing components',
+//     'Troubleshoot fogging, seal failure, and condensation/failure caused by glass damage/installation issues',
+//     'Complete replacement/release and address associated punch items and warranty work',
+//   ],
+//   'Water Testing / Air Leakage / Diagnostic Support': [
+//     'Perform water and air infiltration testing on glazing systems, curtain walls, and storefront/exterior walls',
+//     'Diagnose water/air leakage at glass, frame, sealant, gasket, assembly, and building interface conditions',
+//     'Identify failed sealant, and moisture/air passage through glass/frame joints, gaskets, and hardware seals',
+//     'Assist testing, documentation, and field remediation of water/air infiltration and system performance issues',
+//     'Work with manufacturer, testing lab, and building envelope consultants during performance verification and diagnostic tests',
+//   ],
+//   'Glass / Glazing Punch / Adjustment / Closeout': [
+//     'Adjust glass panel alignment, storefront/frame, and hardware function to project requirements',
+//     'Clean glass surfaces, frames, sills, tracks, hardware, and exposed architectural metal finish elements',
+//     'Complete punch and deficiency items affecting glass, glazing, hardware, sealant, and frame components',
+//     'Provide required O&M documentation, manufacturer warranty, glass/specialty replacement inventory, and warranty letter',
+//     'Protect installed glass and storefront systems through trade turnover and final owner acceptance',
+//   ],
+//   'Fire Sprinkler Helper / Material Support': [
+//     'Unload, count, stage, and distribute pipe, fittings, heads, valves, hangers, and accessories',
+//     'Move pipe and equipment using approved carts, dollies, forklifts, or handling methods',
+//     'Prepare fittings, couplings, rods, clamps, labels, and small parts for fitters',
+//     'Assist with pipe cutting, threading, grooving, cleaning, and deburring',
+//     'Stage ladders, lifts, tools, containment, and work-area protection',
+//     'Cap, plug, protect, and keep foreign material out of piping and components',
+//     'Clean work areas and support qualified fitters during installation or testing',
+//   ],
+//   'Field Layout / Measurement / Coordination': [
+//     'Read approved sprinkler plans, reflected ceiling plans, details, and coordination drawings',
+//     'Locate mains, branch lines, drops, heads, risers, valves, and equipment from approved drawings',
+//     'Verify elevations, slopes, clearances, obstructions, ceilings, structure, and access',
+//     'Mark hanger, sleeve, penetration, valve, and head locations',
+//     'Measure offsets, drops, armovers, spool lengths, and field-fit conditions',
+//     'Coordinate routing with HVAC, electrical, plumbing, ceilings, structural, and architectural systems',
+//     'Document clashes, field changes, RFIs, redlines, and as-built conditions',
+//   ],
+//   'Shop Fabrication / Pipe Preparation': [
+//     'Read fabrication drawings, spool sheets, cut lists, and labels',
+//     'Cut, ream, deburr, clean, and prepare approved sprinkler pipe',
+//     'Thread pipe and verify thread quality and engagement',
+//     'Roll-groove or cut-groove pipe and verify groove dimensions',
+//     'Drill or weld outlets and fabricate assemblies when qualified',
+//     'Assemble fittings, couplings, outlets, nipples, and prefabricated spool pieces',
+//     'Label, bundle, cap, protect, inventory, and prepare fabricated material for delivery',
+//   ],
+//   'Aboveground Mains / Cross Mains / Branch Lines': [
+//     'Install sprinkler mains, cross mains, branch lines, fittings, and couplings',
+//     'Install threaded, grooved, flanged, welded, or approved plastic joints',
+//     'Install steel, galvanized, CPVC, copper, or other approved pipe systems',
+//     'Route pipe through congested ceilings and around approved obstructions',
+//     'Maintain required slope, alignment, support, drainage, and clearances from approved plans',
+//     'Install reducers, tees, elbows, outlets, couplings, unions, and transition assemblies',
+//     'Field-fit, modify, and restore approved piping without contaminating the system',
+//   ],
+//   'Hangers / Supports / Seismic Bracing': [
+//     'Install anchors, inserts, beam clamps, rods, rings, and clevis hangers',
+//     'Install trapezes, riser clamps, guides, restraints, and supplemental supports',
+//     'Install longitudinal and lateral sway/seismic bracing from approved details',
+//     'Drill, set, torque, and inspect approved mechanical or adhesive anchors',
+//     'Attach supports to approved structural members without unauthorized modification',
+//     'Adjust hanger spacing, rod length, elevation, alignment, and pipe pitch',
+//     'Coordinate penetrations and firestop restoration with the responsible trade',
+//   ],
+//   'Drops / Armovers / Flexible Connections': [
+//     'Install drops, armovers, return bends, outlets, nipples, and reducers',
+//     'Install approved flexible sprinkler hose assemblies and brackets',
+//     'Coordinate pendent, upright, sidewall, concealed, recessed, and specialty locations with ceilings',
+//     'Relocate heads and drops for ceiling, wall, lighting, or partition changes',
+//     'Install dry pendent, extended-coverage, or specialty drops when approved',
+//     'Maintain orientation, clearance, pitch, and drainage for approved configurations',
+//     'Replace damaged drops, flex assemblies, fittings, and trim during punch or service',
+//   ],
+//   'Sprinkler Heads / Nozzles / Trim': [
+//     'Identify and install approved pendent, upright, sidewall, concealed, recessed, or specialty sprinklers',
+//     'Install sprinklers using approved wrenches and manufacturer procedures',
+//     'Install escutcheons, cover plates, guards, shields, cages, and trim',
+//     'Align heads with finished ceilings, walls, racks, and approved layouts',
+//     'Replace damaged, painted, leaking, recalled, or incorrect heads when authorized',
+//     'Protect installed heads during construction and remove protection at authorized closeout',
+//     'Install water-spray nozzles or special application devices under approved specialty scope',
+//   ],
+//   'Risers / Control Valves / Test & Drain Assemblies': [
+//     'Install vertical risers, manifolds, zone assemblies, and riser supports',
+//     'Install alarm valves, check valves, control valves, butterfly valves, and trim',
+//     'Install test-and-drain assemblies, inspector-test connections, drains, and sight glasses',
+//     'Install pressure gauges, relief devices, air vents, and mechanical accessories',
+//     'Mechanically mount waterflow switches, tamper switches, and supervisory devices',
+//     'Install drain piping and route discharge to approved locations',
+//     'Label, tag, secure, and orient valves and assemblies for access and operation',
+//   ],
+//   'Standpipe / Hose Valve Systems': [
+//     'Install standpipe risers, horizontal feeds, zones, and related piping',
+//     'Install hose valves, caps, chains, cabinets/interfaces, and floor-control components',
+//     'Install roof manifolds, fire-department outlets, and related valves when approved',
+//     'Install pressure-reducing or pressure-regulating devices from approved plans',
+//     'Install drains, gauges, signage, and valve identification',
+//     'Support hydrostatic, flow, and pressure testing of standpipe zones',
+//     'Perform standpipe repair, alteration, and punch work in occupied or high-rise buildings',
+//   ],
+//   'FDC / Backflow / Water-Supply Interface': [
+//     'Install fire department connection piping, checks, ball drips, caps, swivels, and signs',
+//     'Install backflow-prevention assemblies and related valves/piping mechanically',
+//     'Connect private fire-service lead-in piping to the building riser or pump-room system',
+//     'Install waterflow/alarm mechanical components at the water-supply interface',
+//     'Install drains, bypasses, test connections, and service clearances where approved',
+//     'Support flushing, hydrostatic, backflow, and water-supply tests',
+//     'Coordinate exterior connection locations from approved plans',
+//   ],
+//   'Fire Pump / Pump Room / Water Storage Interface': [
+//     'Install fire-pump suction, discharge, bypass, and test-header piping',
+//     'Install OS&Y, butterfly, check, relief, circulation-relief, and related valves',
+//     'Install pump-room risers, manifolds, gauges, drains, and test-header components',
+//     'Support setting, alignment, anchoring, and rigging of approved fire-pump equipment',
+//     'Connect approved water-tank, municipal, private-main, and pump interfaces mechanically',
+//     'Support churn, flow, acceptance, and periodic pump tests',
+//     'Coordinate around controllers, power, alarms, and monitoring devices without performing electrical work',
+//   ],
+//   'Underground Fire Service / Private Fire Main': [
+//     'Install private fire-service mains, lead-ins, hydrant branches, valves, and fittings',
+//     'Install approved ductile iron, C900/PVC, restrained-joint, or other approved piping',
+//     'Install mechanical joints, restraints, glands, thrust-restraint systems, and valve boxes',
+//     'Install hydrants, post-indicator valves, sectional valves, and fire-service appurtenances',
+//     'Coordinate bedding, trench access, depth, separation, and backfill with Civil/Sitework',
+//     'Support flushing, hydrostatic testing, and underground acceptance activities',
+//     'Install sleeves, wall penetrations, lead-ins, and transition assemblies into the building',
+//   ],
+//   'Dry Pipe / Preaction / Deluge / Specialty Water-Based Systems': [
+//     'Install dry-pipe valves, trim, accelerators, quick-opening devices, and drains',
+//     'Install preaction or deluge valves, trim, releasing interfaces, and mechanical components',
+//     'Install air compressors, nitrogen components, air-maintenance devices, and supervisory piping mechanically',
+//     'Install pitched piping, auxiliary drains, drum drips, low-point drains, and dry pendent arrangements',
+//     'Install open nozzles, water-spray piping, and approved special application devices',
+//     'Support trip tests, reset, restoration, leak checks, and operational verification',
+//     'Perform service and repair on dry/preaction/deluge components under approved procedures',
+//   ],
+//   'Storage / ESFR / In-Rack / High-Challenge Systems': [
+//     'Install ESFR or other approved high-challenge storage sprinklers',
+//     'Install in-rack branch lines, drops, flexible connections, guards, and shields',
+//     'Coordinate sprinkler locations with rack layout, flues, storage height, and clearances',
+//     'Install rack-piping supports and approved attachment systems',
+//     'Use lifts and material-handling equipment in warehouse/high-bay environments',
+//     'Modify storage-protection systems for rack changes or tenant operations',
+//     'Perform punch, replacement, and service work in active warehouse environments',
+//   ],
+//   'Tenant Improvement / Relocation / System Modification': [
+//     'Identify the approved work area and prepare for authorized isolation/modification',
+//     'Relocate sprinkler heads, drops, armovers, branch lines, and outlets',
+//     'Cut, cap, remove, extend, and reconnect approved piping',
+//     'Add new heads and branch piping for walls, ceilings, equipment, or occupancy changes',
+//     'Coordinate work in occupied spaces, after hours, or phased areas',
+//     'Restore valves, refill, vent, leak-check, and return the system to service under approved procedures',
+//     'Update redlines, head counts, valve records, and closeout information',
+//   ],
+//   'Service / Repair / Emergency Impairment Support': [
+//     'Diagnose visible leaks, damaged heads, failed fittings, valve issues, and freeze damage',
+//     'Repair or replace pipe, fittings, heads, valves, gauges, drains, and trim',
+//     'Respond to emergency leaks, accidental damage, or system impairment',
+//     'Perform customer-facing service in schools, hospitals, industrial, or secure facilities',
+//     'Support authorized shutdown, impairment tagging, fire-watch coordination, and restoration',
+//     'Troubleshoot dry/preaction air leaks and mechanical trim issues',
+//     'Document findings, repair scope, parts, tests, and return-to-service status',
+//   ],
+//   'Inspection / Testing / Maintenance (ITM) Support': [
+//     'Perform or support visual inspection of accessible sprinkler, valve, gauge, piping, and component conditions',
+//     'Exercise and test control valves, check valves, and supervisory components mechanically',
+//     'Support main-drain, waterflow, inspector-test, trip, and auxiliary-drain activities',
+//     'Support fire-pump churn, flow, and related water-supply testing',
+//     'Identify visible corrosion, loading, paint, damage, obstruction, leakage, or access issues',
+//     'Record readings, dates, device IDs, conditions, deficiencies, and corrective actions',
+//     'Perform approved routine maintenance and minor repairs within verified authority',
+//   ],
+//   'Hydrostatic / Flushing / Acceptance Test Support': [
+//     'Fill systems in a controlled sequence, vent trapped air, and monitor for leaks',
+//     'Set up pumps, hoses, gauges, caps, drains, and approved temporary test equipment',
+//     'Support hydrostatic pressure tests and document pressure/time conditions',
+//     'Flush underground or aboveground piping and manage discharge under approved procedures',
+//     'Correct leaks, retighten joints, replace components, and retest',
+//     'Support alarm, waterflow, tamper, drain, standpipe, and fire-pump acceptance activities',
+//     'Record results, witnesses, deficiencies, corrections, and final status',
+//   ],
+//   'Water-Based Systems Layout / CAD / Submittal / As-Built Support': [
+//     'Create or revise sprinkler shop drawings using approved CAD/BIM tools',
+//     'Place mains, branch lines, heads, hangers, valves, risers, and details from approved criteria',
+//     'Coordinate drawings with architectural, structural, MEP, ceiling, rack, and equipment models',
+//     'Prepare material lists and submittal packages within authorized scope',
+//     'Review field redlines and produce record/as-built drawings',
+//     'Track RFIs, revisions, approvals, resubmittals, and drawing versions',
+//     'Support field installers with approved details and fabrication information',
+//   ],
+//   'Fire Sprinkler Punch / Labeling / Closeout': [
+//     'Align heads, escutcheons, cover plates, valves, gauges, signs, and trim',
+//     'Replace damaged, painted, leaking, missing, or incorrect visible components when authorized',
+//     'Correct minor leaks, loose supports, missing labels, and accessible punch items',
+//     'Remove temporary protection, clean components, and protect finished areas',
+//     'Verify valve identification, signage, access, and visible completion against punch lists',
+//     'Update redlines, valve lists, test records, material records, and closeout documents',
+//   ],
+//   'Passive Fire Protection Helper / Material Support': [
+//     'Receive, verify, move, and stage approved firestop, fireproofing, sealant, backing, and protection materials',
+//     'Protect finished surfaces, equipment, openings, and adjacent trades before application',
+//     'Prepare mineral wool, backer rod, bond breaker, mixing water, accessories, and basic consumables under direction',
+//     'Assist caulk, spray, mortar, collar, wrap, board, and fireproofing crews without performing independent system selection',
+//     'Clean pumps, hoses, mixers, tools, lifts, and work areas under approved procedures',
+//     'Maintain lot labels, material counts, waste control, and housekeeping',
+//   ],
+//   'Layout / Survey / Barrier / Opening Verification': [
+//     'Identify rated wall, floor, shaft, curtain-wall, and structural protection locations from approved documents',
+//     'Measure opening size, annular space, joint width, movement condition, depth, and backing requirements',
+//     'Identify penetrant type, material, insulation, sleeve, cable fill, tray, duct, or mixed-service condition',
+//     'Compare field condition to approved system detail, submittal, or design reference and flag mismatches',
+//     'Mark locations, quantities, access restrictions, and sequence needs for installation crews',
+//     'Capture photos, sketches, room/zone IDs, and pre-installation condition records',
+//   ],
+//   'Metallic Pipe Penetration Firestopping': [
+//     'Prepare rated opening and metallic pipe/conduit penetration without damaging the barrier or penetrant',
+//     'Install approved backing, packing material, sealant, mortar, or device to required depth and configuration',
+//     'Firestop bare and insulated metallic piping where the approved system permits',
+//     'Treat sleeves, escutcheon conditions, clustered penetrations, and open/closed annular spaces under approved details',
+//     'Tool and finish exposed sealant or mortar while maintaining required dimensions',
+//     'Label and document system location, product, detail, and repair status',
+//   ],
+//   'Combustible / Nonmetallic Pipe Penetration Firestopping': [
+//     'Identify plastic/combustible pipe type, size, wall/floor assembly, and required device/system',
+//     'Install approved collars, wrap strips, bands, devices, sleeves, and fastening components',
+//     'Install backing and sealant/mortar components around combustible penetrations as listed',
+//     'Treat floor, wall, chase, tub/shower, and concealed plastic-pipe conditions under approved details',
+//     'Verify device orientation, fastener count, wrap layers, depth, and annular-space limits',
+//     'Repair, re-enter, label, and document combustible-pipe systems when authorized',
+//   ],
+//   'Cable / Conduit / Cable Tray / Busway Penetrations': [
+//     'Prepare openings containing cables, conduits, sleeves, bundles, trays, or busway',
+//     'Install approved sealant, putty, mortar, pillows, blocks, plugs, composite sheet, or re-enterable device',
+//     'Pack and seal cable bundles while maintaining approved fill, spacing, backing, and depth',
+//     'Treat cable trays and large openings with approved support/reinforcement and multi-component systems',
+//     'Perform authorized re-entry for cable changes and restore the system after work',
+//     'Document cable loading, sleeve/opening condition, product, detail, and final status',
+//   ],
+//   'Mechanical / Duct / Damper / Mixed-Service Penetrations': [
+//     'Prepare duct, insulated pipe, mixed-service, sleeve, and approved damper-interface openings',
+//     'Install approved backing, sealant, mortar, composite sheet, wrap, or enclosure components',
+//     'Treat insulated penetrants while maintaining approved insulation/jacket/system configuration',
+//     'Coordinate around fire/smoke dampers without obstructing blades, access, breakaway connections, or service clearance',
+//     'Treat mixed metallic, plastic, cable, and duct penetrations only under an approved multi-penetrant system',
+//     'Document penetrant changes and route non-firestop MEP corrections to the responsible trade',
+//   ],
+//   'Membrane Penetrations / Electrical Boxes / Putty Pads': [
+//     'Identify membrane penetration, box type, size, spacing, wall assembly, and required protection',
+//     'Install approved putty pads, box inserts, gaskets, sealants, or listed protective devices',
+//     'Seal annular spaces around conduits, cables, pipes, or accessories entering rated membrane openings',
+//     'Treat back-to-back, offset, grouped, oversized, or specialty box conditions only under approved details',
+//     'Maintain required coverage, overlap, molding, adhesion, and access to device components',
+//     'Label and document completed membrane-penetration protection',
+//   ],
+//   'Firestop Devices / Sleeves / Collars / Wrap Strips / Cast-In Systems': [
+//     'Install approved cast-in devices, sleeves, pathway devices, collars, wrap strips, plugs, blocks, or composite sheets',
+//     'Set cast-in devices at correct location, elevation, orientation, and slab/wall condition before placement',
+//     'Install manufacturer-specified fasteners, anchors, bands, layers, inserts, and accessories',
+//     'Open, re-enter, and reseal approved pathway or re-enterable devices',
+//     'Replace damaged or missing device components only with approved compatible parts',
+//     'Verify labeling, device ID, product lot, and system documentation',
+//   ],
+//   'Fire-Resistive Construction Joints / Head-of-Wall / Floor-to-Wall': [
+//     'Prepare head-of-wall, bottom-of-wall, wall-to-wall, floor-to-wall, and floor-to-floor joint surfaces',
+//     'Install approved mineral wool/backing to required compression, orientation, and depth',
+//     'Apply fire-resistive sealant, spray, coating, or joint material to required thickness and overlap',
+//     'Maintain approved joint width, movement capability, bond breaker, adhesion surfaces, and continuity',
+//     'Treat intersections, corners, flutes, deck profiles, columns, and transitions under approved details',
+//     'Repair damaged joint systems and document system/detail/location',
+//   ],
+//   'Perimeter Fire Containment / Edge-of-Slab / Curtain Wall': [
+//     'Verify curtain-wall/facade type, slab edge, spandrel zone, mullion/transom condition, and approved perimeter design',
+//     'Install safing insulation at required orientation, compression, depth, and continuity',
+//     'Install spandrel insulation, foil/facing, clips, fasteners, reinforcement, and approved support components',
+//     'Apply approved smoke seal, spray, or joint treatment at the slab edge and curtain-wall interface',
+//     'Treat anchors, mullions, transoms, corners, transitions, stack joints, and facade changes under approved details',
+//     'Perform high-access installation, repair, photo records, and punch correction under approved access/safety controls',
+//   ],
+//   'Smoke / Acoustical / Draft Sealants': [
+//     'Prepare partition perimeters, gaps, interfaces, and service openings for smoke/acoustic/draft sealant',
+//     'Install backer rod, backing, bond breaker, and sealant to required depth and continuity',
+//     'Seal wall-to-floor, wall-to-deck, perimeter, door-frame, and approved service interfaces',
+//     'Tool joints and maintain clean, continuous finish without contaminating adjacent work',
+//     'Distinguish non-fire-rated smoke/acoustic seal from rated fire-resistive joint work',
+//     'Repair failed, separated, or missing sealant and document location',
+//   ],
+//   'Architectural Joint Sealants / Expansion / Control / Perimeter Joints': [
+//     'Remove failed sealant and prepare concrete, masonry, metal, wood, or approved substrate joints',
+//     'Install primer, backer rod, bond breaker, and compatible sealant chemistry',
+//     'Gun and tool vertical, horizontal, perimeter, control, and expansion joints',
+//     'Maintain joint geometry, adhesion surfaces, movement capability, and clean edges',
+//     'Work at facade, precast, masonry, concrete, door/frame, or specialty interfaces within assigned scope',
+//     'Perform sealant replacement, color matching, mockups, punch, and warranty repair',
+//   ],
+//   'SFRM - Spray-Applied Fire-Resistive Materials': [
+//     'Verify approved substrate condition, clips/attachments, primers, ambient conditions, and protection before application',
+//     'Mix SFRM to approved consistency and operate mixer, pump, hose, and nozzle equipment',
+//     'Spray fibrous or cementitious SFRM on beams, columns, joists, deck, and approved assemblies',
+//     'Build required thickness and density with uniform coverage around flanges, webs, attachments, and transitions',
+//     'Patch voids, overspray damage, shadow areas, and deficient locations under approved repair procedure',
+//     'Protect completed SFRM and coordinate thickness/density/adhesion inspection and records',
+//   ],
+//   'IFRM / Intumescent Fire-Resistive Coatings': [
+//     'Verify steel profile, cleanliness, primer compatibility, environmental conditions, and approved design',
+//     'Mix and apply intumescent/mastic material by spray, roller, brush, or approved method',
+//     'Build coats to specified wet-film and dry-film thickness while controlling cure/recoat windows',
+//     'Treat connections, edges, bolts, attachments, irregular profiles, and transitions',
+//     'Apply compatible sealer/topcoat or repair damage where specified',
+//     'Measure/document wet or dry film, environmental conditions, batch/lot, and repair status',
+//   ],
+//   'Board / Blanket / Encasement Fire Protection': [
+//     'Measure, cut, fit, and install approved fire-resistive boards, blankets, wraps, or encasement components',
+//     'Install clips, pins, fasteners, channels, bands, ties, adhesives, and support accessories',
+//     'Treat seams, joints, corners, penetrations, terminations, and transitions',
+//     'Maintain required layers, overlaps, clearances, continuity, and protection',
+//     'Repair damaged boards, wraps, blankets, joints, and attachments using approved procedures',
+//     'Label/document completed systems and protect from subsequent trade damage',
+//   ],
+//   'Fireproofing Surface Prep / Masking / Mixing / Pump Support': [
+//     'Mask glass, equipment, floors, walls, MEP components, labels, moving parts, and finished surfaces',
+//     'Prepare approved substrate by cleaning loose material, dust, oil, debris, or incompatible contamination under direction',
+//     'Set up mixers, pumps, compressors, hoses, nozzles, water supply, ventilation, and containment',
+//     'Mix, feed, monitor, and clean SFRM or approved coating equipment under manufacturer procedures',
+//     'Manage overspray, waste, curing protection, access control, and daily equipment maintenance',
+//     'Support staging, lifts, scaffold, fall protection, ventilation, and occupied-site controls',
+//   ],
+//   'Fireproofing Patch / Repair / Retrofit': [
+//     'Survey damaged, missing, delaminated, wet, impacted, or disturbed fireproofing areas',
+//     'Identify original SFRM, IFRM, board, blanket, substrate, and approved repair procedure',
+//     'Remove loose material and prepare substrate without expanding damage',
+//     'Apply compatible patch material and restore profile, thickness, layers, and continuity',
+//     'Blend transitions and protect adjacent systems, attachments, labels, and finished work',
+//     'Coordinate retesting, documentation, deficiency closure, and closeout',
+//   ],
+//   'Firestop / Joint Sealant Removal / Repair / Retrofit': [
+//     'Identify failed, damaged, missing, unlisted, or modified penetration/joint conditions',
+//     'Remove failed sealant, mortar, backing, device, or patch material under approved limits',
+//     'Clean and prepare opening/joint, verify penetrant/barrier change, and route approved repair detail through authorized process',
+//     'Reinstall approved backing, sealant, device, collar, wrap, mortar, spray, or joint material',
+//     'Restore re-entered cable/pathway systems after authorized changes',
+//     'Label, photograph, map, and document repair and unresolved conditions',
+//   ],
+//   'Inspection / QA / Thickness / Adhesion / Documentation Support': [
+//     'Verify product labels, batch/lot, system/detail references, barrier/penetrant/joint conditions, and installer records',
+//     'Measure and document firestop depth, annular space, backing, overlap, joint width, and visible installation conditions',
+//     'Support on-site firestop and fire-resistive joint inspection activities under qualified supervision',
+//     'Support SFRM thickness/density sampling and cohesion/adhesion test setup/documentation',
+//     'Measure wet/dry film thickness and environmental conditions for intumescent systems under approved procedure',
+//     'Create deficiency logs, photo records, location maps, retest records, and closure packages',
+//   ],
+//   'Labeling / Photo Records / Punch / Closeout / Maintenance': [
+//     'Apply approved labels, tags, system numbers, date/crew identifiers, and location references',
+//     'Capture before, during, and after photos with project/zone/opening identifiers',
+//     'Maintain penetration/joint logs, re-entry records, floor plans, QR/barcode records, or digital closeout data',
+//     'Correct accessible punch items such as voids, missing labels, damaged sealant, incomplete backing, or unprotected areas',
+//     'Protect completed work from damage and coordinate reinspection/retest after correction',
+//     'Support periodic maintenance surveys and route new penetrations or damage for authorized repair',
+//   ],
+//   'Low Voltage Helper / Material Support': [
+//     'Receive, inventory, protect, move, and stage cable, devices, racks, boxes, pathways, and tools',
+//     'Assist with cable pulls, reel setup, feed stations, pull strings, and pathway preparation',
+//     'Install labels, protection, temporary caps, and basic cable organization as directed',
+//     'Maintain clean telecom rooms, work areas, cable routes, and material storage',
+//     'Assist technicians with ladders, lifts, device staging, and documentation',
+//     'Perform basic continuity checks or device count support under supervision',
+//   ],
+//   'Pathways / Supports / Cable Management': [
+//     'Install J-hooks, bridle rings, support clips, and approved cable supports',
+//     'Install and organize ladder rack, basket tray, cable runway, and rack cable management',
+//     'Install innerduct, pull cord, bushings, sleeves, and surface raceway assigned to low-voltage scope',
+//     'Route cable while maintaining bend radius, separation, support spacing, and pathway fill requirements',
+//     'Firestop or seal sleeves only when separately qualified and assigned',
+//     'Document blocked pathways, capacity issues, access conflicts, and field conditions',
+//   ],
+//   'Structured Cabling - Copper': [
+//     'Pull and route twisted-pair copper cabling in horizontal, backbone, and device applications',
+//     'Terminate jacks, plugs, patch panels, blocks, and approved connectors',
+//     'Dress, bundle, support, label, and manage copper cabling in pathways and telecom rooms',
+//     'Install coaxial cable and connectors for approved communications/video systems',
+//     'Perform continuity, wiremap, pair identification, and basic troubleshooting',
+//     'Correct failed terminations, split pairs, reversals, opens, shorts, and labeling discrepancies',
+//   ],
+//   'Fiber Optic Cabling': [
+//     'Pull, route, protect, and dress indoor/outdoor fiber cable while maintaining bend and tension limits',
+//     'Prepare, clean, inspect, terminate, and polish approved fiber connectors',
+//     'Perform fusion splicing and splice-tray/enclosure management',
+//     'Perform mechanical splicing where approved',
+//     'Use visual fault locator, power meter/light source, inspection scope, and OTDR as selected',
+//     'Interpret loss results, locate faults, document fibers, and complete test records',
+//   ],
+//   'Backbone / Riser / Campus / Outside Plant Communications': [
+//     'Install riser and backbone copper/fiber/coax cabling between telecom rooms and buildings',
+//     'Pull communications cable through conduit, innerduct, handholes, manholes, and approved underground pathways',
+//     'Install aerial communications cable/support hardware only when project and qualification allow',
+//     'Support entrance cable, building entrance protection, slack storage, and transition points',
+//     'Splice and test campus/OSP copper or fiber systems as specifically selected',
+//     'Document route, footage, cable ID, splice location, handhole/manhole location, and test results',
+//   ],
+//   'Telecom Rooms / Racks / Cabinets / Patch Panels': [
+//     'Install and anchor racks, cabinets, wall-mount enclosures, ladder rack, and backboards',
+//     'Install patch panels, fiber shelves, splice enclosures, vertical/horizontal managers, and accessories',
+//     'Dress, route, secure, and label station, backbone, patch, and equipment cabling',
+//     'Install bonding conductors and hardware only under approved scope and jurisdictional rules',
+//     'Mount approved network, security, AV, or fire-alarm equipment in racks/cabinets',
+//     'Perform rack elevation verification, port mapping, asset labeling, and room closeout',
+//   ],
+//   'Testing / Certification / Labeling / Documentation': [
+//     'Perform copper wiremap, length, continuity, and qualification/certification tests',
+//     'Perform fiber OLTS/power-meter, VFL, inspection, and OTDR testing as selected',
+//     'Apply cable, outlet, device, panel, rack, pathway, and room labels to approved scheme',
+//     'Upload, organize, name, export, and reconcile test results',
+//     'Prepare redlines, port schedules, cable schedules, asset lists, photos, and as-built support',
+//     'Investigate and correct test failures before retest',
+//   ],
+//   'Network Equipment Physical Installation / Smart Hands': [
+//     'Rack, mount, and physically connect switches, routers, firewalls, wireless controllers, UPS interfaces, and appliances under approved instructions',
+//     'Install and connect wireless access points, antennas, patch cords, optics, and power supplies as assigned',
+//     'Verify device labels, serial numbers, ports, LEDs, link status, and cabling against work instructions',
+//     'Perform approved console connection, reboot, swap, patch, or basic command support under remote direction',
+//     'Replace field-replaceable hardware and document chain of custody as authorized',
+//     'Support rack cleanup, cable remediation, asset inventory, and decommissioning',
+//   ],
+//   'Audio / Visual Systems': [
+//     'Install AV racks, displays, projectors, projection screens, cameras, speakers, microphones, and mounts',
+//     'Pull and terminate audio, video, control, network, coax, speaker, and category cabling',
+//     'Install DSPs, amplifiers, switchers, extenders, encoders/decoders, control processors, and room devices',
+//     'Perform basic configuration, firmware update, endpoint setup, or commissioning only when selected and authorized',
+//     'Test signal paths, audio levels, image alignment, device communication, and room functionality',
+//     'Provide user training, closeout documentation, rack elevations, and punch corrections',
+//   ],
+//   'Paging / Public Address / Intercom / Clock / Bell Systems': [
+//     'Install speakers, horns, call stations, intercom stations, clocks, bells, and associated cabling',
+//     'Install racks, amplifiers, head-end/controllers, power supplies, relays, and interfaces',
+//     'Terminate speaker, control, network, and communication circuits',
+//     'Address, configure, program, or test devices only when selected and authorized',
+//     'Trace zones, troubleshoot audio/communication faults, and replace approved devices',
+//     'Support emergency communication or mass-notification interfaces under approved fire-alarm scope',
+//   ],
+//   'Video Surveillance / CCTV': [
+//     'Install fixed, dome, PTZ, multisensor, panoramic, thermal, and specialty cameras as selected',
+//     'Install mounts, housings, poles, junction boxes, power supplies, injectors, and field accessories',
+//     'Pull and terminate category, coax, fiber, power-limited, and control cabling',
+//     'Install NVR/DVR/VMS appliances, monitors, storage, encoders, and network hardware physically',
+//     'Aim, focus, address, configure, program, and commission cameras only when selected and authorized',
+//     'Troubleshoot image, power, network, recording, storage, and field-device issues',
+//   ],
+//   'Access Control / Door Security Electronics': [
+//     'Install card readers, keypads, biometrics, door contacts, request-to-exit devices, and local interfaces',
+//     'Install access-control panels, intelligent controllers, power supplies, batteries, and enclosures',
+//     'Pull and terminate reader, lock, contact, REX, network, and power-limited cabling',
+//     'Coordinate and terminate electrified locks, strikes, maglocks, transfer devices, and door hardware interfaces',
+//     'Program doors, credentials, schedules, inputs/outputs, and integrations only when selected and authorized',
+//     'Test door sequence, egress, life-safety release, alarm, and monitoring functions with assigned trades',
+//   ],
+//   'Nurse Call / Healthcare Communications': [
+//     'Install head-end cabinets, room stations, patient stations, pillow speakers, duty stations, corridor lights, and accessories',
+//     'Pull and terminate nurse-call, network, audio, control, and device cabling',
+//     'Install code-blue, staff-assist, bath/toilet, wander-management, and interface devices as selected',
+//     'Program rooms, beds, devices, call priorities, interfaces, and software only when selected and authorized',
+//     'Test call routing, audio, annunciation, escalation, interfaces, and reporting',
+//     'Work under ICRA, infection-control, occupied-patient-area, clean-work, and manufacturer requirements',
+//   ],
+//   'DAS / BDA / ERCES / In-Building Wireless': [
+//     'Install coax, fiber, antennas, splitters, couplers, tappers, donor/service components, and cable supports',
+//     'Install BDA/head-end, remote units, power supplies, monitoring panels, enclosures, and associated hardware',
+//     'Terminate and test coax/fiber connectors and document cable routing',
+//     'Perform sweep, PIM, signal-level, grid, or acceptance test support only when selected and equipped',
+//     'Support fire-alarm supervisory interfaces, monitoring, battery backup, and annunciation as assigned',
+//     'Configure/program/commission system only with verified manufacturer, RF, licensing, and project authorization',
+//   ],
+//   'BAS / Controls Low-Voltage Cabling Support': [
+//     'Pull and label approved BAS, thermostat, sensor, actuator, network, and controller cabling',
+//     'Install low-voltage supports, enclosures, backplates, and pathways assigned to controls scope',
+//     'Terminate approved controller, sensor, actuator, and network points only when authorized',
+//     'Perform continuity, point-to-point, resistance, and cable testing as assigned',
+//     'Support controller/panel installation and device labeling without assuming controls programming',
+//     'Document cable routes, point IDs, device locations, and redlines',
+//   ],
+//   'Service / Troubleshooting / Moves-Adds-Changes': [
+//     'Diagnose and repair cabling, connector, pathway, device, panel, network, power-limited, and communication faults',
+//     'Relocate, add, or remove outlets, devices, cameras, readers, speakers, panels, and associated cabling',
+//     'Replace approved devices, modules, power supplies, batteries, optics, patch cords, and field hardware',
+//     'Perform after-hours response, emergency support, temporary restoration, and service-ticket documentation',
+//     'Coordinate user access, shutdowns, impairments, escorts, and occupied-site controls',
+//     'Escalate software, design, code, license, cybersecurity, or manufacturer issues beyond assigned authority',
+//   ],
+//   'Low Voltage Punch / As-Builts / Closeout': [
+//     'Correct labeling, dressing, supports, terminations, device alignment, rack organization, and visible workmanship',
+//     'Resolve failed copper/fiber tests, missing devices, communication faults, and incomplete programming punch items as assigned',
+//     'Prepare redlines, test reports, device lists, port maps, asset records, photos, warranties, and closeout packages',
+//     'Support owner training, demonstrations, turnover, and final system verification',
+//     'Remove temporary protection, clean equipment, secure spares, and reconcile materials',
+//     'Track deficiencies, correction status, retest, reviewer notes, and final acceptance records',
+//   ],
+//   'Division 10 Helper / Material Support': [
+//     'Receive, count, inspect, protect, and stage specialty products by room or area',
+//     'Unload partitions, lockers, accessories, signs, rails, cabinets, tracks, and hardware',
+//     'Sort hardware and components against room lists or packing slips',
+//     'Assist installers with layout marks, lifts, fasteners, tools, and protection',
+//     'Maintain clean work areas and protect finished surfaces',
+//     'Remove packaging and prepare products for punch or turnover',
+//   ],
+//   'Layout / Field Measurement / Blocking & Substrate Verification': [
+//     'Read room-finish, accessory, signage, partition, locker, and specialties schedules',
+//     'Verify room numbers, wall types, dimensions, elevations, clearances, and mounting locations',
+//     'Identify wood blocking, metal backing, masonry, concrete, tile, gypsum, and specialty substrates',
+//     'Transfer centerlines, heights, panel widths, rail lines, and sign locations',
+//     'Document missing blocking, conflicting dimensions, damaged substrate, or inaccessible locations',
+//     'Prepare field-measure reports, room lists, photos, and punch-markups',
+//   ],
+//   'Toilet Compartments / Urinal Screens / Privacy Partitions': [
+//     'Lay out pilasters, panels, doors, screens, and required clearances',
+//     'Install floor anchors, brackets, shoes, headrails, and wall connections',
+//     'Assemble and install metal, stainless, laminate, phenolic, or HDPE compartments',
+//     'Install doors, hinges, latches, keepers, coat hooks, bumpers, and partition hardware',
+//     'Adjust gaps, alignment, door swing, latching, and panel plumb',
+//     'Repair or replace damaged panels, pilasters, doors, shoes, or hardware',
+//   ],
+//   'Toilet / Bath / Shower Accessories': [
+//     'Install grab bars, handrails, shower seats, and accessibility accessories',
+//     'Install dispensers, sanitary disposals, hooks, shelves, mop holders, and janitorial accessories',
+//     'Install standard restroom mirrors supplied as accessories',
+//     'Install baby-changing stations, adult-changing accessories, or fold-down specialty products',
+//     'Install shower curtains, rods, tracks, and bath accessories',
+//     'Verify mounting heights/locations against project documents and report conflicts',
+//   ],
+//   'Lockers / Benches / Wardrobe / Storage Specialties': [
+//     'Assemble knock-down metal, plastic, phenolic, wood, or specialty lockers',
+//     'Install locker bases, fillers, end panels, trim, sloped tops, and finished closures',
+//     'Anchor locker banks to walls, floors, bases, or manufacturer supports',
+//     'Install benches, pedestals, hooks, wardrobe rods, and changing-room accessories',
+//     'Install locks, number plates, handles, shelves, and locker accessories',
+//     'Adjust doors, alignment, reveals, locks, and damaged components',
+//   ],
+//   'Wall / Door Protection Systems': [
+//     'Lay out and install corner guards, crash rails, bumper rails, and wall guards',
+//     'Install protective handrails and combination rail systems',
+//     'Install rigid sheet wall protection, impact-resistant panels, and trim systems',
+//     'Cut, fit, miter, heat-form, or join profiles and protective sheets as allowed',
+//     'Install door-edge, frame, kick, or lower-wall protective products',
+//     'Repair damaged rails, guards, sheets, end caps, joints, and adhesives',
+//   ],
+//   'Architectural Signage / Room Identification / Wayfinding': [
+//     'Lay out and install room-identification, directional, informational, code, and wayfinding signs',
+//     'Install tactile/Braille signs and accessibility-symbol signs at project-defined locations',
+//     'Install directories, donor walls, changeable-letter systems, plaques, and panel signs',
+//     'Install mechanically fastened, adhesive-mounted, pin-mounted, standoff, suspended, or post-mounted non-powered signs',
+//     'Install exterior non-electrical identification and directional signs within assigned scope',
+//     'Complete sign punch, room-number reconciliation, label correction, and replacement',
+//   ],
+//   'Visual Display Surfaces / Markerboards / Tackboards': [
+//     'Install markerboards, tackboards, glass boards, and combination visual-display units',
+//     'Install map rails, marker trays, trims, accessories, and sliding panels',
+//     'Install wall-mounted or recessed display cases and bulletin enclosures',
+//     'Align multi-panel boards, joints, rails, and finished edges',
+//     'Install non-powered projection screens or presentation accessories when assigned',
+//     'Repair, replace, clean, and protect display surfaces during closeout',
+//   ],
+//   'Fire Extinguisher Cabinets / Emergency Cabinets / Safety Cabinets': [
+//     'Install recessed, semi-recessed, and surface-mounted extinguisher cabinets',
+//     'Install extinguisher brackets and mount owner/project-supplied extinguishers',
+//     'Install AED, first-aid, emergency-access, key, or information cabinets',
+//     'Install cabinet signage, break-glass panels, trim, doors, and hardware',
+//     'Coordinate rated-wall or specialty-cabinet conditions without assuming fire-rating approval',
+//     'Adjust doors, latches, trim, alignment, and replace damaged cabinet parts',
+//   ],
+//   'Postal Specialties / Mailboxes / Parcel Lockers': [
+//     'Assemble and install wall-mounted, recessed, free-standing, or pedestal mailbox systems',
+//     'Install parcel lockers, tenant compartments, directories, collection units, and accessories',
+//     'Install trim, collars, support frames, pedestals, bases, and anchorage',
+//     'Set doors, locks, keys, numbering, labels, and tenant-ID accessories',
+//     'Perform manufacturer-required alignment and operational checks',
+//     'Repair or replace doors, locks, labels, trim, and damaged components',
+//   ],
+//   'Cubicle Curtain / Track / Privacy Systems': [
+//     'Lay out straight, curved, L-shaped, U-shaped, and custom track configurations',
+//     'Install surface, recessed, ceiling-mounted, or structure-suspended curtain track',
+//     'Install carriers, hooks, end stops, bends, splices, drops, and accessories',
+//     'Hang cubicle/privacy curtains and verify travel, overlap, and coverage',
+//     'Coordinate above-ceiling supports and report conflicts with MEP or ceilings',
+//     'Repair track, carriers, curtains, drops, and damaged components',
+//   ],
+//   'Operable / Folding / Accordion Partitions': [
+//     'Install overhead track, support interfaces, pockets, closures, and guides',
+//     'Hang and connect manual operable-wall panels or folding/accordion panels',
+//     'Install seals, sweeps, jamb, closures, trim, hinges, and accessories',
+//     'Adjust panel alignment, travel, stacking, latching, and acoustic seals',
+//     'Install powered operator components only within verified manufacturer scope',
+//     'Perform maintenance, service, panel replacement, and warranty punch under authorization',
+//   ],
+//   'Wire-Mesh Partitions / Security Cages / Storage Enclosures': [
+//     'Lay out and install modular wire-mesh panels, posts, ceilings, and partitions',
+//     'Install gates, doors, hinges, locks, latches, sweeps, and hardware supplied with system',
+//     'Anchor posts/panels to floors, walls, ceilings, or manufacturer supports',
+//     'Cut and fit modular panels or infill pieces using approved methods',
+//     'Install tenant/storage cages, tool cribs, security enclosures, and overhead mesh',
+//     'Repair damaged mesh, posts, gates, hardware, and alignment',
+//   ],
+//   'Manufactured Shelving / Modular Storage Assemblies': [
+//     'Install adjustable wall standards, brackets, tracks, and shelving',
+//     'Assemble wire shelving, metal shelving, modular storage, and non-custom cabinets',
+//     'Install wall-mounted storage accessories, bins, dividers, and related components',
+//     'Anchor floor-standing or wall-mounted storage assemblies to approved substrates',
+//     'Level, align, connect, and adjust modular units',
+//     'Repair, relocate, reconfigure, or replace manufactured storage components',
+//   ],
+//   'Flagpoles / Manufactured Flagpole Accessories': [
+//     'Assemble ground-set, wall-mounted, or roof-mounted flagpole sections and accessories',
+//     'Install trucks, finials, halyards, cleats, counterweights, internal halyard systems, and flash collars',
+//     'Set and plumb flagpoles using approved lifting and rigging methods',
+//     'Install wall brackets, roof mounts, bases, and manufacturer hardware',
+//     'Install flags and verify raising/lowering operation',
+//     'Repair or replace ropes, hardware, finials, cleats, and minor components',
+//   ],
+//   'Specialty Repair / Replacement / Service': [
+//     'Identify installed specialty system, manufacturer, model, finish, and damaged component',
+//     'Remove and replace damaged accessories, partitions, lockers, signs, rails, tracks, cabinets, or storage components',
+//     'Perform approved field modifications, redrilling, refastening, patch-ready preparation, and adjustment',
+//     'Coordinate occupied-space access, protection, noise, dust, and after-hours work',
+//     'Document before/after conditions, parts, photos, room numbers, and unresolved issues',
+//     'Support warranty visits only when authorized by manufacturer/company',
+//   ],
+//   'Division 10 Punch / Protection / Labeling / Closeout': [
+//     'Verify product count, room assignment, model, finish, label, and visible condition',
+//     'Adjust doors, panels, locks, rails, signs, cabinets, tracks, and hardware',
+//     'Replace missing/damaged parts and complete minor approved corrections',
+//     'Remove films, temporary protection, stickers, packaging, and construction debris',
+//     'Update room lists, product schedules, photos, O&M/warranty-support records, and punch status',
+//     'Protect completed specialty work until turnover',
+//   ],
+//   'Equipment Installation Helper / Material Support': [
+//     'Unload, move, protect, and stage equipment under an approved handling plan',
+//     'Unpack crates, organize hardware, retain labels, and separate components by room or equipment tag',
+//     'Assist with basic assembly, fastener installation, guarding, and accessory placement under supervision',
+//     'Maintain clean work areas, protect finished surfaces, and remove packaging/debris',
+//     'Assist qualified installers during lifts, setting, alignment, and anchoring',
+//   ],
+//   'Receiving / Inventory / Staging / Damage Documentation': [
+//     'Verify delivered quantities, model numbers, serial numbers, and crate tags against packing lists',
+//     'Photograph concealed and visible shipping damage before movement or unpacking',
+//     'Create room-by-room or area-based equipment staging lists',
+//     'Track shortages, missing parts, accessories, and hardware kits',
+//     'Coordinate protected storage, environmental limits, and access routes',
+//   ],
+//   'Layout / Field Measurement / Utility / Substrate Verification': [
+//     'Read equipment plans, schedules, shop drawings, and installation instructions',
+//     'Verify openings, pads, floor elevations, clearances, service space, and access paths',
+//     'Verify blocking, supports, substrates, sleeves, and anchor locations before installation',
+//     'Compare plumbing, electrical, gas, steam, exhaust, data, and controls rough-in positions to equipment requirements',
+//     'Lay out equipment centerlines, anchor points, floor marks, and equipment tags',
+//     'Document field discrepancies and provide dimensions for RFI or coordination review',
+//   ],
+//   'Commercial Kitchen / Foodservice Equipment': [
+//     'Set, level, align, and anchor ranges, ovens, fryers, steamers, kettles, griddles, and cooking equipment',
+//     'Set and assemble dish machines, sinks, prep equipment, serving lines, and foodservice accessories',
+//     'Assemble and install walk-in cooler/freezer wall, ceiling, door, floor, and trim components',
+//     'Set and align refrigerated display cases, reach-ins, ice machines, and cold equipment',
+//     'Assemble manufactured hoods, grease-rated equipment components, and kitchen support units',
+//     'Install seismic restraints, anti-tip devices, casters, legs, shelves, splash components, and equipment accessories',
+//     'Assist manufacturer startup, serial capture, protection, and operator training when authorized',
+//   ],
+//   'Commercial Laundry Equipment': [
+//     'Set, level, align, and anchor commercial washers, dryers, extractors, and stacked units',
+//     'Assemble and set ironers, folders, presses, finishing equipment, and laundry accessories',
+//     'Install bases, pedestals, guards, lint accessories, carts, rails, and manufacturer components',
+//     'Verify service clearances, maintenance access, vibration isolation, and equipment spacing',
+//     'Assist vendor startup, test-cycle observation, serial documentation, and user orientation',
+//   ],
+//   'Loading Dock / Material Handling Equipment': [
+//     'Install pit-mounted or surface-mounted dock levelers and associated frames/components',
+//     'Install vehicle restraints, control-mounting components, guides, and mechanical accessories',
+//     'Install dock lifts, edge-of-dock units, bumpers, guards, and protective steel components',
+//     'Install dock seals, shelters, curtains, pads, and weather-related accessories',
+//     'Set hydraulic/mechanical components, hoses, springs, and guards under manufacturer procedures',
+//     'Perform mechanical adjustments, operational observation, punch, and warranty service when authorized',
+//   ],
+//   'Laboratory / Scientific / Educational Equipment': [
+//     'Set, level, and anchor fume hoods, biosafety cabinets, laminar-flow units, and lab appliances',
+//     'Set environmental chambers, incubators, freezers, washers, sterilizers, and scientific equipment',
+//     'Install equipment stands, bases, seismic restraints, support frames, and manufacturer accessories',
+//     'Coordinate equipment with adjacent casework and verify service clearances',
+//     'Assist vendor field service, serial capture, owner training, and closeout documentation',
+//   ],
+//   'Healthcare / Medical / Sterile-Processing Equipment Support': [
+//     'Set and anchor sterilizers, instrument washers, processing equipment, and healthcare support units',
+//     'Install patient-lift rails, tracks, motors, accessories, and physical components under approved details',
+//     'Set exam equipment, booms, headwall-associated devices, case carts, and treatment-room equipment',
+//     'Support imaging-equipment positioning, shielding coordination, base installation, and accessory setting',
+//     'Work under ICRA, infection-control, clean-work, occupied-area, and healthcare access procedures',
+//     'Assist manufacturer startup, testing observation, user orientation, and turnover documentation',
+//   ],
+//   'Athletic / Gymnasium / Recreation Equipment': [
+//     'Install basketball goals, backstops, supports, winches, pads, and accessories',
+//     'Install volleyball, tennis, badminton, net, sleeve, anchor, and floor-insert systems',
+//     'Install gymnasium wall pads, fixed exercise equipment, racks, and athletic accessories',
+//     'Install fixed or telescoping bleachers, seats, rails, guards, and manufacturer components',
+//     'Install manufacturer-specific indoor recreation or training equipment',
+//     'Perform adjustment, safety checks, warranty service, and punch when authorized',
+//   ],
+//   'Theater / Stage / Auditorium / Fixed Seating Equipment': [
+//     'Install fixed audience seating, aisle standards, rails, accessories, and numbered components',
+//     'Install stage curtains, tracks, battens, traveler systems, valances, and manual accessories',
+//     'Assemble orchestra shells, platforms, risers, acoustic equipment, and specialty stage units',
+//     'Install theatrical rigging components under manufacturer/engineer direction',
+//     'Perform seating/track adjustments, alignment, punch, labeling, and closeout',
+//   ],
+//   'Appliances / Hospitality / Residential-Type Equipment': [
+//     'Set, level, and secure refrigerators, ranges, dishwashers, washers, dryers, and project appliances',
+//     'Install anti-tip brackets, stacking kits, trim kits, panels, pedestals, and manufacturer accessories',
+//     'Fit appliances into millwork openings and verify clearances without modifying custom casework beyond approved scope',
+//     'Install hospitality minibars, undercounter units, and manufactured amenity equipment',
+//     'Perform cosmetic adjustment, door alignment, protection, serial documentation, and punch',
+//   ],
+//   'Waste Handling / Compactors / Balers / Chutes': [
+//     'Set, align, anchor, and assemble compactors, balers, crushers, and recycling equipment',
+//     'Install guards, gates, hoppers, chutes, rails, containers, and manufacturer accessories',
+//     'Install manufactured trash or linen chute sections, doors, supports, and discharge components',
+//     'Verify operating clearances, safety zones, equipment access, and container alignment',
+//     'Assist manufacturer startup, service, adjustment, and turnover when authorized',
+//   ],
+//   'Vehicle Service / Maintenance / Wash Equipment': [
+//     'Set, level, and anchor two-post, four-post, scissor, and specialty vehicle lifts',
+//     'Install alignment racks, tire changers, wheel balancers, brake lathes, and shop machinery',
+//     'Install hose reels, fluid-management equipment, exhaust-extraction components, and shop accessories',
+//     'Set and assemble wash equipment, arches, rails, pumps, reclaim components, and accessories',
+//     'Perform manufacturer-directed adjustments, safety checks, warranty service, and operator training',
+//   ],
+//   'Conveyors / Sortation / Warehouse Material-Handling Equipment': [
+//     'Assemble conveyor frames, supports, rollers, beds, curves, transfers, and mechanical components',
+//     'Install belts, chains, rollers, guards, chutes, stops, guides, and accessories',
+//     'Level, align, square, tension, and mechanically adjust conveyor sections',
+//     'Install sortation, pallet-handling, modular, gravity, and warehouse equipment components',
+//     'Perform mechanical punch, tracking adjustment, guard checks, and service when authorized',
+//   ],
+//   'Industrial / Process / Manufacturing Equipment Setting / Millwright': [
+//     'Receive, set, level, shim, anchor, and grout machine bases, skids, packages, and manufacturing equipment',
+//     'Perform precision shaft, coupling, baseplate, and machine alignment using approved tools',
+//     'Assemble machine frames, guards, drives, bearings, couplings, platforms, and manufacturer components',
+//     'Support heavy moves, jacking, skating, cribbing, rigging, and setting under an approved lift plan',
+//     'Perform mechanical adjustment, rotation checks, lubrication support, punch, and startup assistance',
+//     'Document alignment readings, torque values, serials, and installation records',
+//   ],
+//   'Retail / Display / Merchandising / Refrigerated Case Physical Installation': [
+//     'Assemble and anchor gondola shelving, checkout equipment, displays, racks, and manufactured retail fixtures',
+//     'Set, align, join, and level refrigerated display-case lineups and related physical components',
+//     'Install guards, kickplates, rails, trim, accessories, and manufacturer merchandising components',
+//     'Lay out fixture lines, aisles, clearances, and anchor locations from approved plans',
+//     'Perform store-reset, relocation, repair, punch, and protection work',
+//   ],
+//   'Equipment Anchoring / Seismic Restraint / Guards / Supports': [
+//     'Install approved mechanical, adhesive, expansion, and screw anchors for equipment',
+//     'Install seismic braces, restraint cables, brackets, clips, and manufacturer support kits',
+//     'Drill, clean, set, torque, and document anchors according to approved procedures',
+//     'Install guards, bollards, rails, shields, vibration isolators, and equipment-support accessories',
+//     'Verify anchor spacing, edge distance, embedment, torque, and equipment position against approved documents',
+//   ],
+//   'Equipment Startup / Manufacturer Technician / User Training Support': [
+//     'Complete manufacturer pre-start checklists and verify physical installation readiness',
+//     'Perform approved mechanical adjustments, settings, firmware-assisted setup, and functional checks',
+//     'Record serial numbers, settings, test observations, deficiencies, and startup status',
+//     'Demonstrate approved operator functions and provide user orientation',
+//     'Coordinate manufacturer representatives and close startup deficiencies',
+//   ],
+//   'Equipment Service / Warranty / Repair': [
+//     'Diagnose mechanical installation, alignment, anchorage, guarding, and adjustment issues',
+//     'Replace approved wear parts, hardware, guards, accessories, seals, and mechanical components',
+//     'Realign, relevel, retorque, adjust, and recommission mechanical installation components as authorized',
+//     'Perform preventive maintenance, lubrication, inspection support, and service documentation',
+//     'Respond to warranty callbacks, emergency equipment issues, and owner service requests',
+//   ],
+//   'Equipment Punch / Protection / Documentation / Closeout': [
+//     'Complete fastener, anchor, level, alignment, clearance, guard, label, and accessory checks',
+//     'Clean equipment, remove protective film, apply protection, and prepare units for turnover',
+//     'Compile serial/model lists, photographs, manuals, warranties, training records, and deficiency logs',
+//     'Coordinate final adjustments, missing parts, replacement components, and owner punch items',
+//     'Support turnover walks and document completed corrective work',
+//   ],
+// }
+
+// // ✅ EXPERIENCE_LEVELS - Complete for ALL Trades
+// const EXPERIENCE_LEVELS = {
+//   'Metal Framing': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'Drywall Hanging': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'Drywall Finishing': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'Acoustical Ceilings / ACT': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'Interior Insulation': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'FRP / Wall Panels': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'Doors, Frames & Hardware': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'Division 10 Accessories': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'Interior Punch / Patching': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'Interior Labor / Material Handling': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman/Mechanic', 'Lead', 'Foreman'],
+//   'HVAC Helper / Mechanical Labor': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'Ductwork / Sheet Metal Installation': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'HVAC Equipment Installation': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'HVAC Service / Repair': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'HVAC Startup / Commissioning': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'HVAC Controls / BAS': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'Refrigeration': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'Hydronic / Mechanical Piping': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'Air Distribution / Diffusers / Grilles': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'HVAC Punch / Troubleshooting / Final Support': ['Helper', 'Apprentice / Junior', 'Skilled Worker / Installer', 'Mechanic / Technician', 'Lead / Foreman', 'Specialty / Advanced Tech'],
+//   'Electrical Helper / Material Handling': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Electrical Rough-In': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Conduit / Raceway Installation': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Wire Pulling / Cabling': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Boxes / Devices / Trim-Out': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Lighting / Fixtures': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Panels / Switchgear / Distribution': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Temporary Power': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Underground Electrical': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Electrical Service / Troubleshooting': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Industrial Electrical': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Electrical Punch / Final Support': ['Helper', 'Apprentice / Trainee', 'Skilled Worker / Installer', 'Journeyman-Level Electrician', 'Licensed Electrician', 'Lead', 'Foreman'],
+//   'Plumbing Helper / Material Handling': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Underground Plumbing': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Plumbing Rough-In': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Drain / Waste / Vent (DWV)': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Domestic Water Lines': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Fixture Installation / Trim-Out': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Gas Piping': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Medical Gas': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Pipefitting / Mechanical Piping': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Testing / Inspection Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Service Plumbing / Repair': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Plumbing Punch / Final Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level', 'Licensed Plumber', 'Lead/Foreman', 'Specialist'],
+//   'Concrete Helper / General Concrete Labor': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Formwork / Form Carpenter': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Rebar / Reinforcement': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Concrete Pour Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Concrete Finishing': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Flatwork / Slabs': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Sidewalks / Curbs / Site Concrete': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Foundations / Footings / Grade Beams': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Concrete Sawcutting / Core Drilling': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Concrete Repair / Patch / Demo': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Concrete Pump Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Tilt-Up / Precast Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'Concrete Punch / Cleanup / Final Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Concrete Finisher', 'Form Carpenter', 'Rebar Installer', 'Sawcutter / Core Drill Specialist', 'Lead/Foreman', 'Specialty Concrete Worker'],
+//   'General Site Labor / Civil Labor': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Earthwork / Grading': ['Helper', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Excavation / Trenching': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Pipe Layer / Underground Utilities': ['Helper', 'Skilled Worker', 'Pipe Layer', 'Lead', 'Foreman'],
+//   'Storm Drain / Sewer / Water Utilities': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Utility Installation Support': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Erosion Control': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Equipment Spotter / Grade Checker': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Traffic Control / Flagging': ['Helper', 'Flagger', 'Lead'],
+//   'Site Cleanup / Final Grading': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Asphalt Helper / Labor': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Base Prep / Surface Prep': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Asphalt Paving Crew': ['Helper', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Raking / Lute Work': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Screed / Paver Operation': ['Can assist', 'Operator-level', 'Specialist', 'Foreman'],
+//   'Roller / Compaction': ['Can assist', 'Operator', 'Advanced', 'Lead Operator'],
+//   'Milling Support': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Asphalt Patch / Repair': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Sealcoating': ['Helper', 'Skilled Worker', 'Specialist', 'Lead'],
+//   'Crack Filling': ['Helper', 'Skilled Worker', 'Specialist', 'Lead'],
+//   'Striping / Pavement Marking': ['Helper', 'Skilled Worker', 'Specialist', 'Lead'],
+//   'Wheel Stops / Bollards / Signs': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Asphalt Cleanup / Punch': ['Helper', 'Skilled Worker', 'Lead'],
+//   'Landscape Labor / Exterior Helper': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Planting / Trees / Shrubs': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Sod / Turf Installation': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Mulch / Rock / Ground Cover': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Irrigation Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Landscape Drainage Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Fencing / Gates': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Exterior Site Amenities': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Pavers / Landscape Hardscape': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Retaining Wall Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Playground / Outdoor Equipment Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Exterior Cleanup / Final Appearance': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Maintenance / Landscape Service': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Exterior Punch / Final Corrections': ['Helper', 'Apprentice', 'Skilled Worker', 'Lead', 'Foreman'],
+//   'Roofing Helper / Roof Labor': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Roof Tear-Off / Demo': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Commercial Flat Roofing': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'TPO / PVC / EPDM Membrane': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Built-Up / Modified Bitumen': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Roof Insulation / Cover Board': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Metal Roofing': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Flashing / Sheet Metal Flashing': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Roof Penetrations / Curbs': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Waterproofing': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Caulking / Sealants': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Roof Repair / Leak Investigation': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Roof Safety / Material Handling': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'Roof Punch / Final Support': ['Helper', 'Apprentice', 'Skilled Worker', 'Journeyman-Level Roofer', 'Specialist', 'Lead', 'Foreman'],
+//   'General Site Labor': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Material Handling / Stocking': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Loading / Unloading': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Jobsite Cleanup / Rough Clean': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Trash / Debris Control': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Temporary Protection': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Site Logistics / Delivery Support': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Fire Watch / Spotter': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Forklift / Material Equipment Support': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Multi-Trade Helper Support': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Punch Support Labor': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Closeout / Turnover Support': ['Entry Laborer', 'General Laborer', 'Skilled Laborer', 'Equipment-Certified Laborer', 'Lead Laborer', 'Foreman / Labor Supervisor'],
+//   'Demo Helper / Demo Labor': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Interior Selective Demo': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Wall / Ceiling / Partition Demo': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Flooring / Surface Removal': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Concrete Demo / Chipping / Jackhammer Support': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Sawcut / Core Drill Demo Support': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Debris Removal / Loadout': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Salvage / Material Separation': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Dust Control / Temporary Protection': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Demo Tool / Small Equipment Support': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Abatement Support / Environmental Containment': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Occupied Building / Night Demo': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Demo Punch / Final Cleanup': ['Helper / New to demo', 'Demo laborer', 'Skilled demo worker', 'Specialty demo worker', 'Lead / Crew lead', 'Foreman'],
+//   'Masonry Helper / Mason Tender': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'CMU / Block Masonry': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Brick Masonry': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Stone Veneer / Manufactured Stone': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Grout / Reinforcement Support': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Scaffold / Material Staging': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Masonry Cutting / Sawing / Drilling': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Masonry Repair / Restoration': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Stucco / Plaster Systems': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'EIFS Systems': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Sealants / Weather Interface': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Masonry Punch / Cleanup': ['Helper / Tender', 'Apprentice / Learning', 'Skilled Worker', 'Journeyman-Level Mason', 'Specialist', 'Lead / Foreman'],
+//   'Steel Helper / Ironworker Helper': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Structural Steel Erection': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Bolt-Up / Connecting': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Metal Decking / Joist Support': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Field Welding': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Shop Welding / Fabrication Support': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Miscellaneous Metals Installation': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Stairs / Railings / Handrails': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Ornamental / Architectural Metals': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Rigging / Signaling / Hoisting Support': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Cutting / Grinding / Torch Work': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Steel Repair / Retrofit / Punch': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Fireproofing Interface Support': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Steel Cleanup / Material Staging': ['Helper / Labor support', 'Apprentice / Learning Trade', 'Skilled Steel/Metal Worker', 'Journeyman-Level Ironworker/Metal installer', 'Welder', 'Certified Welder', 'Lead / Crew Lead', 'Foreman'],
+//   'Carpenter Helper / Rough Carpentry Support': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Wood Wall Framing': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Floor / Ceiling Joist Framing': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Roof Framing / Truss Installation': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Blocking / Backing / Nailers': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Plywood / OSB Sheathing / Subfloor': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Rough Openings / Bucks / Curbs / Supports': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Framing Layout / Plan Reading': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Temporary Carpentry / Barricades / Hoardings': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Exterior Wood Framing / Decks / Wood Structures': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Prefabricated / Panelized Wood Framing': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Rough Stairs / Ramps / Platforms': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Rough Carpentry Repair / Retrofit / Punch': ['Helper / Labor support', 'Apprentice / Entry Carpenter', 'Skilled Framer / Rough Carpenter', 'Journeyman-Level Carpenter', 'Specialist', 'Lead Carpenter', 'Foreman'],
+//   'Finish Carpentry Helper / Millwork Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Casework / Cabinet Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Laboratory / Healthcare / Institutional Casework': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Architectural Millwork / Custom Woodwork Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Finish Trim / Mouldings / Base / Casing': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Countertops / Laminate / Solid Surface Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Wood Wall Panels / Veneer / Slat / Feature Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Shelving / Closets / Storage Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Reception Desks / Nurse Stations / Built-Ins / Service Counters': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Cabinet Hardware / Millwork Accessories': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Layout / Field Measurement / Scribing / Templating': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Shop Fabrication / Assembly Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Field Modification / Cutting / Fitting / Repair': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Millwork Punch / Adjustment / Protection / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Millwork / Casework Installer', 'Journeyman-Level Finish Carpenter', 'Specialty Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Flooring Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Flooring Removal / Tear-Out': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Floor Preparation / Substrate Correction': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Moisture Testing / Mitigation / Underlayment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Ceramic / Porcelain Floor Tile Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Wall Tile / Wet-Area / Shower Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Natural Stone / Large-Format / Specialty Tile': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'LVT / LVP / Resilient Plank and Tile': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'VCT / Commercial Resilient Tile': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Sheet Vinyl / Linoleum / Heat-Welded Flooring': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Carpet / Broadloom / Carpet Tile': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Rubber / Athletic / Specialty Resilient Flooring': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Wood / Engineered Wood / Laminate Flooring': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Resinous / Epoxy / Urethane Flooring Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Terrazzo / Cementitious / Poured Specialty Flooring': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Polished Concrete / Densified / Decorative Concrete Flooring': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Base / Cove Base / Transitions / Flooring Accessories': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Flooring Repair / Punch / Protection / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Flooring Installer', 'Journeyman-Level Floor Layer / Tile Setter / Carpet Installer', 'Specialty Flooring Installer', 'Layout / Lead Installer', 'Foreman'],
+//   'Painting Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Surface Protection / Masking / Jobsite Setup': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Surface Preparation / Minor Patching / Sanding': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Interior Brush / Roll Painting': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Exterior Painting / Building Facades': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Spray Application / Airless / HVLP / Conventional': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Wood Stain / Clear Finish / Lacquer Systems': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Metal Surface Preparation / Primers / DTM Coatings': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Industrial / High-Performance Protective Coatings': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Elastomeric / Masonry / Concrete Vertical Coatings': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Commercial Wallcovering / Vinyl / Fabric Systems': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Decorative / Faux / Specialty Finish Systems': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Interior Safety Marking / Equipment / Floor-Line Painting': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Coating Removal / Pressure Washing / Abrasive Surface Preparation': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Color Matching / Mockups / Layout / Quality-Control Support': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Painting Repair / Touch-Up / Punch / Closeout': ['Helper / Material Support', 'Apprentice / Developing Painter', 'Skilled Painter / Installer', 'Journeyman-Level Painter', 'Specialty Coatings / Wallcovering Worker', 'Lead / Layout / Quality-Control Painter', 'Foreman'],
+//   'Door / Frame / Hardware Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Layout / Field Measurement / Opening Verification': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Hollow Metal Frame Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Wood / Specialty Frame / Prehung Unit Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Hollow Metal Door Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Wood Door Installation / Field Fitting / Machining': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Architectural / Finish Hardware Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Electrified Hardware / Access-Control Door Interface': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Automatic Door Operators / Accessible Entrance Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Fire-Rated / Smoke / Egress Opening Assemblies': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Keying / Cylinders / Cores / Locksmith Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Overhead / Sectional / Coiling / Rolling Doors': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Specialty / Security / Acoustic / Lead-Lined / Detention / Cleanroom Doors': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Field Modification / Machining / Welding / Repair': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Door / Frame / Hardware Punch / Commissioning / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Glazing Helper / Material Handling': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Layout / Field Measurement / Opening Verification': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Shop Fabrication / Aluminum Frame Assembly': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Glass Cutting / Edgework / Shop Handling': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Storefront Framing / Aluminum Entrances': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Curtain Wall / Window Wall Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Commercial Windows / Punched Openings': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Interior Glass / Office Partitions': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Heavy Glass / Frameless Entrances': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Mirrors / Decorative / Interior Specialty Glass': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Glass Railings / Guards': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Skylights / Canopies / Overhead Glazing': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Specialty Glass / IGUs / Spandrel / Rated / Security Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Structural Silicone / Wet Glazing / Gaskets / Sealants': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Glass Setting / Lifting / Rigging / Vacuum Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Service / Replacement / Emergency Board-Up': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Water Testing / Air Leakage / Diagnostic Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Glass / Glazing Punch / Adjustment / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Fire Sprinkler Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Field Layout / Measurement / Coordination': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Shop Fabrication / Pipe Preparation': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Aboveground Mains / Cross Mains / Branch Lines': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Hangers / Supports / Seismic Bracing': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Drops / Armovers / Flexible Connections': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Sprinkler Heads / Nozzles / Trim': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Risers / Control Valves / Test & Drain Assemblies': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Standpipe / Hose Valve Systems': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'FDC / Backflow / Water-Supply Interface': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Fire Pump / Pump Room / Water Storage Interface': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Underground Fire Service / Private Fire Main': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Dry Pipe / Preaction / Deluge / Specialty Water-Based Systems': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Storage / ESFR / In-Rack / High-Challenge Systems': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Tenant Improvement / Relocation / System Modification': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Service / Repair / Emergency Impairment Support': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Inspection / Testing / Maintenance (ITM) Support': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Hydrostatic / Flushing / Acceptance Test Support': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Water-Based Systems Layout / CAD / Submittal / As-Built Support': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Fire Sprinkler Punch / Labeling / Closeout': ['Helper / Material Support', 'Apprentice / Developing Sprinkler Installer', 'Skilled Sprinkler Installer', 'Journeyman-Level Sprinkler Fitter', 'Specialty / Service / ITM / Layout Technician', 'Lead / Foreman / Superintendent'],
+//   'Passive Fire Protection Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Layout / Survey / Barrier / Opening Verification': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Metallic Pipe Penetration Firestopping': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Combustible / Nonmetallic Pipe Penetration Firestopping': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Cable / Conduit / Cable Tray / Busway Penetrations': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Mechanical / Duct / Damper / Mixed-Service Penetrations': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Membrane Penetrations / Electrical Boxes / Putty Pads': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Firestop Devices / Sleeves / Collars / Wrap Strips / Cast-In Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Fire-Resistive Construction Joints / Head-of-Wall / Floor-to-Wall': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Perimeter Fire Containment / Edge-of-Slab / Curtain Wall': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Smoke / Acoustical / Draft Sealants': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Architectural Joint Sealants / Expansion / Control / Perimeter Joints': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'SFRM - Spray-Applied Fire-Resistive Materials': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'IFRM / Intumescent Fire-Resistive Coatings': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Board / Blanket / Encasement Fire Protection': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Fireproofing Surface Prep / Masking / Mixing / Pump Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Fireproofing Patch / Repair / Retrofit': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Firestop / Joint Sealant Removal / Repair / Retrofit': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Inspection / QA / Thickness / Adhesion / Documentation Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Labeling / Photo Records / Punch / Closeout / Maintenance': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Firestop / Fireproofing / Sealant Installer', 'Journeyman-Level Passive Fire Protection Installer', 'Specialty Technician / Manufacturer-Trained Applicator / QA Support', 'Lead / Foreman / Superintendent'],
+//   'Low Voltage Helper / Material Support': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Pathways / Supports / Cable Management': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Structured Cabling - Copper': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Fiber Optic Cabling': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Backbone / Riser / Campus / Outside Plant Communications': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Telecom Rooms / Racks / Cabinets / Patch Panels': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Testing / Certification / Labeling / Documentation': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Network Equipment Physical Installation / Smart Hands': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Audio / Visual Systems': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Paging / Public Address / Intercom / Clock / Bell Systems': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Video Surveillance / CCTV': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Access Control / Door Security Electronics': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Intrusion / Duress / Perimeter Detection': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Fire Alarm Device / Circuit Installation': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Fire Alarm Panels / Interfaces / Programming / Commissioning': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Fire Alarm Inspection / Testing / Service': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Nurse Call / Healthcare Communications': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'DAS / BDA / ERCES / In-Building Wireless': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'BAS / Controls Low-Voltage Cabling Support': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Service / Troubleshooting / Moves-Adds-Changes': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Low Voltage Punch / As-Builts / Closeout': ['Helper / Material Support', 'Developing Installer / Apprentice-Level', 'Skilled Installer / Technician', 'Journeyman-Level / Senior Technician', 'Specialist / Programmer / Certified Technician', 'Lead / Foreman / Superintendent'],
+//   'Division 10 Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Layout / Field Measurement / Blocking & Substrate Verification': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Toilet Compartments / Urinal Screens / Privacy Partitions': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Toilet / Bath / Shower Accessories': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Lockers / Benches / Wardrobe / Storage Specialties': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Wall / Door Protection Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Architectural Signage / Room Identification / Wayfinding': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Visual Display Surfaces / Markerboards / Tackboards': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Fire Extinguisher Cabinets / Emergency Cabinets / Safety Specialties': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Postal Specialties / Mailboxes / Parcel Lockers': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Cubicle Curtain / Track / Privacy Systems': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Operable / Folding / Accordion Partitions': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Wire-Mesh Partitions / Security Cages / Storage Enclosures': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Manufactured Shelving / Modular Storage Assemblies': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Flagpoles / Manufactured Flagpole Accessories': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Specialty Repair / Replacement / Service': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Division 10 Punch / Protection / Labeling / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Equipment Installation Helper / Material Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Receiving / Inventory / Staging / Damage Documentation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Layout / Field Measurement / Utility / Substrate Verification': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Commercial Kitchen / Foodservice Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Commercial Laundry Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Loading Dock / Material Handling Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Laboratory / Scientific / Educational Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Healthcare / Medical / Sterile-Processing Equipment Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Athletic / Gymnasium / Recreation Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Theater / Stage / Auditorium / Fixed Seating Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Appliances / Hospitality / Residential-Type Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Waste Handling / Compactors / Balers / Chutes': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Vehicle Service / Maintenance / Wash Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Conveyors / Sortation / Warehouse Material-Handling Equipment': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Industrial / Process / Manufacturing Equipment Setting / Millwright': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Retail / Display / Merchandising / Refrigerated Case Physical Installation': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Equipment Anchoring / Seismic Restraint / Guards / Supports': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Equipment Startup / Manufacturer Technician / User Training Support': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Equipment Service / Warranty / Repair': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+//   'Equipment Punch / Protection / Documentation / Closeout': ['Helper / Material Support', 'Apprentice / Developing Installer', 'Skilled Installer', 'Journeyman-Level Specialty Installer'],
+// }
+
+// // ✅ Years of Experience options
+// const YEARS_OF_EXPERIENCE = [
+//   '0-1',
+//   '1-3',
+//   '3-5',
+//   '5-10',
+//   '10+',
+// ]
+
+// // ✅ TOOLS & CERTIFICATIONS BY TRADE
+// const TOOLS_CERTIFICATIONS = {
+//   'Interiors': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Scissor lift experience',
+//     'Boom lift experience',
+//     'Lift certified',
+//     'Fall protection',
+//     'Own hand tools',
+//     'Own power tools',
+//     'Basic PPE',
+//     'Reliable transportation',
+//     'Valid driver license',
+//     'Willing to travel',
+//     'Night shift available',
+//     'Weekend work available',
+//     'Overtime available',
+//     'Can pass background check if required',
+//     'Can work secure/badged sites',
+//     'Bilingual English/Spanish',
+//   ],
+//   'HVAC/Mechanical': [
+//     'EPA 608 Universal',
+//     'EPA 608 Type I',
+//     'EPA 608 Type II',
+//     'EPA 608 Type III',
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Lift certification',
+//     'Fall protection training',
+//     'Hot work / brazing experience',
+//     'Confined space awareness',
+//     'First aid / CPR',
+//     'Other certification - optional note',
+//     'Own basic hand tools',
+//     'Own power tools',
+//     'Tin snips / sheet metal tools',
+//     'Cordless drill / impact',
+//     'Multimeter',
+//     'Refrigerant gauges',
+//     'Vacuum pump',
+//     'Recovery machine',
+//     'Brazing tools',
+//     'Manometer',
+//     'Ladders',
+//     'PPE available',
+//   ],
+//   'Electrical / Power': [
+//     'Electrical apprentice card / registration',
+//     'Journeyman electrician license',
+//     'Master electrician license',
+//     'Lift certification',
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Fall protection training',
+//     'NFPA 70E / electrical safety training',
+//     'Lockout/Tagout awareness',
+//     'Own basic hand tools',
+//     'Own Cordless tools',
+//     'Conduit bender',
+//     'Fish tape',
+//     'Multimeter',
+//     'Label maker',
+//     'Reliable transportation',
+//     'Valid driver license',
+//     'Service vehicle available',
+//     'Electrical tool bag',
+//     'Ladders',
+//     'PPE available',
+//   ],
+//   'Plumbing / Piping': [
+//     'Plumbing license',
+//     'Apprentice card',
+//     'Journeyman card',
+//     'Backflow certification',
+//     'Medical gas certification',
+//     'Gas piping qualification',
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Lift experience',
+//     'Confined space awareness',
+//     'Hot work awareness',
+//     'Trench safety awareness',
+//     'Hospital/healthcare experience',
+//     'Own basic hand tools',
+//     'Pipe wrenches',
+//     'PEX tools',
+//     'Copper tools',
+//     'Threading tools',
+//     'Press tool experience',
+//     'Power tools',
+//     'PPE',
+//   ],
+//   'Concrete / Formwork / Rebar / Flatwork': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Silica awareness',
+//     'Fall protection',
+//     'Lift experience',
+//     'Confined space awareness',
+//     'Trench safety awareness',
+//     'Hot work awareness',
+//     'Own basic hand tools',
+//     'Concrete finishing tools',
+//     'Bull float experience',
+//     'Power trowel experience',
+//     'Concrete saw experience',
+//     'Core drill experience',
+//     'Laser level experience',
+//     'Vibrator experience',
+//     'Hard hat',
+//     'Safety vest',
+//     'Gloves',
+//     'Boots',
+//     'Eye protection',
+//     'Hearing protection',
+//   ],
+//   'Civil / Sitework / Earthwork / Utilities': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Trench safety awareness',
+//     'Competent person - trenching',
+//     'Flagger certification',
+//     'Confined space awareness',
+//     'First aid / CPR',
+//     'Valid driver license',
+//     'CDL',
+//     'Equipment certification/card',
+//     'TWIC / secure site eligible',
+//     'Can pass background check',
+//     'Has PPE',
+//     'Work boots',
+//     'Hard hat',
+//     'Safety vest',
+//     'Own hand tools',
+//     'Can work outdoors',
+//     'Can work around heavy equipment',
+//     'Can work in heat/cold',
+//   ],
+//   'Asphalt / Paving Work': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Traffic control awareness',
+//     'Flagger certification',
+//     'Work zone safety',
+//     'Hot work / heat exposure experience',
+//     'First aid / CPR',
+//     'Valid driver license',
+//     'CDL',
+//     'Equipment card/certification',
+//     'Can pass background check',
+//     'Secure/badged site eligible',
+//     'Has PPE',
+//     'High-vis vest/clothing',
+//     'Work boots',
+//     'Hard hat',
+//     'Asphalt hand tools',
+//     'Rake/lute tools',
+//     'Sealcoat tools',
+//     'Striping layout tools',
+//     'Can work around traffic',
+//     'Can work in heat',
+//     'Can work nights',
+//     'Can work weekends',
+//   ],
+//   'Landscaping / Exterior Improvements': [
+//     'Own basic hand tools',
+//     'Shovel / Rake / Wheelbarrow / Pruners / Landscape hand tools',
+//     'Mower',
+//     'String trimmer',
+//     'Blower',
+//     'Plate compactor',
+//     'Sod roller',
+//     'Small Paver tools',
+//     'Cut-off saw experience',
+//     'Post hole digger',
+//     'Fence stretcher',
+//     'Basic hardware tools',
+//     'Trenching tools',
+//     'Basic irrigation repair tools',
+//     'Has PPE',
+//     'Outdoor work experience',
+//     'Heat/weather tolerance',
+//     'OSHA 10',
+//     'First aid optional',
+//   ],
+//   'Roofing / Waterproofing': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Fall protection training',
+//     'Roof safety awareness',
+//     'Harness experience',
+//     'Ladder safety',
+//     'Hot work awareness',
+//     'Torch work experience',
+//     'Heat welding experience',
+//     'Own hand tools',
+//     'Roofing hand tools',
+//     'Screw gun/drill',
+//     'Utility knives',
+//     'Seam probe',
+//     'Hand welder',
+//     'Robotic welder experience',
+//     'Torch equipment experience',
+//     'Caulking tools',
+//     'Scissor lift experience',
+//     'Boom lift experience',
+//     'Ladder work',
+//     'Roof hatch access',
+//     'Material hoist support',
+//     'Crane/material staging support',
+//     'Hard hat',
+//     'Safety glasses',
+//     'Gloves',
+//     'Boots',
+//     'High-vis',
+//     'Harness',
+//     'Lanyard',
+//   ],
+//   'General Labor / Site Support / Material Handling': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Fall protection',
+//     'Fire watch',
+//     'Spotter',
+//     'Forklift',
+//     'Pallet jack',
+//     'Dolly/material cart',
+//     'Scissor lift',
+//     'Boom lift if certified',
+//     'Utility knife',
+//     'Tape measure',
+//     'Broom/shovel',
+//     'Scraper',
+//     'Basic hand tools',
+//     'Hard hat',
+//     'Vest',
+//     'Safety glasses',
+//     'Gloves',
+//     'Boots',
+//   ],
+//   'Demolition / Selective Demo / Abatement Support': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'PPE awareness',
+//     'Eye protection',
+//     'Gloves',
+//     'Hard hat',
+//     'Hearing protection',
+//     'Dust mask/respirator experience',
+//     'Silica awareness',
+//     'HEPA vacuum experience',
+//     'Respirator use',
+//     'Fit-test required',
+//     'Dust-control experience',
+//     'Asbestos awareness',
+//     'Lead awareness',
+//     'Mold remediation support',
+//     'Abatement certification',
+//     'Containment experience',
+//     'Demo saw',
+//     'Chipping hammer',
+//     'Jackhammer',
+//     'Roto-hammer',
+//     'Floor scraper',
+//     'Grinder',
+//     'HEPA vacuum',
+//     'Trash chute support',
+//     'Carts/dollies',
+//   ],
+//   'Masonry / Stucco / EIFS Systems': [
+//     'OSHA 10',
+//     'Fall protection',
+//     'Lift experience',
+//     'Can work exterior/weather conditions',
+//     'OSHA 30',
+//     'Silica awareness',
+//     'Forklift / telehandler experience',
+//     'Can pass background check if required',
+//     'Scaffold awareness',
+//     'Respirator / fit-test',
+//     'Can work at heights',
+//     'Secure-site eligible',
+//     'Own basic hand tools',
+//     'Grinder experience',
+//     'Mortar boards / pans',
+//     'Stucco tools',
+//     'Masonry trowel tools',
+//     'Masonry saw experience',
+//     'Caulking tools',
+//     'PPE available',
+//     'Levels / layout tools',
+//     'Mixer experience',
+//     'EIFS tools',
+//     'Reliable transportation',
+//   ],
+//   'Structural Steel / Misc. Metals / Welding': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Fall protection training',
+//     'Scissor lift / boom lift experience',
+//     'Lift certification',
+//     'Welding certification',
+//     'Hot work experience',
+//     'Rigging / signalperson experience',
+//     'Own hand tools',
+//     'Welding hood / basic welding gear',
+//     'Harness / fall protection gear',
+//     'Can work secure/badged site',
+//   ],
+//   'Carpentry / Rough Carpentry / Wood Framing / Blocking Systems': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Fall protection',
+//     'Scissor lift / boom lift',
+//     'Ladder experience',
+//     'Framing tools',
+//     'Circular saw',
+//     'Compound miter saw',
+//     'Table saw',
+//     'Impact driver',
+//     'Drill',
+//     'Chalk line',
+//     'Laser level',
+//     'Tape measure',
+//     'Speed square',
+//     'Hand tools',
+//     'Hard hat',
+//     'Safety glasses',
+//     'Gloves',
+//     'Hearing protection',
+//   ],
+//   'Millwork / Cabinets / Finish Carpentry': [
+//     'OSHA 10',
+//     'Fall protection',
+//     'Scissor lift / boom lift',
+//     'Ladder experience',
+//     'Cabinet installation tools',
+//     'Router',
+//     'Drill/driver',
+//     'Miter saw',
+//     'Jigsaw',
+//     'Laminate trimmer',
+//     'Level',
+//     'Laser level',
+//     'Clamps',
+//     'Shims',
+//     'Hand tools',
+//     'Hard hat',
+//     'Safety glasses',
+//     'Gloves',
+//     'Hearing protection',
+//     'Dust mask',
+//   ],
+//   'Flooring / Tile / Resilient / Carpet Systems': [
+//     'Lift / scissor lift / boom lift experience',
+//     'Moisture-testing training',
+//     'Manufacturer certification / approved installer',
+//     'Heat-welding experience',
+//     'Large-format / gauged-panel handling',
+//     'Epoxy / resinous chemical-system experience',
+//     'Terrazzo experience',
+//     'Polished-concrete equipment experience',
+//     'ICRA / healthcare / clean-work protocol',
+//     'Occupied building / night-shift experience',
+//     'Own flooring hand tools',
+//     'Tile saw / grinder / dust-control tools',
+//     'Carpet power stretcher / seaming tools',
+//     'Sheet-vinyl groover / heat welder',
+//     'Floor grinder / shot blaster / HEPA vacuum',
+//     'Valid driver license / reliable transportation',
+//     'Secure-site / badging eligibility',
+//   ],
+//   'Painting / Coatings / Wallcovering Systems': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Scissor lift / boom lift',
+//     'Fall protection / scaffold / swing-stage experience',
+//     'Respirator use / medical clearance / fit test',
+//     'Lead-safe / RRP / lead-abatement credential',
+//     'HazCom / SDS / solvent / chemical handling',
+//     'ICRA / healthcare clean-work protocol',
+//     'AMPP / SSPC / NACE-related training or certification',
+//     'Manufacturer/product-system certification',
+//     'Abrasive blasting / pressure washing',
+//     'Confined-space awareness/entry',
+//     'Own brushes/rollers/basic painter tools',
+//     'Airless sprayer / HVLP / conventional spray experience',
+//     'Wallcovering tools / paste machine',
+//     'Sander / vacuum sander / grinder / needle scaler',
+//     'Wet-film / dry-film gauge',
+//   ],
+//   'Doors / Frames / Hardware / Openings Systems': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'PPE',
+//     'Ladder/scaffold experience',
+//     'Fall protection',
+//     'Scissor lift',
+//     'Boom lift',
+//     'Door cart',
+//     'Material lift',
+//     'Specialty lifting equipment',
+//     'Hot-work permit',
+//     'Welding qualification',
+//     'Powder-actuated tool training',
+//     'Silica awareness',
+//     'Own door tools',
+//     'Router/mortiser',
+//     'Mag drill',
+//     'Grinder',
+//     'Manufacturer training/certification',
+//     'Fire-door assembly inspector credential',
+//     'Locksmith license/registration',
+//     'Low-voltage/electrical license or credential',
+//     'Spring/counterbalance experience',
+//     'Fire-shutter training',
+//     'ICRA/healthcare experience',
+//     'Occupied building experience',
+//     'School experience',
+//     'Secure site experience',
+//     'Background/badging eligible',
+//     'Public-area work experience',
+//     'Oversized/heavy doors',
+//     'Team lift',
+//     'Lifting plan',
+//     'Specialty rigging support',
+//   ],
+//   'Glass / Glazing / Storefront': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'PPE',
+//     'Cut-resistant gloves',
+//     'Eye/face protection',
+//     'Ladder/scaffold experience',
+//     'Harness use',
+//     'Fall-protection training',
+//     'Suspended scaffold',
+//     'Swing-stage experience',
+//     'Scissor lift',
+//     'Boom lift',
+//     'Mast climber',
+//     'Scaffold',
+//     'Suspended access',
+//     'Roof rig',
+//     'Manual suction cups',
+//     'Glass cart',
+//     'A-frame',
+//     'Vacuum lifter',
+//     'Powered manipulator',
+//     'Rigging',
+//     'Tag-line control',
+//     'Hoist/crane coordination',
+//     'Aluminum saw',
+//     'Punch/drill/router',
+//     'Glass cutting table',
+//     'Edger/polisher',
+//     'Glass drill',
+//     'Caulk gun',
+//     'Battery caulk gun',
+//     'Glazing tools',
+//     'Gasket tools',
+//     'Setting blocks',
+//     'Sealant tooling',
+//     'AGMT or equivalent',
+//     'Structural-silicone training',
+//     'Fire-rated glazing',
+//     'Security/ballistic/detention glazing',
+//     'Smart glass',
+//     'Automatic entrance interface',
+//     'Current fit test',
+//     'Chemical/dust protection',
+//     'Hot-work authorization',
+//     'Aluminum/metal modification',
+//     'Welding qualification',
+//     'Healthcare/ICRA',
+//     'Occupied retail',
+//     'Secure/federal/badged',
+//   ],
+//   'Fire Protection / Sprinkler Systems': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'PPE',
+//     'Ladder safety',
+//     'Housekeeping',
+//     'Hazard communication',
+//     'Harness use',
+//     'Fall-protection training',
+//     'Scissor lift',
+//     'Boom lift',
+//     'High-bay',
+//     'High-rise',
+//     'Threader',
+//     'Roll groover',
+//     'Cut groover',
+//     'Band saw',
+//     'Drill press',
+//     'Outlet machine',
+//     'Reamer',
+//     'Hot-work training',
+//     'Fire watch',
+//     'Welding process/material',
+//     'Welder qualification',
+//     'Torch cutting',
+//     'Forklift',
+//     'Telehandler',
+//     'Chain fall',
+//     'Come-along',
+//     'Pipe cart',
+//     'Signalperson/rigging experience',
+//     'State/local sprinkler fitter card',
+//     'Apprentice card',
+//     'Journeyman card',
+//     'Contractor/company sponsorship',
+//     'NICET Water-Based Systems Layout certification',
+//     'Sprinkler layout software experience',
+//     'ITM certification/license',
+//     'Certified backflow tester',
+//     'Backflow repair credential',
+//     'CPVC manufacturer training',
+//     'Flexible hose system training',
+//     'Dry/preaction valve training',
+//     'Fire pump training',
+//     'Specialty system training',
+//     'Trench awareness',
+//     'Competent-person status',
+//     'Underground pipe/joint training',
+//     'Occupied building experience',
+//     'Impairment/fire-watch coordination',
+//     'Citizen-only access',
+//     'Hospital/school/industrial orientation',
+//     'Basic hand tools',
+//     'Pipe wrenches',
+//     'Head wrenches',
+//   ],
+//   'Firestopping / Fireproofing / Joint Sealants': [
+//     'OSHA 10',
+//     'OSHA 30',
+//     'PPE',
+//     'Hazard Communication',
+//     'Housekeeping',
+//     'Ladder Safety',
+//     'Harness Use',
+//     'Fall-Protection Training',
+//     'Scissor Lift',
+//     'Boom Lift',
+//     'Scaffold User',
+//     'Swing Stage',
+//     'High-Rise Perimeter',
+//     'Respirator Use',
+//     'Medical Clearance',
+//     'Fit Test',
+//     'Ventilation',
+//     'Silica Awareness',
+//     'Overspray Control',
+//     'Caulk Gun',
+//     'Bulk Gun',
+//     'Trowels / Knives',
+//     'Mineral-Wool Tools',
+//     'Backer-Rod Tools',
+//     'Cutting Tools',
+//     'Labeling / Photo Tools',
+//     'Mixer',
+//     'Pump',
+//     'Compressor',
+//     'Hose',
+//     'Nozzle',
+//     'Spray Equipment',
+//     'Airless / Conventional Spray',
+//     'Rollers / Brushes',
+//     'Wet-Film Gauge',
+//     'Dry-Film Gauge',
+//     'Environmental Meters',
+//     'Depth / Annular-Space Tools',
+//     'Joint Gauges',
+//     'Thickness Pins / Gauges',
+//     'Density Sampling Support',
+//     'Adhesion / Cohesion Test Support',
+//     'Photo / Log Software',
+//     'Firestop Product / System',
+//     'Perimeter System',
+//     'SFRM',
+//     'Intumescent',
+//     'Board / Blanket',
+//     'Sealant System',
+//     'ICC or Other Accepted Fireproofing / Firestop Inspector Credential',
+//     'Hot-Work Training',
+//     'Fire Watch',
+//     'Powered Prep Tools',
+//     'Grinding',
+//     'Approved Abrasive Prep',
+//     'ICRA',
+//     'Hospital',
+//     'Data Center',
+//     'Clean Work',
+//     'Dust / Odor Control',
+//     'Night Work',
+//     'Secure Site',
+//     'Background Check',
+//     'Badging',
+//     'Citizen-Only Access',
+//     'Industrial Orientation',
+//     'Shutdown Access',
+//   ],
+//   'Low Voltage / Data / Security / Fire Alarm': [
+//     'Local limited-energy license',
+//     'Low-voltage license',
+//     'Alarm license',
+//     'Security license',
+//     'Fire-alarm license',
+//     'NICET Fire Alarm Systems',
+//     'NICET Inspection and Testing of Fire Alarm Systems',
+//     'BICSI Installer 1',
+//     'BICSI Installer 2 Copper',
+//     'BICSI Installer 2 Fiber',
+//     'BICSI Technician',
+//     'BICSI RCDD',
+//     'AVIXA CTS',
+//     'AVIXA CTS-I',
+//     'AVIXA CTS-D',
+//     'Manufacturer training',
+//     'Manufacturer certification',
+//     'OSHA 10',
+//     'OSHA 30',
+//     'Site orientation',
+//     'Lift training',
+//     'Fall protection',
+//     'Ladder training',
+//     'Aerial lift training',
+//     'Swing-stage training',
+//     'Fiber safety',
+//     'Laser awareness',
+//     'Shard disposal',
+//     'Eye protection',
+//     'Confined space',
+//     'Manhole safety',
+//     'Traffic safety',
+//     'OSP safety',
+//     'ICRA',
+//     'Infection control',
+//     'Healthcare orientation',
+//     'Secure-site access',
+//     'Background check',
+//     'Badging',
+//     'Fire alarm test equipment',
+//     'Inspection authorization',
+//     'Copper certification test equipment',
+//     'Fiber certification test equipment',
+//     'Fusion splicer',
+//     'Cleaver',
+//     'Inspection scope',
+//     'OTDR',
+//     'RF test equipment',
+//     'PIM test equipment',
+//     'Sweep test equipment',
+//     'Grid test equipment',
+//     'AHJ coordination',
+//     'Owner coordination',
+//     'Monitoring coordination',
+//     'Commissioning coordination',
+//   ],
+//   'Division 10 Specialties / Accessories / Signage Systems': [
+//     'Tape',
+//     'Level',
+//     'Laser',
+//     'Square',
+//     'Drills/drivers',
+//     'Bits',
+//     'Anchors',
+//     'Hand tools',
+//     'Ladders',
+//     'Hammer drill',
+//     'Rotary hammer',
+//     'Concrete/masonry bits',
+//     'Toggle/expansion anchors',
+//     'Rivnuts',
+//     'Specialty fasteners',
+//     'Rivet tools',
+//     'Nut drivers',
+//     'Impact drivers',
+//     'Specialty bits',
+//     'Shims',
+//     'Clamps',
+//     'Panel supports',
+//     'Jigsaw',
+//     'Circular saw',
+//     'Miter saw',
+//     'Laminate/phenolic blades',
+//     'Metal cutting tools',
+//     'Shears',
+//     'Deburring tools',
+//     'Standoffs/pin tools',
+//     'Adhesive systems',
+//     'Clean mounting tools',
+//     'Room-list tracking',
+//     'Adhesive tools',
+//     'Rollers',
+//     'Heat-weld equipment where applicable',
+//     'Cutters',
+//     'Trim tools',
+//     'Scissor lift',
+//     'Boom lift',
+//     'Rolling scaffold',
+//     'Ladders',
+//     'High-ceiling work',
+//     'Panel carts',
+//     'Board/glass handling',
+//     'Hoists',
+//     'Suction devices',
+//     'Flagpole rigging',
+//     'Team lifts',
+//     'Track/panel adjustment tools',
+//     'Seal adjustment',
+//     'Hardware/service tools',
+//     'Manufacturer-specific tools',
+//     'Service vehicle',
+//     'Parts transport',
+//     'Camera/tablet',
+//     'Measuring tools',
+//     'Punch-list and photo documentation',
+//   ],
+//   'Equipment / Specialty Installations / Owner-Furnished Equipment Systems': [
+//     'Hand tools',
+//     'Drills',
+//     'Impacts',
+//     'Sockets',
+//     'Levels',
+//     'Lasers',
+//     'Measuring tools',
+//     'Torque tools',
+//     'Manufacturer tools',
+//     'Laser',
+//     'Transit',
+//     'Digital level',
+//     'Plumb tools',
+//     'Tape',
+//     'Field-measurement tools',
+//     'Shop-drawing reading',
+//     'Rotary hammer',
+//     'Core drill',
+//     'Adhesive anchor tools',
+//     'Mechanical anchors',
+//     'Torque wrench',
+//     'Dust control',
+//     'Laser alignment',
+//     'Dial indicators',
+//     'Precision level',
+//     'Feeler gauges',
+//     'Shim packs',
+//     'Coupling tools',
+//     'Slings',
+//     'Shackles',
+//     'Chain fall',
+//     'Gantry',
+//     'Hoist',
+//     'Jacks',
+//     'Skates',
+//     'Cribbing',
+//     'Signal equipment',
+//     'Lift-plan familiarity',
+//     'Pallet jack',
+//     'Forklift',
+//     'Telehandler',
+//     'Reach forklift',
+//     'Powered tug',
+//     'Lift gate',
+//     'Scissor lift',
+//     'Boom lift',
+//     'Mast lift',
+//     'Ladder',
+//     'Fall protection',
+//     'Roof/high-access work',
+//     'Grinder',
+//     'Torch',
+//     'Welding equipment',
+//     'Brazing tools',
+//     'Fire-watch awareness',
+//     'Manufacturer diagnostic tools',
+//     'Mechanical gauges',
+//     'Torque records',
+//     'Service laptop/tablet',
+//     'Parts tracking',
+//     'Camera',
+//     'Barcode/serial capture',
+//     'Punch app',
+//     'Room/equipment list',
+//     'As-built and closeout tools',
+//   ],
+// }
+
+// // ============================================================
+// // HEAVY EQUIPMENT LISTS
+// // ============================================================
+
+// const HEAVY_EQUIPMENT_TYPES = [
+//   'Skid Steer',
+//   'Mini Excavator',
+//   'Excavator',
+//   'Backhoe',
+//   'Dozer',
+//   'Front Loader / Wheel Loader',
+//   'Roller / Compactor',
+//   'Motor Grader',
+//   'Trencher',
+//   'Forklift / Telehandler',
+//   'Water Truck',
+//   'Dump Truck support / CDL if applicable'
+// ]
+
+// const HEAVY_EQUIPMENT_TASKS = [
+//   'Rough grade',
+//   'Fine grade',
+//   'Excavate trenches',
+//   'Load trucks',
+//   'Backfill trenches',
+//   'Compact soil/base',
+//   'Move materials',
+//   'Spread base material',
+//   'Work near utilities',
+//   'Finish grade support',
+//   'Operate safely around crews',
+//   'Read plans/basic stakes'
+// ]
+
+// // ============================================================
+// // MAIN COMPONENT - TradeProfileEditPage
+// // ============================================================
+
+// export function TradeProfileEditPage() {
+//   const { t } = useTranslation()
+//   const navigate = useNavigate()
+//   const location = useLocation()
+  
+//   // ============================================================
+//   // STATE MANAGEMENT
+//   // ============================================================
+  
+//   const [loading, setLoading] = useState(true)
+//   const [saving, setSaving] = useState(false)
+//   const [activeTab, setActiveTab] = useState('trade')
+//   const [error, setError] = useState('')
+  
+//   // ✅ Multiple Trade Rows State
+//   const [tradeRows, setTradeRows] = useState([])
+//   const [toolsCertifications, setToolsCertifications] = useState({})
+//   const [heavyEquipment, setHeavyEquipment] = useState({})
+  
+//   // ============================================================
+//   // HELPERS
+//   // ============================================================
+  
+//   const createInitialTradeRow = () => ({
+//     id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+//     trade: '',
+//     skillGroups: {},
+//     skillDetails: {},
+//   })
+
+//   const isCivil = (trade) => {
+//     return trade === 'Civil / Sitework / Earthwork / Utilities'
+//   }
+
+//   // ============================================================
+//   // LOAD DATA
+//   // ============================================================
+  
+//   useEffect(() => {
+//     const loadData = async () => {
+//       try {
+//         const userId = localStorage.getItem('userId')
+//         if (!userId) {
+//           setError('User ID not found')
+//           setLoading(false)
+//           return
+//         }
+
+//         // First check if data is in location state
+//         if (location?.state?.tradeData) {
+//           const data = location.state.tradeData
+          
+//           if (data.tradeRows && data.tradeRows.length > 0) {
+//             setTradeRows(data.tradeRows)
+//           } else {
+//             setTradeRows([createInitialTradeRow()])
+//           }
+          
+//           if (data.toolsCertifications) {
+//             setToolsCertifications(data.toolsCertifications)
+//           }
+//           if (data.heavyEquipment) {
+//             setHeavyEquipment(data.heavyEquipment)
+//           }
+//           setLoading(false)
+//           return
+//         }
+
+//         // Otherwise fetch from server
+//         const profile = await workerService.getWorkerProfile(userId)
+//         if (profile.success && profile.data) {
+//           const trade = profile.data.trade || {}
+          
+//           if (trade.tradeRows && trade.tradeRows.length > 0) {
+//             setTradeRows(trade.tradeRows)
+//           } else {
+//             setTradeRows([createInitialTradeRow()])
+//           }
+          
+//           if (trade.toolsCertifications) {
+//             setToolsCertifications(trade.toolsCertifications)
+//           }
+//           if (trade.heavyEquipment) {
+//             setHeavyEquipment(trade.heavyEquipment)
+//           }
+//         }
+//       } catch (error) {
+//         console.error('Error loading trade data:', error)
+//         setError(error.message || 'Failed to load data')
+//       } finally {
+//         setLoading(false)
+//       }
+//     }
+
+//     loadData()
+//   }, [location?.state?.tradeData])
+
+//   // ============================================================
+//   // HANDLERS - Trade Rows
+//   // ============================================================
+  
+//   const handleTradeRowChange = (rowId, field, value) => {
+//     setTradeRows(prev => prev.map(row => {
+//       if (row.id === rowId) {
+//         if (field === 'trade') {
+//           return {
+//             ...row,
+//             trade: value,
+//             skillGroups: {},
+//             skillDetails: {},
+//           }
+//         }
+//         return { ...row, [field]: value }
+//       }
+//       return row
+//     }))
+//   }
+
+//   const handleSkillGroupToggle = (rowId, skillGroup) => (e) => {
+//     const isChecked = e.target.checked
+//     setTradeRows(prev => prev.map(row => {
+//       if (row.id === rowId) {
+//         const updatedGroups = { ...row.skillGroups, [skillGroup]: isChecked }
+//         if (!isChecked) {
+//           const updatedDetails = { ...row.skillDetails }
+//           delete updatedDetails[skillGroup]
+//           return { ...row, skillGroups: updatedGroups, skillDetails: updatedDetails }
+//         } else {
+//           const updatedDetails = { ...row.skillDetails, [skillGroup]: { experience: '', years: '', skills: {} } }
+//           return { ...row, skillGroups: updatedGroups, skillDetails: updatedDetails }
+//         }
+//       }
+//       return row
+//     }))
+//   }
+
+//   const handleSkillDetailToggle = (rowId, skillGroup, skill) => (e) => {
+//     const isChecked = e.target.checked
+//     setTradeRows(prev => prev.map(row => {
+//       if (row.id === rowId) {
+//         const currentSkills = row.skillDetails[skillGroup]?.skills || {}
+//         const updatedSkills = { ...currentSkills, [skill]: isChecked }
+//         const updatedDetails = {
+//           ...row.skillDetails,
+//           [skillGroup]: {
+//             ...row.skillDetails[skillGroup],
+//             skills: updatedSkills
+//           }
+//         }
+//         return { ...row, skillDetails: updatedDetails }
+//       }
+//       return row
+//     }))
+//   }
+
+//   const handleExperienceChange = (rowId, skillGroup, value) => {
+//     setTradeRows(prev => prev.map(row => {
+//       if (row.id === rowId) {
+//         const updatedDetails = {
+//           ...row.skillDetails,
+//           [skillGroup]: {
+//             ...row.skillDetails[skillGroup],
+//             experience: value
+//           }
+//         }
+//         return { ...row, skillDetails: updatedDetails }
+//       }
+//       return row
+//     }))
+//   }
+
+//   const handleYearsChange = (rowId, skillGroup, value) => {
+//     setTradeRows(prev => prev.map(row => {
+//       if (row.id === rowId) {
+//         const updatedDetails = {
+//           ...row.skillDetails,
+//           [skillGroup]: {
+//             ...row.skillDetails[skillGroup],
+//             years: value
+//           }
+//         }
+//         return { ...row, skillDetails: updatedDetails }
+//       }
+//       return row
+//     }))
+//   }
+
+//   const addTradeRow = () => {
+//     if (tradeRows.length < 40) {
+//       setTradeRows([...tradeRows, createInitialTradeRow()])
+//     }
+//   }
+
+//   const removeTradeRow = (rowId) => {
+//     if (tradeRows.length > 1) {
+//       setTradeRows(tradeRows.filter(row => row.id !== rowId))
+//     }
+//   }
+
+//   // ============================================================
+//   // HANDLERS - Tools & Certifications
+//   // ============================================================
+  
+//   const handleToolToggle = (tool) => (e) => {
+//     const isChecked = e.target.checked
+//     setToolsCertifications(prev => ({
+//       ...prev,
+//       [tool]: isChecked,
+//     }))
+//   }
+
+//   const handleHeavyEquipmentToggle = (skill) => (e) => {
+//     const isChecked = e.target.checked
+//     setHeavyEquipment(prev => ({
+//       ...prev,
+//       [skill]: isChecked,
+//     }))
+//   }
+
+//   // ============================================================
+//   // SAVE
+//   // ============================================================
+  
+//   const handleSave = async () => {
+//     setSaving(true)
+//     setError('')
+    
+//     try {
+//       const userId = localStorage.getItem('userId')
+//       if (!userId) {
+//         throw new Error('User ID not found')
+//       }
+
+//       const tradeDataToSave = {
+//         tradeRows: tradeRows.map(row => ({
+//           trade: row.trade || '',
+//           skillGroups: row.skillGroups || {},
+//           skillDetails: row.skillDetails || {},
+//         })),
+//         toolsCertifications: toolsCertifications,
+//         heavyEquipment: heavyEquipment,
+//       }
+
+//       console.log('💾 Saving trade data:', tradeDataToSave)
+
+//       await workerService.updateTrade(userId, tradeDataToSave)
+      
+//       navigate('/wizard/summary', { 
+//         state: { 
+//           ...location?.state?.parentData,
+//           trade: tradeDataToSave,
+//           updatedTrade: true 
+//         },
+//         replace: true 
+//       })
+//     } catch (error) {
+//       console.error('Error saving trade data:', error)
+//       setError(error.message || 'Failed to save changes')
+//     } finally {
+//       setSaving(false)
+//     }
+//   }
+
+//   const handleBack = () => {
+//     navigate('/wizard/summary', {
+//       state: location?.state?.parentData || {},
+//       replace: true
+//     })
+//   }
+
+//   // ============================================================
+//   // RENDER
+//   // ============================================================
+  
+//   if (loading) {
+//     return (
+//       <div className="appShell">
+//         <TopNav variant="solid" />
+//         <div style={{ 
+//           display: 'flex', 
+//           justifyContent: 'center', 
+//           alignItems: 'center', 
+//           height: '80vh',
+//           flexDirection: 'column',
+//           gap: '16px'
+//         }}>
+//           <div style={{ 
+//             width: '40px', 
+//             height: '40px', 
+//             border: '3px solid rgba(15, 78, 169, 0.1)',
+//             borderTop: '3px solid #0f4ea9',
+//             borderRadius: '50%',
+//             animation: 'spin 1s linear infinite'
+//           }} />
+//           <p style={{ color: '#17263a' }}>Loading trade profile...</p>
+//           <style>{`
+//             @keyframes spin {
+//               0% { transform: rotate(0deg); }
+//               100% { transform: rotate(360deg); }
+//             }
+//           `}</style>
+//         </div>
+//       </div>
+//     )
+//   }
+
+//   const uniqueTrades = [...new Set(tradeRows.map(row => row.trade).filter(Boolean))]
+
+//   return (
+//     <div className="appShell">
+//       <TopNav variant="solid" />
+
+//       <div className="appShellBody appShellBodyVerify">
+//         <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
+//           <div className="sideNavMain">
+//             <div className="sideGroupLabel">WORKSPACE</div>
+//             <nav className="sideGroup" aria-label="Workspace">
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon" aria-hidden="true"><IconGrid /></span>
+//                 <span className="sideText">Overview</span>
+//               </span>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon" aria-hidden="true"><IconFolder /></span>
+//                 <span className="sideText">Projects</span>
+//                 <span className="sideBadge" aria-label="12 projects">12</span>
+//               </span>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon" aria-hidden="true"><IconChart /></span>
+//                 <span className="sideText">Revenues</span>
+//               </span>
+//               <a className="sideItem sideItemActive" href="#">
+//                 <span className="sideIcon" aria-hidden="true"><IconUserIcon /></span>
+//                 <span className="sideText">Profile</span>
+//               </a>
+//             </nav>
+//           </div>
+
+//           <div className="sideNavBottom">
+//             <div className="sideGroupLabel">GENERAL</div>
+//             <nav className="sideGroup" aria-label="General">
+//               <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
+//                 <span className="sideIcon" aria-hidden="true"><IconLogout /></span>
+//                 <span className="sideText">Sign out</span>
+//               </button>
+//               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+//                 <span className="sideIcon" aria-hidden="true"><IconSupportIcon /></span>
+//                 <span className="sideText">Support</span>
+//               </span>
+//             </nav>
+//           </div>
+//         </aside>
+
+//         <main className="appContent">
+//           <div style={{ 
+//             padding: '24px', 
+//             maxWidth: '1100px', 
+//             margin: '0 auto', 
+//             height: 'calc(100vh - 120px)', 
+//             display: 'flex', 
+//             flexDirection: 'column' 
+//           }}>
+            
+//             {/* Header */}
+//             <div style={{ 
+//               display: 'flex', 
+//               alignItems: 'center', 
+//               gap: '16px',
+//               marginBottom: '16px',
+//               paddingBottom: '16px',
+//               borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
+//               flexShrink: 0,
+//               background: 'transparent',
+//               zIndex: 10,
+//             }}>
+//               <button
+//                 onClick={handleBack}
+//                 style={{
+//                   background: 'none',
+//                   border: 'none',
+//                   cursor: 'pointer',
+//                   display: 'flex',
+//                   alignItems: 'center',
+//                   gap: '8px',
+//                   color: '#17263a',
+//                   fontSize: '14px',
+//                   fontWeight: 500,
+//                   padding: '8px 12px',
+//                   borderRadius: '8px',
+//                   transition: 'background 0.2s',
+//                 }}
+//                 onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
+//                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//               >
+//                 <IconArrowLeft />
+//                 Back
+//               </button>
+//               <span style={{
+//                 fontSize: '16px',
+//                 fontWeight: 600,
+//                 color: '#17263a',
+//               }}>
+//                 Edit Trade Profile
+//               </span>
+//             </div>
+
+//             {/* Error Display */}
+//             {error && (
+//               <div style={{
+//                 padding: '12px 16px',
+//                 background: '#fee2e2',
+//                 border: '1px solid #fecaca',
+//                 borderRadius: '8px',
+//                 color: '#dc2626',
+//                 fontSize: '14px',
+//                 marginBottom: '12px',
+//                 flexShrink: 0,
+//               }}>
+//                 ❌ {error}
+//               </div>
+//             )}
+
+//             {/* Tab Navigation */}
+//             <div style={{
+//               display: 'flex',
+//               gap: '0',
+//               marginBottom: '16px',
+//               flexShrink: 0,
+//               borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+//             }}>
+//               <button
+//                 onClick={() => setActiveTab('trade')}
+//                 style={{
+//                   padding: '10px 24px',
+//                   background: 'none',
+//                   border: 'none',
+//                   borderBottom: activeTab === 'trade' ? '2px solid #0f4ea9' : '2px solid transparent',
+//                   color: activeTab === 'trade' ? '#0f4ea9' : 'rgba(23, 38, 58, 0.6)',
+//                   fontWeight: activeTab === 'trade' ? 600 : 500,
+//                   fontSize: '14px',
+//                   cursor: 'pointer',
+//                   transition: 'all 0.2s',
+//                 }}
+//               >
+//                 📋 Trade Profile & Skills
+//               </button>
+//               <button
+//                 onClick={() => setActiveTab('certifications')}
+//                 style={{
+//                   padding: '10px 24px',
+//                   background: 'none',
+//                   border: 'none',
+//                   borderBottom: activeTab === 'certifications' ? '2px solid #0f4ea9' : '2px solid transparent',
+//                   color: activeTab === 'certifications' ? '#0f4ea9' : 'rgba(23, 38, 58, 0.6)',
+//                   fontWeight: activeTab === 'certifications' ? 600 : 500,
+//                   fontSize: '14px',
+//                   cursor: 'pointer',
+//                   transition: 'all 0.2s',
+//                 }}
+//               >
+//                 🔧 Tools & Certifications
+//               </button>
+//             </div>
+
+//             {/* Scrollable Content Area */}
+//             <div style={{
+//               flex: 1,
+//               overflowY: 'auto',
+//               paddingBottom: '16px',
+//             }}>
+//               <div style={{
+//                 background: 'white',
+//                 borderRadius: '16px',
+//                 padding: '24px',
+//                 border: '1px solid rgba(18, 38, 63, 0.08)',
+//               }}>
+                
+//                 {/* ============================================================
+//                 TAB 1: TRADE PROFILE & SKILLS
+//                 ============================================================ */}
+//                 {activeTab === 'trade' && (
+//                   <>
+//                     <div style={{
+//                       fontSize: '16px',
+//                       fontWeight: 600,
+//                       color: '#17263a',
+//                       marginBottom: '16px',
+//                       paddingBottom: '8px',
+//                       borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+//                       display: 'flex',
+//                       justifyContent: 'space-between',
+//                       alignItems: 'center'
+//                     }}>
+//                       <span>Trade Profile & Skill Matrix</span>
+//                       <span style={{ fontSize: '13px', color: 'rgba(23, 38, 58, 0.5)', fontWeight: 400 }}>
+//                         {tradeRows.length} trade{tradeRows.length !== 1 ? 's' : ''}
+//                       </span>
+//                     </div>
+
+//                     {tradeRows.map((row, index) => {
+//                       const selectedTrade = row.trade || ''
+//                       const groups = SKILL_GROUPS[selectedTrade] || []
+
+//                       return (
+//                         <div key={row.id} style={{ 
+//                           marginBottom: index < tradeRows.length - 1 ? '24px' : '16px',
+//                           padding: '16px',
+//                           border: '1px solid rgba(18, 38, 63, 0.08)',
+//                           borderRadius: '12px',
+//                           background: index % 2 === 0 ? 'rgba(15, 78, 169, 0.02)' : 'transparent',
+//                         }}>
+//                           {/* Row Header */}
+//                           <div style={{
+//                             display: 'flex',
+//                             justifyContent: 'space-between',
+//                             alignItems: 'center',
+//                             marginBottom: '12px'
+//                           }}>
+//                             <div style={{
+//                               fontSize: '14px',
+//                               fontWeight: 600,
+//                               color: '#17263a',
+//                             }}>
+//                               Trade #{index + 1}
+//                             </div>
+//                             {tradeRows.length > 1 && (
+//                               <button
+//                                 type="button"
+//                                 onClick={() => removeTradeRow(row.id)}
+//                                 style={{
+//                                   background: 'none',
+//                                   border: 'none',
+//                                   color: '#dc2626',
+//                                   cursor: 'pointer',
+//                                   fontSize: '13px',
+//                                   padding: '4px 12px',
+//                                   borderRadius: '6px',
+//                                   transition: 'background 0.2s',
+//                                   display: 'flex',
+//                                   alignItems: 'center',
+//                                   gap: '4px'
+//                                 }}
+//                                 onMouseEnter={(e) => {
+//                                   e.currentTarget.style.background = 'rgba(220, 38, 38, 0.08)'
+//                                 }}
+//                                 onMouseLeave={(e) => {
+//                                   e.currentTarget.style.background = 'transparent'
+//                                 }}
+//                               >
+//                                 <IconTrash style={{ width: '14px', height: '14px' }} />
+//                                 Remove Trade
+//                               </button>
+//                             )}
+//                           </div>
+
+//                           {/* Trade Selection */}
+//                           <div style={{ maxWidth: '100%', marginBottom: '16px' }}>
+//                             <SelectField
+//                               label=""
+//                               value={selectedTrade}
+//                               onChange={(value) => handleTradeRowChange(row.id, 'trade', value)}
+//                             >
+//                               <option value="">Select Trade</option>
+//                               {MAIN_TRADES.map((trade) => (
+//                                 <option key={trade} value={trade}>
+//                                   {trade}
+//                                 </option>
+//                               ))}
+//                             </SelectField>
+//                           </div>
+
+//                           {/* Skill Groups */}
+//                           {selectedTrade && groups.length > 0 && (
+//                             <div>
+//                               <div style={{
+//                                 fontSize: '13px',
+//                                 fontWeight: 600,
+//                                 color: '#17263a',
+//                                 marginBottom: '10px',
+//                               }}>
+//                                 Skill Groups
+//                                 <span style={{
+//                                   fontSize: '11px',
+//                                   fontWeight: 400,
+//                                   color: 'rgba(23, 38, 58, 0.5)',
+//                                   marginLeft: '8px'
+//                                 }}>
+//                                   ({groups.length})
+//                                 </span>
+//                               </div>
+
+//                               {groups.map((group) => (
+//                                 <div key={group} style={{
+//                                   marginBottom: '12px',
+//                                   padding: '10px 12px',
+//                                   background: 'rgba(15, 78, 169, 0.02)',
+//                                   border: '1px solid rgba(18, 38, 63, 0.06)',
+//                                   borderRadius: '8px',
+//                                 }}>
+//                                   <div style={{
+//                                     display: 'flex',
+//                                     alignItems: 'center',
+//                                     gap: '12px',
+//                                     flexWrap: 'wrap',
+//                                   }}>
+//                                     <label style={{
+//                                       display: 'flex',
+//                                       alignItems: 'center',
+//                                       gap: '8px',
+//                                       cursor: 'pointer',
+//                                       flex: '0 0 auto',
+//                                       fontSize: '13px',
+//                                       fontWeight: 500,
+//                                       color: '#17263a',
+//                                     }}>
+//                                       <input
+//                                         type="checkbox"
+//                                         checked={!!row.skillGroups?.[group]}
+//                                         onChange={handleSkillGroupToggle(row.id, group)}
+//                                       />
+//                                       {group}
+//                                     </label>
+
+//                                     <div style={{ display: 'flex', gap: '8px', flex: 1, minWidth: '180px' }}>
+//                                       <SelectField
+//                                         label=""
+//                                         value={row.skillDetails?.[group]?.experience || ''}
+//                                         onChange={(value) => handleExperienceChange(row.id, group, value)}
+//                                         style={{ flex: 1 }}
+//                                       >
+//                                         <option value="">Experience Level</option>
+//                                         {EXPERIENCE_LEVELS[group]?.map((level) => (
+//                                           <option key={level} value={level}>
+//                                             {level}
+//                                           </option>
+//                                         )) || ['Helper', 'Skilled Worker', 'Lead'].map((level) => (
+//                                           <option key={level} value={level}>
+//                                             {level}
+//                                           </option>
+//                                         ))}
+//                                       </SelectField>
+
+//                                       <SelectField
+//                                         label=""
+//                                         value={row.skillDetails?.[group]?.years || ''}
+//                                         onChange={(value) => handleYearsChange(row.id, group, value)}
+//                                         style={{ flex: 1 }}
+//                                       >
+//                                         <option value="">Years</option>
+//                                         {YEARS_OF_EXPERIENCE.map((years) => (
+//                                           <option key={years} value={years}>
+//                                             {years}
+//                                           </option>
+//                                         ))}
+//                                       </SelectField>
+//                                     </div>
+//                                   </div>
+
+//                                   {/* Skill Details */}
+//                                   {row.skillGroups?.[group] && (
+//                                     <div style={{
+//                                       marginTop: '8px',
+//                                       marginLeft: '28px',
+//                                       padding: '10px 14px',
+//                                       border: '1px solid rgba(15, 78, 169, 0.15)',
+//                                       borderRadius: '6px',
+//                                       background: 'rgba(15, 78, 169, 0.02)',
+//                                     }}>
+//                                       <div style={{
+//                                         fontSize: '11px',
+//                                         fontWeight: 600,
+//                                         color: '#0f4ea9',
+//                                         marginBottom: '6px',
+//                                       }}>
+//                                         Skill Details - {group}
+//                                       </div>
+//                                       <div style={{
+//                                         display: 'grid',
+//                                         gridTemplateColumns: '1fr 1fr',
+//                                         gap: '4px 12px',
+//                                       }}>
+//                                         {SKILL_DETAILS[group]?.map((skill) => (
+//                                           <label key={skill} style={{
+//                                             display: 'flex',
+//                                             alignItems: 'center',
+//                                             gap: '8px',
+//                                             cursor: 'pointer',
+//                                             fontSize: '12px',
+//                                             color: '#17263a',
+//                                           }}>
+//                                             <input
+//                                               type="checkbox"
+//                                               checked={!!(row.skillDetails?.[group]?.skills?.[skill] || false)}
+//                                               onChange={handleSkillDetailToggle(row.id, group, skill)}
+//                                             />
+//                                             {skill}
+//                                           </label>
+//                                         )) || []}
+//                                       </div>
+//                                     </div>
+//                                   )}
+//                                 </div>
+//                               ))}
+//                             </div>
+//                           )}
+//                         </div>
+//                       )
+//                     })}
+
+//                     {/* Add Trade Button */}
+//                     <div style={{ 
+//                       marginTop: '16px',
+//                       display: 'flex',
+//                       justifyContent: 'center'
+//                     }}>
+//                       <button
+//                         type="button"
+//                         onClick={addTradeRow}
+//                         disabled={tradeRows.length >= 40}
+//                         style={{
+//                           padding: '10px 24px',
+//                           background: tradeRows.length >= 40 ? '#94a3b8' : 'rgba(15, 78, 169, 0.08)',
+//                           color: tradeRows.length >= 40 ? '#94a3b8' : '#0f4ea9',
+//                           border: `1px solid ${tradeRows.length >= 40 ? '#94a3b8' : 'rgba(15, 78, 169, 0.2)'}`,
+//                           borderRadius: '8px',
+//                           cursor: tradeRows.length >= 40 ? 'not-allowed' : 'pointer',
+//                           fontSize: '14px',
+//                           fontWeight: 500,
+//                           transition: 'all 0.2s',
+//                           display: 'flex',
+//                           alignItems: 'center',
+//                           gap: '8px'
+//                         }}
+//                         onMouseEnter={(e) => {
+//                           if (tradeRows.length < 40) {
+//                             e.currentTarget.style.background = 'rgba(15, 78, 169, 0.15)'
+//                           }
+//                         }}
+//                         onMouseLeave={(e) => {
+//                           if (tradeRows.length < 40) {
+//                             e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'
+//                           }
+//                         }}
+//                       >
+//                         <IconPlus />
+//                         Add Trade
+//                       </button>
+//                     </div>
+//                   </>
+//                 )}
+
+//                 {/* ============================================================
+//                 TAB 2: TOOLS & CERTIFICATIONS
+//                 ============================================================ */}
+//                 {activeTab === 'certifications' && (
+//                   <>
+//                     <div style={{
+//                       fontSize: '16px',
+//                       fontWeight: 600,
+//                       color: '#17263a',
+//                       marginBottom: '16px',
+//                       paddingBottom: '8px',
+//                       borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+//                       display: 'flex',
+//                       justifyContent: 'space-between',
+//                       alignItems: 'center'
+//                     }}>
+//                       <span>Tools, Certifications & Requirements</span>
+//                       {uniqueTrades.length > 0 && (
+//                         <span style={{ fontSize: '13px', color: 'rgba(23, 38, 58, 0.5)', fontWeight: 400 }}>
+//                           {uniqueTrades.length} trade{uniqueTrades.length !== 1 ? 's' : ''}
+//                         </span>
+//                       )}
+//                     </div>
+
+//                     {uniqueTrades.length > 0 ? (
+//                       uniqueTrades.map((trade) => {
+//                         const toolsList = TOOLS_CERTIFICATIONS[trade] || []
+//                         const isCivilTrade = isCivil(trade)
+                        
+//                         return (
+//                           <div key={trade} style={{
+//                             marginBottom: '24px',
+//                             padding: '16px',
+//                             border: '1px solid rgba(18, 38, 63, 0.08)',
+//                             borderRadius: '12px',
+//                             background: 'rgba(15, 78, 169, 0.02)',
+//                           }}>
+//                             <div style={{
+//                               display: 'flex',
+//                               alignItems: 'center',
+//                               gap: '12px',
+//                               marginBottom: '12px',
+//                             }}>
+//                               <span style={{
+//                                 fontSize: '14px',
+//                                 fontWeight: 600,
+//                                 color: '#0f4ea9',
+//                               }}>
+//                                 {trade}
+//                               </span>
+//                               <span style={{
+//                                 fontSize: '11px',
+//                                 color: 'rgba(23, 38, 58, 0.4)',
+//                                 background: 'rgba(23, 38, 58, 0.06)',
+//                                 padding: '2px 10px',
+//                                 borderRadius: '12px',
+//                               }}>
+//                                 {toolsList.length} certifications
+//                               </span>
+//                               {Object.values(toolsCertifications).filter(v => v === true).length > 0 && (
+//                                 <span style={{
+//                                   fontSize: '11px',
+//                                   color: '#2fb463',
+//                                   background: 'rgba(47, 180, 99, 0.1)',
+//                                   padding: '2px 10px',
+//                                   borderRadius: '12px',
+//                                 }}>
+//                                   {Object.values(toolsCertifications).filter(v => v === true).length} selected
+//                                 </span>
+//                               )}
+//                             </div>
+
+//                             {toolsList.length > 0 ? (
+//                               <div style={{
+//                                 display: 'grid',
+//                                 gridTemplateColumns: '1fr 1fr 1fr',
+//                                 gap: '6px 12px',
+//                                 padding: '12px',
+//                                 border: '1px solid rgba(18, 38, 63, 0.06)',
+//                                 borderRadius: '8px',
+//                                 background: 'white',
+//                               }}>
+//                                 {toolsList.map((tool) => (
+//                                   <label key={tool} style={{
+//                                     display: 'flex',
+//                                     alignItems: 'center',
+//                                     gap: '8px',
+//                                     cursor: 'pointer',
+//                                     fontSize: '13px',
+//                                     color: '#17263a',
+//                                     padding: '4px 0',
+//                                   }}>
+//                                     <input
+//                                       type="checkbox"
+//                                       checked={!!(toolsCertifications[tool] || false)}
+//                                       onChange={handleToolToggle(tool)}
+//                                     />
+//                                     {tool}
+//                                   </label>
+//                                 ))}
+//                               </div>
+//                             ) : (
+//                               <div style={{
+//                                 padding: '16px',
+//                                 textAlign: 'center',
+//                                 color: 'rgba(23, 38, 58, 0.4)',
+//                                 fontSize: '13px',
+//                                 border: '1px dashed rgba(18, 38, 63, 0.12)',
+//                                 borderRadius: '8px',
+//                               }}>
+//                                 No tools or certifications defined for this trade yet.
+//                               </div>
+//                             )}
+
+//                             {/* Heavy Equipment - Civil only */}
+//                             {isCivilTrade && (
+//                               <div style={{ marginTop: '16px' }}>
+//                                 <div style={{
+//                                   fontSize: '13px',
+//                                   fontWeight: 600,
+//                                   color: '#17263a',
+//                                   marginBottom: '8px',
+//                                 }}>
+//                                   🚜 Heavy Equipment Operation
+//                                 </div>
+//                                 <div style={{
+//                                   padding: '12px',
+//                                   border: '1px solid rgba(15, 78, 169, 0.15)',
+//                                   borderRadius: '8px',
+//                                   background: 'rgba(15, 78, 169, 0.02)',
+//                                 }}>
+//                                   <div style={{
+//                                     fontSize: '12px',
+//                                     fontWeight: 600,
+//                                     color: '#0f4ea9',
+//                                     marginBottom: '8px',
+//                                   }}>
+//                                     Equipment Type Checklist
+//                                   </div>
+//                                   <div style={{
+//                                     display: 'grid',
+//                                     gridTemplateColumns: '1fr 1fr 1fr',
+//                                     gap: '4px 12px',
+//                                   }}>
+//                                     {HEAVY_EQUIPMENT_TYPES.map((skill) => (
+//                                       <label key={skill} style={{
+//                                         display: 'flex',
+//                                         alignItems: 'center',
+//                                         gap: '8px',
+//                                         cursor: 'pointer',
+//                                         fontSize: '12px',
+//                                         color: '#17263a',
+//                                         padding: '4px 0',
+//                                       }}>
+//                                         <input
+//                                           type="checkbox"
+//                                           checked={!!(heavyEquipment?.[skill] || false)}
+//                                           onChange={handleHeavyEquipmentToggle(skill)}
+//                                         />
+//                                         {skill}
+//                                       </label>
+//                                     ))}
+//                                   </div>
+//                                 </div>
+
+//                                 <div style={{
+//                                   marginTop: '8px',
+//                                   padding: '12px',
+//                                   border: '1px solid rgba(15, 78, 169, 0.15)',
+//                                   borderRadius: '8px',
+//                                   background: 'rgba(15, 78, 169, 0.02)',
+//                                 }}>
+//                                   <div style={{
+//                                     fontSize: '12px',
+//                                     fontWeight: 600,
+//                                     color: '#0f4ea9',
+//                                     marginBottom: '8px',
+//                                   }}>
+//                                     Equipment Operation Task Capabilities
+//                                   </div>
+//                                   <div style={{
+//                                     display: 'grid',
+//                                     gridTemplateColumns: '1fr 1fr 1fr',
+//                                     gap: '4px 12px',
+//                                   }}>
+//                                     {HEAVY_EQUIPMENT_TASKS.map((skill) => (
+//                                       <label key={skill} style={{
+//                                         display: 'flex',
+//                                         alignItems: 'center',
+//                                         gap: '8px',
+//                                         cursor: 'pointer',
+//                                         fontSize: '12px',
+//                                         color: '#17263a',
+//                                         padding: '4px 0',
+//                                       }}>
+//                                         <input
+//                                           type="checkbox"
+//                                           checked={!!(heavyEquipment?.[skill] || false)}
+//                                           onChange={handleHeavyEquipmentToggle(skill)}
+//                                         />
+//                                         {skill}
+//                                       </label>
+//                                     ))}
+//                                   </div>
+//                                 </div>
+//                               </div>
+//                             )}
+//                           </div>
+//                         )
+//                       })
+//                     ) : (
+//                       <div style={{
+//                         padding: '40px 20px',
+//                         textAlign: 'center',
+//                         border: '1px dashed rgba(18, 38, 63, 0.12)',
+//                         borderRadius: '8px',
+//                         color: 'rgba(23, 38, 58, 0.4)',
+//                         fontSize: '14px',
+//                       }}>
+//                         Please add a trade in the Trade Profile tab first to see certifications.
+//                       </div>
+//                     )}
+
+//                     {/* Summary */}
+//                     {Object.values(toolsCertifications).filter(v => v === true).length > 0 && (
+//                       <div style={{
+//                         marginTop: '16px',
+//                         padding: '10px 16px',
+//                         background: 'rgba(47, 180, 99, 0.06)',
+//                         border: '1px solid rgba(47, 180, 99, 0.2)',
+//                         borderRadius: '8px',
+//                         fontSize: '13px',
+//                         color: '#17263a',
+//                         display: 'flex',
+//                         justifyContent: 'space-between',
+//                         alignItems: 'center',
+//                       }}>
+//                         <span>
+//                           ✅ <strong>{Object.values(toolsCertifications).filter(v => v === true).length}</strong> item{Object.values(toolsCertifications).filter(v => v === true).length !== 1 ? 's' : ''} selected
+//                         </span>
+//                         {Object.keys(toolsCertifications).length > 0 && (
+//                           <span style={{ fontSize: '12px', color: '#2fb463' }}>
+//                             {Math.round((Object.values(toolsCertifications).filter(v => v === true).length / Object.keys(toolsCertifications).length) * 100)}% complete
+//                           </span>
+//                         )}
+//                       </div>
+//                     )}
+//                   </>
+//                 )}
+//               </div>
+//             </div>
+
+//             {/* Footer Buttons */}
+//             <div style={{
+//               display: 'flex',
+//               justifyContent: 'flex-end',
+//               gap: '12px',
+//               paddingTop: '16px',
+//               paddingBottom: '8px',
+//               borderTop: '1px solid rgba(18, 38, 63, 0.08)',
+//               flexShrink: 0,
+//               background: 'transparent',
+//               zIndex: 10,
+//             }}>
+//               <button
+//                 onClick={handleBack}
+//                 style={{
+//                   padding: '10px 24px',
+//                   borderRadius: '8px',
+//                   background: 'transparent',
+//                   color: '#17263a',
+//                   border: '1px solid rgba(18, 38, 63, 0.12)',
+//                   cursor: 'pointer',
+//                   fontWeight: 600,
+//                   fontSize: '14px',
+//                   transition: 'all 0.2s',
+//                 }}
+//                 onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
+//                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+//               >
+//                 Cancel
+//               </button>
+//               <button
+//                 onClick={handleSave}
+//                 disabled={saving}
+//                 style={{
+//                   padding: '10px 32px',
+//                   borderRadius: '8px',
+//                   background: saving ? '#94a3b8' : '#0f4ea9',
+//                   color: 'white',
+//                   border: 'none',
+//                   cursor: saving ? 'not-allowed' : 'pointer',
+//                   fontWeight: 600,
+//                   fontSize: '14px',
+//                   transition: 'all 0.2s',
+//                   opacity: saving ? 0.7 : 1,
+//                 }}
+//                 onMouseEnter={(e) => {
+//                   if (!saving) {
+//                     e.currentTarget.style.background = '#0b3f90'
+//                   }
+//                 }}
+//                 onMouseLeave={(e) => {
+//                   if (!saving) {
+//                     e.currentTarget.style.background = '#0f4ea9'
+//                   }
+//                 }}
+//               >
+//                 {saving ? 'Saving...' : 'Save Changes'}
+//               </button>
+//             </div>
+//           </div>
+//         </main>
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default TradeProfileEditPage
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // src/worker/pages/TradeProfileEditPage.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -513,7 +6753,7 @@ const SKILL_GROUPS = {
   ],
 }
 
-// ✅ SKILL_DETAILS - Complete for ALL Trades
+// ✅ SKILL_DETAILS - Complete for ALL Trades (abbreviated for space)
 const SKILL_DETAILS = {
   'Metal Framing': [
     'Layout walls',
@@ -5207,7 +11447,25 @@ export function TradeProfileEditPage() {
           if (data.tradeRows && data.tradeRows.length > 0) {
             setTradeRows(data.tradeRows)
           } else {
-            setTradeRows([createInitialTradeRow()])
+            // ✅ FIX: Convert old format to tradeRows
+            const rows = []
+            if (data.mainTrade) {
+              rows.push({
+                id: Date.now().toString() + '1',
+                trade: data.mainTrade,
+                skillGroups: data.skillGroups || {},
+                skillDetails: data.skillDetails || {},
+              })
+            }
+            if (data.secondaryTrade) {
+              rows.push({
+                id: Date.now().toString() + '2',
+                trade: data.secondaryTrade,
+                skillGroups: data.secondarySkillGroups || {},
+                skillDetails: data.secondarySkillDetails || {},
+              })
+            }
+            setTradeRows(rows.length > 0 ? rows : [createInitialTradeRow()])
           }
           
           if (data.toolsCertifications) {
@@ -5225,8 +11483,21 @@ export function TradeProfileEditPage() {
         if (profile.success && profile.data) {
           const trade = profile.data.trade || {}
           
+          // ✅ Load trade rows
           if (trade.tradeRows && trade.tradeRows.length > 0) {
             setTradeRows(trade.tradeRows)
+          } else if (trade.mainTrade) {
+            // ✅ Convert old format to tradeRows
+            const rows = []
+            if (trade.mainTrade) {
+              rows.push({
+                id: Date.now().toString() + '1',
+                trade: trade.mainTrade,
+                skillGroups: trade.skillGroups || {},
+                skillDetails: trade.skillDetails || {},
+              })
+            }
+            setTradeRows(rows.length > 0 ? rows : [createInitialTradeRow()])
           } else {
             setTradeRows([createInitialTradeRow()])
           }
@@ -6154,70 +12425,68 @@ export function TradeProfileEditPage() {
               </div>
             </div>
 
-            {/* Footer Buttons */}
-            <div style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '12px',
-              paddingTop: '16px',
-              paddingBottom: '8px',
-              borderTop: '1px solid rgba(18, 38, 63, 0.08)',
-              flexShrink: 0,
-              background: 'transparent',
-              zIndex: 10,
-            }}>
-              <button
-                onClick={handleBack}
-                style={{
-                  padding: '10px 24px',
-                  borderRadius: '8px',
-                  background: 'transparent',
-                  color: '#17263a',
-                  border: '1px solid rgba(18, 38, 63, 0.12)',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  transition: 'all 0.2s',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSave}
-                disabled={saving}
-                style={{
-                  padding: '10px 32px',
-                  borderRadius: '8px',
-                  background: saving ? '#94a3b8' : '#0f4ea9',
-                  color: 'white',
-                  border: 'none',
-                  cursor: saving ? 'not-allowed' : 'pointer',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  transition: 'all 0.2s',
-                  opacity: saving ? 0.7 : 1,
-                }}
-                onMouseEnter={(e) => {
-                  if (!saving) {
-                    e.currentTarget.style.background = '#0b3f90'
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!saving) {
-                    e.currentTarget.style.background = '#0f4ea9'
-                  }
-                }}
-              >
-                {saving ? 'Saving...' : 'Save Changes'}
-              </button>
-            </div>
-          </div>
-        </main>
-      </div>
-    </div>
-  )
+         {/* Footer Buttons */}
+<div style={{
+  display: 'flex',
+  justifyContent: 'flex-end',
+  gap: '12px',
+  paddingTop: '16px',
+  paddingBottom: '8px',
+  borderTop: '1px solid rgba(18, 38, 63, 0.08)',
+  flexShrink: 0,
+  background: 'transparent',
+  zIndex: 10,
+}}>
+  <button
+    onClick={handleBack}
+    style={{
+      padding: '10px 24px',
+      borderRadius: '8px',
+      background: 'transparent',
+      color: '#17263a',
+      border: '1px solid rgba(18, 38, 63, 0.12)',
+      cursor: 'pointer',
+      fontWeight: 600,
+      fontSize: '14px',
+      transition: 'all 0.2s',
+    }}
+    onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
+    onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+  >
+    Cancel
+  </button>
+  <button
+    onClick={handleSave}
+    disabled={saving}
+    style={{
+      padding: '10px 32px',
+      borderRadius: '8px',
+      background: saving ? '#94a3b8' : '#0f4ea9',
+      color: 'white',
+      border: 'none',
+      cursor: saving ? 'not-allowed' : 'pointer',
+      fontWeight: 600,
+      fontSize: '14px',
+      transition: 'all 0.2s',
+      opacity: saving ? 0.7 : 1,
+    }}
+    onMouseEnter={(e) => {
+      if (!saving) {
+        e.currentTarget.style.background = '#0b3f90'
+      }
+    }}
+    onMouseLeave={(e) => {
+      if (!saving) {
+        e.currentTarget.style.background = '#0f4ea9'
+      }
+    }}
+  >
+    {saving ? 'Saving...' : 'Save Changes'}
+  </button>
+</div>
+</div>
+</main>
+</div>
+</div>
+)
 }
-
-export default TradeProfileEditPage
