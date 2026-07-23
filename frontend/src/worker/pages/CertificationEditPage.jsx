@@ -936,7 +936,7 @@ export function CertificationEditPage() {
   // ============================================================
   
 // src/worker/pages/CertificationEditPage.jsx
-// Replace the useEffect section with this:
+// Replace the entire useEffect with this:
 
 useEffect(() => {
   const loadCertifications = async () => {
@@ -972,41 +972,63 @@ useEffect(() => {
       const profile = await workerService.getWorkerProfile(userId)
       
       if (profile.success && profile.data) {
-        // Get main trade from trade section
+        console.log('📦 Profile data received:', profile.data)
+        
+        // ✅ Get main trade from trade section
         const tradeData = profile.data.trade || {}
-        if (tradeData.mainTrade) {
-          setMainTrade(tradeData.mainTrade)
-        } else if (profile.data.basics?.mainTrade) {
-          setMainTrade(profile.data.basics.mainTrade)
+        let mainTradeValue = tradeData.mainTrade || ''
+        
+        // If no mainTrade in trade section, check basics
+        if (!mainTradeValue && profile.data.basics?.mainTrade) {
+          mainTradeValue = profile.data.basics.mainTrade
         }
         
-        // Get tools certifications from trade section
-        const toolsCerts = tradeData.toolsCertifications || {}
-        const certsData = profile.data.certifications || {}
+        if (mainTradeValue) {
+          setMainTrade(mainTradeValue)
+          console.log('✅ Main trade set to:', mainTradeValue)
+        }
         
-        // Merge: prefer toolsCerts from trade section
+        // ✅ IMPORTANT: Get tools certifications from trade.toolsCertifications
+        // This is where the data is actually stored!
+        const toolsCerts = tradeData.toolsCertifications || {}
+        console.log('🔧 Tools certifications from trade:', Object.keys(toolsCerts).filter(k => toolsCerts[k]).length, 'selected')
+        
+        // ✅ Also check certifications section as fallback
+        const certsData = profile.data.certifications || {}
+        const certChecklist = certsData.certChecklist || {}
+        
+        // ✅ Use toolsCerts as primary source, certChecklist as fallback
         const checklistData = Object.keys(toolsCerts).length > 0 
           ? toolsCerts 
-          : (certsData.certChecklist || {})
+          : certChecklist
         
-        console.log('✅ Tools/Certifications loaded:', Object.keys(checklistData).filter(k => checklistData[k]).length, 'selected')
+        console.log('✅ Final checklist data:', Object.keys(checklistData).filter(k => checklistData[k]).length, 'selected')
         
-        // Load certRows - ensure at least one row exists
+        // ✅ Load certRows from certifications section
         let certRows = certsData.certRows || []
         if (certRows.length === 0) {
           certRows = [{ name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }]
         }
         
+        // ✅ Load safety flags
+        const safetyFlags = certsData.safetyFlags || {}
+        
         setCertData({
           certChecklist: checklistData,
           certRows: certRows,
-          safetyFlags: certsData.safetyFlags || {},
+          safetyFlags: safetyFlags,
         })
         
         // Auto-expand the main trade section
-        if (tradeData.mainTrade) {
-          setExpandedSections(prev => ({ ...prev, [tradeData.mainTrade]: true }))
+        if (mainTradeValue) {
+          setExpandedSections(prev => ({ ...prev, [mainTradeValue]: true }))
         }
+        
+        console.log('✅ Certifications loaded successfully')
+        console.log('  - Checklist items:', Object.keys(checklistData).length)
+        console.log('  - Cert rows:', certRows.length)
+        console.log('  - Safety flags:', Object.keys(safetyFlags).length)
+        
       } else {
         // No profile data - initialize empty
         console.log('ℹ️ No profile data found, initializing empty state')
@@ -1025,7 +1047,7 @@ useEffect(() => {
   }
 
   loadCertifications()
-}, [location?.state?.tradeData]) // ✅ Add tradeData as dependency
+}, [location?.state?.tradeData])
 
   // ============================================================
   // HANDLERS
@@ -1229,57 +1251,62 @@ useEffect(() => {
   // SAVE TO WORKERS TABLE
   // ============================================================
   
-  const handleSave = async () => {
-    setIsSaving(true)
-    setError('')
-    setSuccess('')
+ // Replace the handleSave function with this:
 
-    try {
-      const userId = localStorage.getItem('userId')
-      if (!userId) {
-        throw new Error('User ID not found. Please login again.')
-      }
+const handleSave = async () => {
+  setIsSaving(true)
+  setError('')
+  setSuccess('')
 
-      console.log('💾 Saving certifications to Workers table')
-      console.log('📋 certChecklist:', certData.certChecklist)
-
-      const profile = await workerService.getWorkerProfile(userId)
-      const currentTrade = profile.data?.trade || {}
-      
-      const updatedTrade = {
-        ...currentTrade,
-        toolsCertifications: certData.certChecklist || {},
-      }
-      
-      await workerService.updateTrade(userId, updatedTrade)
-      
-      await workerService.updateCertifications(userId, {
-        certChecklist: certData.certChecklist || {},
-        certRows: certData.certRows || [],
-        safetyFlags: certData.safetyFlags || {},
-      })
-      
-      console.log('✅ Certifications saved to Workers table')
-      setSuccess('Certifications saved successfully!')
-
-      setTimeout(() => {
-        navigate('/wizard/summary', {
-          state: {
-            ...location?.state?.parentData,
-            certifications: certData,
-            updatedCert: true
-          },
-          replace: true
-        })
-      }, 500)
-
-    } catch (error) {
-      console.error('❌ Error saving certifications:', error)
-      setError(error.message || 'Failed to save certifications')
-    } finally {
-      setIsSaving(false)
+  try {
+    const userId = localStorage.getItem('userId')
+    if (!userId) {
+      throw new Error('User ID not found. Please login again.')
     }
+
+    console.log('💾 Saving certifications to Workers table')
+    console.log('📋 certChecklist:', certData.certChecklist)
+
+    // ✅ Step 1: Update the trade section with toolsCertifications
+    const profile = await workerService.getWorkerProfile(userId)
+    const currentTrade = profile.data?.trade || {}
+    
+    const updatedTrade = {
+      ...currentTrade,
+      toolsCertifications: certData.certChecklist || {},
+    }
+    
+    await workerService.updateTrade(userId, updatedTrade)
+    console.log('✅ Trade toolsCertifications updated')
+    
+    // ✅ Step 2: Update the certifications section
+    await workerService.updateCertifications(userId, {
+      certChecklist: certData.certChecklist || {},
+      certRows: certData.certRows || [],
+      safetyFlags: certData.safetyFlags || {},
+    })
+    
+    console.log('✅ Certifications saved to Workers table')
+    setSuccess('Certifications saved successfully!')
+
+    setTimeout(() => {
+      navigate('/wizard/summary', {
+        state: {
+          ...location?.state?.parentData,
+          certifications: certData,
+          updatedCert: true
+        },
+        replace: true
+      })
+    }, 500)
+
+  } catch (error) {
+    console.error('❌ Error saving certifications:', error)
+    setError(error.message || 'Failed to save certifications')
+  } finally {
+    setIsSaving(false)
   }
+}
 
   const handleBack = () => {
     navigate('/wizard/summary', {
