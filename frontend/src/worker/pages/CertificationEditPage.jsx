@@ -3424,119 +3424,140 @@ export function CertificationEditPage() {
   // ============================================================
   // LOAD DATA FROM WORKERS TABLE
   // ============================================================
-  
-  useEffect(() => {
-    const loadCertifications = async () => {
-      try {
-        const userId = localStorage.getItem('userId')
-        if (!userId) {
-          setError('User ID not found. Please login again.')
+// Replace the useEffect in CertificationEditPage.jsx with this:
+
+useEffect(() => {
+  const loadCertifications = async () => {
+    try {
+      const userId = localStorage.getItem('userId')
+      if (!userId) {
+        setError('User ID not found. Please login again.')
+        setLoading(false)
+        return
+      }
+
+      console.log('📊 Fetching certification data from Workers table')
+      
+      // First check if we have data in location state that has actual certRows
+      if (location?.state?.tradeData) {
+        const data = location.state.tradeData
+        if (data.certRows && data.certRows.length > 0) {
+          console.log('✅ Using certification data from location.state')
+          setCertData({
+            certChecklist: data.certChecklist || {},
+            certRows: data.certRows || [{ name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }],
+            safetyFlags: data.safetyFlags || {},
+          })
+          if (data.mainTrade) setMainTrade(data.mainTrade)
           setLoading(false)
           return
         }
-
-        console.log('📊 Fetching certification data from Workers table')
-        
-        // First check if we have data in location state that has actual certRows
-        if (location?.state?.tradeData) {
-          const data = location.state.tradeData
-          // Check if there's actual certification data
-          if (data.certRows && data.certRows.length > 0) {
-            console.log('✅ Using certification data from location.state')
-            setCertData({
-              certChecklist: data.certChecklist || {},
-              certRows: data.certRows || [{ name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }],
-              safetyFlags: data.safetyFlags || {},
-            })
-            if (data.mainTrade) setMainTrade(data.mainTrade)
-            setLoading(false)
-            return
-          }
-          // If tradeData exists but has no certRows, fetch from API
-          console.log('⚠️ location.state.tradeData exists but has no certRows, fetching from API')
-        }
-
-        const profile = await workerService.getWorkerProfile(userId)
-        
-        if (profile.success && profile.data) {
-          console.log('📦 Profile data received:', profile.data)
-          
-          // ✅ Get main trade from trade section
-          const tradeData = profile.data.trade || {}
-          let mainTradeValue = tradeData.mainTrade || ''
-          
-          // If no mainTrade in trade section, check basics
-          if (!mainTradeValue && profile.data.basics?.mainTrade) {
-            mainTradeValue = profile.data.basics.mainTrade
-          }
-          
-          if (mainTradeValue) {
-            setMainTrade(mainTradeValue)
-            console.log('✅ Main trade set to:', mainTradeValue)
-          }
-          
-          // ✅ IMPORTANT: Get tools certifications from trade.toolsCertifications
-          const toolsCerts = tradeData.toolsCertifications || {}
-          const checkedCount = Object.values(toolsCerts).filter(v => v === true).length
-          console.log(`🔧 Tools certifications from trade: ${checkedCount} selected`)
-          
-          // Also check certifications section as fallback
-          const certsData = profile.data.certifications || {}
-          const certChecklist = certsData.certChecklist || {}
-          
-          // ✅ Use toolsCerts as primary source
-          const checklistData = Object.keys(toolsCerts).length > 0 
-            ? toolsCerts 
-            : certChecklist
-          
-          console.log('✅ Final checklist data:', Object.keys(checklistData).filter(k => checklistData[k]).length, 'selected')
-          
-          // Load certRows from certifications section
-          let certRows = certsData.certRows || []
-          if (certRows.length === 0) {
-            certRows = [{ name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }]
-          }
-          
-          // Load safety flags
-          const safetyFlags = certsData.safetyFlags || {}
-          
-          // ✅ Set all the data at once
-          setCertData({
-            certChecklist: checklistData,
-            certRows: certRows,
-            safetyFlags: safetyFlags,
-          })
-          
-          // Auto-expand the main trade section
-          if (mainTradeValue) {
-            setExpandedSections(prev => ({ ...prev, [mainTradeValue]: true }))
-          }
-          
-          console.log('✅ Certifications loaded successfully')
-          console.log('  - Checklist items:', Object.keys(checklistData).length)
-          console.log('  - Selected items:', Object.keys(checklistData).filter(k => checklistData[k]).length)
-          console.log('  - Cert rows:', certRows.length)
-          console.log('  - Safety flags:', Object.keys(safetyFlags).length)
-          
-        } else {
-          // No profile data - initialize empty
-          console.log('ℹ️ No profile data found, initializing empty state')
-          setCertData({
-            certChecklist: {},
-            certRows: [{ name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }],
-            safetyFlags: {},
-          })
-        }
-      } catch (error) {
-        console.error('❌ Error loading certifications:', error)
-        setError(error.message || 'Failed to load certifications')
-      } finally {
-        setLoading(false)
+        console.log('⚠️ location.state.tradeData exists but has no certRows, fetching from API')
       }
-    }
 
-    loadCertifications()
-  }, [location?.state?.tradeData])
+      const profile = await workerService.getWorkerProfile(userId)
+      
+      if (profile.success && profile.data) {
+        console.log('📦 Profile data received:', profile.data)
+        
+        // ✅ Get trade data
+        const tradeData = profile.data.trade || {}
+        
+        // ✅ CRITICAL FIX: Get mainTrade from tradeRows
+        let mainTradeValue = ''
+        
+        // Check if tradeRows exists and has data
+        if (tradeData.tradeRows && tradeData.tradeRows.length > 0) {
+          // Get the first trade's name
+          mainTradeValue = tradeData.tradeRows[0]?.trade || ''
+          console.log('✅ Found mainTrade from tradeRows[0]:', mainTradeValue)
+        }
+        
+        // If still empty, try other locations
+        if (!mainTradeValue && tradeData.mainTrade) {
+          mainTradeValue = tradeData.mainTrade
+          console.log('✅ Found mainTrade from trade.mainTrade:', mainTradeValue)
+        }
+        
+        if (!mainTradeValue && profile.data.basics?.mainTrade) {
+          mainTradeValue = profile.data.basics.mainTrade
+          console.log('✅ Found mainTrade from basics.mainTrade:', mainTradeValue)
+        }
+        
+        // If we still don't have a mainTrade, try to get it from the first row's trade
+        if (!mainTradeValue && tradeData.tradeRows && tradeData.tradeRows.length > 0) {
+          mainTradeValue = tradeData.tradeRows[0]?.trade || ''
+        }
+        
+        if (mainTradeValue) {
+          setMainTrade(mainTradeValue)
+          console.log('✅ Main trade set to:', mainTradeValue)
+        } else {
+          console.warn('⚠️ No mainTrade found in any location')
+        }
+        
+        // ✅ IMPORTANT: Get tools certifications from trade.toolsCertifications
+        const toolsCerts = tradeData.toolsCertifications || {}
+        const checkedCount = Object.values(toolsCerts).filter(v => v === true).length
+        console.log(`🔧 Tools certifications from trade: ${checkedCount} selected`)
+        
+        // Also check certifications section as fallback
+        const certsData = profile.data.certifications || {}
+        const certChecklist = certsData.certChecklist || {}
+        
+        // ✅ Use toolsCerts as primary source
+        const checklistData = Object.keys(toolsCerts).length > 0 
+          ? toolsCerts 
+          : certChecklist
+        
+        console.log('✅ Final checklist data:', Object.keys(checklistData).filter(k => checklistData[k]).length, 'selected')
+        
+        // Load certRows from certifications section
+        let certRows = certsData.certRows || []
+        if (certRows.length === 0) {
+          certRows = [{ name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }]
+        }
+        
+        // Load safety flags
+        const safetyFlags = certsData.safetyFlags || {}
+        
+        // ✅ Set all the data at once
+        setCertData({
+          certChecklist: checklistData,
+          certRows: certRows,
+          safetyFlags: safetyFlags,
+        })
+        
+        // Auto-expand the main trade section
+        if (mainTradeValue) {
+          setExpandedSections(prev => ({ ...prev, [mainTradeValue]: true }))
+        }
+        
+        console.log('✅ Certifications loaded successfully')
+        console.log('  - Main Trade:', mainTradeValue)
+        console.log('  - Checklist items:', Object.keys(checklistData).length)
+        console.log('  - Selected items:', Object.keys(checklistData).filter(k => checklistData[k]).length)
+        console.log('  - Cert rows:', certRows.length)
+        console.log('  - Safety flags:', Object.keys(safetyFlags).length)
+        
+      } else {
+        console.log('ℹ️ No profile data found, initializing empty state')
+        setCertData({
+          certChecklist: {},
+          certRows: [{ name: '', cardNumber: '', issueDate: '', expirationDate: '', uploadRef: '', fileKey: '', fileUrl: '' }],
+          safetyFlags: {},
+        })
+      }
+    } catch (error) {
+      console.error('❌ Error loading certifications:', error)
+      setError(error.message || 'Failed to load certifications')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  loadCertifications()
+}, [location?.state?.tradeData])
 
   // ============================================================
   // HANDLERS
