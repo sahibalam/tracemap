@@ -17743,140 +17743,110 @@ export function TradeProfileEditPage() {
   // LOAD DATA
   // ============================================================
   
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const userId = localStorage.getItem('userId')
-        if (!userId) {
-          setError('User ID not found')
-          setLoading(false)
-          return
-        }
+  // src/worker/pages/TradeProfileEditPage.jsx - Replace the loadData useEffect
 
-        // First check if data is in location state
-        if (location?.state?.tradeData) {
-          const data = location.state.tradeData
-          
-          if (data.tradeRows && data.tradeRows.length > 0) {
-            const rowsWithIds = data.tradeRows.map((row, index) => ({
-              ...row,
-              id: row.id || Date.now().toString() + (index + 1) + Math.random().toString(36).substr(2, 5)
-            }))
-            setTradeRows(rowsWithIds)
-          } else {
-            const rows = []
-            if (data.mainTrade) {
-              rows.push({
-                id: Date.now().toString() + '1' + Math.random().toString(36).substr(2, 5),
-                trade: data.mainTrade,
-                skillGroups: data.skillGroups || {},
-                skillDetails: data.skillDetails || {},
-              })
-            }
-            if (data.secondaryTrade) {
-              rows.push({
-                id: Date.now().toString() + '2' + Math.random().toString(36).substr(2, 5),
-                trade: data.secondaryTrade,
-                skillGroups: data.secondarySkillGroups || {},
-                skillDetails: data.secondarySkillDetails || {},
-              })
-            }
-            setTradeRows(rows.length > 0 ? rows : [createInitialTradeRow()])
-          }
-          
-          if (data.toolsCertifications) {
-            setToolsCertifications(data.toolsCertifications)
-          }
-          if (data.heavyEquipment) {
-            setHeavyEquipment(data.heavyEquipment)
-          }
-          setLoading(false)
-          return
-        }
-
-        // Otherwise fetch from server
-        console.log('📊 Fetching profile from server...')
-        const profile = await workerService.getWorkerProfile(userId)
-        
-        if (profile.success && profile.data) {
-          console.log('📦 Profile data received:', profile.data)
-          
-          // Get trade data - it's at the root level of profile.data
-          const tradeData = profile.data.trade || {}
-          console.log('📦 Trade data:', tradeData)
-          
-          // ✅ CRITICAL: Get tradeRows from tradeData.tradeRows
-          let rows = []
-          
-          if (tradeData.tradeRows && tradeData.tradeRows.length > 0) {
-            // Convert the rows to include an id
-            rows = tradeData.tradeRows.map((row, index) => ({
-              ...row,
-              id: row.id || Date.now().toString() + (index + 1) + Math.random().toString(36).substr(2, 5)
-            }))
-            console.log('✅ Found tradeRows in tradeData:', rows)
-          } else if (profile.data.tradeRows && profile.data.tradeRows.length > 0) {
-            // Fallback: check if tradeRows is at root level
-            rows = profile.data.tradeRows.map((row, index) => ({
-              ...row,
-              id: row.id || Date.now().toString() + (index + 1) + Math.random().toString(36).substr(2, 5)
-            }))
-            console.log('✅ Found tradeRows at root level:', rows)
-          } else {
-            // Check for old format (mainTrade)
-            if (tradeData.mainTrade) {
-              const newRows = [{
-                id: Date.now().toString() + '1' + Math.random().toString(36).substr(2, 5),
-                trade: tradeData.mainTrade,
-                skillGroups: tradeData.skillGroups || {},
-                skillDetails: tradeData.skillDetails || {},
-              }]
-              rows = newRows
-              console.log('✅ Converted from old format:', rows)
-            } else {
-              // No data found, create initial row
-              rows = [createInitialTradeRow()]
-              console.log('ℹ️ No trade data found, created initial row')
-            }
-          }
-          
-          // ✅ DEBUG: Log the rows before setting state
-          console.log('🔍 DEBUG - rows to set:', rows)
-          console.log('🔍 DEBUG - rows length:', rows.length)
-          console.log('🔍 DEBUG - First row trade:', rows[0]?.trade)
-          console.log('🔍 DEBUG - Second row trade:', rows[1]?.trade)
-          
-          // ✅ CRITICAL: Set the tradeRows state
-          setTradeRows(rows)
-          
-          // Get tools certifications
-          const toolsData = tradeData.toolsCertifications || profile.data.toolsCertifications || {}
-          console.log('🔧 Tools data:', toolsData)
-          setToolsCertifications(toolsData)
-          
-          // Get heavy equipment
-          const heavyData = tradeData.heavyEquipment || profile.data.heavyEquipment || {}
-          console.log('🚜 Heavy equipment data:', heavyData)
-          setHeavyEquipment(heavyData)
-          
-          console.log('✅ Load complete - Rows:', rows.length, 'Tools:', Object.keys(toolsData).length, 'Heavy:', Object.keys(heavyData).length)
-        } else {
-          console.log('ℹ️ No profile found, initializing empty state')
-          setTradeRows([createInitialTradeRow()])
-          setToolsCertifications({})
-          setHeavyEquipment({})
-        }
-      } catch (error) {
-        console.error('❌ Error loading trade data:', error)
-        setError(error.message || 'Failed to load data')
-      } finally {
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      const userId = localStorage.getItem('userId')
+      if (!userId) {
+        setError('User ID not found')
         setLoading(false)
+        return
       }
+
+      // First check if data is in location state
+      if (location?.state?.tradeData) {
+        const data = location.state.tradeData
+        
+        // ✅ CRITICAL FIX: Check if tradeData has actual tradeRows
+        if (data.tradeRows && data.tradeRows.length > 0) {
+          // Has tradeRows - use it
+          const rowsWithIds = data.tradeRows.map((row, index) => ({
+            ...row,
+            id: row.id || Date.now().toString() + (index + 1) + Math.random().toString(36).substr(2, 5)
+          }))
+          setTradeRows(rowsWithIds)
+          
+          if (data.toolsCertifications) setToolsCertifications(data.toolsCertifications)
+          if (data.heavyEquipment) setHeavyEquipment(data.heavyEquipment)
+          setLoading(false)
+          return
+        }
+        
+        // ✅ If tradeData exists but has no tradeRows, don't use it - fetch from API instead
+        // This prevents empty tradeData from overriding API data
+        console.log('⚠️ location.state.tradeData exists but has no tradeRows, fetching from API')
+      }
+
+      // Fetch from server
+      console.log('📊 Fetching profile from server...')
+      const profile = await workerService.getWorkerProfile(userId)
+      
+      if (profile.success && profile.data) {
+        console.log('📦 Profile data received:', profile.data)
+        
+        const tradeData = profile.data.trade || {}
+        console.log('📦 Trade data:', tradeData)
+        
+        let rows = []
+        
+        if (tradeData.tradeRows && tradeData.tradeRows.length > 0) {
+          rows = tradeData.tradeRows.map((row, index) => ({
+            ...row,
+            id: row.id || Date.now().toString() + (index + 1) + Math.random().toString(36).substr(2, 5)
+          }))
+          console.log('✅ Found tradeRows in tradeData:', rows)
+        } else if (profile.data.tradeRows && profile.data.tradeRows.length > 0) {
+          rows = profile.data.tradeRows.map((row, index) => ({
+            ...row,
+            id: row.id || Date.now().toString() + (index + 1) + Math.random().toString(36).substr(2, 5)
+          }))
+          console.log('✅ Found tradeRows at root level:', rows)
+        } else if (tradeData.mainTrade) {
+          const newRows = [{
+            id: Date.now().toString() + '1' + Math.random().toString(36).substr(2, 5),
+            trade: tradeData.mainTrade,
+            skillGroups: tradeData.skillGroups || {},
+            skillDetails: tradeData.skillDetails || {},
+          }]
+          rows = newRows
+          console.log('✅ Converted from old format:', rows)
+        } else {
+          rows = [createInitialTradeRow()]
+          console.log('ℹ️ No trade data found, created initial row')
+        }
+        
+        console.log('🔍 DEBUG - rows to set:', rows)
+        console.log('🔍 DEBUG - rows length:', rows.length)
+        
+        setTradeRows(rows)
+        
+        const toolsData = tradeData.toolsCertifications || profile.data.toolsCertifications || {}
+        console.log('🔧 Tools data:', toolsData)
+        setToolsCertifications(toolsData)
+        
+        const heavyData = tradeData.heavyEquipment || profile.data.heavyEquipment || {}
+        console.log('🚜 Heavy equipment data:', heavyData)
+        setHeavyEquipment(heavyData)
+        
+        console.log('✅ Load complete - Rows:', rows.length)
+      } else {
+        console.log('ℹ️ No profile found, initializing empty state')
+        setTradeRows([createInitialTradeRow()])
+        setToolsCertifications({})
+        setHeavyEquipment({})
+      }
+    } catch (error) {
+      console.error('❌ Error loading trade data:', error)
+      setError(error.message || 'Failed to load data')
+    } finally {
+      setLoading(false)
     }
+  }
 
-    loadData()
-  }, [location?.state?.tradeData])
-
+  loadData()
+}, [location?.state?.tradeData])
   // ============================================================
   // HANDLERS - Trade Rows
   // ============================================================
