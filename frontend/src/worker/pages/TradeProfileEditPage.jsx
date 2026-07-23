@@ -11415,12 +11415,13 @@ export function TradeProfileEditPage() {
   // HELPERS
   // ============================================================
   
-  const createInitialTradeRow = () => ({
-    id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
-    trade: '',
-    skillGroups: {},
-    skillDetails: {},
-  })
+ // This should be at the top of your component
+const createInitialTradeRow = () => ({
+  id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+  trade: '',
+  skillGroups: {},
+  skillDetails: {},
+})
 
   const isCivil = (trade) => {
     return trade === 'Civil / Sitework / Earthwork / Utilities'
@@ -11432,7 +11433,7 @@ export function TradeProfileEditPage() {
   
 // src/worker/pages/TradeProfileEditPage.jsx
 
-// src/worker/pages/TradeProfileEditPage.jsx
+// Replace the loadData useEffect with this:
 
 useEffect(() => {
   const loadData = async () => {
@@ -11449,13 +11450,18 @@ useEffect(() => {
         const data = location.state.tradeData
         
         if (data.tradeRows && data.tradeRows.length > 0) {
-          setTradeRows(data.tradeRows)
+          // Ensure each row has an id
+          const rowsWithIds = data.tradeRows.map((row, index) => ({
+            ...row,
+            id: row.id || Date.now().toString() + (index + 1) + Math.random().toString(36).substr(2, 5)
+          }))
+          setTradeRows(rowsWithIds)
         } else {
           // Convert old format to tradeRows
           const rows = []
           if (data.mainTrade) {
             rows.push({
-              id: Date.now().toString() + '1',
+              id: Date.now().toString() + '1' + Math.random().toString(36).substr(2, 5),
               trade: data.mainTrade,
               skillGroups: data.skillGroups || {},
               skillDetails: data.skillDetails || {},
@@ -11463,7 +11469,7 @@ useEffect(() => {
           }
           if (data.secondaryTrade) {
             rows.push({
-              id: Date.now().toString() + '2',
+              id: Date.now().toString() + '2' + Math.random().toString(36).substr(2, 5),
               trade: data.secondaryTrade,
               skillGroups: data.secondarySkillGroups || {},
               skillDetails: data.secondarySkillDetails || {},
@@ -11489,11 +11495,11 @@ useEffect(() => {
       if (profile.success && profile.data) {
         console.log('📦 Profile data received:', profile.data)
         
-        // ✅ FIX: Get trade data - it's at the root level of profile.data
+        // Get trade data - it's at the root level of profile.data
         const tradeData = profile.data.trade || {}
         console.log('📦 Trade data:', tradeData)
         
-        // ✅ Get tradeRows - they're at tradeData.tradeRows
+        // Get tradeRows - they're at tradeData.tradeRows
         let rows = []
         if (tradeData.tradeRows && tradeData.tradeRows.length > 0) {
           // Convert the rows to include an id
@@ -11527,14 +11533,16 @@ useEffect(() => {
           }
         }
         
+        // ✅ CRITICAL: Set the tradeRows state
+        console.log('📝 Setting tradeRows state:', rows)
         setTradeRows(rows)
         
-        // ✅ Get tools certifications - they're at tradeData.toolsCertifications
+        // Get tools certifications
         const toolsData = tradeData.toolsCertifications || profile.data.toolsCertifications || {}
         console.log('🔧 Tools data:', toolsData)
         setToolsCertifications(toolsData)
         
-        // ✅ Get heavy equipment - they're at tradeData.heavyEquipment
+        // Get heavy equipment
         const heavyData = tradeData.heavyEquipment || profile.data.heavyEquipment || {}
         console.log('🚜 Heavy equipment data:', heavyData)
         setHeavyEquipment(heavyData)
