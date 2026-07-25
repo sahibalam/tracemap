@@ -7360,7 +7360,7 @@ export function CertificationEditPage() {
                 {/* ============================================================
                 SECTION 3: SAFETY FLAGS
                 ============================================================ */}
-                <div style={{ marginTop: '24px' }}>
+                {/* <div style={{ marginTop: '24px' }}>
                   <div style={{
                     fontSize: '16px',
                     fontWeight: 600,
@@ -7412,7 +7412,7 @@ export function CertificationEditPage() {
                       </label>
                     ))}
                   </div>
-                </div>
+                </div> */}
 
               </div>
             </div>
