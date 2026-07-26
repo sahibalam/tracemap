@@ -1131,17 +1131,17 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-// ✅ Tools and Certifications by Trade (updated from PDF)
+// ✅ Tools and Certifications by Trade (matching WizardStep2 MAIN_TRADES exactly)
 const TOOLS_CERTIFICATIONS = {
-  'HVAC': [
-    'EPA 608 Universal',
-    'EPA 608 Type I',
-    'EPA 608 Type II',
-    'EPA 608 Type III',
+  'HVAC/Mechanical': [
     'OSHA 10',
     'OSHA 30',
     'Lift certification',
     'Fall protection training',
+    'EPA 608 Universal',
+    'EPA 608 Type I',
+    'EPA 608 Type II',
+    'EPA 608 Type III',
     'Hot work / brazing experience',
     'Confined space awareness',
     'First aid / CPR',
@@ -1160,7 +1160,7 @@ const TOOLS_CERTIFICATIONS = {
     'Reliable transportation',
     'Valid driver license',
   ],
-  'Electrical': [
+  'Electrical / Power': [
     'Electrical apprentice card / registration',
     'Journeyman electrician license',
     'Master electrician license',
@@ -1182,7 +1182,7 @@ const TOOLS_CERTIFICATIONS = {
     'Reliable transportation',
     'Valid driver license',
   ],
-  'Plumbing': [
+  'Plumbing / Piping': [
     'Plumbing License',
     'Apprentice Card',
     'Journeyman Card',
@@ -1207,7 +1207,7 @@ const TOOLS_CERTIFICATIONS = {
     'Reliable transportation',
     'Valid driver license',
   ],
-  'Concrete': [
+  'Concrete / Formwork / Rebar / Flatwork': [
     'OSHA 10',
     'OSHA 30',
     'Silica Awareness',
@@ -1228,8 +1228,30 @@ const TOOLS_CERTIFICATIONS = {
     'Hard Hat',
     'Safety Vest',
     'Work Boots',
+    'Reliable transportation',
   ],
-  'Asphalt / Paving': [
+  'Civil / Sitework / Earthwork / Utilities': [
+    'OSHA 10',
+    'OSHA 30',
+    'Trench Safety Awareness',
+    'Competent Person - Trenching',
+    'Flagger Certification',
+    'Confined Space Awareness',
+    'First Aid / CPR',
+    'Valid Driver License',
+    'CDL',
+    'Equipment Certification / Card',
+    'Has PPE',
+    'Work Boots',
+    'Hard Hat',
+    'Safety Vest',
+    'Own Hand Tools',
+    'Can work outdoors',
+    'Can work around heavy equipment',
+    'Can work in heat/cold',
+    'Can pass background check',
+  ],
+  'Asphalt / Paving Work': [
     'OSHA 10',
     'OSHA 30',
     'Traffic Control Awareness',
@@ -1252,29 +1274,9 @@ const TOOLS_CERTIFICATIONS = {
     'Can work in heat',
     'Can work nights',
     'Can work weekends',
+    'Reliable transportation',
   ],
-  'Civil / Sitework': [
-    'OSHA 10',
-    'OSHA 30',
-    'Trench Safety Awareness',
-    'Competent Person - Trenching',
-    'Flagger Certification',
-    'Confined Space Awareness',
-    'First Aid / CPR',
-    'Valid Driver License',
-    'CDL',
-    'Equipment Certification / Card',
-    'Has PPE',
-    'Work Boots',
-    'Hard Hat',
-    'Safety Vest',
-    'Own Hand Tools',
-    'Can work outdoors',
-    'Can work around heavy equipment',
-    'Can work in heat/cold',
-    'Can pass background check',
-  ],
-  'Landscaping': [
+  'Landscaping / Exterior Improvements': [
     'OSHA 10',
     'First Aid (Optional)',
     'Own Basic Hand Tools',
@@ -1294,8 +1296,9 @@ const TOOLS_CERTIFICATIONS = {
     'Has PPE',
     'Outdoor work experience',
     'Heat/weather tolerance',
+    'Reliable transportation',
   ],
-  'Roofing': [
+  'Roofing / Waterproofing': [
     'OSHA 10',
     'OSHA 30',
     'Fall Protection Training',
@@ -1326,8 +1329,9 @@ const TOOLS_CERTIFICATIONS = {
     'Lanyard',
     'Safety Glasses',
     'Work Boots',
+    'Reliable transportation',
   ],
-  'General Labor': [
+  'General Labor / Site Support / Material Handling': [
     'OSHA 10',
     'OSHA 30',
     'Fall Protection',
@@ -1348,8 +1352,9 @@ const TOOLS_CERTIFICATIONS = {
     'Safety Glasses',
     'Gloves',
     'Work Boots',
+    'Reliable transportation',
   ],
-  'Demolition': [
+  'Demolition / Selective Demo / Abatement Support': [
     'OSHA 10',
     'OSHA 30',
     'PPE Awareness',
@@ -1377,8 +1382,9 @@ const TOOLS_CERTIFICATIONS = {
     'Gloves',
     'Hearing Protection',
     'Dust Mask',
+    'Reliable transportation',
   ],
-  'Masonry': [
+  'Masonry / Stucco / EIFS Systems': [
     'OSHA 10',
     'OSHA 30',
     'Fall Protection',
@@ -1404,7 +1410,7 @@ const TOOLS_CERTIFICATIONS = {
     'PPE',
     'Reliable transportation',
   ],
-  'Structural Steel': [
+  'Structural Steel / Misc. Metals / Welding': [
     'OSHA 10',
     'OSHA 30',
     'Fall Protection Training',
@@ -1419,8 +1425,9 @@ const TOOLS_CERTIFICATIONS = {
     'Welding Hood / Basic Welding Gear',
     'PPE',
     'Harness / Fall Protection Gear',
+    'Reliable transportation',
   ],
-  'Carpentry': [
+  'Carpentry / Rough Carpentry / Wood Framing / Blocking Systems': [
     'OSHA 10',
     'OSHA 30',
     'Fall Protection Training',
@@ -1440,8 +1447,9 @@ const TOOLS_CERTIFICATIONS = {
     'Safety Glasses',
     'Gloves',
     'Hearing Protection',
+    'Reliable transportation',
   ],
-  'Millwork': [
+  'Millwork / Cabinets / Finish Carpentry': [
     'OSHA 10',
     'OSHA 30',
     'Lift Certification',
@@ -1466,8 +1474,9 @@ const TOOLS_CERTIFICATIONS = {
     'Gloves',
     'Hearing Protection',
     'Dust Mask',
+    'Reliable transportation',
   ],
-  'Flooring': [
+  'Flooring / Tile / Resilient / Carpet Systems': [
     'Lift Certification',
     'Scissor Lift Experience',
     'Boom Lift Experience',
@@ -1488,7 +1497,7 @@ const TOOLS_CERTIFICATIONS = {
     'Floor Grinder / Shot Blaster / HEPA Vacuum',
     'Valid Driver License / Reliable Transportation',
   ],
-  'Painting': [
+  'Painting / Coatings / Wallcovering Systems': [
     'OSHA 10',
     'OSHA 30',
     'Lift Certification',
@@ -1509,8 +1518,9 @@ const TOOLS_CERTIFICATIONS = {
     'Wallcovering Tools / Paste Machine',
     'Sander / Vacuum Sander / Grinder / Needle Scaler',
     'Wet-Film / Dry-Film Gauge',
+    'Reliable transportation',
   ],
-  'Doors / Frames / Hardware': [
+  'Doors / Frames / Hardware / Openings Systems': [
     'OSHA 10',
     'OSHA 30',
     'PPE Training / Awareness',
@@ -1549,8 +1559,9 @@ const TOOLS_CERTIFICATIONS = {
     'Team Lift',
     'Lifting Plan',
     'Specialty Rigging Support',
+    'Reliable transportation',
   ],
-  'Glass / Glazing': [
+  'Glass / Glazing / Storefront': [
     'OSHA 10',
     'OSHA 30',
     'PPE Training / Awareness',
@@ -1602,8 +1613,9 @@ const TOOLS_CERTIFICATIONS = {
     'Gasket Tools',
     'Setting Blocks',
     'Sealant Tooling',
+    'Reliable transportation',
   ],
-  'Fire Protection': [
+  'Fire Protection / Sprinkler Systems': [
     'OSHA 10',
     'OSHA 30',
     'PPE Training / Awareness',
@@ -1656,8 +1668,9 @@ const TOOLS_CERTIFICATIONS = {
     'Chain Fall',
     'Come-Along',
     'Pipe Cart',
+    'Reliable transportation',
   ],
-  'Firestopping': [
+  'Firestopping / Fireproofing / Joint Sealants': [
     'OSHA 10',
     'OSHA 30',
     'PPE Training / Awareness',
@@ -1719,8 +1732,9 @@ const TOOLS_CERTIFICATIONS = {
     'Depth / Annular Space Tools',
     'Joint Gauges',
     'Thickness Pins / Gauges',
+    'Reliable transportation',
   ],
-  'Low Voltage': [
+  'Low Voltage / Data / Security / Fire Alarm': [
     'OSHA 10',
     'OSHA 30',
     'Site Orientation',
@@ -1772,8 +1786,9 @@ const TOOLS_CERTIFICATIONS = {
     'PIM Test Equipment',
     'Sweep Test Equipment',
     'Grid Test Equipment',
+    'Reliable transportation',
   ],
-  'Division 10': [
+  'Division 10 Specialties / Accessories / Signage Systems': [
     'Lift Certification',
     'Scissor Lift Experience',
     'Boom Lift Experience',
@@ -1828,8 +1843,9 @@ const TOOLS_CERTIFICATIONS = {
     'Suction Devices',
     'Flagpole Rigging',
     'Team Lifts',
+    'Reliable transportation',
   ],
-  'Equipment / Specialty Installations': [
+  'Equipment / Specialty Installations / Owner-Furnished Equipment Systems': [
     'Lift Certification',
     'Scissor Lift Experience',
     'Boom Lift Experience',
@@ -1895,8 +1911,40 @@ const TOOLS_CERTIFICATIONS = {
     'Punch App',
     'Room / Equipment List',
     'As-Built Documentation',
+    'Reliable transportation',
   ],
 }
+
+// ✅ Heavy Equipment lists (separate block for Civil)
+const HEAVY_EQUIPMENT_TYPES = [
+  'Skid Steer',
+  'Mini Excavator',
+  'Excavator',
+  'Backhoe',
+  'Dozer',
+  'Front Loader / Wheel Loader',
+  'Roller / Compactor',
+  'Motor Grader',
+  'Trencher',
+  'Forklift / Telehandler',
+  'Water Truck',
+  'Dump Truck support / CDL if applicable'
+]
+
+const HEAVY_EQUIPMENT_TASKS = [
+  'Rough grade',
+  'Fine grade',
+  'Excavate trenches',
+  'Load trucks',
+  'Backfill trenches',
+  'Compact soil/base',
+  'Move materials',
+  'Spread base material',
+  'Work near utilities',
+  'Finish grade support',
+  'Operate safely around crews',
+  'Read plans/basic stakes'
+]
 
 // ============================================================
 // COMPONENT - WizardStep3 (Certifications & Requirements)
@@ -1945,65 +1993,15 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
   const selectedTrade = data?.mainTrade || ''
   const toolsList = getToolsCertifications()
   const showToolsSection = selectedTrade !== '' && toolsList.length > 0
-  const isCivil = selectedTrade === 'Civil / Sitework'
+  const isCivil = selectedTrade === 'Civil / Sitework / Earthwork / Utilities'
 
   // ✅ Count selected items
   const selectedCount = Object.values(toolsCertifications).filter(v => v === true).length
-
-  // ✅ Heavy Equipment lists
-  const HEAVY_EQUIPMENT_TYPES = [
-    'Skid Steer',
-    'Mini Excavator',
-    'Excavator',
-    'Backhoe',
-    'Dozer',
-    'Front Loader / Wheel Loader',
-    'Roller / Compactor',
-    'Motor Grader',
-    'Trencher',
-    'Forklift / Telehandler',
-    'Water Truck',
-    'Dump Truck support / CDL if applicable'
-  ]
-
-  const HEAVY_EQUIPMENT_TASKS = [
-    'Rough grade',
-    'Fine grade',
-    'Excavate trenches',
-    'Load trucks',
-    'Backfill trenches',
-    'Compact soil/base',
-    'Move materials',
-    'Spread base material',
-    'Work near utilities',
-    'Finish grade support',
-    'Operate safely around crews',
-    'Read plans/basic stakes'
-  ]
 
   return (
     <div className="wizardStep">
       <div className="wizardBody">
         <div className="wizardSection">
-          {/* ✅ Section Header */}
-          {/* <div style={{
-            fontSize: '14px',
-            fontWeight: 600,
-            color: '#17263a',
-            marginBottom: '8px',
-          }}>
-            {t('wizard.step3.title') || 'Tools, Certifications & Requirements'}
-          </div>
-          <div style={{
-            fontSize: '13px',
-            color: 'rgba(23, 38, 58, 0.6)',
-            marginBottom: '20px',
-          }}>
-            {selectedTrade 
-              ? `Select all tools, certifications, and requirements that apply to you for "${selectedTrade}"`
-              : 'Please select a trade in the previous step to see available tools and certifications.'}
-          </div> */}
-
           {/* ✅ Selected Trade Badge */}
           {selectedTrade && (
             <div style={{
@@ -2152,7 +2150,7 @@ export function WizardStep3({ data, onChange, onNext, onBack }) {
                 color: '#17263a',
                 marginBottom: '12px',
               }}>
-                Tools & Certifications
+                Tools, Certifications & Licenses
               </div>
               <div style={{
                 display: 'grid',
