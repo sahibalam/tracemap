@@ -1,53 +1,60 @@
-// // backend/src/routes/authRoutes.js
-// import express from "express";
 
+
+// // backend/src/routes/authRoutes.js
+// import express from "express"
 // import {
 //   sendEmailVerification,
-//   verifyEmail
-// }
-// from "../controllers/authController.js";
+//   verifyEmail,
+//   login,
+//   register,
+//   forgotPassword,
+//   resetPassword,
+//   checkEmailVerification
+// } from "../controllers/authController.js"
 
-// const router = express.Router();
+// const router = express.Router()
 
-// router.post(
-//   "/send-email-verification",
-//   sendEmailVerification
-// );
+// // ✅ Email Verification (Existing)
+// router.post("/send-email-verification", sendEmailVerification)
+// router.get("/verify-email", verifyEmail)
+// router.get("/check-email-verification", checkEmailVerification)
 
-// router.get(
-//   "/verify-email",
-//   verifyEmail
-// );
+// // ✅ Login/Register (New)
+// router.post("/login", login)
+// router.post("/register", register)
 
-// export default router;
+// // ✅ Password Reset (New)
+// router.post("/forgot-password", forgotPassword)
+// router.post("/reset-password", resetPassword)
+
+// export default router
 
 
 
-// backend/src/routes/authRoutes.js
-import express from "express"
+
+// backend/src/routes/authRoutes.js (or wherever your routes are)
+import express from 'express'
 import {
   sendEmailVerification,
-  verifyEmail,
+  verifyEmailCode,  // ✅ New function
   login,
   register,
   forgotPassword,
   resetPassword,
   checkEmailVerification
-} from "../controllers/authController.js"
+} from '../controllers/authController.js'
 
 const router = express.Router()
 
-// ✅ Email Verification (Existing)
-router.post("/send-email-verification", sendEmailVerification)
-router.get("/verify-email", verifyEmail)
-router.get("/check-email-verification", checkEmailVerification)
+// ✅ Email verification routes
+router.post('/auth/send-verification', sendEmailVerification)
+router.post('/auth/verify-email-code', verifyEmailCode)  // ✅ New route
+router.get('/auth/check-verification', checkEmailVerification)
 
-// ✅ Login/Register (New)
-router.post("/login", login)
-router.post("/register", register)
-
-// ✅ Password Reset (New)
-router.post("/forgot-password", forgotPassword)
-router.post("/reset-password", resetPassword)
+// ✅ Auth routes
+router.post('/auth/login', login)
+router.post('/auth/register', register)
+router.post('/auth/forgot-password', forgotPassword)
+router.post('/auth/reset-password', resetPassword)
 
 export default router
