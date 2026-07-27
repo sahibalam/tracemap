@@ -32,11 +32,11 @@
 
 
 
-// backend/src/routes/authRoutes.js (or wherever your routes are)
+// backend/src/routes/authRoutes.js
 import express from 'express'
 import {
   sendEmailVerification,
-  verifyEmailCode,  // ✅ New function
+  verifyEmailCode,
   login,
   register,
   forgotPassword,
@@ -48,13 +48,18 @@ const router = express.Router()
 
 // ✅ Email verification routes
 router.post('/auth/send-verification', sendEmailVerification)
-router.post('/auth/verify-email-code', verifyEmailCode)  // ✅ New route
+router.post('/auth/verify-email-code', verifyEmailCode)
 router.get('/auth/check-verification', checkEmailVerification)
 
 // ✅ Auth routes
-router.post('/auth/login', login)
 router.post('/auth/register', register)
+router.post('/auth/login', login)
 router.post('/auth/forgot-password', forgotPassword)
 router.post('/auth/reset-password', resetPassword)
+
+// ✅ Test route to check if API is working
+router.get('/auth/test', (req, res) => {
+  res.json({ success: true, message: 'Auth API is working!' })
+})
 
 export default router
