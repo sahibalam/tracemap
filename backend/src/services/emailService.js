@@ -87,14 +87,13 @@
 
 
 
-
 // backend/src/services/emailService.js
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 dotenv.config()
 
 // SMTP Configuration for Resend
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   host: process.env.RESEND_SMTP_HOST || 'smtp.resend.com',
   port: parseInt(process.env.RESEND_SMTP_PORT) || 465,
   secure: true, // true for 465, false for other ports
@@ -104,6 +103,15 @@ const transporter = nodemailer.createTransporter({
   },
   tls: {
     rejectUnauthorized: false
+  }
+})
+
+// Verify transporter connection
+transporter.verify((error, success) => {
+  if (error) {
+    console.error('❌ SMTP Transporter Error:', error)
+  } else {
+    console.log('✅ SMTP Transporter ready to send emails')
   }
 })
 
