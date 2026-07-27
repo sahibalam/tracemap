@@ -1,6 +1,7 @@
 
 // // backend/src/controllers/authController.js
 // import { sendVerificationEmail } from '../services/emailService.js'
+// import { sendPasswordResetEmail } from '../services/resendEmailService.js' // ✅ ADD THIS LINE
 // import bcrypt from 'bcryptjs'
 // import jwt from 'jsonwebtoken'
 // import { docClient, WORKERS_TABLE } from '../config/aws.js'
@@ -300,15 +301,19 @@
 //       })
 //     }
 
+//     const user = result.Items[0]
+
 //     // ✅ Generate reset token
 //     const resetToken = generateVerificationToken()
 //     passwordResetStore[resetToken] = {
 //       email,
-//       userId: result.Items[0].userId,
+//       userId: user.userId,
 //       createdAt: Date.now()
 //     }
 
 //     const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`
+    
+//     // ✅ Send password reset email using Resend SMTP
 //     await sendPasswordResetEmail(email, resetLink)
 
 //     res.json({
@@ -341,6 +346,16 @@
 //       return res.status(400).json({
 //         success: false,
 //         message: 'Invalid or expired token'
+//       })
+//     }
+
+//     // Check if token is expired (1 hour)
+//     const tokenAge = Date.now() - resetData.createdAt
+//     if (tokenAge > 3600000) { // 1 hour in milliseconds
+//       delete passwordResetStore[token]
+//       return res.status(400).json({
+//         success: false,
+//         message: 'Token has expired. Please request a new password reset.'
 //       })
 //     }
 
@@ -440,11 +455,9 @@
 
 
 
-
-
 // backend/src/controllers/authController.js
-import { sendVerificationEmail } from '../services/emailService.js'
-import { sendPasswordResetEmail } from '../services/resendEmailService.js' // ✅ ADD THIS LINE
+import { sendVerificationEmail } from '../services/emailService.js' // ✅ This now uses Resend
+import { sendPasswordResetEmail } from '../services/resendEmailService.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { docClient, WORKERS_TABLE } from '../config/aws.js'
@@ -466,6 +479,16 @@ const passwordResetStore = {}
 export const sendEmailVerification = async (req, res) => {
   try {
     const { email } = req.body
+    
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email is required'
+      })
+    }
+
+    console.log(`📧 Sending verification email to: ${email}`)
+    
     const token = generateVerificationToken()
     
     verificationStore[token] = {
@@ -474,40 +497,106 @@ export const sendEmailVerification = async (req, res) => {
       createdAt: Date.now()
     }
 
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${token}`
-    await sendVerificationEmail(email, verificationLink)
+    const verificationLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${token}`
+    
+    // ✅ Send verification email using Resend
+    const result = await sendVerificationEmail(email, verificationLink)
 
-    res.json({
-      success: true,
-      message: "Verification email sent"
-    })
+    if (result.success) {
+      res.json({
+        success: true,
+        message: "Verification email sent successfully",
+        data: {
+          email,
+          messageId: result.messageId
+        }
+      })
+    } else {
+      res.status(500).json({
+        success: false,
+        message: result.message || 'Failed to send verification email'
+      })
+    }
 
   } catch (error) {
-    console.log(error)
+    console.error('❌ Send verification error:', error)
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message || 'Failed to send verification email'
     })
   }
 }
 
 export const verifyEmail = async (req, res) => {
-  const { token } = req.query
+  try {
+    const { token } = req.query
 
-  if (!verificationStore[token]) {
-    return res.status(400).json({
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: 'Verification token is required'
+      })
+    }
+
+    const verificationData = verificationStore[token]
+    
+    if (!verificationData) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid or expired verification token'
+      })
+    }
+
+    // ✅ Check if token is expired (24 hours)
+    const tokenAge = Date.now() - verificationData.createdAt
+    if (tokenAge > 24 * 60 * 60 * 1000) { // 24 hours
+      delete verificationStore[token]
+      return res.status(400).json({
+        success: false,
+        message: 'Verification token has expired. Please request a new one.'
+      })
+    }
+
+    // ✅ Mark as verified
+    verificationData.verified = true
+
+    // ✅ Update user's emailVerified status in DynamoDB
+    if (verificationData.userId) {
+      try {
+        await docClient.send(new UpdateCommand({
+          TableName: WORKERS_TABLE,
+          Key: {
+            PK: `WORKER#${verificationData.userId}`,
+            SK: 'PROFILE'
+          },
+          UpdateExpression: 'SET emailVerified = :verified, updatedAt = :timestamp',
+          ExpressionAttributeValues: {
+            ':verified': true,
+            ':timestamp': new Date().toISOString()
+          }
+        }))
+        console.log(`✅ Email verified for user: ${verificationData.userId}`)
+      } catch (dbError) {
+        console.error('❌ Failed to update emailVerified status:', dbError)
+        // Continue even if DB update fails - the verification store is already updated
+      }
+    }
+
+    console.log(`✅ Email verified successfully: ${verificationData.email}`)
+
+    res.json({
+      success: true,
+      email: verificationData.email,
+      message: 'Email verified successfully! You can now login.'
+    })
+
+  } catch (error) {
+    console.error('❌ Verify email error:', error)
+    res.status(500).json({
       success: false,
-      message: "Invalid token"
+      message: error.message || 'Failed to verify email'
     })
   }
-
-  verificationStore[token].verified = true
-
-  res.json({
-    success: true,
-    email: verificationStore[token].email,
-    message: "Email verified successfully"
-  })
 }
 
 // ============================================================
@@ -569,6 +658,15 @@ export const login = async (req, res) => {
         message: 'Incorrect password'
       })
     }
+
+    // ✅ Check if email is verified (optional - can be skipped for development)
+    // const isEmailVerified = user.emailVerified || false
+    // if (!isEmailVerified) {
+    //   return res.status(403).json({
+    //     success: false,
+    //     message: 'Please verify your email before logging in'
+    //   })
+    // }
 
     // ✅ Generate JWT Token
     const token = jwt.sign(
@@ -685,8 +783,15 @@ export const register = async (req, res) => {
       userId,
       createdAt: Date.now()
     }
-    const verificationLink = `${process.env.FRONTEND_URL}/verify-email?token=${token}`
-    await sendVerificationEmail(email, verificationLink)
+    const verificationLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${token}`
+    
+    // ✅ Send verification email using Resend
+    const emailResult = await sendVerificationEmail(email, verificationLink)
+    
+    if (!emailResult.success) {
+      console.warn(`⚠️ Verification email failed to send: ${emailResult.message}`)
+      // Continue anyway - user can request verification later
+    }
 
     console.log(`✅ User registered: ${email}`)
 
@@ -695,7 +800,8 @@ export const register = async (req, res) => {
       message: 'User registered successfully. Please verify your email.',
       data: {
         userId,
-        email
+        email,
+        verificationSent: emailResult.success
       }
     })
 
@@ -722,6 +828,8 @@ export const forgotPassword = async (req, res) => {
         message: 'Email is required'
       })
     }
+
+    console.log(`🔑 Password reset requested for: ${email}`)
 
     // ✅ Find user
     const result = await docClient.send(new ScanCommand({
@@ -754,14 +862,16 @@ export const forgotPassword = async (req, res) => {
       createdAt: Date.now()
     }
 
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`
+    const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`
     
     // ✅ Send password reset email using Resend SMTP
     await sendPasswordResetEmail(email, resetLink)
 
+    console.log(`✅ Password reset email sent to: ${email}`)
+
     res.json({
       success: true,
-      message: 'Password reset email sent'
+      message: 'Password reset email sent. Please check your inbox.'
     })
 
   } catch (error) {
@@ -823,9 +933,11 @@ export const resetPassword = async (req, res) => {
     // ✅ Delete used token
     delete passwordResetStore[token]
 
+    console.log(`✅ Password reset successful for: ${resetData.email}`)
+
     res.json({
       success: true,
-      message: 'Password reset successfully'
+      message: 'Password reset successfully. You can now login with your new password.'
     })
 
   } catch (error) {
