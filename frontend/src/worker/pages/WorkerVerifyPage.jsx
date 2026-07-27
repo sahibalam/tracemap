@@ -1605,9 +1605,10 @@ export function WorkerVerifyPage() {
   const recaptchaContainerRef = useRef(null)
   const cooldownIntervalRef = useRef(null)
   
-  // ✅ ADD THIS - Request tracking to prevent double calls
+  // ✅ CRITICAL: Use refs to prevent double calls
   const isSendingRef = useRef(false)
   const isVerifyingRef = useRef(false)
+  const lastRequestTimeRef = useRef(0)
 
   // ✅ Cleanup cooldown on unmount
   useEffect(() => {
@@ -1618,11 +1619,20 @@ export function WorkerVerifyPage() {
     }
   }, [])
 
-  // ✅ Send Email Verification Code - WITH DOUBLE CALL PROTECTION
+  // ✅ Send Email Verification Code - WITH COMPLETE DOUBLE-CALL PROTECTION
   const handleSendEmailCode = useCallback(async () => {
-    // ✅ Prevent double calls
+    // ✅ Prevent double calls with multiple checks
+    const now = Date.now()
+    const timeSinceLastRequest = now - lastRequestTimeRef.current
+    
+    // If less than 1 second since last request, block it
+    if (timeSinceLastRequest < 1000) {
+      console.log('⏳ Request too soon, blocking duplicate...')
+      return
+    }
+    
     if (isSendingRef.current || emailLoading) {
-      console.log('⏳ Already sending, skipping duplicate...')
+      console.log('⏳ Already sending, blocking duplicate...')
       return
     }
     
@@ -1631,19 +1641,22 @@ export function WorkerVerifyPage() {
       return
     }
     
+    // Set flags
     isSendingRef.current = true
+    lastRequestTimeRef.current = now
     setEmailLoading(true)
     setError('')
-    setEmailCode('') // Clear any old code
+    setEmailCode('')
     
     try {
+      console.log('📧 Sending verification code to:', email)
       const result = await sendEmailVerificationCode(email)
       
       if (result.success) {
         setEmailCodeSent(true)
         setShowEmailOtp(true)
         setError('')
-        setResendCooldown(60) // 60 seconds cooldown
+        setResendCooldown(60)
         
         // Start cooldown timer
         if (cooldownIntervalRef.current) {
@@ -1668,18 +1681,26 @@ export function WorkerVerifyPage() {
       setError(err.message || 'An error occurred while sending verification code')
     } finally {
       setEmailLoading(false)
-      // ✅ Release the lock after 500ms to prevent rapid re-clicks
+      // ✅ Release the lock after delay
       setTimeout(() => {
         isSendingRef.current = false
       }, 500)
     }
   }, [email, emailLoading])
 
-  // ✅ Verify Email Code - WITH DOUBLE CALL PROTECTION
+  // ✅ Verify Email Code - WITH COMPLETE DOUBLE-CALL PROTECTION
   const handleVerifyEmailCode = useCallback(async () => {
     // ✅ Prevent double calls
+    const now = Date.now()
+    const timeSinceLastRequest = now - lastRequestTimeRef.current
+    
+    if (timeSinceLastRequest < 1000) {
+      console.log('⏳ Request too soon, blocking duplicate...')
+      return
+    }
+    
     if (isVerifyingRef.current || isVerifying) {
-      console.log('⏳ Already verifying, skipping duplicate...')
+      console.log('⏳ Already verifying, blocking duplicate...')
       return
     }
     
@@ -1688,7 +1709,9 @@ export function WorkerVerifyPage() {
       return
     }
     
+    // Set flags
     isVerifyingRef.current = true
+    lastRequestTimeRef.current = now
     setIsVerifying(true)
     setLoading(true)
     setError('')
@@ -1704,7 +1727,6 @@ export function WorkerVerifyPage() {
         console.log('✅ Email verified successfully!')
       } else {
         setError(result.message || 'Invalid code. Please try again.')
-        // Don't clear the code so user can try again
       }
     } catch (err) {
       console.error('❌ Verify code error:', err)
@@ -1712,7 +1734,7 @@ export function WorkerVerifyPage() {
     } finally {
       setLoading(false)
       setIsVerifying(false)
-      // ✅ Release the lock after 500ms
+      // ✅ Release the lock after delay
       setTimeout(() => {
         isVerifyingRef.current = false
       }, 500)
@@ -1829,7 +1851,6 @@ export function WorkerVerifyPage() {
     }
   }, [phoneOtp, handleVerifyPhone])
 
-  // ✅ Render the verification UI
   return (
     <div className="appShell">
       <TopNav variant="solid" />
