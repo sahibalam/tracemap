@@ -93,21 +93,22 @@ function UpdateButton({ onClick, loading, label = 'Update' }) {
       onClick={onClick}
       disabled={loading}
       style={{
-        padding: '8px 20px',
+        padding: '6px 16px',
         background: loading ? '#94a3b8' : '#0f4ea9',
         color: 'white',
         border: 'none',
-        borderRadius: '8px',
-        fontSize: '13px',
+        borderRadius: '6px',
+        fontSize: '12px',
         fontWeight: 600,
         cursor: loading ? 'not-allowed' : 'pointer',
         transition: 'all 0.2s ease',
         whiteSpace: 'nowrap',
-        minWidth: '80px',
-        height: '44px',
+        minWidth: '70px',
+        height: '36px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexShrink: 0
       }}
       onMouseEnter={(e) => {
         if (!loading) e.currentTarget.style.background = '#0b3f90'
@@ -116,7 +117,7 @@ function UpdateButton({ onClick, loading, label = 'Update' }) {
         if (!loading) e.currentTarget.style.background = '#0f4ea9'
       }}
     >
-      {loading ? 'Updating...' : label}
+      {loading ? '...' : label}
     </button>
   )
 }
@@ -297,6 +298,34 @@ export function AccountSettingsPage() {
     }
   }
 
+  // Field row component with label and value on same row
+  const FieldRow = ({ label, children, icon }) => (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      padding: '12px 16px',
+      borderBottom: '1px solid rgba(18, 38, 63, 0.06)',
+      gap: '16px',
+      minHeight: '60px'
+    }}>
+      <div style={{
+        minWidth: '140px',
+        fontSize: '14px',
+        fontWeight: 500,
+        color: '#17263a',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+      }}>
+        {icon && <span style={{ color: 'rgba(23,38,58,0.4)' }}>{icon}</span>}
+        {label}
+      </div>
+      <div style={{ flex: 1 }}>
+        {children}
+      </div>
+    </div>
+  )
+
   return (
     <div className="appShell">
       <TopNav variant="solid" />
@@ -367,15 +396,22 @@ export function AccountSettingsPage() {
 
         <main className="appContent">
           <div className="accountSettingsPage">
-            <div className="authCard authCardCompact">
+            <div className="authCard" style={{
+              maxWidth: '900px',
+              width: '100%',
+              margin: '0 auto',
+              padding: '0',
+              overflow: 'hidden',
+              borderRadius: '16px'
+            }}>
               {/* Header with Back Button */}
               <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: '12px',
-                marginBottom: '24px',
-                paddingBottom: '16px',
-                borderBottom: '1px solid rgba(18, 38, 63, 0.08)'
+                padding: '20px 24px',
+                borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
+                background: '#f8fafc'
               }}>
                 <button
                   onClick={() => navigate('/wizard/summary')}
@@ -384,11 +420,11 @@ export function AccountSettingsPage() {
                     border: 'none',
                     cursor: 'pointer',
                     color: '#17263a',
-                    padding: '8px',
+                    padding: '6px 10px',
                     borderRadius: '8px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '8px',
+                    gap: '6px',
                     fontSize: '14px',
                     fontWeight: 500,
                     transition: 'all 0.2s ease'
@@ -400,7 +436,7 @@ export function AccountSettingsPage() {
                   Back
                 </button>
                 <h2 style={{
-                  fontSize: '20px',
+                  fontSize: '18px',
                   fontWeight: 700,
                   color: '#17263a',
                   margin: 0,
@@ -411,7 +447,7 @@ export function AccountSettingsPage() {
               </div>
 
               {loading ? (
-                <div style={{ textAlign: 'center', padding: '40px 0' }}>
+                <div style={{ textAlign: 'center', padding: '60px 0' }}>
                   <div style={{
                     width: '40px',
                     height: '40px',
@@ -424,14 +460,14 @@ export function AccountSettingsPage() {
                   <p style={{ marginTop: '16px', color: '#64748b' }}>Loading...</p>
                 </div>
               ) : (
-                <>
+                <div style={{ padding: '0' }}>
                   {error && (
                     <div style={{
-                      padding: '12px 16px',
+                      padding: '12px 20px',
+                      margin: '16px 24px',
                       background: '#fee2e2',
                       color: '#dc2626',
                       borderRadius: '8px',
-                      marginBottom: '16px',
                       fontSize: '14px'
                     }}>
                       ❌ {error}
@@ -440,35 +476,39 @@ export function AccountSettingsPage() {
                   
                   {success && (
                     <div style={{
-                      padding: '12px 16px',
+                      padding: '12px 20px',
+                      margin: '16px 24px',
                       background: '#dcfce7',
                       color: '#16a34a',
                       borderRadius: '8px',
-                      marginBottom: '16px',
                       fontSize: '14px'
                     }}>
                       ✅ {success}
                     </div>
                   )}
 
-                  {/* Email Address - With Update Button */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <label style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#17263a',
-                      display: 'block',
-                      marginBottom: '6px'
-                    }}>
-                      Email Address :
-                    </label>
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  {/* Email Address */}
+                  <FieldRow label="Email Address" icon={<IconMail />}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                       <div style={{ flex: 1 }}>
-                        <TextField
-                          placeholder="Email Address"
-                          icon={<IconMail />}
+                        <input
+                          type="email"
                           value={email}
-                          onChange={setEmail}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="Email Address"
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            border: '1px solid rgba(18, 38, 63, 0.12)',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            outline: 'none',
+                            background: 'white',
+                            transition: 'all 0.2s ease',
+                            height: '36px'
+                          }}
+                          onFocus={(e) => e.target.style.borderColor = '#0f4ea9'}
+                          onBlur={(e) => e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'}
                         />
                       </div>
                       <UpdateButton 
@@ -476,26 +516,30 @@ export function AccountSettingsPage() {
                         loading={saving.email}
                       />
                     </div>
-                  </div>
+                  </FieldRow>
 
                   {/* Phone Number */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <label style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#17263a',
-                      display: 'block',
-                      marginBottom: '6px'
-                    }}>
-                      Phone Number :
-                    </label>
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <FieldRow label="Phone Number" icon={<IconPhone />}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                       <div style={{ flex: 1 }}>
-                        <TextField
-                          placeholder="Phone Number"
-                          icon={<IconPhone />}
+                        <input
+                          type="tel"
                           value={phoneNumber}
-                          onChange={setPhoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value)}
+                          placeholder="Phone Number"
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            border: '1px solid rgba(18, 38, 63, 0.12)',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            outline: 'none',
+                            background: 'white',
+                            transition: 'all 0.2s ease',
+                            height: '36px'
+                          }}
+                          onFocus={(e) => e.target.style.borderColor = '#0f4ea9'}
+                          onBlur={(e) => e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'}
                         />
                       </div>
                       <UpdateButton 
@@ -503,67 +547,46 @@ export function AccountSettingsPage() {
                         loading={saving.phoneNumber}
                       />
                     </div>
-                  </div>
+                  </FieldRow>
 
                   {/* Language */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <label style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#17263a',
-                      display: 'block',
-                      marginBottom: '6px'
-                    }}>
-                      Language :
-                    </label>
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                  <FieldRow label="Language" icon={<IconGlobe />}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                       <div style={{ flex: 1 }}>
-                        <div style={{
-                          display: 'flex',
-                          border: '1px solid rgba(18, 38, 63, 0.12)',
-                          borderRadius: '10px',
-                          overflow: 'hidden'
-                        }}>
-                          <select
-                            value={language}
-                            onChange={(e) => setLanguage(e.target.value)}
-                            style={{
-                              width: '100%',
-                              padding: '10px 12px',
-                              border: 'none',
-                              outline: 'none',
-                              fontSize: '14px',
-                              background: 'white',
-                              fontFamily: 'inherit',
-                              cursor: 'pointer'
-                            }}
-                          >
-                            <option value="en">English</option>
-                            <option value="es">Spanish</option>
-                            <option value="en-es">English & Spanish</option>
-                          </select>
-                        </div>
+                        <select
+                          value={language}
+                          onChange={(e) => setLanguage(e.target.value)}
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            border: '1px solid rgba(18, 38, 63, 0.12)',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            background: 'white',
+                            fontFamily: 'inherit',
+                            cursor: 'pointer',
+                            height: '36px',
+                            outline: 'none'
+                          }}
+                          onFocus={(e) => e.target.style.borderColor = '#0f4ea9'}
+                          onBlur={(e) => e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'}
+                        >
+                          <option value="en">English</option>
+                          <option value="es">Spanish</option>
+                          <option value="en-es">English & Spanish</option>
+                        </select>
                       </div>
                       <UpdateButton 
                         onClick={() => updateField('language', language)}
                         loading={saving.language}
                       />
                     </div>
-                  </div>
+                  </FieldRow>
 
                   {/* Password */}
-                  <div style={{ marginBottom: '20px' }}>
-                    <label style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#17263a',
-                      display: 'block',
-                      marginBottom: '6px'
-                    }}>
-                      Password :
-                    </label>
-                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                      <div style={{ flex: 1 }}>
+                  <FieldRow label="Password" icon={<IconLock />}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: '200px' }}>
                         <PasswordInput
                           placeholder="Enter new password to change"
                           value={newPassword}
@@ -574,7 +597,7 @@ export function AccountSettingsPage() {
                         {passwordError && (
                           <div style={{
                             color: '#dc2626',
-                            fontSize: '12px',
+                            fontSize: '11px',
                             marginTop: '4px'
                           }}>
                             {passwordError}
@@ -589,15 +612,15 @@ export function AccountSettingsPage() {
                     </div>
                     {/* Confirm Password - only show if new password is entered */}
                     {newPassword && (
-                      <div style={{ marginTop: '12px' }}>
+                      <div style={{ marginTop: '8px' }}>
                         <label style={{
-                          fontSize: '13px',
+                          fontSize: '12px',
                           fontWeight: 500,
                           color: '#17263a',
                           display: 'block',
                           marginBottom: '4px'
                         }}>
-                          Confirm Password :
+                          Confirm Password
                         </label>
                         <PasswordInput
                           placeholder="Confirm new password"
@@ -608,18 +631,18 @@ export function AccountSettingsPage() {
                         />
                       </div>
                     )}
-                  </div>
+                  </FieldRow>
 
                   {/* Report Issue & Delete Account */}
                   <div style={{
-                    paddingTop: '20px',
-                    marginTop: '10px',
-                    borderTop: '1px solid rgba(18, 38, 63, 0.08)',
+                    padding: '16px 24px',
+                    borderTop: '1px solid rgba(18, 38, 63, 0.06)',
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     flexWrap: 'wrap',
-                    gap: '12px'
+                    gap: '12px',
+                    background: '#f8fafc'
                   }}>
                     <button
                       onClick={() => window.open('mailto:support@tradesmap.com', '_blank')}
@@ -627,7 +650,7 @@ export function AccountSettingsPage() {
                         background: 'none',
                         border: 'none',
                         color: '#0f4ea9',
-                        fontSize: '14px',
+                        fontSize: '13px',
                         fontWeight: 500,
                         cursor: 'pointer',
                         padding: '4px 0',
@@ -645,7 +668,7 @@ export function AccountSettingsPage() {
                         background: 'none',
                         border: 'none',
                         color: '#dc2626',
-                        fontSize: '14px',
+                        fontSize: '13px',
                         fontWeight: 500,
                         cursor: 'pointer',
                         padding: '4px 0',
@@ -661,7 +684,7 @@ export function AccountSettingsPage() {
                   {/* Delete Confirmation */}
                   {showDeleteConfirm && (
                     <div style={{
-                      marginTop: '16px',
+                      margin: '16px 24px',
                       padding: '16px',
                       background: '#fee2e2',
                       borderRadius: '10px',
@@ -739,7 +762,7 @@ export function AccountSettingsPage() {
                       </div>
                     </div>
                   )}
-                </>
+                </div>
               )}
             </div>
           </div>
@@ -753,7 +776,7 @@ export function AccountSettingsPage() {
         }
         
         .accountSettingsPage {
-          max-width: 560px;
+          max-width: 940px;
           margin: 0 auto;
           padding: 24px;
         }
@@ -761,6 +784,9 @@ export function AccountSettingsPage() {
         @media (max-width: 768px) {
           .accountSettingsPage {
             padding: 16px;
+          }
+          .accountSettingsPage .authCard {
+            max-width: 100% !important;
           }
         }
       `}</style>
