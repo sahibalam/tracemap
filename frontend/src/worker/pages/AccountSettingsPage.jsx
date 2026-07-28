@@ -538,7 +538,7 @@ export function AccountSettingsPage() {
                     </div>
                   )}
 
-                  {/* Save Button */}
+                  {/* ✅ UPDATE BUTTON */}
                   <button
                     onClick={handleSave}
                     disabled={saving}
@@ -563,7 +563,7 @@ export function AccountSettingsPage() {
                       if (!saving) e.currentTarget.style.background = '#0f4ea9'
                     }}
                   >
-                    {saving ? 'Saving...' : 'Save Changes'}
+                    {saving ? 'Updating...' : 'Update'}
                   </button>
 
                   {/* Report Issue & Delete Account */}
