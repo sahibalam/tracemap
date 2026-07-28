@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { TopNav } from '../../common/components/TopNav'
 import { TextField } from '../../common/components/TextField'
-import { IconUser, IconMail, IconPhone, IconLock, IconArrowLeft } from '../../common/components/Icons'
+import { IconUser, IconMail, IconPhone, IconGlobe, IconLock, IconArrowLeft } from '../../common/components/Icons'
 import api from '../../services/api'
 import workerService from '../services/workerService'
 
@@ -106,9 +106,7 @@ export function AccountSettingsPage() {
   const [currentPassword, setCurrentPassword] = useState('')
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false)
-  const [showNewPassword, setShowNewPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const [passwordError, setPasswordError] = useState('')
   
   // Delete account
@@ -157,18 +155,6 @@ export function AccountSettingsPage() {
     }
   }
 
-  const validatePassword = (password) => {
-    if (password.length < 8) {
-      return { valid: false, message: 'Password must be at least 8 characters' }
-    }
-    const hasLetter = /[A-Za-z]/.test(password)
-    const hasNumber = /[0-9]/.test(password)
-    if (!hasLetter || !hasNumber) {
-      return { valid: false, message: 'Password must contain letters and numbers' }
-    }
-    return { valid: true, message: '' }
-  }
-
   const handleSave = async () => {
     try {
       setSaving(true)
@@ -201,9 +187,8 @@ export function AccountSettingsPage() {
       
       // Update password if provided
       if (newPassword) {
-        const validation = validatePassword(newPassword)
-        if (!validation.valid) {
-          setPasswordError(validation.message)
+        if (newPassword.length < 8) {
+          setPasswordError('Password must be at least 8 characters')
           setSaving(false)
           return
         }
@@ -385,7 +370,7 @@ export function AccountSettingsPage() {
               </div>
 
               {loading ? (
-                <div style={{ textAlign: 'center', padding: '60px 0' }}>
+                <div style={{ textAlign: 'center', padding: '40px 0' }}>
                   <div style={{
                     width: '40px',
                     height: '40px',
@@ -425,77 +410,36 @@ export function AccountSettingsPage() {
                     </div>
                   )}
 
-                  {/* Email - Read Only */}
-                  <div style={{ marginBottom: '16px' }}>
+                  {/* Email Address */}
+                  <div style={{ marginBottom: '20px' }}>
                     <label style={{
                       fontSize: '14px',
                       fontWeight: 600,
                       color: '#17263a',
                       display: 'block',
-                      marginBottom: '4px'
+                      marginBottom: '6px'
                     }}>
-                      Email Address
+                      Email Address :
                     </label>
                     <TextField
-                      placeholder="Email"
+                      placeholder="Email Address"
                       icon={<IconMail />}
                       value={email}
                       onChange={setEmail}
                       readOnly
                     />
-                    <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-                      Email address cannot be changed
-                    </div>
-                  </div>
-
-                  {/* First Name */}
-                  <div style={{ marginBottom: '16px' }}>
-                    <label style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#17263a',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>
-                      First Name
-                    </label>
-                    <TextField
-                      placeholder="First Name"
-                      icon={<IconUser />}
-                      value={firstName}
-                      onChange={setFirstName}
-                    />
-                  </div>
-
-                  {/* Last Name */}
-                  <div style={{ marginBottom: '16px' }}>
-                    <label style={{
-                      fontSize: '14px',
-                      fontWeight: 600,
-                      color: '#17263a',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>
-                      Last Name
-                    </label>
-                    <TextField
-                      placeholder="Last Name"
-                      icon={<IconUser />}
-                      value={lastName}
-                      onChange={setLastName}
-                    />
                   </div>
 
                   {/* Phone Number */}
-                  <div style={{ marginBottom: '16px' }}>
+                  <div style={{ marginBottom: '20px' }}>
                     <label style={{
                       fontSize: '14px',
                       fontWeight: 600,
                       color: '#17263a',
                       display: 'block',
-                      marginBottom: '4px'
+                      marginBottom: '6px'
                     }}>
-                      Phone Number
+                      Phone Number :
                     </label>
                     <TextField
                       placeholder="Phone Number"
@@ -506,15 +450,15 @@ export function AccountSettingsPage() {
                   </div>
 
                   {/* Language */}
-                  <div style={{ marginBottom: '16px' }}>
+                  <div style={{ marginBottom: '20px' }}>
                     <label style={{
                       fontSize: '14px',
                       fontWeight: 600,
                       color: '#17263a',
                       display: 'block',
-                      marginBottom: '4px'
+                      marginBottom: '6px'
                     }}>
-                      Language
+                      Language :
                     </label>
                     <div style={{
                       display: 'flex',
@@ -543,78 +487,24 @@ export function AccountSettingsPage() {
                     </div>
                   </div>
 
-                  {/* Password Section */}
-                  <div style={{
-                    marginTop: '24px',
-                    paddingTop: '24px',
-                    borderTop: '1px solid rgba(18, 38, 63, 0.08)'
-                  }}>
-                    <h3 style={{
-                      fontSize: '16px',
+                  {/* Password */}
+                  <div style={{ marginBottom: '20px' }}>
+                    <label style={{
+                      fontSize: '14px',
                       fontWeight: 600,
                       color: '#17263a',
-                      margin: '0 0 12px 0'
+                      display: 'block',
+                      marginBottom: '6px'
                     }}>
-                      Change Password
-                    </h3>
-                    
-                    <div style={{ marginBottom: '12px' }}>
-                      <label style={{
-                        fontSize: '13px',
-                        fontWeight: 500,
-                        color: '#17263a',
-                        display: 'block',
-                        marginBottom: '4px'
-                      }}>
-                        Current Password
-                      </label>
-                      <PasswordInput
-                        placeholder="Enter current password"
-                        value={currentPassword}
-                        onChange={setCurrentPassword}
-                        showPassword={showCurrentPassword}
-                        onToggle={() => setShowCurrentPassword(!showCurrentPassword)}
-                      />
-                    </div>
-
-                    <div style={{ marginBottom: '12px' }}>
-                      <label style={{
-                        fontSize: '13px',
-                        fontWeight: 500,
-                        color: '#17263a',
-                        display: 'block',
-                        marginBottom: '4px'
-                      }}>
-                        New Password
-                      </label>
-                      <PasswordInput
-                        placeholder="Enter new password"
-                        value={newPassword}
-                        onChange={setNewPassword}
-                        showPassword={showNewPassword}
-                        onToggle={() => setShowNewPassword(!showNewPassword)}
-                      />
-                    </div>
-
-                    <div style={{ marginBottom: '12px' }}>
-                      <label style={{
-                        fontSize: '13px',
-                        fontWeight: 500,
-                        color: '#17263a',
-                        display: 'block',
-                        marginBottom: '4px'
-                      }}>
-                        Confirm New Password
-                      </label>
-                      <PasswordInput
-                        placeholder="Confirm new password"
-                        value={confirmPassword}
-                        onChange={setConfirmPassword}
-                        showPassword={showConfirmPassword}
-                        onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
-                      />
-                    </div>
-
+                      Password :
+                    </label>
+                    <PasswordInput
+                      placeholder="Enter new password to change"
+                      value={newPassword}
+                      onChange={setNewPassword}
+                      showPassword={showPassword}
+                      onToggle={() => setShowPassword(!showPassword)}
+                    />
                     {passwordError && (
                       <div style={{
                         color: '#dc2626',
@@ -626,6 +516,28 @@ export function AccountSettingsPage() {
                     )}
                   </div>
 
+                  {/* Confirm Password (only show if new password is entered) */}
+                  {newPassword && (
+                    <div style={{ marginBottom: '20px' }}>
+                      <label style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: '#17263a',
+                        display: 'block',
+                        marginBottom: '6px'
+                      }}>
+                        Confirm Password :
+                      </label>
+                      <PasswordInput
+                        placeholder="Confirm new password"
+                        value={confirmPassword}
+                        onChange={setConfirmPassword}
+                        showPassword={showPassword}
+                        onToggle={() => setShowPassword(!showPassword)}
+                      />
+                    </div>
+                  )}
+
                   {/* Save Button */}
                   <button
                     onClick={handleSave}
@@ -633,7 +545,8 @@ export function AccountSettingsPage() {
                     style={{
                       width: '100%',
                       padding: '12px',
-                      marginTop: '24px',
+                      marginTop: '12px',
+                      marginBottom: '24px',
                       background: saving ? '#94a3b8' : '#0f4ea9',
                       color: 'white',
                       border: 'none',
@@ -655,8 +568,7 @@ export function AccountSettingsPage() {
 
                   {/* Report Issue & Delete Account */}
                   <div style={{
-                    marginTop: '24px',
-                    paddingTop: '24px',
+                    paddingTop: '20px',
                     borderTop: '1px solid rgba(18, 38, 63, 0.08)',
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -673,8 +585,11 @@ export function AccountSettingsPage() {
                         fontSize: '14px',
                         fontWeight: 500,
                         cursor: 'pointer',
-                        padding: '4px 0'
+                        padding: '4px 0',
+                        transition: 'color 0.2s ease'
                       }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#0b3f90'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#0f4ea9'}
                     >
                       Report an issue
                     </button>
@@ -688,8 +603,11 @@ export function AccountSettingsPage() {
                         fontSize: '14px',
                         fontWeight: 500,
                         cursor: 'pointer',
-                        padding: '4px 0'
+                        padding: '4px 0',
+                        transition: 'color 0.2s ease'
                       }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#b91c1c'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#dc2626'}
                     >
                       Delete my Account
                     </button>
@@ -790,7 +708,7 @@ export function AccountSettingsPage() {
         }
         
         .accountSettingsPage {
-          max-width: 600px;
+          max-width: 560px;
           margin: 0 auto;
           padding: 24px;
         }
