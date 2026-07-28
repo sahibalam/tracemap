@@ -1,4 +1,191 @@
-// index.js
+// // index.js
+// import dotenv from "dotenv";
+// dotenv.config();
+
+// import express from "express";
+// import cors from "cors";
+
+// // ============================================
+// // 📦 Import Routes
+// // ============================================
+// import authRoutes from "./src/routes/authRoutes.js";
+// import workerWizardRoutes from "./src/routes/workerWizardRoutes.js";
+// import workerRoutes from "./src/routes/workerRoutes.js";
+// import createEmailLogsTable from "./src/config/createEmailLogsTable.js";
+// import createPhoneLogsTable from "./src/config/createPhoneLogsTable.js";
+
+// const app = express();
+// const PORT = process.env.PORT || 5001;
+
+// // ============================================
+// // ✅ Create Tables on Startup
+// // ============================================
+// console.log("📊 Checking/Creating tables...");
+// await createEmailLogsTable();
+// await createPhoneLogsTable();
+
+// // ============================================
+// // 🔐 CORS Configuration
+// // ============================================
+// const allowedOrigins = [
+//   process.env.FRONTEND_URL || "https://tradesmap.com",
+//   "https://www.tradesmap.com",
+//   "http://localhost:5173",
+//   "http://localhost:3000",
+//   "http://localhost:5174",
+//   "https://tradesmap.com",
+//   "http://172.31.43.234:5173",
+//   "http://127.0.0.1:5173",
+// ];
+
+// app.use(cors({
+//   origin: function (origin, callback) {
+//     if (!origin) return callback(null, true);
+//     if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === "development") {
+//       callback(null, true);
+//     } else {
+//       console.log(`❌ CORS blocked: ${origin}`);
+//       if (process.env.NODE_ENV === "development") {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     }
+//   },
+//   credentials: true,
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//   allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+// }));
+
+// // ============================================
+// // 📊 Middleware
+// // ============================================
+// app.use(express.json({ limit: "50mb" }));
+// app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+
+// app.use((req, res, next) => {
+//   console.log(`📡 ${req.method} ${req.url}`);
+//   next();
+// });
+
+// // ============================================
+// // 🛣️ Routes
+// // ============================================
+
+// // 🔐 Auth Routes - Mount at /api
+// app.use("/api", authRoutes);
+
+// // 📝 Worker Wizard Routes
+// app.use("/api", workerWizardRoutes);
+
+// // 👷 Worker Profile Routes
+// app.use("/api/worker", workerRoutes);
+
+// // ============================================
+// // 🏥 Health Check
+// // ============================================
+// app.get("/health", (req, res) => {
+//   res.json({
+//     status: "OK",
+//     timestamp: new Date().toISOString(),
+//     environment: process.env.NODE_ENV || "development",
+//     port: PORT,
+//     frontend: process.env.FRONTEND_URL,
+//     services: {
+//       auth: "/api/auth/*",
+//       wizard: "/api/wizard/*",
+//       upload: "/api/upload/*",
+//       worker: "/api/worker/*",
+//     },
+//     aws: {
+//       region: process.env.AWS_REGION,
+//       bucket: process.env.S3_BUCKET_NAME || "Not configured",
+//       tables: {
+//         workerWizard: process.env.WORKER_WIZARD_TABLE || "WorkerWizard",
+//         workers: process.env.WORKERS_TABLE || "Workers",
+//         emailChangeLogs: "EmailChangeLogs",
+//         phoneChangeLogs: "PhoneChangeLogs",
+//       },
+//     },
+//   });
+// });
+
+// // ============================================
+// // ❌ Error Handling Middleware
+// // ============================================
+// app.use((err, req, res, next) => {
+//   console.error("❌ Error:", err.message);
+//   console.error(err.stack);
+
+//   res.status(err.status || 500).json({
+//     success: false,
+//     message: err.message || "Internal server error",
+//     ...(process.env.NODE_ENV === "development" && { stack: err.stack }),
+//   });
+// });
+
+// // ============================================
+// // 🚀 Start Server
+// // ============================================
+// app.listen(PORT, () => {
+//   console.log("========================================");
+//   console.log("🚀 TradesMap Backend Server");
+//   console.log("========================================");
+//   console.log(`📡 Server running on port: ${PORT}`);
+//   console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
+//   console.log(`🔗 Frontend URL: ${process.env.FRONTEND_URL || "Not set"}`);
+//   console.log(`📦 S3 Bucket: ${process.env.S3_BUCKET_NAME || "Not configured"}`);
+//   console.log(`🔄 DynamoDB Tables:`);
+//   console.log(`   - WorkerWizard: ${process.env.WORKER_WIZARD_TABLE || "WorkerWizard"}`);
+//   console.log(`   - Workers: ${process.env.WORKERS_TABLE || "Workers"}`);
+//   console.log(`   - EmailChangeLogs: EmailChangeLogs (✅ Created on startup)`);
+//   console.log(`   - PhoneChangeLogs: PhoneChangeLogs (✅ Created on startup)`);
+//   console.log(`✅ CORS enabled for: ${allowedOrigins.join(", ")}`);
+//   console.log("========================================");
+//   console.log("📋 Available Endpoints:");
+//   console.log(`   GET  /health`);
+//   console.log(`   👤 AUTH ROUTES (via /api/auth):`);
+//   console.log(`   POST /api/auth/register`);
+//   console.log(`   POST /api/auth/login`);
+//   console.log(`   POST /api/auth/send-verification`);
+//   console.log(`   POST /api/auth/verify-email-code`);
+//   console.log(`   GET  /api/auth/check-verification`);
+//   console.log(`   POST /api/auth/forgot-password`);
+//   console.log(`   POST /api/auth/reset-password`);
+//   console.log(`   📧 EMAIL UPDATE ROUTES:`);
+//   console.log(`   POST /api/auth/request-email-update`);
+//   console.log(`   POST /api/auth/verify-email-update`);
+//   console.log(`   GET  /api/auth/check-email-availability`);
+//   console.log(`   📱 PHONE UPDATE ROUTES (NEW):`);
+//   console.log(`   POST /api/auth/request-phone-update`);
+//   console.log(`   POST /api/auth/verify-phone-update`);
+//   console.log(`   GET  /api/auth/check-phone-availability`);
+//   console.log(`   📝 WIZARD ROUTES (via /api/wizard):`);
+//   console.log(`   POST /api/wizard/step`);
+//   console.log(`   GET  /api/wizard/progress/:userId`);
+//   console.log(`   POST /api/wizard/complete`);
+//   console.log(`   📤 UPLOAD ROUTES (via /api/upload):`);
+//   console.log(`   POST /api/upload/profile`);
+//   console.log(`   POST /api/upload/certificate`);
+//   console.log(`   GET  /api/upload/view/:fileKey`);
+//   console.log(`   DELETE /api/upload/:fileKey`);
+//   console.log(`   👷 WORKER ROUTES (via /api/worker):`);
+//   console.log(`   GET  /api/worker/profile/:userId`);
+//   console.log(`   PUT  /api/worker/profile/:userId`);
+//   console.log(`   PATCH /api/worker/profile/:userId/section/:section`);
+//   console.log(`   DELETE /api/worker/profile/:userId`);
+//   console.log(`   GET  /api/worker/email/:email`);
+//   console.log(`   GET  /api/worker/phone/:phone`);
+//   console.log(`   GET  /api/worker/all`);
+//   console.log(`   GET  /api/worker/:userId/availability`);
+//   console.log(`   GET  /api/worker/:userId/trade`);
+//   console.log(`   GET  /api/worker/:userId/certifications`);
+//   console.log(`   GET  /api/worker/:userId/work-history`);
+//   console.log("========================================");
+// });
+
+
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -25,7 +212,7 @@ await createEmailLogsTable();
 await createPhoneLogsTable();
 
 // ============================================
-// 🔐 CORS Configuration
+// 🔐 CORS Configuration - FIXED
 // ============================================
 const allowedOrigins = [
   process.env.FRONTEND_URL || "https://tradesmap.com",
@@ -36,25 +223,51 @@ const allowedOrigins = [
   "https://tradesmap.com",
   "http://172.31.43.234:5173",
   "http://127.0.0.1:5173",
+  "http://172.31.43.234:5174",
+  "http://192.168.1.100:5173",
+  "http://192.168.1.100:5174",
+  // ✅ Add your frontend IP/port here
+  "http://localhost:5175",
+  "http://127.0.0.1:5174",
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
+    // ✅ Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === "development") {
-      callback(null, true);
-    } else {
-      console.log(`❌ CORS blocked: ${origin}`);
-      if (process.env.NODE_ENV === "development") {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
+    
+    // ✅ Allow if origin is in the list
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      return callback(null, true);
     }
+    
+    // ✅ Allow all localhost origins (for development)
+    if (origin.match(/^http:\/\/localhost:\d+$/)) {
+      return callback(null, true);
+    }
+    
+    // ✅ Allow all 172.31.43.234 origins (for development)
+    if (origin.match(/^http:\/\/172\.31\.43\.234:\d+$/)) {
+      return callback(null, true);
+    }
+    
+    console.log(`❌ CORS blocked: ${origin}`);
+    callback(new Error("Not allowed by CORS"));
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type", 
+    "Authorization", 
+    "X-Requested-With",
+    "Accept",
+    "Origin",
+    "Access-Control-Allow-Origin",
+    "Access-Control-Allow-Headers",
+    "Access-Control-Allow-Methods"
+  ],
+  exposedHeaders: ["Content-Range", "X-Content-Range"],
+  maxAge: 3600,
 }));
 
 // ============================================
@@ -156,7 +369,7 @@ app.listen(PORT, () => {
   console.log(`   POST /api/auth/request-email-update`);
   console.log(`   POST /api/auth/verify-email-update`);
   console.log(`   GET  /api/auth/check-email-availability`);
-  console.log(`   📱 PHONE UPDATE ROUTES (NEW):`);
+  console.log(`   📱 PHONE UPDATE ROUTES:`);
   console.log(`   POST /api/auth/request-phone-update`);
   console.log(`   POST /api/auth/verify-phone-update`);
   console.log(`   GET  /api/auth/check-phone-availability`);
