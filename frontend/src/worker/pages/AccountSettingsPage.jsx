@@ -5251,9 +5251,6 @@ import {
   verifyPhoneOTP
 } from '../../services/verificationService'
 
-// ✅ Import auth from firebase
-import { auth } from '../../firebase/config'
-
 // Password Input Component
 function PasswordInput({ placeholder, value, onChange, showPassword, onToggle }) {
   return (
@@ -5417,13 +5414,39 @@ export function AccountSettingsPage() {
   const [phoneResendCooldown, setPhoneResendCooldown] = useState(0)
   const phoneCodeInputRef = useRef(null)
   const phoneCooldownIntervalRef = useRef(null)
-  const recaptchaContainerRef = useRef(null)
   
   // Delete account
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [deleteConfirmText, setDeleteConfirmText] = useState('')
   
   const userId = localStorage.getItem('userId')
+
+  // ✅ FIX: Create reCAPTCHA container ONCE when component mounts
+  useEffect(() => {
+    // Create container in body, hidden off-screen
+    let container = document.getElementById('recaptcha-container-phone')
+    if (!container) {
+      container = document.createElement('div')
+      container.id = 'recaptcha-container-phone'
+      container.style.position = 'fixed'
+      container.style.bottom = '-9999px'
+      container.style.left = '0'
+      container.style.width = '1px'
+      container.style.height = '1px'
+      container.style.opacity = '0'
+      container.style.pointerEvents = 'none'
+      document.body.appendChild(container)
+      console.log('📱 reCAPTCHA container created in body')
+    }
+    
+    return () => {
+      // Cleanup on unmount
+      const el = document.getElementById('recaptcha-container-phone')
+      if (el) {
+        el.remove()
+      }
+    }
+  }, [])
 
   // Load user data
   useEffect(() => {
@@ -6205,9 +6228,9 @@ export function AccountSettingsPage() {
                     </div>
                   </FieldRow>
 
-                  {/* ✅ Phone Number - With reCAPTCHA (SAME AS WorkerVerifyPage) */}
+                  {/* ✅ Phone Number - With reCAPTCHA (FIXED) */}
                   <FieldRow label="Phone Number" icon={<IconPhone />}>
-                    <div className="phone-verification-container">
+                    <div>
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
                           <input
@@ -6251,16 +6274,6 @@ export function AccountSettingsPage() {
                           ) : null}
                         </div>
                       )}
-
-                      {/* ✅ reCAPTCHA container - Always rendered (same as WorkerVerifyPage) */}
-                      <div 
-                        id="recaptcha-container-phone" 
-                        ref={recaptchaContainerRef}
-                        style={{ 
-                          marginTop: '12px',
-                          minHeight: '60px'
-                        }}
-                      ></div>
 
                       {showPhoneVerification && (
                         <div style={{ marginTop: '8px', padding: '12px', background: '#f0f7ff', borderRadius: '8px', border: '1px solid rgba(15,78,169,0.2)' }}>
