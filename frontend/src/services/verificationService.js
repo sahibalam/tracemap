@@ -586,8 +586,6 @@
 
 
 
-
-
 // frontend/src/services/verificationService.js
 import { 
   auth, 
@@ -600,9 +598,6 @@ import api from './api'
 // 📧 EMAIL VERIFICATION - Using Backend API (Code-based)
 // ============================================================
 
-/**
- * Send email verification code via backend API
- */
 export const sendEmailVerificationCode = async (email) => {
   try {
     const response = await api.post('/auth/send-verification', { email })
@@ -616,9 +611,6 @@ export const sendEmailVerificationCode = async (email) => {
   }
 }
 
-/**
- * Verify email with code via backend API
- */
 export const verifyEmailWithCode = async (email, code) => {
   try {
     const response = await api.post('/auth/verify-email-code', { email, code })
@@ -632,9 +624,6 @@ export const verifyEmailWithCode = async (email, code) => {
   }
 }
 
-/**
- * Check email verification status
- */
 export const checkEmailVerification = async (email) => {
   try {
     const response = await api.get(`/auth/check-verification?email=${encodeURIComponent(email)}`)
@@ -652,12 +641,6 @@ export const checkEmailVerification = async (email) => {
 // 📧 EMAIL UPDATE - Functions
 // ============================================================
 
-/**
- * Request email update - sends verification code to new email
- * @param {string} userId - User ID
- * @param {string} newEmail - New email address
- * @param {string} currentPassword - Current password (optional)
- */
 export const requestEmailUpdate = async (userId, newEmail, currentPassword = '') => {
   try {
     const response = await api.post('/auth/request-email-update', {
@@ -675,11 +658,6 @@ export const requestEmailUpdate = async (userId, newEmail, currentPassword = '')
   }
 }
 
-/**
- * Verify email update code and complete the update
- * @param {string} newEmail - New email address
- * @param {string} code - Verification code
- */
 export const verifyEmailUpdate = async (newEmail, code) => {
   try {
     const response = await api.post('/auth/verify-email-update', {
@@ -696,10 +674,6 @@ export const verifyEmailUpdate = async (newEmail, code) => {
   }
 }
 
-/**
- * Check if email is available (not already registered)
- * Real-time email availability check
- */
 export const checkEmailAvailability = async (email) => {
   try {
     const response = await api.get(`/auth/check-email-availability?email=${encodeURIComponent(email)}`)
@@ -714,70 +688,62 @@ export const checkEmailAvailability = async (email) => {
 }
 
 // ============================================================
-// 📱 PHONE VERIFICATION - Using Firebase
+// 📱 PHONE VERIFICATION - Using Firebase (SIMPLE VERSION)
 // ============================================================
 
 /**
- * Setup reCAPTCHA for phone verification - RETURNS A PROMISE
+ * Setup reCAPTCHA for phone verification
  * @param {string} containerId - DOM element ID for reCAPTCHA
- * @returns {Promise<RecaptchaVerifier>}
+ * @returns {RecaptchaVerifier} The reCAPTCHA verifier instance
  */
 export const setupRecaptcha = (containerId) => {
-  return new Promise((resolve, reject) => {
-    try {
-      // Clear existing verifier
-      if (window.recaptchaVerifier) {
-        try {
-          window.recaptchaVerifier.clear()
-        } catch (e) {
-          console.log('Clearing existing verifier:', e)
-        }
-        window.recaptchaVerifier = null
+  try {
+    // Clear existing verifier
+    if (window.recaptchaVerifier) {
+      try {
+        window.recaptchaVerifier.clear()
+      } catch (e) {
+        console.log('Clearing existing verifier:', e)
       }
-      
-      console.log('🔐 Setting up reCAPTCHA with container:', containerId)
-      
-      // Check if container exists
-      const container = document.getElementById(containerId)
-      if (!container) {
-        console.error('❌ reCAPTCHA container not found:', containerId)
-        reject(new Error('reCAPTCHA container not found'))
-        return
-      }
-      
-      // Clear container
-      container.innerHTML = ''
-      
-      // Create new verifier with invisible size
-      const verifier = new RecaptchaVerifier(auth, containerId, {
-        size: 'invisible',
-        callback: (response) => {
-          console.log('✅ reCAPTCHA verified with response:', response)
-        },
-        'expired-callback': () => {
-          console.log('⏳ reCAPTCHA expired')
-          window.recaptchaVerifier = null
-        },
-        'error-callback': (error) => {
-          console.error('❌ reCAPTCHA error:', error)
-        }
-      })
-      
-      // Render the reCAPTCHA
-      verifier.render().then((widgetId) => {
-        console.log('✅ reCAPTCHA rendered with widget ID:', widgetId)
-        window.recaptchaVerifier = verifier
-        resolve(verifier)
-      }).catch((error) => {
-        console.error('❌ reCAPTCHA render error:', error)
-        reject(error)
-      })
-      
-    } catch (error) {
-      console.error('❌ setupRecaptcha error:', error)
-      reject(error)
+      window.recaptchaVerifier = null
     }
-  })
+    
+    console.log('🔐 Setting up reCAPTCHA with container:', containerId)
+    
+    // Check if container exists
+    const container = document.getElementById(containerId)
+    if (!container) {
+      console.error('❌ reCAPTCHA container not found:', containerId)
+      return null
+    }
+    
+    // Clear container
+    container.innerHTML = ''
+    
+    // Create new verifier with invisible size
+    const verifier = new RecaptchaVerifier(auth, containerId, {
+      size: 'invisible',
+      callback: (response) => {
+        console.log('✅ reCAPTCHA verified with response:', response)
+      },
+      'expired-callback': () => {
+        console.log('⏳ reCAPTCHA expired')
+        window.recaptchaVerifier = null
+      },
+      'error-callback': (error) => {
+        console.error('❌ reCAPTCHA error:', error)
+      }
+    })
+    
+    // Store in window for access
+    window.recaptchaVerifier = verifier
+    console.log('✅ reCAPTCHA verifier created')
+    
+    return verifier
+  } catch (error) {
+    console.error('❌ setupRecaptcha error:', error)
+    return null
+  }
 }
 
 /**
