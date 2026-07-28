@@ -3776,7 +3776,6 @@
 
 
 
-
 // src/worker/pages/AccountSettingsPage.jsx
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -3945,7 +3944,7 @@ export function AccountSettingsPage() {
   const emailCodeInputRef = useRef(null)
   const cooldownIntervalRef = useRef(null)
 
-  // ✅ Phone update fields with reCAPTCHA
+  // Phone update fields with reCAPTCHA
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [isPhoneAvailable, setIsPhoneAvailable] = useState(false)
   const [isCheckingPhone, setIsCheckingPhone] = useState(false)
@@ -3960,6 +3959,7 @@ export function AccountSettingsPage() {
   const phoneCooldownIntervalRef = useRef(null)
   const recaptchaContainerRef = useRef(null)
   const recaptchaVerifierRef = useRef(null)
+  const isRecaptchaReadyRef = useRef(false)
   
   // Delete account
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -4172,32 +4172,94 @@ export function AccountSettingsPage() {
   }
 
   // ============================================================
-  // 📱 PHONE UPDATE FUNCTIONS WITH reCAPTCHA
+  // 📱 PHONE UPDATE FUNCTIONS WITH reCAPTCHA - FIXED
   // ============================================================
 
-  // ✅ Setup reCAPTCHA for phone verification
+  // Check if reCAPTCHA container exists
+  const ensureRecaptchaContainer = useCallback(() => {
+    let container = document.getElementById('recaptcha-container-phone')
+    if (!container) {
+      console.log('📱 Creating reCAPTCHA container...')
+      container = document.createElement('div')
+      container.id = 'recaptcha-container-phone'
+      container.style.width = '100%'
+      container.style.minHeight = '60px'
+      container.style.marginTop = '12px'
+      container.style.display = 'block'
+      // Find the parent container
+      const parent = document.querySelector('.phone-verification-container')
+      if (parent) {
+        parent.appendChild(container)
+      } else {
+        // Fallback: append to body
+        document.body.appendChild(container)
+      }
+    }
+    return container
+  }, [])
+
+  // ✅ Setup reCAPTCHA - FIXED
   const setupPhoneRecaptcha = useCallback(() => {
     try {
-      const container = document.getElementById('recaptcha-container-phone')
+      // Ensure container exists
+      const container = ensureRecaptchaContainer()
       if (!container) {
-        console.log('⏳ reCAPTCHA container not ready')
+        console.error('❌ reCAPTCHA container not found')
         return null
       }
-      
+
+      // Clear existing verifier
+      if (recaptchaVerifierRef.current) {
+        try {
+          recaptchaVerifierRef.current.clear()
+        } catch (e) {}
+        recaptchaVerifierRef.current = null
+      }
+
       console.log('✅ Setting up reCAPTCHA...')
-      const verifier = setupRecaptcha('recaptcha-container-phone')
-      recaptchaVerifierRef.current = verifier
+      
+      // Create new verifier with proper configuration
+      const verifier = new RecaptchaVerifier(
+        auth,
+        'recaptcha-container-phone',
+        {
+          size: 'invisible',
+          callback: (response) => {
+            console.log('✅ reCAPTCHA verified:', response)
+            isRecaptchaReadyRef.current = true
+          },
+          'expired-callback': () => {
+            console.log('⏳ reCAPTCHA expired')
+            isRecaptchaReadyRef.current = false
+          }
+        }
+      )
+      
+      // Render the reCAPTCHA
+      verifier.render().then((widgetId) => {
+        console.log('✅ reCAPTCHA rendered with widget ID:', widgetId)
+        isRecaptchaReadyRef.current = true
+        recaptchaVerifierRef.current = verifier
+      }).catch((error) => {
+        console.error('❌ reCAPTCHA render error:', error)
+        isRecaptchaReadyRef.current = false
+      })
+      
       return verifier
     } catch (error) {
       console.error('❌ reCAPTCHA setup error:', error)
       return null
     }
-  }, [])
+  }, [ensureRecaptchaContainer])
 
   // ✅ Setup reCAPTCHA when phone verification is shown
   useEffect(() => {
     if (showPhoneVerification) {
-      setTimeout(setupPhoneRecaptcha, 300)
+      // Delay to ensure DOM is ready
+      const timer = setTimeout(() => {
+        setupPhoneRecaptcha()
+      }, 500)
+      return () => clearTimeout(timer)
     }
   }, [showPhoneVerification, setupPhoneRecaptcha])
 
@@ -4257,7 +4319,7 @@ export function AccountSettingsPage() {
     return () => clearTimeout(timer)
   }, [newPhoneNumber])
 
-  // ✅ Send phone OTP with reCAPTCHA
+  // ✅ Send phone OTP with reCAPTCHA - FIXED
   const handleSendPhoneOTP = async () => {
     if (!newPhoneNumber || !isPhoneAvailable) {
       setError('Please enter a valid and available phone number')
@@ -4269,15 +4331,18 @@ export function AccountSettingsPage() {
     setSuccess('')
 
     try {
-      // ✅ Setup reCAPTCHA first
+      // ✅ Ensure reCAPTCHA is set up
       let recaptchaVerifier = recaptchaVerifierRef.current
-      if (!recaptchaVerifier) {
+      if (!recaptchaVerifier || !isRecaptchaReadyRef.current) {
+        console.log('📱 Setting up reCAPTCHA...')
         recaptchaVerifier = setupPhoneRecaptcha()
         if (!recaptchaVerifier) {
-          setError('Failed to initialize reCAPTCHA. Please refresh and try again.')
+          setError('Failed to initialize security verification. Please refresh and try again.')
           setIsPhoneCodeSending(false)
           return
         }
+        // Wait for reCAPTCHA to be ready
+        await new Promise(resolve => setTimeout(resolve, 1000))
       }
 
       console.log('📱 Sending OTP to:', newPhoneNumber)
@@ -4651,7 +4716,7 @@ export function AccountSettingsPage() {
                     </div>
                   )}
 
-                  {/* Email Address */}
+                  {/* Email Address - Keep as is */}
                   <FieldRow label="Email Address" icon={<IconMail />}>
                     <div>
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -4781,9 +4846,9 @@ export function AccountSettingsPage() {
                     </div>
                   </FieldRow>
 
-                  {/* ✅ Phone Number - With reCAPTCHA */}
+                  {/* ✅ Phone Number - With reCAPTCHA FIXED */}
                   <FieldRow label="Phone Number" icon={<IconPhone />}>
-                    <div>
+                    <div className="phone-verification-container">
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
                           <input
@@ -4828,26 +4893,13 @@ export function AccountSettingsPage() {
                         </div>
                       )}
 
-                      {/* ✅ reCAPTCHA container */}
-                      <div 
-                        id="recaptcha-container-phone" 
-                        ref={recaptchaContainerRef}
-                        style={{ 
-                          marginTop: '12px',
-                          minHeight: '60px',
-                          display: showPhoneVerification ? 'block' : 'none',
-                          backgroundColor: showPhoneVerification ? 'rgba(15, 78, 169, 0.03)' : 'transparent',
-                          borderRadius: '8px',
-                          padding: showPhoneVerification ? '12px' : '0',
-                          border: showPhoneVerification ? '1px solid rgba(15, 78, 169, 0.1)' : 'none'
-                        }}
-                      >
-                        {showPhoneVerification && (
-                          <div style={{ fontSize: '12px', color: 'rgba(23,38,58,0.5)', marginBottom: '8px' }}>
-                            🔒 Security verification
-                          </div>
-                        )}
-                      </div>
+                      {/* ✅ reCAPTCHA container with proper visibility */}
+                      <div id="recaptcha-container-phone" style={{ 
+                        width: '100%', 
+                        minHeight: showPhoneVerification ? '60px' : '0px',
+                        marginTop: showPhoneVerification ? '12px' : '0px',
+                        display: showPhoneVerification ? 'block' : 'none'
+                      }}></div>
 
                       {showPhoneVerification && (
                         <div style={{ marginTop: '8px', padding: '12px', background: '#f0f7ff', borderRadius: '8px', border: '1px solid rgba(15,78,169,0.2)' }}>
