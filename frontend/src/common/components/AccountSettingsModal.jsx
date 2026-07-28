@@ -1,35 +1,12 @@
-// src/common/components/AccountSettingsModal.jsx
+// src/worker/pages/AccountSettingsPage.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { TextField } from './TextField'
-import { IconUser, IconMail, IconPhone, IconGlobe, IconLock } from './Icons'
+import { TopNav } from '../../common/components/TopNav'
+import { TextField } from '../../common/components/TextField'
+import { IconUser, IconMail, IconPhone, IconGlobe, IconLock, IconArrowLeft } from '../../common/components/Icons'
 import api from '../../services/api'
-import workerService from '../../worker/services/workerService'
-
-function IconClose(props) {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" {...props}>
-      <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor" />
-    </svg>
-  )
-}
-
-function IconEye(props) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" {...props}>
-      <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor" />
-    </svg>
-  )
-}
-
-function IconEyeOff(props) {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" {...props}>
-      <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="currentColor" />
-    </svg>
-  )
-}
+import workerService from '../services/workerService'
 
 // Password Input Component
 function PasswordInput({ placeholder, value, onChange, showPassword, onToggle }) {
@@ -94,14 +71,30 @@ function PasswordInput({ placeholder, value, onChange, showPassword, onToggle })
             minWidth: '38px'
           }}
         >
-          {showPassword ? <IconEyeOff /> : <IconEye />}
+          {showPassword ? (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z" fill="currentColor"/>
+            </svg>
+          ) : (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" fill="currentColor"/>
+            </svg>
+          )}
         </button>
       </div>
     </div>
   )
 }
 
-export function AccountSettingsModal({ isOpen, onClose }) {
+function IconArrowLeft(props) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" {...props}>
+      <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" fill="currentColor"/>
+    </svg>
+  )
+}
+
+export function AccountSettingsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   
@@ -134,10 +127,12 @@ export function AccountSettingsModal({ isOpen, onClose }) {
 
   // Load user data
   useEffect(() => {
-    if (isOpen && userId) {
+    if (userId) {
       loadUserData()
+    } else {
+      navigate('/login')
     }
-  }, [isOpen, userId])
+  }, [userId])
 
   const loadUserData = async () => {
     try {
@@ -192,7 +187,6 @@ export function AccountSettingsModal({ isOpen, onClose }) {
       const updateData = {
         legalFirstName: firstName,
         legalLastName: lastName,
-        emailAddress: email,
         mobilePhone: phoneNumber,
       }
       
@@ -277,7 +271,6 @@ export function AccountSettingsModal({ isOpen, onClose }) {
       sessionStorage.clear()
       
       navigate('/login')
-      onClose()
       
     } catch (err) {
       console.error('Error deleting account:', err)
@@ -286,461 +279,538 @@ export function AccountSettingsModal({ isOpen, onClose }) {
     }
   }
 
-  if (!isOpen) return null
-
   return (
-    <>
-      {/* Backdrop */}
-      <div 
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
-          backdropFilter: 'blur(4px)',
-          zIndex: 9999,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          animation: 'fadeIn 0.2s ease'
-        }}
-        onClick={onClose}
-      >
-        {/* Modal */}
-        <div 
-          style={{
-            background: 'white',
-            borderRadius: '16px',
-            maxWidth: '560px',
-            width: '90%',
-            maxHeight: '90vh',
-            overflow: 'hidden',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-            animation: 'slideUp 0.3s ease'
-          }}
-          onClick={(e) => e.stopPropagation()}
-        >
-          {/* Header */}
-          <div style={{
-            padding: '20px 24px',
-            borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <h2 style={{
-              fontSize: '20px',
-              fontWeight: 700,
-              color: '#17263a',
-              margin: 0
-            }}>
-              Account Settings
-            </h2>
-            <button
-              onClick={onClose}
-              style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: '4px',
-                color: '#64748b',
-                borderRadius: '8px',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}
-              onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-            >
-              <IconClose />
-            </button>
+    <div className="appShell">
+      <TopNav variant="solid" />
+
+      <div className="appShellBody appShellBodyVerify">
+        <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
+          <div className="sideNavMain">
+            <div className="sideGroupLabel">WORKSPACE</div>
+            <nav className="sideGroup" aria-label="Workspace">
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Overview</span>
+              </span>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Projects</span>
+                <span className="sideBadge" aria-label="12 projects">12</span>
+              </span>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Revenues</span>
+              </span>
+              <a className="sideItem sideItemActive" href="#">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Profile</span>
+              </a>
+            </nav>
           </div>
 
-          {/* Body */}
-          <div style={{
-            padding: '24px',
-            overflowY: 'auto',
-            maxHeight: 'calc(90vh - 140px)'
-          }}>
-            {loading ? (
-              <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                <div style={{
-                  width: '40px',
-                  height: '40px',
-                  border: '4px solid rgba(15, 78, 169, 0.1)',
-                  borderTop: '4px solid #0f4ea9',
-                  borderRadius: '50%',
-                  animation: 'spin 1s linear infinite',
-                  margin: '0 auto'
-                }} />
-                <p style={{ marginTop: '16px', color: '#64748b' }}>Loading...</p>
-              </div>
-            ) : (
-              <>
-                {error && (
-                  <div style={{
-                    padding: '12px 16px',
-                    background: '#fee2e2',
-                    color: '#dc2626',
-                    borderRadius: '8px',
-                    marginBottom: '16px',
-                    fontSize: '14px'
-                  }}>
-                    ❌ {error}
-                  </div>
-                )}
-                
-                {success && (
-                  <div style={{
-                    padding: '12px 16px',
-                    background: '#dcfce7',
-                    color: '#16a34a',
-                    borderRadius: '8px',
-                    marginBottom: '16px',
-                    fontSize: '14px'
-                  }}>
-                    ✅ {success}
-                  </div>
-                )}
+          <div className="sideNavBottom">
+            <div className="sideGroupLabel">GENERAL</div>
+            <nav className="sideGroup" aria-label="General">
+              <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Sign out</span>
+              </button>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Support</span>
+              </span>
+            </nav>
+          </div>
+        </aside>
 
-                {/* Email */}
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    display: 'block',
-                    marginBottom: '4px'
-                  }}>
-                    Email Address
-                  </label>
-                  <TextField
-                    placeholder="Email"
-                    icon={<IconMail />}
-                    value={email}
-                    onChange={setEmail}
-                    readOnly
-                  />
-                </div>
-
-                {/* Phone Number */}
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    display: 'block',
-                    marginBottom: '4px'
-                  }}>
-                    Phone Number
-                  </label>
-                  <TextField
-                    placeholder="Phone Number"
-                    icon={<IconPhone />}
-                    value={phoneNumber}
-                    onChange={setPhoneNumber}
-                  />
-                </div>
-
-                {/* Language */}
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{
-                    fontSize: '14px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    display: 'block',
-                    marginBottom: '4px'
-                  }}>
-                    Language
-                  </label>
-                  <div style={{
-                    display: 'flex',
-                    border: '1px solid rgba(18, 38, 63, 0.12)',
-                    borderRadius: '10px',
-                    overflow: 'hidden'
-                  }}>
-                    <select
-                      value={language}
-                      onChange={(e) => setLanguage(e.target.value)}
-                      style={{
-                        width: '100%',
-                        padding: '10px 12px',
-                        border: 'none',
-                        outline: 'none',
-                        fontSize: '14px',
-                        background: 'white',
-                        fontFamily: 'inherit',
-                        cursor: 'pointer'
-                      }}
-                    >
-                      <option value="en">English</option>
-                      <option value="es">Spanish</option>
-                      <option value="en-es">English & Spanish</option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Password Section */}
-                <div style={{
-                  marginTop: '24px',
-                  paddingTop: '24px',
-                  borderTop: '1px solid rgba(18, 38, 63, 0.08)'
-                }}>
-                  <h3 style={{
-                    fontSize: '16px',
-                    fontWeight: 600,
-                    color: '#17263a',
-                    margin: '0 0 12px 0'
-                  }}>
-                    Change Password
-                  </h3>
-                  
-                  <div style={{ marginBottom: '12px' }}>
-                    <label style={{
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: '#17263a',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>
-                      Current Password
-                    </label>
-                    <PasswordInput
-                      placeholder="Enter current password"
-                      value={currentPassword}
-                      onChange={setCurrentPassword}
-                      showPassword={showCurrentPassword}
-                      onToggle={() => setShowCurrentPassword(!showCurrentPassword)}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: '12px' }}>
-                    <label style={{
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: '#17263a',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>
-                      New Password
-                    </label>
-                    <PasswordInput
-                      placeholder="Enter new password"
-                      value={newPassword}
-                      onChange={setNewPassword}
-                      showPassword={showNewPassword}
-                      onToggle={() => setShowNewPassword(!showNewPassword)}
-                    />
-                  </div>
-
-                  <div style={{ marginBottom: '12px' }}>
-                    <label style={{
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: '#17263a',
-                      display: 'block',
-                      marginBottom: '4px'
-                    }}>
-                      Confirm New Password
-                    </label>
-                    <PasswordInput
-                      placeholder="Confirm new password"
-                      value={confirmPassword}
-                      onChange={setConfirmPassword}
-                      showPassword={showConfirmPassword}
-                      onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
-                    />
-                  </div>
-
-                  {passwordError && (
-                    <div style={{
-                      color: '#dc2626',
-                      fontSize: '12px',
-                      marginTop: '4px'
-                    }}>
-                      {passwordError}
-                    </div>
-                  )}
-                </div>
-
-                {/* Save Button */}
+        <main className="appContent">
+          <div className="accountSettingsPage">
+            <div className="authCard authCardCompact">
+              {/* Header with Back Button */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '24px',
+                paddingBottom: '16px',
+                borderBottom: '1px solid rgba(18, 38, 63, 0.08)'
+              }}>
                 <button
-                  onClick={handleSave}
-                  disabled={saving}
+                  onClick={() => navigate('/wizard/summary')}
                   style={{
-                    width: '100%',
-                    padding: '12px',
-                    marginTop: '24px',
-                    background: saving ? '#94a3b8' : '#0f4ea9',
-                    color: 'white',
+                    background: 'none',
                     border: 'none',
-                    borderRadius: '10px',
-                    fontSize: '16px',
-                    fontWeight: 600,
-                    cursor: saving ? 'not-allowed' : 'pointer',
+                    cursor: 'pointer',
+                    color: '#17263a',
+                    padding: '8px',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '14px',
+                    fontWeight: 500,
                     transition: 'all 0.2s ease'
                   }}
-                  onMouseEnter={(e) => {
-                    if (!saving) e.currentTarget.style.background = '#0b3f90'
-                  }}
-                  onMouseLeave={(e) => {
-                    if (!saving) e.currentTarget.style.background = '#0f4ea9'
-                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
                 >
-                  {saving ? 'Saving...' : 'Save Changes'}
+                  <IconArrowLeft />
+                  Back
                 </button>
-
-                {/* Report Issue & Delete Account */}
-                <div style={{
-                  marginTop: '24px',
-                  paddingTop: '24px',
-                  borderTop: '1px solid rgba(18, 38, 63, 0.08)',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexWrap: 'wrap',
-                  gap: '12px'
+                <h2 style={{
+                  fontSize: '20px',
+                  fontWeight: 700,
+                  color: '#17263a',
+                  margin: 0,
+                  flex: 1
                 }}>
-                  <button
-                    onClick={() => window.open('mailto:support@tradesmap.com', '_blank')}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#0f4ea9',
-                      fontSize: '14px',
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      padding: '4px 0'
-                    }}
-                  >
-                    Report an issue
-                  </button>
+                  Account Settings
+                </h2>
+              </div>
 
-                  <button
-                    onClick={() => setShowDeleteConfirm(true)}
-                    style={{
-                      background: 'none',
-                      border: 'none',
-                      color: '#dc2626',
-                      fontSize: '14px',
-                      fontWeight: 500,
-                      cursor: 'pointer',
-                      padding: '4px 0'
-                    }}
-                  >
-                    Delete my Account
-                  </button>
-                </div>
-
-                {/* Delete Confirmation */}
-                {showDeleteConfirm && (
+              {loading ? (
+                <div style={{ textAlign: 'center', padding: '60px 0' }}>
                   <div style={{
-                    marginTop: '16px',
-                    padding: '16px',
-                    background: '#fee2e2',
-                    borderRadius: '10px',
-                    border: '1px solid #fecaca'
-                  }}>
-                    <p style={{
-                      fontSize: '14px',
+                    width: '40px',
+                    height: '40px',
+                    border: '4px solid rgba(15, 78, 169, 0.1)',
+                    borderTop: '4px solid #0f4ea9',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite',
+                    margin: '0 auto'
+                  }} />
+                  <p style={{ marginTop: '16px', color: '#64748b' }}>Loading...</p>
+                </div>
+              ) : (
+                <>
+                  {error && (
+                    <div style={{
+                      padding: '12px 16px',
+                      background: '#fee2e2',
                       color: '#dc2626',
-                      margin: '0 0 12px 0',
-                      fontWeight: 500
+                      borderRadius: '8px',
+                      marginBottom: '16px',
+                      fontSize: '14px'
                     }}>
-                      ⚠️ Are you sure? This action cannot be undone.
-                    </p>
-                    <p style={{
-                      fontSize: '13px',
-                      color: '#64748b',
-                      margin: '0 0 12px 0'
+                      ❌ {error}
+                    </div>
+                  )}
+                  
+                  {success && (
+                    <div style={{
+                      padding: '12px 16px',
+                      background: '#dcfce7',
+                      color: '#16a34a',
+                      borderRadius: '8px',
+                      marginBottom: '16px',
+                      fontSize: '14px'
                     }}>
-                      Type <strong>DELETE</strong> to confirm:
-                    </p>
-                    <input
-                      type="text"
-                      value={deleteConfirmText}
-                      onChange={(e) => setDeleteConfirmText(e.target.value)}
-                      placeholder="Type DELETE to confirm"
-                      style={{
-                        width: '100%',
-                        padding: '10px 12px',
-                        border: '1px solid rgba(18, 38, 63, 0.12)',
-                        borderRadius: '8px',
-                        fontSize: '14px',
-                        outline: 'none',
-                        marginBottom: '12px'
-                      }}
+                      ✅ {success}
+                    </div>
+                  )}
+
+                  {/* Email - Read Only */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      display: 'block',
+                      marginBottom: '4px'
+                    }}>
+                      Email Address
+                    </label>
+                    <TextField
+                      placeholder="Email"
+                      icon={<IconMail />}
+                      value={email}
+                      onChange={setEmail}
+                      readOnly
                     />
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button
-                        onClick={() => {
-                          setShowDeleteConfirm(false)
-                          setDeleteConfirmText('')
-                          setError('')
-                        }}
-                        style={{
-                          flex: 1,
-                          padding: '8px',
-                          background: 'transparent',
-                          border: '1px solid rgba(18, 38, 63, 0.12)',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontSize: '14px',
-                          fontWeight: 500,
-                          color: '#17263a'
-                        }}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={handleDeleteAccount}
-                        disabled={saving}
-                        style={{
-                          flex: 1,
-                          padding: '8px',
-                          background: '#dc2626',
-                          border: 'none',
-                          borderRadius: '8px',
-                          cursor: saving ? 'not-allowed' : 'pointer',
-                          fontSize: '14px',
-                          fontWeight: 500,
-                          color: 'white',
-                          opacity: saving ? 0.6 : 1
-                        }}
-                      >
-                        {saving ? 'Deleting...' : 'Delete Account'}
-                      </button>
+                    <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
+                      Email address cannot be changed
                     </div>
                   </div>
-                )}
-              </>
-            )}
+
+                  {/* First Name */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      display: 'block',
+                      marginBottom: '4px'
+                    }}>
+                      First Name
+                    </label>
+                    <TextField
+                      placeholder="First Name"
+                      icon={<IconUser />}
+                      value={firstName}
+                      onChange={setFirstName}
+                    />
+                  </div>
+
+                  {/* Last Name */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      display: 'block',
+                      marginBottom: '4px'
+                    }}>
+                      Last Name
+                    </label>
+                    <TextField
+                      placeholder="Last Name"
+                      icon={<IconUser />}
+                      value={lastName}
+                      onChange={setLastName}
+                    />
+                  </div>
+
+                  {/* Phone Number */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      display: 'block',
+                      marginBottom: '4px'
+                    }}>
+                      Phone Number
+                    </label>
+                    <TextField
+                      placeholder="Phone Number"
+                      icon={<IconPhone />}
+                      value={phoneNumber}
+                      onChange={setPhoneNumber}
+                    />
+                  </div>
+
+                  {/* Language */}
+                  <div style={{ marginBottom: '16px' }}>
+                    <label style={{
+                      fontSize: '14px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      display: 'block',
+                      marginBottom: '4px'
+                    }}>
+                      Language
+                    </label>
+                    <div style={{
+                      display: 'flex',
+                      border: '1px solid rgba(18, 38, 63, 0.12)',
+                      borderRadius: '10px',
+                      overflow: 'hidden'
+                    }}>
+                      <select
+                        value={language}
+                        onChange={(e) => setLanguage(e.target.value)}
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          border: 'none',
+                          outline: 'none',
+                          fontSize: '14px',
+                          background: 'white',
+                          fontFamily: 'inherit',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <option value="en">English</option>
+                        <option value="es">Spanish</option>
+                        <option value="en-es">English & Spanish</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Password Section */}
+                  <div style={{
+                    marginTop: '24px',
+                    paddingTop: '24px',
+                    borderTop: '1px solid rgba(18, 38, 63, 0.08)'
+                  }}>
+                    <h3 style={{
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      color: '#17263a',
+                      margin: '0 0 12px 0'
+                    }}>
+                      Change Password
+                    </h3>
+                    
+                    <div style={{ marginBottom: '12px' }}>
+                      <label style={{
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        color: '#17263a',
+                        display: 'block',
+                        marginBottom: '4px'
+                      }}>
+                        Current Password
+                      </label>
+                      <PasswordInput
+                        placeholder="Enter current password"
+                        value={currentPassword}
+                        onChange={setCurrentPassword}
+                        showPassword={showCurrentPassword}
+                        onToggle={() => setShowCurrentPassword(!showCurrentPassword)}
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: '12px' }}>
+                      <label style={{
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        color: '#17263a',
+                        display: 'block',
+                        marginBottom: '4px'
+                      }}>
+                        New Password
+                      </label>
+                      <PasswordInput
+                        placeholder="Enter new password"
+                        value={newPassword}
+                        onChange={setNewPassword}
+                        showPassword={showNewPassword}
+                        onToggle={() => setShowNewPassword(!showNewPassword)}
+                      />
+                    </div>
+
+                    <div style={{ marginBottom: '12px' }}>
+                      <label style={{
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        color: '#17263a',
+                        display: 'block',
+                        marginBottom: '4px'
+                      }}>
+                        Confirm New Password
+                      </label>
+                      <PasswordInput
+                        placeholder="Confirm new password"
+                        value={confirmPassword}
+                        onChange={setConfirmPassword}
+                        showPassword={showConfirmPassword}
+                        onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
+                      />
+                    </div>
+
+                    {passwordError && (
+                      <div style={{
+                        color: '#dc2626',
+                        fontSize: '12px',
+                        marginTop: '4px'
+                      }}>
+                        {passwordError}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Save Button */}
+                  <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    style={{
+                      width: '100%',
+                      padding: '12px',
+                      marginTop: '24px',
+                      background: saving ? '#94a3b8' : '#0f4ea9',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '10px',
+                      fontSize: '16px',
+                      fontWeight: 600,
+                      cursor: saving ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!saving) e.currentTarget.style.background = '#0b3f90'
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!saving) e.currentTarget.style.background = '#0f4ea9'
+                    }}
+                  >
+                    {saving ? 'Saving...' : 'Save Changes'}
+                  </button>
+
+                  {/* Report Issue & Delete Account */}
+                  <div style={{
+                    marginTop: '24px',
+                    paddingTop: '24px',
+                    borderTop: '1px solid rgba(18, 38, 63, 0.08)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '12px'
+                  }}>
+                    <button
+                      onClick={() => window.open('mailto:support@tradesmap.com', '_blank')}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#0f4ea9',
+                        fontSize: '14px',
+                        fontWeight: 500,
+                        cursor: 'pointer',
+                        padding: '4px 0'
+                      }}
+                    >
+                      Report an issue
+                    </button>
+
+                    <button
+                      onClick={() => setShowDeleteConfirm(true)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#dc2626',
+                        fontSize: '14px',
+                        fontWeight: 500,
+                        cursor: 'pointer',
+                        padding: '4px 0'
+                      }}
+                    >
+                      Delete my Account
+                    </button>
+                  </div>
+
+                  {/* Delete Confirmation */}
+                  {showDeleteConfirm && (
+                    <div style={{
+                      marginTop: '16px',
+                      padding: '16px',
+                      background: '#fee2e2',
+                      borderRadius: '10px',
+                      border: '1px solid #fecaca'
+                    }}>
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#dc2626',
+                        margin: '0 0 12px 0',
+                        fontWeight: 500
+                      }}>
+                        ⚠️ Are you sure? This action cannot be undone.
+                      </p>
+                      <p style={{
+                        fontSize: '13px',
+                        color: '#64748b',
+                        margin: '0 0 12px 0'
+                      }}>
+                        Type <strong>DELETE</strong> to confirm:
+                      </p>
+                      <input
+                        type="text"
+                        value={deleteConfirmText}
+                        onChange={(e) => setDeleteConfirmText(e.target.value)}
+                        placeholder="Type DELETE to confirm"
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          border: '1px solid rgba(18, 38, 63, 0.12)',
+                          borderRadius: '8px',
+                          fontSize: '14px',
+                          outline: 'none',
+                          marginBottom: '12px'
+                        }}
+                      />
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={() => {
+                            setShowDeleteConfirm(false)
+                            setDeleteConfirmText('')
+                            setError('')
+                          }}
+                          style={{
+                            flex: 1,
+                            padding: '8px',
+                            background: 'transparent',
+                            border: '1px solid rgba(18, 38, 63, 0.12)',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            color: '#17263a'
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleDeleteAccount}
+                          disabled={saving}
+                          style={{
+                            flex: 1,
+                            padding: '8px',
+                            background: '#dc2626',
+                            border: 'none',
+                            borderRadius: '8px',
+                            cursor: saving ? 'not-allowed' : 'pointer',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            color: 'white',
+                            opacity: saving ? 0.6 : 1
+                          }}
+                        >
+                          {saving ? 'Deleting...' : 'Delete Account'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
           </div>
-        </div>
+        </main>
       </div>
 
       <style>{`
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.98);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
+        
+        .accountSettingsPage {
+          max-width: 600px;
+          margin: 0 auto;
+          padding: 24px;
+        }
+        
+        @media (max-width: 768px) {
+          .accountSettingsPage {
+            padding: 16px;
+          }
+        }
       `}</style>
-    </>
+    </div>
   )
 }
 
-export default AccountSettingsModal
+export default AccountSettingsPage
