@@ -5233,7 +5233,6 @@
 
 
 
-
 // src/worker/pages/AccountSettingsPage.jsx
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -5405,7 +5404,7 @@ export function AccountSettingsPage() {
   const emailCodeInputRef = useRef(null)
   const cooldownIntervalRef = useRef(null)
 
-  // Phone update fields with reCAPTCHA
+  // Phone update fields - SIMPLIFIED (same as WorkerVerifyPage)
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
   const [isPhoneAvailable, setIsPhoneAvailable] = useState(false)
   const [isCheckingPhone, setIsCheckingPhone] = useState(false)
@@ -5419,8 +5418,6 @@ export function AccountSettingsPage() {
   const phoneCodeInputRef = useRef(null)
   const phoneCooldownIntervalRef = useRef(null)
   const recaptchaContainerRef = useRef(null)
-  const recaptchaVerifierRef = useRef(null)
-  const isRecaptchaReadyRef = useRef(false)
   
   // Delete account
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -5444,12 +5441,6 @@ export function AccountSettingsPage() {
       }
       if (phoneCooldownIntervalRef.current) {
         clearInterval(phoneCooldownIntervalRef.current)
-      }
-      // Cleanup reCAPTCHA
-      if (recaptchaVerifierRef.current) {
-        try {
-          recaptchaVerifierRef.current.clear()
-        } catch (e) {}
       }
     }
   }, [])
@@ -5633,60 +5624,8 @@ export function AccountSettingsPage() {
   }
 
   // ============================================================
-  // 📱 PHONE UPDATE FUNCTIONS WITH reCAPTCHA
+  // 📱 PHONE UPDATE FUNCTIONS - SIMPLIFIED (SAME AS WorkerVerifyPage)
   // ============================================================
-
-  // ✅ Setup reCAPTCHA using the service
-  const setupPhoneRecaptcha = useCallback(() => {
-    try {
-      // Ensure container exists
-      const container = document.getElementById('recaptcha-container-phone')
-      if (!container) {
-        console.log('📱 reCAPTCHA container not found')
-        return null
-      }
-
-      // Clear existing verifier
-      if (recaptchaVerifierRef.current) {
-        try {
-          recaptchaVerifierRef.current.clear()
-        } catch (e) {}
-        recaptchaVerifierRef.current = null
-        isRecaptchaReadyRef.current = false
-      }
-
-      console.log('🔐 Setting up reCAPTCHA via service...')
-      
-      // ✅ Use the service's setupRecaptcha
-      const verifier = setupRecaptcha('recaptcha-container-phone')
-      
-      if (verifier) {
-        recaptchaVerifierRef.current = verifier
-        setTimeout(() => {
-          isRecaptchaReadyRef.current = true
-          console.log('✅ reCAPTCHA is ready')
-        }, 1500)
-        return verifier
-      }
-      
-      console.error('❌ reCAPTCHA setup returned null')
-      return null
-    } catch (error) {
-      console.error('❌ reCAPTCHA setup error:', error)
-      return null
-    }
-  }, [])
-
-  // ✅ Setup reCAPTCHA when phone verification is shown
-  useEffect(() => {
-    if (showPhoneVerification) {
-      console.log('📱 Setting up reCAPTCHA for phone verification')
-      const timer = setTimeout(() => {
-        setupPhoneRecaptcha()
-      }, 500)
-      return () => clearTimeout(timer)
-    }
-  }, [showPhoneVerification, setupPhoneRecaptcha])
 
   // Real-time phone availability check
   const checkPhoneAvailabilityRealTime = async (phoneToCheck) => {
@@ -5744,7 +5683,7 @@ export function AccountSettingsPage() {
     return () => clearTimeout(timer)
   }, [newPhoneNumber])
 
-  // ✅ Send phone OTP with reCAPTCHA
+  // ✅ Send phone OTP - SAME APPROACH AS WorkerVerifyPage
   const handleSendPhoneOTP = async () => {
     if (!newPhoneNumber || !isPhoneAvailable) {
       setError('Please enter a valid and available phone number')
@@ -5756,23 +5695,13 @@ export function AccountSettingsPage() {
     setSuccess('')
 
     try {
-      // ✅ Ensure reCAPTCHA is set up
-      let recaptchaVerifier = recaptchaVerifierRef.current
-      if (!recaptchaVerifier || !isRecaptchaReadyRef.current) {
-        console.log('📱 Setting up reCAPTCHA...')
-        recaptchaVerifier = setupPhoneRecaptcha()
-        if (!recaptchaVerifier) {
-          setError('Failed to initialize security verification. Please refresh and try again.')
-          setIsPhoneCodeSending(false)
-          return
-        }
-        // Wait for reCAPTCHA to be ready
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        if (!isRecaptchaReadyRef.current) {
-          setError('Security verification taking too long. Please try again.')
-          setIsPhoneCodeSending(false)
-          return
-        }
+      // ✅ Setup reCAPTCHA directly - same as WorkerVerifyPage
+      const recaptchaVerifier = setupRecaptcha('recaptcha-container-phone')
+      
+      if (!recaptchaVerifier) {
+        setError('Failed to initialize security verification. Please refresh and try again.')
+        setIsPhoneCodeSending(false)
+        return
       }
 
       console.log('📱 Sending OTP to:', newPhoneNumber)
@@ -5816,7 +5745,7 @@ export function AccountSettingsPage() {
     }
   }
 
-  // ✅ Verify phone OTP
+  // ✅ Verify phone OTP - SAME APPROACH AS WorkerVerifyPage
   const handleVerifyPhoneCode = async () => {
     if (!phoneVerificationCode || phoneVerificationCode.length !== 6) {
       setError('Please enter 6-digit OTP')
@@ -6276,7 +6205,7 @@ export function AccountSettingsPage() {
                     </div>
                   </FieldRow>
 
-                  {/* Phone Number - With reCAPTCHA */}
+                  {/* ✅ Phone Number - With reCAPTCHA (SAME AS WorkerVerifyPage) */}
                   <FieldRow label="Phone Number" icon={<IconPhone />}>
                     <div className="phone-verification-container">
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -6323,36 +6252,15 @@ export function AccountSettingsPage() {
                         </div>
                       )}
 
-                      {/* reCAPTCHA container */}
+                      {/* ✅ reCAPTCHA container - Always rendered (same as WorkerVerifyPage) */}
                       <div 
                         id="recaptcha-container-phone" 
                         ref={recaptchaContainerRef}
                         style={{ 
                           marginTop: '12px',
-                          minHeight: showPhoneVerification ? '80px' : '0px',
-                          display: showPhoneVerification ? 'block' : 'none'
+                          minHeight: '60px'
                         }}
-                      >
-                        {showPhoneVerification && (
-                          <div style={{ 
-                            fontSize: '12px', 
-                            color: 'rgba(23,38,58,0.5)', 
-                            marginBottom: '8px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '8px'
-                          }}>
-                            <span>🔒</span> Security verification
-                            <span style={{ 
-                              fontSize: '11px', 
-                              color: '#0f4ea9',
-                              marginLeft: 'auto'
-                            }}>
-                              {isRecaptchaReadyRef.current ? '✅ Ready' : '⏳ Loading...'}
-                            </span>
-                          </div>
-                        )}
-                      </div>
+                      ></div>
 
                       {showPhoneVerification && (
                         <div style={{ marginTop: '8px', padding: '12px', background: '#f0f7ff', borderRadius: '8px', border: '1px solid rgba(15,78,169,0.2)' }}>
