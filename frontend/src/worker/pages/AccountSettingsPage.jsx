@@ -5234,10 +5234,6 @@
 
 
 
-
-
-
-
 // src/worker/pages/AccountSettingsPage.jsx
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -5256,7 +5252,7 @@ import {
   verifyPhoneOTP
 } from '../../services/verificationService'
 
-// ✅ Import auth for RecaptchaVerifier
+// ✅ Import auth from firebase
 import { auth } from '../../firebase/config'
 
 // Password Input Component
@@ -5637,7 +5633,7 @@ export function AccountSettingsPage() {
   }
 
   // ============================================================
-  // 📱 PHONE UPDATE FUNCTIONS WITH reCAPTCHA - FIXED
+  // 📱 PHONE UPDATE FUNCTIONS WITH reCAPTCHA
   // ============================================================
 
   // ✅ Setup reCAPTCHA using the service
@@ -5666,7 +5662,6 @@ export function AccountSettingsPage() {
       
       if (verifier) {
         recaptchaVerifierRef.current = verifier
-        // Mark as ready after a short delay
         setTimeout(() => {
           isRecaptchaReadyRef.current = true
           console.log('✅ reCAPTCHA is ready')
@@ -5749,7 +5744,7 @@ export function AccountSettingsPage() {
     return () => clearTimeout(timer)
   }, [newPhoneNumber])
 
-  // ✅ Send phone OTP with reCAPTCHA - FIXED
+  // ✅ Send phone OTP with reCAPTCHA
   const handleSendPhoneOTP = async () => {
     if (!newPhoneNumber || !isPhoneAvailable) {
       setError('Please enter a valid and available phone number')
@@ -5761,7 +5756,7 @@ export function AccountSettingsPage() {
     setSuccess('')
 
     try {
-      // ✅ Use the service's setupRecaptcha to get verifier
+      // ✅ Ensure reCAPTCHA is set up
       let recaptchaVerifier = recaptchaVerifierRef.current
       if (!recaptchaVerifier || !isRecaptchaReadyRef.current) {
         console.log('📱 Setting up reCAPTCHA...')
@@ -5991,14 +5986,72 @@ export function AccountSettingsPage() {
     </div>
   )
 
-  // Rest of the return remains the same...
   return (
     <div className="appShell">
       <TopNav variant="solid" />
 
       <div className="appShellBody appShellBodyVerify">
         <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
-          {/* ... sidebar code ... */}
+          <div className="sideNavMain">
+            <div className="sideGroupLabel">WORKSPACE</div>
+            <nav className="sideGroup" aria-label="Workspace">
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Overview</span>
+              </span>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Projects</span>
+                <span className="sideBadge" aria-label="12 projects">12</span>
+              </span>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Revenues</span>
+              </span>
+              <a className="sideItem sideItemActive" href="#">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Profile</span>
+              </a>
+            </nav>
+          </div>
+
+          <div className="sideNavBottom">
+            <div className="sideGroupLabel">GENERAL</div>
+            <nav className="sideGroup" aria-label="General">
+              <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Sign out</span>
+              </button>
+              <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Support</span>
+              </span>
+            </nav>
+          </div>
         </aside>
 
         <main className="appContent">
@@ -6011,18 +6064,219 @@ export function AccountSettingsPage() {
               overflow: 'hidden',
               borderRadius: '16px'
             }}>
-              {/* Header ... */}
-              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '20px 24px',
+                borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
+                background: '#f8fafc'
+              }}>
+                <button
+                  onClick={() => navigate('/wizard/summary')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    color: '#17263a',
+                    padding: '6px 10px',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.05)'}
+                  onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                >
+                  <IconArrowLeft />
+                  Back
+                </button>
+                <h2 style={{
+                  fontSize: '18px',
+                  fontWeight: 700,
+                  color: '#17263a',
+                  margin: 0,
+                  flex: 1
+                }}>
+                  Account Settings
+                </h2>
+              </div>
+
               {loading ? (
                 <div style={{ textAlign: 'center', padding: '60px 0' }}>
-                  {/* Loading spinner */}
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    border: '4px solid rgba(15, 78, 169, 0.1)',
+                    borderTop: '4px solid #0f4ea9',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite',
+                    margin: '0 auto'
+                  }} />
+                  <p style={{ marginTop: '16px', color: '#64748b' }}>Loading...</p>
                 </div>
               ) : (
                 <div style={{ padding: '0' }}>
-                  {/* Email Address field */}
-                  {/* ... */}
+                  {error && (
+                    <div style={{
+                      padding: '12px 20px',
+                      margin: '16px 24px',
+                      background: '#fee2e2',
+                      color: '#dc2626',
+                      borderRadius: '8px',
+                      fontSize: '14px'
+                    }}>
+                      ❌ {error}
+                    </div>
+                  )}
                   
-                  {/* ✅ Phone Number - With reCAPTCHA */}
+                  {success && (
+                    <div style={{
+                      padding: '12px 20px',
+                      margin: '16px 24px',
+                      background: '#dcfce7',
+                      color: '#16a34a',
+                      borderRadius: '8px',
+                      fontSize: '14px'
+                    }}>
+                      ✅ {success}
+                    </div>
+                  )}
+
+                  {/* Email Address */}
+                  <FieldRow label="Email Address" icon={<IconMail />}>
+                    <div>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <div style={{ flex: 1 }}>
+                          <input
+                            type="email"
+                            value={newEmail}
+                            onChange={(e) => setNewEmail(e.target.value)}
+                            placeholder="Email Address"
+                            style={{
+                              width: '100%',
+                              padding: '8px 12px',
+                              border: '1px solid rgba(18, 38, 63, 0.12)',
+                              borderRadius: '8px',
+                              fontSize: '14px',
+                              outline: 'none',
+                              background: 'white',
+                              transition: 'all 0.2s ease',
+                              height: '36px'
+                            }}
+                            onFocus={(e) => e.target.style.borderColor = '#0f4ea9'}
+                            onBlur={(e) => e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'}
+                          />
+                        </div>
+                        <UpdateButton 
+                          onClick={handleSendEmailVerification}
+                          loading={isEmailCodeSending}
+                          disabled={!isEmailAvailable || newEmail === email}
+                          label="Send Code"
+                        />
+                      </div>
+                      
+                      {newEmail !== email && (
+                        <div style={{ marginTop: '4px', fontSize: '12px' }}>
+                          {isCheckingEmail ? (
+                            <span style={{ color: '#0f4ea9' }}>⏳ Checking availability...</span>
+                          ) : emailAvailabilityMessage ? (
+                            <span style={{ 
+                              color: emailAvailabilityMessage.includes('available') ? '#2fb463' : '#dc2626' 
+                            }}>
+                              {emailAvailabilityMessage}
+                            </span>
+                          ) : null}
+                        </div>
+                      )}
+
+                      {showEmailVerification && (
+                        <div style={{ marginTop: '8px', padding: '12px', background: '#f0f7ff', borderRadius: '8px', border: '1px solid rgba(15,78,169,0.2)' }}>
+                          <div style={{ fontSize: '13px', fontWeight: 500, color: '#17263a', marginBottom: '8px' }}>
+                            Enter verification code sent to {newEmail}
+                          </div>
+                          <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            <input
+                              ref={emailCodeInputRef}
+                              type="text"
+                              value={emailVerificationCode}
+                              onChange={(e) => {
+                                const value = e.target.value.replace(/\D/g, '')
+                                if (value.length <= 6) {
+                                  setEmailVerificationCode(value)
+                                }
+                              }}
+                              maxLength={6}
+                              placeholder="6-digit code"
+                              style={{
+                                width: '150px',
+                                padding: '8px 12px',
+                                border: '1px solid rgba(18, 38, 63, 0.12)',
+                                borderRadius: '8px',
+                                fontSize: '14px',
+                                outline: 'none',
+                                background: 'white',
+                                transition: 'all 0.2s ease',
+                                height: '36px',
+                                textAlign: 'center',
+                                letterSpacing: '4px',
+                                fontWeight: 600
+                              }}
+                              onFocus={(e) => e.target.style.borderColor = '#0f4ea9'}
+                              onBlur={(e) => e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'}
+                            />
+                            <button
+                              onClick={handleVerifyEmailCode}
+                              disabled={isEmailCodeVerifying || emailVerificationCode.length !== 6}
+                              style={{
+                                padding: '6px 20px',
+                                background: (isEmailCodeVerifying || emailVerificationCode.length !== 6) ? '#94a3b8' : '#2fb463',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                fontSize: '13px',
+                                fontWeight: 600,
+                                cursor: (isEmailCodeVerifying || emailVerificationCode.length !== 6) ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.2s ease',
+                                height: '36px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                              }}
+                            >
+                              {isEmailCodeVerifying ? 'Verifying...' : 'Verify'}
+                            </button>
+                            <button
+                              onClick={handleResendEmailCode}
+                              disabled={resendCooldown > 0 || isEmailCodeSending}
+                              style={{
+                                padding: '6px 16px',
+                                background: (resendCooldown > 0 || isEmailCodeSending) ? '#94a3b8' : 'transparent',
+                                color: (resendCooldown > 0 || isEmailCodeSending) ? '#94a3b8' : '#0f4ea9',
+                                border: 'none',
+                                borderRadius: '6px',
+                                fontSize: '12px',
+                                fontWeight: 500,
+                                cursor: (resendCooldown > 0 || isEmailCodeSending) ? 'not-allowed' : 'pointer',
+                                transition: 'all 0.2s ease',
+                                height: '36px'
+                              }}
+                            >
+                              {resendCooldown > 0 ? `${resendCooldown}s` : 'Resend'}
+                            </button>
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
+                            Code expires in 10 minutes
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </FieldRow>
+
+                  {/* Phone Number - With reCAPTCHA */}
                   <FieldRow label="Phone Number" icon={<IconPhone />}>
                     <div className="phone-verification-container">
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -6183,8 +6437,218 @@ export function AccountSettingsPage() {
                     </div>
                   </FieldRow>
 
-                  {/* Language and Password fields */}
-                  {/* ... */}
+                  {/* Language */}
+                  <FieldRow label="Language" icon={<IconGlobe />}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <div style={{ flex: 1 }}>
+                        <select
+                          value={language}
+                          onChange={(e) => setLanguage(e.target.value)}
+                          style={{
+                            width: '100%',
+                            padding: '8px 12px',
+                            border: '1px solid rgba(18, 38, 63, 0.12)',
+                            borderRadius: '8px',
+                            fontSize: '14px',
+                            background: 'white',
+                            fontFamily: 'inherit',
+                            cursor: 'pointer',
+                            height: '36px',
+                            outline: 'none'
+                          }}
+                          onFocus={(e) => e.target.style.borderColor = '#0f4ea9'}
+                          onBlur={(e) => e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'}
+                        >
+                          <option value="en">English</option>
+                          <option value="es">Spanish</option>
+                          <option value="en-es">English & Spanish</option>
+                        </select>
+                      </div>
+                      <UpdateButton 
+                        onClick={() => updateField('language', language)}
+                        loading={saving.language}
+                      />
+                    </div>
+                  </FieldRow>
+
+                  {/* Password */}
+                  <FieldRow label="Password" icon={<IconLock />}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <div style={{ flex: 1, minWidth: '200px' }}>
+                        <PasswordInput
+                          placeholder="Enter new password to change"
+                          value={newPassword}
+                          onChange={setNewPassword}
+                          showPassword={showPassword}
+                          onToggle={() => setShowPassword(!showPassword)}
+                        />
+                        {passwordError && (
+                          <div style={{
+                            color: '#dc2626',
+                            fontSize: '11px',
+                            marginTop: '4px'
+                          }}>
+                            {passwordError}
+                          </div>
+                        )}
+                      </div>
+                      <UpdateButton 
+                        onClick={() => updateField('password', newPassword)}
+                        loading={saving.password}
+                        label="Update"
+                      />
+                    </div>
+                    {newPassword && (
+                      <div style={{ marginTop: '8px' }}>
+                        <label style={{
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          color: '#17263a',
+                          display: 'block',
+                          marginBottom: '4px'
+                        }}>
+                          Confirm Password
+                        </label>
+                        <PasswordInput
+                          placeholder="Confirm new password"
+                          value={confirmPassword}
+                          onChange={setConfirmPassword}
+                          showPassword={showPassword}
+                          onToggle={() => setShowPassword(!showPassword)}
+                        />
+                      </div>
+                    )}
+                  </FieldRow>
+
+                  {/* Report Issue & Delete Account */}
+                  <div style={{
+                    padding: '16px 24px',
+                    borderTop: '1px solid rgba(18, 38, 63, 0.06)',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '12px',
+                    background: '#f8fafc'
+                  }}>
+                    <button
+                      onClick={() => window.open('mailto:support@tradesmap.com', '_blank')}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#0f4ea9',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        cursor: 'pointer',
+                        padding: '4px 0',
+                        transition: 'color 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#0b3f90'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#0f4ea9'}
+                    >
+                      Report an issue
+                    </button>
+
+                    <button
+                      onClick={() => setShowDeleteConfirm(true)}
+                      style={{
+                        background: 'none',
+                        border: 'none',
+                        color: '#dc2626',
+                        fontSize: '13px',
+                        fontWeight: 500,
+                        cursor: 'pointer',
+                        padding: '4px 0',
+                        transition: 'color 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.color = '#b91c1c'}
+                      onMouseLeave={(e) => e.currentTarget.style.color = '#dc2626'}
+                    >
+                      Delete my Account
+                    </button>
+                  </div>
+
+                  {/* Delete Confirmation */}
+                  {showDeleteConfirm && (
+                    <div style={{
+                      margin: '16px 24px',
+                      padding: '16px',
+                      background: '#fee2e2',
+                      borderRadius: '10px',
+                      border: '1px solid #fecaca'
+                    }}>
+                      <p style={{
+                        fontSize: '14px',
+                        color: '#dc2626',
+                        margin: '0 0 12px 0',
+                        fontWeight: 500
+                      }}>
+                        ⚠️ Are you sure? This action cannot be undone.
+                      </p>
+                      <p style={{
+                        fontSize: '13px',
+                        color: '#64748b',
+                        margin: '0 0 12px 0'
+                      }}>
+                        Type <strong>DELETE</strong> to confirm:
+                      </p>
+                      <input
+                        type="text"
+                        value={deleteConfirmText}
+                        onChange={(e) => setDeleteConfirmText(e.target.value)}
+                        placeholder="Type DELETE to confirm"
+                        style={{
+                          width: '100%',
+                          padding: '10px 12px',
+                          border: '1px solid rgba(18, 38, 63, 0.12)',
+                          borderRadius: '8px',
+                          fontSize: '14px',
+                          outline: 'none',
+                          marginBottom: '12px'
+                        }}
+                      />
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button
+                          onClick={() => {
+                            setShowDeleteConfirm(false)
+                            setDeleteConfirmText('')
+                            setError('')
+                          }}
+                          style={{
+                            flex: 1,
+                            padding: '8px',
+                            background: 'transparent',
+                            border: '1px solid rgba(18, 38, 63, 0.12)',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            color: '#17263a'
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleDeleteAccount}
+                          disabled={saving.delete}
+                          style={{
+                            flex: 1,
+                            padding: '8px',
+                            background: '#dc2626',
+                            border: 'none',
+                            borderRadius: '8px',
+                            cursor: saving.delete ? 'not-allowed' : 'pointer',
+                            fontSize: '14px',
+                            fontWeight: 500,
+                            color: 'white',
+                            opacity: saving.delete ? 0.6 : 1
+                          }}
+                        >
+                          {saving.delete ? 'Deleting...' : 'Delete Account'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
