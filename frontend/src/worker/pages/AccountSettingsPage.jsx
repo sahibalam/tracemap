@@ -86,12 +86,47 @@ function PasswordInput({ placeholder, value, onChange, showPassword, onToggle })
   )
 }
 
+// Update Button Component
+function UpdateButton({ onClick, loading, label = 'Update' }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={loading}
+      style={{
+        padding: '8px 20px',
+        background: loading ? '#94a3b8' : '#0f4ea9',
+        color: 'white',
+        border: 'none',
+        borderRadius: '8px',
+        fontSize: '13px',
+        fontWeight: 600,
+        cursor: loading ? 'not-allowed' : 'pointer',
+        transition: 'all 0.2s ease',
+        whiteSpace: 'nowrap',
+        minWidth: '80px',
+        height: '44px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}
+      onMouseEnter={(e) => {
+        if (!loading) e.currentTarget.style.background = '#0b3f90'
+      }}
+      onMouseLeave={(e) => {
+        if (!loading) e.currentTarget.style.background = '#0f4ea9'
+      }}
+    >
+      {loading ? 'Updating...' : label}
+    </button>
+  )
+}
+
 export function AccountSettingsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const [saving, setSaving] = useState({})
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   
@@ -155,79 +190,85 @@ export function AccountSettingsPage() {
     }
   }
 
-  const handleSave = async () => {
+  // Update individual fields
+  const updateField = async (field, value) => {
     try {
-      setSaving(true)
+      setSaving(prev => ({ ...prev, [field]: true }))
       setError('')
       setSuccess('')
       
-      // Update basic info
-      const updateData = {
-        legalFirstName: firstName,
-        legalLastName: lastName,
-        mobilePhone: phoneNumber,
+      const updateData = {}
+      updateData[field] = value
+      
+      // If updating language, handle the language fields
+      if (field === 'language') {
+        if (value === 'en') {
+          updateData.english = true
+          updateData.spanish = false
+          updateData.englishSpanish = false
+        } else if (value === 'es') {
+          updateData.english = false
+          updateData.spanish = true
+          updateData.englishSpanish = false
+        } else if (value === 'en-es') {
+          updateData.english = false
+          updateData.spanish = false
+          updateData.englishSpanish = true
+        }
+        delete updateData.language
       }
       
-      // Add language preference
-      if (language === 'en') {
-        updateData.english = true
-        updateData.spanish = false
-        updateData.englishSpanish = false
-      } else if (language === 'es') {
-        updateData.english = false
-        updateData.spanish = true
-        updateData.englishSpanish = false
-      } else if (language === 'en-es') {
-        updateData.english = false
-        updateData.spanish = false
-        updateData.englishSpanish = true
-      }
-      
-      await workerService.updateBasics(userId, updateData)
-      
-      // Update password if provided
-      if (newPassword) {
+      // Handle field updates
+      if (field === 'email') {
+        await workerService.updateBasics(userId, { emailAddress: value })
+        localStorage.setItem('pendingEmail', value)
+      } else if (field === 'firstName') {
+        await workerService.updateBasics(userId, { legalFirstName: value })
+        localStorage.setItem('pendingFirstName', value)
+      } else if (field === 'lastName') {
+        await workerService.updateBasics(userId, { legalLastName: value })
+        localStorage.setItem('pendingLastName', value)
+      } else if (field === 'phoneNumber') {
+        await workerService.updateBasics(userId, { mobilePhone: value })
+      } else if (field === 'language') {
+        await workerService.updateBasics(userId, updateData)
+      } else if (field === 'password') {
+        // Handle password update
         if (newPassword.length < 8) {
           setPasswordError('Password must be at least 8 characters')
-          setSaving(false)
+          setSaving(prev => ({ ...prev, [field]: false }))
           return
         }
         
         if (newPassword !== confirmPassword) {
           setPasswordError('Passwords do not match')
-          setSaving(false)
+          setSaving(prev => ({ ...prev, [field]: false }))
           return
         }
         
-        // Call password update API
         await api.post('/auth/change-password', {
           userId,
           currentPassword,
           newPassword
         })
+        
+        setCurrentPassword('')
+        setNewPassword('')
+        setConfirmPassword('')
+        setPasswordError('')
       }
       
-      setSuccess('Account settings updated successfully!')
+      setSuccess(`${field} updated successfully!`)
       setTimeout(() => setSuccess(''), 3000)
-      
-      // Clear password fields
-      setCurrentPassword('')
-      setNewPassword('')
-      setConfirmPassword('')
-      setPasswordError('')
-      
-      // Update localStorage
-      localStorage.setItem('pendingFirstName', firstName)
-      localStorage.setItem('pendingLastName', lastName)
       
       // Refresh user data
       await loadUserData()
       
     } catch (err) {
-      console.error('Error saving settings:', err)
-      setError(err.response?.data?.message || err.message || 'Failed to save settings')
+      console.error(`Error updating ${field}:`, err)
+      setError(err.response?.data?.message || err.message || `Failed to update ${field}`)
     } finally {
-      setSaving(false)
+      setSaving(prev => ({ ...prev, [field]: false }))
     }
   }
 
@@ -238,7 +279,7 @@ export function AccountSettingsPage() {
     }
     
     try {
-      setSaving(true)
+      setSaving(prev => ({ ...prev, delete: true }))
       setError('')
       
       await api.delete(`/worker/profile/${userId}`)
@@ -252,7 +293,7 @@ export function AccountSettingsPage() {
     } catch (err) {
       console.error('Error deleting account:', err)
       setError(err.response?.data?.message || err.message || 'Failed to delete account')
-      setSaving(false)
+      setSaving(prev => ({ ...prev, delete: false }))
     }
   }
 
@@ -410,7 +451,7 @@ export function AccountSettingsPage() {
                     </div>
                   )}
 
-                  {/* Email Address */}
+                  {/* Email Address - With Update Button */}
                   <div style={{ marginBottom: '20px' }}>
                     <label style={{
                       fontSize: '14px',
@@ -421,13 +462,20 @@ export function AccountSettingsPage() {
                     }}>
                       Email Address :
                     </label>
-                    <TextField
-                      placeholder="Email Address"
-                      icon={<IconMail />}
-                      value={email}
-                      onChange={setEmail}
-                      readOnly
-                    />
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                      <div style={{ flex: 1 }}>
+                        <TextField
+                          placeholder="Email Address"
+                          icon={<IconMail />}
+                          value={email}
+                          onChange={setEmail}
+                        />
+                      </div>
+                      <UpdateButton 
+                        onClick={() => updateField('email', email)}
+                        loading={saving.email}
+                      />
+                    </div>
                   </div>
 
                   {/* Phone Number */}
@@ -441,12 +489,20 @@ export function AccountSettingsPage() {
                     }}>
                       Phone Number :
                     </label>
-                    <TextField
-                      placeholder="Phone Number"
-                      icon={<IconPhone />}
-                      value={phoneNumber}
-                      onChange={setPhoneNumber}
-                    />
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                      <div style={{ flex: 1 }}>
+                        <TextField
+                          placeholder="Phone Number"
+                          icon={<IconPhone />}
+                          value={phoneNumber}
+                          onChange={setPhoneNumber}
+                        />
+                      </div>
+                      <UpdateButton 
+                        onClick={() => updateField('phoneNumber', phoneNumber)}
+                        loading={saving.phoneNumber}
+                      />
+                    </div>
                   </div>
 
                   {/* Language */}
@@ -460,30 +516,38 @@ export function AccountSettingsPage() {
                     }}>
                       Language :
                     </label>
-                    <div style={{
-                      display: 'flex',
-                      border: '1px solid rgba(18, 38, 63, 0.12)',
-                      borderRadius: '10px',
-                      overflow: 'hidden'
-                    }}>
-                      <select
-                        value={language}
-                        onChange={(e) => setLanguage(e.target.value)}
-                        style={{
-                          width: '100%',
-                          padding: '10px 12px',
-                          border: 'none',
-                          outline: 'none',
-                          fontSize: '14px',
-                          background: 'white',
-                          fontFamily: 'inherit',
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <option value="en">English</option>
-                        <option value="es">Spanish</option>
-                        <option value="en-es">English & Spanish</option>
-                      </select>
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{
+                          display: 'flex',
+                          border: '1px solid rgba(18, 38, 63, 0.12)',
+                          borderRadius: '10px',
+                          overflow: 'hidden'
+                        }}>
+                          <select
+                            value={language}
+                            onChange={(e) => setLanguage(e.target.value)}
+                            style={{
+                              width: '100%',
+                              padding: '10px 12px',
+                              border: 'none',
+                              outline: 'none',
+                              fontSize: '14px',
+                              background: 'white',
+                              fontFamily: 'inherit',
+                              cursor: 'pointer'
+                            }}
+                          >
+                            <option value="en">English</option>
+                            <option value="es">Spanish</option>
+                            <option value="en-es">English & Spanish</option>
+                          </select>
+                        </div>
+                      </div>
+                      <UpdateButton 
+                        onClick={() => updateField('language', language)}
+                        loading={saving.language}
+                      />
                     </div>
                   </div>
 
@@ -498,77 +562,58 @@ export function AccountSettingsPage() {
                     }}>
                       Password :
                     </label>
-                    <PasswordInput
-                      placeholder="Enter new password to change"
-                      value={newPassword}
-                      onChange={setNewPassword}
-                      showPassword={showPassword}
-                      onToggle={() => setShowPassword(!showPassword)}
-                    />
-                    {passwordError && (
-                      <div style={{
-                        color: '#dc2626',
-                        fontSize: '12px',
-                        marginTop: '4px'
-                      }}>
-                        {passwordError}
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                      <div style={{ flex: 1 }}>
+                        <PasswordInput
+                          placeholder="Enter new password to change"
+                          value={newPassword}
+                          onChange={setNewPassword}
+                          showPassword={showPassword}
+                          onToggle={() => setShowPassword(!showPassword)}
+                        />
+                        {passwordError && (
+                          <div style={{
+                            color: '#dc2626',
+                            fontSize: '12px',
+                            marginTop: '4px'
+                          }}>
+                            {passwordError}
+                          </div>
+                        )}
+                      </div>
+                      <UpdateButton 
+                        onClick={() => updateField('password', newPassword)}
+                        loading={saving.password}
+                        label="Update"
+                      />
+                    </div>
+                    {/* Confirm Password - only show if new password is entered */}
+                    {newPassword && (
+                      <div style={{ marginTop: '12px' }}>
+                        <label style={{
+                          fontSize: '13px',
+                          fontWeight: 500,
+                          color: '#17263a',
+                          display: 'block',
+                          marginBottom: '4px'
+                        }}>
+                          Confirm Password :
+                        </label>
+                        <PasswordInput
+                          placeholder="Confirm new password"
+                          value={confirmPassword}
+                          onChange={setConfirmPassword}
+                          showPassword={showPassword}
+                          onToggle={() => setShowPassword(!showPassword)}
+                        />
                       </div>
                     )}
                   </div>
 
-                  {/* Confirm Password (only show if new password is entered) */}
-                  {newPassword && (
-                    <div style={{ marginBottom: '20px' }}>
-                      <label style={{
-                        fontSize: '14px',
-                        fontWeight: 600,
-                        color: '#17263a',
-                        display: 'block',
-                        marginBottom: '6px'
-                      }}>
-                        Confirm Password :
-                      </label>
-                      <PasswordInput
-                        placeholder="Confirm new password"
-                        value={confirmPassword}
-                        onChange={setConfirmPassword}
-                        showPassword={showPassword}
-                        onToggle={() => setShowPassword(!showPassword)}
-                      />
-                    </div>
-                  )}
-
-                  {/* ✅ UPDATE BUTTON */}
-                  <button
-                    onClick={handleSave}
-                    disabled={saving}
-                    style={{
-                      width: '100%',
-                      padding: '12px',
-                      marginTop: '12px',
-                      marginBottom: '24px',
-                      background: saving ? '#94a3b8' : '#0f4ea9',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '10px',
-                      fontSize: '16px',
-                      fontWeight: 600,
-                      cursor: saving ? 'not-allowed' : 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!saving) e.currentTarget.style.background = '#0b3f90'
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!saving) e.currentTarget.style.background = '#0f4ea9'
-                    }}
-                  >
-                    {saving ? 'Updating...' : 'Update'}
-                  </button>
-
                   {/* Report Issue & Delete Account */}
                   <div style={{
                     paddingTop: '20px',
+                    marginTop: '10px',
                     borderTop: '1px solid rgba(18, 38, 63, 0.08)',
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -675,21 +720,21 @@ export function AccountSettingsPage() {
                         </button>
                         <button
                           onClick={handleDeleteAccount}
-                          disabled={saving}
+                          disabled={saving.delete}
                           style={{
                             flex: 1,
                             padding: '8px',
                             background: '#dc2626',
                             border: 'none',
                             borderRadius: '8px',
-                            cursor: saving ? 'not-allowed' : 'pointer',
+                            cursor: saving.delete ? 'not-allowed' : 'pointer',
                             fontSize: '14px',
                             fontWeight: 500,
                             color: 'white',
-                            opacity: saving ? 0.6 : 1
+                            opacity: saving.delete ? 0.6 : 1
                           }}
                         >
-                          {saving ? 'Deleting...' : 'Delete Account'}
+                          {saving.delete ? 'Deleting...' : 'Delete Account'}
                         </button>
                       </div>
                     </div>
