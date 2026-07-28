@@ -852,7 +852,6 @@
 
 
 
-
 // src/worker/services/workerService.js
 import api from '../../services/api'
 
@@ -1011,15 +1010,44 @@ class WorkerService {
 
   /**
    * ✅ Update basics (Wizard Step 1)
+   * IMPORTANT: Always merges with existing data to preserve all fields
    * Also updates email across ALL sections if email is being changed
    */
   async updateBasics(userId, data) {
-    // If email is being updated, update it across ALL sections
-    if (data.emailAddress) {
-      console.log(`📧 Email change detected in basics, updating across ALL sections`)
-      return this.updateEmailAcrossAllSections(userId, data.emailAddress, data)
+    try {
+      if (!userId) throw new Error('User ID is required')
+      if (!data) throw new Error('Data is required')
+
+      console.log(`📝 Updating basics for user: ${userId}`)
+      console.log('📝 Data received:', JSON.stringify(data, null, 2))
+
+      // ✅ CRITICAL: Get current profile to merge data
+      const currentProfile = await this.getWorkerProfile(userId)
+      const existingBasics = currentProfile.success && currentProfile.data?.basics 
+        ? currentProfile.data.basics 
+        : {}
+
+      // ✅ Merge existing basics with new data (new data takes precedence)
+      const mergedBasics = {
+        ...existingBasics,
+        ...data
+      }
+
+      console.log('📝 Merged basics:', JSON.stringify(mergedBasics, null, 2))
+
+      // If email is being updated, update it across ALL sections
+      if (data.emailAddress) {
+        console.log(`📧 Email change detected, updating across ALL sections`)
+        return this.updateEmailAcrossAllSections(userId, data.emailAddress, mergedBasics)
+      }
+
+      // If no email change, just update basics section with merged data
+      return this.updateSection(userId, 'basics', mergedBasics)
+
+    } catch (error) {
+      console.error('Error updating basics:', error)
+      throw error
     }
-    return this.updateSection(userId, 'basics', data)
   }
 
   /**
@@ -1095,7 +1123,7 @@ class WorkerService {
 
   /**
    * ✅ Update email across ALL sections of the profile
-   * This ensures email is consistent across all sections
+   * IMPORTANT: Preserves all existing data in each section
    * @param {string} userId - Firebase UID of the worker
    * @param {string} newEmail - New email address
    * @param {object} additionalData - Additional data to update in basics (optional)
@@ -1117,12 +1145,15 @@ class WorkerService {
       const data = profile.data
       const sections = {}
 
-      // 1. Update basics with all provided data + new email
+      // 1. Update basics - MERGE with existing data
+      const existingBasics = data.basics || {}
       sections.basics = {
-        ...data.basics,
-        ...additionalData,
-        emailAddress: newEmail
+        ...existingBasics,        // Keep all existing fields
+        ...additionalData,        // Add/override with additional data
+        emailAddress: newEmail    // Ensure email is updated
       }
+
+      console.log('📝 Updated basics with email:', JSON.stringify(sections.basics, null, 2))
 
       // 2. Update email in ALL sections that have email field
       const sectionsWithEmail = [
@@ -1140,8 +1171,8 @@ class WorkerService {
       sectionsWithEmail.forEach(section => {
         if (data[section]) {
           sections[section] = {
-            ...data[section],
-            emailAddress: newEmail
+            ...data[section],      // Keep all existing fields
+            emailAddress: newEmail // Update email
           }
         }
       })
@@ -1209,6 +1240,49 @@ class WorkerService {
 
     } catch (error) {
       console.error('Error getting email occurrences:', error)
+      throw error
+    }
+  }
+
+  /**
+   * ✅ Fix inconsistent email across sections
+   * @param {string} userId - Firebase UID of the worker
+   * @param {string} preferredEmail - The email to use as the source of truth
+   * @returns {Promise} Update response
+   */
+  async fixEmailInconsistencies(userId, preferredEmail = null) {
+    try {
+      if (!userId) throw new Error('User ID is required')
+
+      // Get all email occurrences
+      const occurrences = await this.getEmailOccurrences(userId)
+      if (!occurrences.success) {
+        throw new Error('Failed to get email occurrences')
+      }
+
+      // Determine which email to use
+      let emailToUse = preferredEmail
+      if (!emailToUse && occurrences.data.basics) {
+        emailToUse = occurrences.data.basics
+      } else if (!emailToUse) {
+        const values = Object.values(occurrences.data)
+        emailToUse = values.length > 0 ? values[0] : null
+      }
+
+      if (!emailToUse) {
+        throw new Error('No email found in profile')
+      }
+
+      console.log(`🔧 Fixing email inconsistencies for user: ${userId} using: ${emailToUse}`)
+
+      // Update email across all sections
+      const result = await this.updateEmailAcrossAllSections(userId, emailToUse)
+      
+      console.log(`✅ Email inconsistencies fixed for user: ${userId}`)
+      return result
+
+    } catch (error) {
+      console.error('Error fixing email inconsistencies:', error)
       throw error
     }
   }
@@ -1817,44 +1891,67 @@ class WorkerService {
    */
 
   /**
-   * ✅ Fix inconsistent email across sections
+   * ✅ Fix incomplete profile - restores missing fields from other sections
    * @param {string} userId - Firebase UID of the worker
-   * @param {string} preferredEmail - The email to use as the source of truth
    * @returns {Promise} Update response
    */
-  async fixEmailInconsistencies(userId, preferredEmail = null) {
+  async fixIncompleteProfile(userId) {
     try {
       if (!userId) throw new Error('User ID is required')
 
-      // Get all email occurrences
-      const occurrences = await this.getEmailOccurrences(userId)
-      if (!occurrences.success) {
-        throw new Error('Failed to get email occurrences')
+      console.log(`🔧 Fixing incomplete profile for user: ${userId}`)
+
+      // Get current profile
+      const profile = await this.getWorkerProfile(userId)
+      if (!profile.success || !profile.data) {
+        throw new Error('Profile not found')
       }
 
-      // Determine which email to use
-      let emailToUse = preferredEmail
-      if (!emailToUse && occurrences.data.basics) {
-        emailToUse = occurrences.data.basics
-      } else if (!emailToUse) {
-        const values = Object.values(occurrences.data)
-        emailToUse = values.length > 0 ? values[0] : null
+      const data = profile.data
+      const tradeData = data.trade || {}
+      const workHistoryData = data.workHistory || {}
+      const existingBasics = data.basics || {}
+
+      // Build complete basics from all available data
+      const completeBasics = {
+        emailAddress: existingBasics.emailAddress || tradeData.emailAddress || workHistoryData.emailAddress || '',
+        legalFirstName: existingBasics.legalFirstName || tradeData.legalFirstName || workHistoryData.legalFirstName || '',
+        legalLastName: existingBasics.legalLastName || tradeData.legalLastName || workHistoryData.legalLastName || '',
+        mobilePhone: existingBasics.mobilePhone || tradeData.mobilePhone || workHistoryData.mobilePhone || '',
+        dob: existingBasics.dob || tradeData.dob || workHistoryData.dob || '',
+        addressLine1: existingBasics.addressLine1 || tradeData.addressLine1 || workHistoryData.addressLine1 || '',
+        addressLine2: existingBasics.addressLine2 || tradeData.addressLine2 || workHistoryData.addressLine2 || '',
+        city: existingBasics.city || tradeData.city || workHistoryData.city || '',
+        stateCode: existingBasics.stateCode || tradeData.stateCode || workHistoryData.stateCode || '',
+        zip: existingBasics.zip || tradeData.zip || workHistoryData.zip || '',
+        currentAddressLine1: existingBasics.currentAddressLine1 || tradeData.currentAddressLine1 || workHistoryData.currentAddressLine1 || '',
+        currentAddressLine2: existingBasics.currentAddressLine2 || tradeData.currentAddressLine2 || workHistoryData.currentAddressLine2 || '',
+        currentCity: existingBasics.currentCity || tradeData.currentCity || workHistoryData.currentCity || '',
+        currentStateCode: existingBasics.currentStateCode || tradeData.currentStateCode || workHistoryData.currentStateCode || '',
+        currentZip: existingBasics.currentZip || tradeData.currentZip || workHistoryData.currentZip || '',
+        english: existingBasics.english !== undefined ? existingBasics.english : (tradeData.english || false),
+        spanish: existingBasics.spanish !== undefined ? existingBasics.spanish : (tradeData.spanish || false),
+        englishSpanish: existingBasics.englishSpanish !== undefined ? existingBasics.englishSpanish : (tradeData.englishSpanish || false),
+        sameAsAddress: existingBasics.sameAsAddress !== undefined ? existingBasics.sameAsAddress : (tradeData.sameAsAddress || false),
+        acceptTerms: existingBasics.acceptTerms !== undefined ? existingBasics.acceptTerms : (tradeData.acceptTerms || false),
+        acceptPrivacy: existingBasics.acceptPrivacy !== undefined ? existingBasics.acceptPrivacy : (tradeData.acceptPrivacy || false),
+        consentElectronic: existingBasics.consentElectronic !== undefined ? existingBasics.consentElectronic : (tradeData.consentElectronic || false),
+        certifyAccurate: existingBasics.certifyAccurate !== undefined ? existingBasics.certifyAccurate : (tradeData.certifyAccurate || false),
+        profilePreview: existingBasics.profilePreview || tradeData.profilePreview || workHistoryData.profilePreview || '',
+        profileImageKey: existingBasics.profileImageKey || tradeData.profileImageKey || workHistoryData.profileImageKey || '',
+        profileImageUrl: existingBasics.profileImageUrl || tradeData.profileImageUrl || workHistoryData.profileImageUrl || '',
       }
 
-      if (!emailToUse) {
-        throw new Error('No email found in profile')
-      }
+      console.log('📝 Complete basics to save:', JSON.stringify(completeBasics, null, 2))
 
-      console.log(`🔧 Fixing email inconsistencies for user: ${userId} using: ${emailToUse}`)
-
-      // Update email across all sections
-      const result = await this.updateEmailAcrossAllSections(userId, emailToUse)
+      // Save the complete basics
+      const result = await this.updateSection(userId, 'basics', completeBasics)
       
-      console.log(`✅ Email inconsistencies fixed for user: ${userId}`)
+      console.log(`✅ Profile fixed for user: ${userId}`)
       return result
 
     } catch (error) {
-      console.error('Error fixing email inconsistencies:', error)
+      console.error('Error fixing incomplete profile:', error)
       throw error
     }
   }
