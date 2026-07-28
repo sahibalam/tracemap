@@ -30,6 +30,7 @@ export const createEmailLogsTable = async () => {
       console.log("ℹ️ EmailChangeLogs table already exists");
     } else {
       console.error("❌ Error creating EmailChangeLogs table:", error);
+      throw error;
     }
   }
 };
