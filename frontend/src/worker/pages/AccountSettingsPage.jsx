@@ -1648,7 +1648,7 @@
 
 
 // src/worker/pages/AccountSettingsPage.jsx
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { TopNav } from '../../common/components/TopNav'
@@ -2043,6 +2043,64 @@ function UpdateButton({ onClick, loading, label = 'Update', disabled = false, va
   )
 }
 
+// Email Input Component - memoized to prevent unnecessary re-renders
+const EmailInput = React.memo(({ value, onChange, isEditing, onFocus, onBlur }) => {
+  return (
+    <input
+      name="email-input"
+      type="email"
+      value={value}
+      onChange={onChange}
+      placeholder="Email Address"
+      readOnly={!isEditing}
+      style={{
+        width: '100%',
+        padding: '8px 12px',
+        border: '1px solid rgba(18, 38, 63, 0.12)',
+        borderRadius: '8px',
+        fontSize: '14px',
+        outline: 'none',
+        background: isEditing ? 'white' : '#f3f4f6',
+        transition: 'all 0.2s ease',
+        height: '36px',
+        cursor: isEditing ? 'text' : 'default',
+        color: isEditing ? '#17263a' : '#6b7280'
+      }}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    />
+  );
+});
+
+// Phone Input Component - memoized to prevent unnecessary re-renders
+const PhoneInput = React.memo(({ value, onChange, isEditing, onFocus, onBlur }) => {
+  return (
+    <input
+      name="phone-input"
+      type="tel"
+      value={value}
+      onChange={onChange}
+      placeholder="Phone Number"
+      readOnly={!isEditing}
+      style={{
+        width: '100%',
+        padding: '8px 12px',
+        border: '1px solid rgba(18, 38, 63, 0.12)',
+        borderRadius: '8px',
+        fontSize: '14px',
+        outline: 'none',
+        background: isEditing ? 'white' : '#f3f4f6',
+        transition: 'all 0.2s ease',
+        height: '36px',
+        cursor: isEditing ? 'text' : 'default',
+        color: isEditing ? '#17263a' : '#6b7280'
+      }}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    />
+  );
+});
+
 export function AccountSettingsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -2066,9 +2124,11 @@ export function AccountSettingsPage() {
   // Email update states
   const [isEditingEmail, setIsEditingEmail] = useState(false)
   const [newEmail, setNewEmail] = useState('')
-  const [isEmailAvailable, setIsEmailAvailable] = useState(false)
-  const [isCheckingEmail, setIsCheckingEmail] = useState(false)
-  const [emailAvailabilityMessage, setEmailAvailabilityMessage] = useState('')
+  const [emailAvailabilityData, setEmailAvailabilityData] = useState({
+    isAvailable: false,
+    isChecking: false,
+    message: ''
+  })
   const [showEmailVerification, setShowEmailVerification] = useState(false)
   const [emailVerificationCode, setEmailVerificationCode] = useState('')
   const [isEmailCodeSending, setIsEmailCodeSending] = useState(false)
@@ -2082,9 +2142,11 @@ export function AccountSettingsPage() {
   // Phone update states
   const [isEditingPhone, setIsEditingPhone] = useState(false)
   const [newPhoneNumber, setNewPhoneNumber] = useState('')
-  const [isPhoneAvailable, setIsPhoneAvailable] = useState(false)
-  const [isCheckingPhone, setIsCheckingPhone] = useState(false)
-  const [phoneAvailabilityMessage, setPhoneAvailabilityMessage] = useState('')
+  const [phoneAvailabilityData, setPhoneAvailabilityData] = useState({
+    isAvailable: false,
+    isChecking: false,
+    message: ''
+  })
   const [showPhoneVerification, setShowPhoneVerification] = useState(false)
   const [phoneVerificationCode, setPhoneVerificationCode] = useState('')
   const [isPhoneCodeSending, setIsPhoneCodeSending] = useState(false)
@@ -2232,42 +2294,57 @@ export function AccountSettingsPage() {
 
   const checkEmailAvailabilityRealTime = useCallback(async (emailToCheck) => {
     if (!emailToCheck || emailToCheck === email || !isEditingEmail) {
-      setIsEmailAvailable(false)
-      setEmailAvailabilityMessage('')
+      setEmailAvailabilityData({
+        isAvailable: false,
+        isChecking: false,
+        message: ''
+      })
       return
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(emailToCheck)) {
-      setIsEmailAvailable(false)
-      setEmailAvailabilityMessage('Please enter a valid email address')
+      setEmailAvailabilityData({
+        isAvailable: false,
+        isChecking: false,
+        message: 'Please enter a valid email address'
+      })
       return
     }
 
-    setIsCheckingEmail(true)
-    setEmailAvailabilityMessage('Checking...')
+    setEmailAvailabilityData(prev => ({ ...prev, isChecking: true, message: 'Checking...' }))
 
     try {
       const result = await checkEmailAvailability(emailToCheck)
       
       if (result.success) {
         if (result.data.available) {
-          setIsEmailAvailable(true)
-          setEmailAvailabilityMessage('✓ Email is available')
+          setEmailAvailabilityData({
+            isAvailable: true,
+            isChecking: false,
+            message: '✓ Email is available'
+          })
         } else {
-          setIsEmailAvailable(false)
-          setEmailAvailabilityMessage('✗ Email is already registered')
+          setEmailAvailabilityData({
+            isAvailable: false,
+            isChecking: false,
+            message: '✗ Email is already registered'
+          })
         }
       } else {
-        setIsEmailAvailable(false)
-        setEmailAvailabilityMessage('Error checking email')
+        setEmailAvailabilityData({
+          isAvailable: false,
+          isChecking: false,
+          message: 'Error checking email'
+        })
       }
     } catch (err) {
       console.error('Error checking email:', err)
-      setIsEmailAvailable(false)
-      setEmailAvailabilityMessage('Error checking email')
-    } finally {
-      setIsCheckingEmail(false)
+      setEmailAvailabilityData({
+        isAvailable: false,
+        isChecking: false,
+        message: 'Error checking email'
+      })
     }
   }, [email, isEditingEmail])
 
@@ -2282,8 +2359,11 @@ export function AccountSettingsPage() {
         checkEmailAvailabilityRealTime(newEmail)
       }, 600)
     } else if (!isEditingEmail) {
-      setIsEmailAvailable(false)
-      setEmailAvailabilityMessage('')
+      setEmailAvailabilityData({
+        isAvailable: false,
+        isChecking: false,
+        message: ''
+      })
     }
 
     return () => {
@@ -2296,8 +2376,11 @@ export function AccountSettingsPage() {
   const handleStartEditEmail = () => {
     setIsEditingEmail(true)
     setNewEmail(email)
-    setEmailAvailabilityMessage('')
-    setIsEmailAvailable(false)
+    setEmailAvailabilityData({
+      isAvailable: false,
+      isChecking: false,
+      message: ''
+    })
     // Focus the input after render
     setTimeout(() => {
       const input = document.querySelector('input[name="email-input"]')
@@ -2308,8 +2391,11 @@ export function AccountSettingsPage() {
   const handleCancelEditEmail = () => {
     setIsEditingEmail(false)
     setNewEmail(email)
-    setIsEmailAvailable(false)
-    setEmailAvailabilityMessage('')
+    setEmailAvailabilityData({
+      isAvailable: false,
+      isChecking: false,
+      message: ''
+    })
     setShowEmailVerification(false)
     setEmailVerificationCode('')
     setEmailCodeSent(false)
@@ -2319,8 +2405,12 @@ export function AccountSettingsPage() {
     }
   }
 
+  const handleEmailChange = (e) => {
+    setNewEmail(e.target.value)
+  }
+
   const handleSendEmailVerification = async () => {
-    if (!newEmail || !isEmailAvailable) {
+    if (!newEmail || !emailAvailabilityData.isAvailable) {
       setError('Please enter a valid and available email address')
       return
     }
@@ -2386,8 +2476,11 @@ export function AccountSettingsPage() {
         setShowEmailVerification(false)
         setEmailCodeSent(false)
         setEmailVerificationCode('')
-        setIsEmailAvailable(false)
-        setEmailAvailabilityMessage('')
+        setEmailAvailabilityData({
+          isAvailable: false,
+          isChecking: false,
+          message: ''
+        })
         setIsEditingEmail(false)
         
         localStorage.setItem('pendingEmail', newEmail)
@@ -2414,20 +2507,25 @@ export function AccountSettingsPage() {
 
   const checkPhoneAvailabilityRealTime = useCallback(async (phoneToCheck) => {
     if (!phoneToCheck || phoneToCheck === phoneNumber || !isEditingPhone) {
-      setIsPhoneAvailable(false)
-      setPhoneAvailabilityMessage('')
+      setPhoneAvailabilityData({
+        isAvailable: false,
+        isChecking: false,
+        message: ''
+      })
       return
     }
 
     const digitsOnly = phoneToCheck.replace(/\D/g, '')
     if (digitsOnly.length !== 10) {
-      setIsPhoneAvailable(false)
-      setPhoneAvailabilityMessage('Please enter a valid 10-digit phone number')
+      setPhoneAvailabilityData({
+        isAvailable: false,
+        isChecking: false,
+        message: 'Please enter a valid 10-digit phone number'
+      })
       return
     }
 
-    setIsCheckingPhone(true)
-    setPhoneAvailabilityMessage('Checking...')
+    setPhoneAvailabilityData(prev => ({ ...prev, isChecking: true, message: 'Checking...' }))
 
     try {
       const response = await api.get(`/worker/phone/${digitsOnly}`)
@@ -2435,22 +2533,32 @@ export function AccountSettingsPage() {
       if (response.data && response.data.success) {
         const phoneData = response.data.data || {}
         if (phoneData.available === true) {
-          setIsPhoneAvailable(true)
-          setPhoneAvailabilityMessage('✓ Phone number is available')
+          setPhoneAvailabilityData({
+            isAvailable: true,
+            isChecking: false,
+            message: '✓ Phone number is available'
+          })
         } else {
-          setIsPhoneAvailable(false)
-          setPhoneAvailabilityMessage('✗ Phone number is already registered')
+          setPhoneAvailabilityData({
+            isAvailable: false,
+            isChecking: false,
+            message: '✗ Phone number is already registered'
+          })
         }
       } else {
-        setIsPhoneAvailable(false)
-        setPhoneAvailabilityMessage('Error checking phone number')
+        setPhoneAvailabilityData({
+          isAvailable: false,
+          isChecking: false,
+          message: 'Error checking phone number'
+        })
       }
     } catch (err) {
       console.error('Error checking phone:', err)
-      setIsPhoneAvailable(false)
-      setPhoneAvailabilityMessage('Error checking phone number')
-    } finally {
-      setIsCheckingPhone(false)
+      setPhoneAvailabilityData({
+        isAvailable: false,
+        isChecking: false,
+        message: 'Error checking phone number'
+      })
     }
   }, [phoneNumber, isEditingPhone])
 
@@ -2465,8 +2573,11 @@ export function AccountSettingsPage() {
         checkPhoneAvailabilityRealTime(newPhoneNumber)
       }, 600)
     } else if (!isEditingPhone) {
-      setIsPhoneAvailable(false)
-      setPhoneAvailabilityMessage('')
+      setPhoneAvailabilityData({
+        isAvailable: false,
+        isChecking: false,
+        message: ''
+      })
     }
 
     return () => {
@@ -2479,8 +2590,11 @@ export function AccountSettingsPage() {
   const handleStartEditPhone = () => {
     setIsEditingPhone(true)
     setNewPhoneNumber(phoneNumber)
-    setPhoneAvailabilityMessage('')
-    setIsPhoneAvailable(false)
+    setPhoneAvailabilityData({
+      isAvailable: false,
+      isChecking: false,
+      message: ''
+    })
     setTimeout(() => {
       const input = document.querySelector('input[name="phone-input"]')
       if (input) input.focus()
@@ -2490,8 +2604,11 @@ export function AccountSettingsPage() {
   const handleCancelEditPhone = () => {
     setIsEditingPhone(false)
     setNewPhoneNumber(phoneNumber)
-    setIsPhoneAvailable(false)
-    setPhoneAvailabilityMessage('')
+    setPhoneAvailabilityData({
+      isAvailable: false,
+      isChecking: false,
+      message: ''
+    })
     setShowPhoneVerification(false)
     setPhoneVerificationCode('')
     setPhoneCodeSent(false)
@@ -2501,8 +2618,12 @@ export function AccountSettingsPage() {
     }
   }
 
+  const handlePhoneChange = (e) => {
+    setNewPhoneNumber(e.target.value)
+  }
+
   const handleSendPhoneOTP = async () => {
-    if (!newPhoneNumber || !isPhoneAvailable) {
+    if (!newPhoneNumber || !phoneAvailabilityData.isAvailable) {
       setError('Please enter a valid and available phone number')
       return
     }
@@ -2579,8 +2700,11 @@ export function AccountSettingsPage() {
         setShowPhoneVerification(false)
         setPhoneCodeSent(false)
         setPhoneVerificationCode('')
-        setIsPhoneAvailable(false)
-        setPhoneAvailabilityMessage('')
+        setPhoneAvailabilityData({
+          isAvailable: false,
+          isChecking: false,
+          message: ''
+        })
         setIsEditingPhone(false)
         
         localStorage.setItem('pendingPhoneNumber', newPhoneNumber)
@@ -2704,6 +2828,32 @@ export function AccountSettingsPage() {
       </div>
     </div>
   )
+
+  // Memoize email input props to prevent unnecessary re-renders
+  const emailInputProps = useMemo(() => ({
+    value: newEmail,
+    onChange: handleEmailChange,
+    isEditing: isEditingEmail,
+    onFocus: (e) => {
+      if (isEditingEmail) e.target.style.borderColor = '#0f4ea9'
+    },
+    onBlur: (e) => {
+      if (isEditingEmail) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+    }
+  }), [newEmail, isEditingEmail])
+
+  // Memoize phone input props to prevent unnecessary re-renders
+  const phoneInputProps = useMemo(() => ({
+    value: newPhoneNumber,
+    onChange: handlePhoneChange,
+    isEditing: isEditingPhone,
+    onFocus: (e) => {
+      if (isEditingPhone) e.target.style.borderColor = '#0f4ea9'
+    },
+    onBlur: (e) => {
+      if (isEditingPhone) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+    }
+  }), [newPhoneNumber, isEditingPhone])
 
   return (
     <div className="appShell">
@@ -2870,33 +3020,7 @@ export function AccountSettingsPage() {
                     <div>
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
-                          <input
-                            name="email-input"
-                            type="email"
-                            value={newEmail}
-                            onChange={(e) => setNewEmail(e.target.value)}
-                            placeholder="Email Address"
-                            readOnly={!isEditingEmail}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid rgba(18, 38, 63, 0.12)',
-                              borderRadius: '8px',
-                              fontSize: '14px',
-                              outline: 'none',
-                              background: isEditingEmail ? 'white' : '#f3f4f6',
-                              transition: 'all 0.2s ease',
-                              height: '36px',
-                              cursor: isEditingEmail ? 'text' : 'default',
-                              color: isEditingEmail ? '#17263a' : '#6b7280'
-                            }}
-                            onFocus={(e) => {
-                              if (isEditingEmail) e.target.style.borderColor = '#0f4ea9'
-                            }}
-                            onBlur={(e) => {
-                              if (isEditingEmail) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                            }}
-                          />
+                          <EmailInput {...emailInputProps} />
                         </div>
                         {!isEditingEmail ? (
                           <UpdateButton 
@@ -2914,7 +3038,7 @@ export function AccountSettingsPage() {
                             <UpdateButton 
                               onClick={handleSendEmailVerification}
                               loading={isEmailCodeSending}
-                              disabled={!isEmailAvailable || newEmail === email || showEmailVerification}
+                              disabled={!emailAvailabilityData.isAvailable || newEmail === email || showEmailVerification}
                               label="Send Code"
                               variant="primary"
                             />
@@ -2924,13 +3048,13 @@ export function AccountSettingsPage() {
                       
                       {isEditingEmail && newEmail !== email && (
                         <div style={{ marginTop: '4px', fontSize: '12px' }}>
-                          {isCheckingEmail ? (
+                          {emailAvailabilityData.isChecking ? (
                             <span style={{ color: '#0f4ea9' }}>⏳ Checking availability...</span>
-                          ) : emailAvailabilityMessage ? (
+                          ) : emailAvailabilityData.message ? (
                             <span style={{ 
-                              color: emailAvailabilityMessage.includes('available') ? '#2fb463' : '#dc2626' 
+                              color: emailAvailabilityData.message.includes('available') ? '#2fb463' : '#dc2626' 
                             }}>
-                              {emailAvailabilityMessage}
+                              {emailAvailabilityData.message}
                             </span>
                           ) : null}
                         </div>
@@ -3024,33 +3148,7 @@ export function AccountSettingsPage() {
                     <div>
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
-                          <input
-                            name="phone-input"
-                            type="tel"
-                            value={newPhoneNumber}
-                            onChange={(e) => setNewPhoneNumber(e.target.value)}
-                            placeholder="Phone Number"
-                            readOnly={!isEditingPhone}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid rgba(18, 38, 63, 0.12)',
-                              borderRadius: '8px',
-                              fontSize: '14px',
-                              outline: 'none',
-                              background: isEditingPhone ? 'white' : '#f3f4f6',
-                              transition: 'all 0.2s ease',
-                              height: '36px',
-                              cursor: isEditingPhone ? 'text' : 'default',
-                              color: isEditingPhone ? '#17263a' : '#6b7280'
-                            }}
-                            onFocus={(e) => {
-                              if (isEditingPhone) e.target.style.borderColor = '#0f4ea9'
-                            }}
-                            onBlur={(e) => {
-                              if (isEditingPhone) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                            }}
-                          />
+                          <PhoneInput {...phoneInputProps} />
                         </div>
                         {!isEditingPhone ? (
                           <UpdateButton 
@@ -3068,7 +3166,7 @@ export function AccountSettingsPage() {
                             <UpdateButton 
                               onClick={handleSendPhoneOTP}
                               loading={isPhoneCodeSending}
-                              disabled={!isPhoneAvailable || newPhoneNumber === phoneNumber || showPhoneVerification}
+                              disabled={!phoneAvailabilityData.isAvailable || newPhoneNumber === phoneNumber || showPhoneVerification}
                               label="Send OTP"
                               variant="primary"
                             />
@@ -3078,13 +3176,13 @@ export function AccountSettingsPage() {
                       
                       {isEditingPhone && newPhoneNumber !== phoneNumber && (
                         <div style={{ marginTop: '4px', fontSize: '12px' }}>
-                          {isCheckingPhone ? (
+                          {phoneAvailabilityData.isChecking ? (
                             <span style={{ color: '#0f4ea9' }}>⏳ Checking availability...</span>
-                          ) : phoneAvailabilityMessage ? (
+                          ) : phoneAvailabilityData.message ? (
                             <span style={{ 
-                              color: phoneAvailabilityMessage.includes('available') ? '#2fb463' : '#dc2626' 
+                              color: phoneAvailabilityData.message.includes('available') ? '#2fb463' : '#dc2626' 
                             }}>
-                              {phoneAvailabilityMessage}
+                              {phoneAvailabilityData.message}
                             </span>
                           ) : null}
                         </div>
