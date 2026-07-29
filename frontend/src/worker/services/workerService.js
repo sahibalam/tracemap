@@ -1,3 +1,4 @@
+
 // // src/worker/services/workerService.js
 // import api from '../../services/api'
 
@@ -156,9 +157,44 @@
 
 //   /**
 //    * ✅ Update basics (Wizard Step 1)
+//    * IMPORTANT: Always merges with existing data to preserve all fields
+//    * Also updates email across ALL sections if email is being changed
 //    */
 //   async updateBasics(userId, data) {
-//     return this.updateSection(userId, 'basics', data)
+//     try {
+//       if (!userId) throw new Error('User ID is required')
+//       if (!data) throw new Error('Data is required')
+
+//       console.log(`📝 Updating basics for user: ${userId}`)
+//       console.log('📝 Data received:', JSON.stringify(data, null, 2))
+
+//       // ✅ CRITICAL: Get current profile to merge data
+//       const currentProfile = await this.getWorkerProfile(userId)
+//       const existingBasics = currentProfile.success && currentProfile.data?.basics 
+//         ? currentProfile.data.basics 
+//         : {}
+
+//       // ✅ Merge existing basics with new data (new data takes precedence)
+//       const mergedBasics = {
+//         ...existingBasics,
+//         ...data
+//       }
+
+//       console.log('📝 Merged basics:', JSON.stringify(mergedBasics, null, 2))
+
+//       // If email is being updated, update it across ALL sections
+//       if (data.emailAddress) {
+//         console.log(`📧 Email change detected, updating across ALL sections`)
+//         return this.updateEmailAcrossAllSections(userId, data.emailAddress, mergedBasics)
+//       }
+
+//       // If no email change, just update basics section with merged data
+//       return this.updateSection(userId, 'basics', mergedBasics)
+
+//     } catch (error) {
+//       console.error('Error updating basics:', error)
+//       throw error
+//     }
 //   }
 
 //   /**
@@ -228,6 +264,178 @@
 
 //   /**
 //    * ============================================================
+//    * 📧 EMAIL MANAGEMENT - NEW METHODS
+//    * ============================================================
+//    */
+
+//   /**
+//    * ✅ Update email across ALL sections of the profile
+//    * IMPORTANT: Preserves all existing data in each section
+//    * @param {string} userId - Firebase UID of the worker
+//    * @param {string} newEmail - New email address
+//    * @param {object} additionalData - Additional data to update in basics (optional)
+//    * @returns {Promise} Update response
+//    */
+//   async updateEmailAcrossAllSections(userId, newEmail, additionalData = {}) {
+//     try {
+//       if (!userId) throw new Error('User ID is required')
+//       if (!newEmail) throw new Error('New email is required')
+
+//       console.log(`📧 Updating email across ALL sections for user: ${userId} to: ${newEmail}`)
+
+//       // Get current profile
+//       const profile = await this.getWorkerProfile(userId)
+//       if (!profile.success || !profile.data) {
+//         throw new Error('Profile not found')
+//       }
+
+//       const data = profile.data
+//       const sections = {}
+
+//       // 1. Update basics - MERGE with existing data
+//       const existingBasics = data.basics || {}
+//       sections.basics = {
+//         ...existingBasics,        // Keep all existing fields
+//         ...additionalData,        // Add/override with additional data
+//         emailAddress: newEmail    // Ensure email is updated
+//       }
+
+//       console.log('📝 Updated basics with email:', JSON.stringify(sections.basics, null, 2))
+
+//       // 2. Update email in ALL sections that have email field
+//       const sectionsWithEmail = [
+//         'trade', 
+//         'workHistory', 
+//         'availability', 
+//         'emergency', 
+//         'certifications', 
+//         'tax', 
+//         'payment', 
+//         'medical', 
+//         'wizard'
+//       ]
+
+//       sectionsWithEmail.forEach(section => {
+//         if (data[section]) {
+//           sections[section] = {
+//             ...data[section],      // Keep all existing fields
+//             emailAddress: newEmail // Update email
+//           }
+//         }
+//       })
+
+//       // 3. Use bulk update to update all sections at once
+//       const result = await this.updateMultipleSections(userId, sections)
+      
+//       console.log(`✅ Email updated in ALL sections for user: ${userId}`)
+//       return result
+
+//     } catch (error) {
+//       console.error('Error updating email across sections:', error)
+//       throw error
+//     }
+//   }
+
+//   /**
+//    * ✅ Get all sections that contain email address
+//    * Useful for debugging and checking consistency
+//    * @param {string} userId - Firebase UID of the worker
+//    * @returns {Promise<Object>} Object with section names and their email values
+//    */
+//   async getEmailOccurrences(userId) {
+//     try {
+//       if (!userId) throw new Error('User ID is required')
+
+//       const profile = await this.getWorkerProfile(userId)
+//       if (!profile.success || !profile.data) {
+//         return { success: false, message: 'Profile not found' }
+//       }
+
+//       const data = profile.data
+//       const occurrences = {}
+
+//       // Check all sections for email
+//       const sectionsToCheck = [
+//         'basics', 
+//         'trade', 
+//         'workHistory', 
+//         'availability', 
+//         'emergency', 
+//         'certifications', 
+//         'tax', 
+//         'payment', 
+//         'medical', 
+//         'wizard'
+//       ]
+
+//       sectionsToCheck.forEach(section => {
+//         if (data[section] && data[section].emailAddress) {
+//           occurrences[section] = data[section].emailAddress
+//         }
+//       })
+
+//       // Also check root level
+//       if (data.emailAddress) {
+//         occurrences.root = data.emailAddress
+//       }
+
+//       return {
+//         success: true,
+//         data: occurrences,
+//         isConsistent: Object.values(occurrences).every(v => v === Object.values(occurrences)[0])
+//       }
+
+//     } catch (error) {
+//       console.error('Error getting email occurrences:', error)
+//       throw error
+//     }
+//   }
+
+//   /**
+//    * ✅ Fix inconsistent email across sections
+//    * @param {string} userId - Firebase UID of the worker
+//    * @param {string} preferredEmail - The email to use as the source of truth
+//    * @returns {Promise} Update response
+//    */
+//   async fixEmailInconsistencies(userId, preferredEmail = null) {
+//     try {
+//       if (!userId) throw new Error('User ID is required')
+
+//       // Get all email occurrences
+//       const occurrences = await this.getEmailOccurrences(userId)
+//       if (!occurrences.success) {
+//         throw new Error('Failed to get email occurrences')
+//       }
+
+//       // Determine which email to use
+//       let emailToUse = preferredEmail
+//       if (!emailToUse && occurrences.data.basics) {
+//         emailToUse = occurrences.data.basics
+//       } else if (!emailToUse) {
+//         const values = Object.values(occurrences.data)
+//         emailToUse = values.length > 0 ? values[0] : null
+//       }
+
+//       if (!emailToUse) {
+//         throw new Error('No email found in profile')
+//       }
+
+//       console.log(`🔧 Fixing email inconsistencies for user: ${userId} using: ${emailToUse}`)
+
+//       // Update email across all sections
+//       const result = await this.updateEmailAcrossAllSections(userId, emailToUse)
+      
+//       console.log(`✅ Email inconsistencies fixed for user: ${userId}`)
+//       return result
+
+//     } catch (error) {
+//       console.error('Error fixing email inconsistencies:', error)
+//       throw error
+//     }
+//   }
+
+//   /**
+//    * ============================================================
 //    * 🔄 WIZARD PROGRESS TRACKING (RESUME FEATURE)
 //    * ============================================================
 //    */
@@ -253,7 +461,7 @@
 //             isComplete: false,
 //             steps: {},
 //             wizard: null,
-//             totalSteps: 6 // ✅ Updated to 6 steps
+//             totalSteps: 6
 //           }
 //         }
 //       }
@@ -263,20 +471,12 @@
 //       let currentStep = 1
 //       let isComplete = false
 
-//       // ✅ Check each section - 6 steps mapped to 5 sections
-//       // Step 1: basics
-//       // Step 2: trade (Trade Profile)
-//       // Step 3: trade (Tools & Certifications - same section)
-//       // Step 4: workHistory
-//       // Step 5: availability
-//       // Step 6: emergency
 //       const sections = ['basics', 'trade', 'workHistory', 'availability', 'emergency']
       
-//       // Track which steps have data
 //       const stepData = {
 //         1: data.basics,
 //         2: data.trade,
-//         3: data.trade, // Same as step 2 since both go to trade section
+//         3: data.trade,
 //         4: data.workHistory,
 //         5: data.availability,
 //         6: data.emergency
@@ -284,11 +484,8 @@
 
 //       sections.forEach((section, index) => {
 //         const stepNum = index + 1
-//         // For step 2 and 3, both check the trade section
 //         if (stepNum === 2 || stepNum === 3) {
 //           const stepKey = `step${stepNum}`
-//           // Check if there's specific data for this step
-//           // If trade section has data, both steps are considered complete
 //           if (data.trade && Object.keys(data.trade).length > 0) {
 //             steps[stepKey] = data.trade
 //           }
@@ -301,21 +498,16 @@
 //         }
 //       })
 
-//       // Determine current step (last completed step)
 //       const completedSteps = Object.keys(steps).length
 //       if (completedSteps > 0) {
-//         // Find the highest step number that has data
 //         const stepNumbers = Object.keys(steps).map(Number).sort((a, b) => a - b)
 //         currentStep = stepNumbers[stepNumbers.length - 1]
 //       }
 
-//       // Check wizard status
 //       const wizard = data.wizard || {}
 //       isComplete = wizard.completed || false
       
-//       // If wizard is marked complete but steps are incomplete, fix it
 //       if (isComplete) {
-//         // Check if all 6 steps have data
 //         const allStepsComplete = [1, 2, 3, 4, 5, 6].every((stepNum) => {
 //           const stepKey = `step${stepNum}`
 //           return steps[stepKey] && Object.keys(steps[stepKey]).length > 0
@@ -325,7 +517,6 @@
 //         }
 //       }
 
-//       // Determine next step (first incomplete step)
 //       let nextStep = 1
 //       for (let i = 1; i <= 6; i++) {
 //         const stepKey = `step${i}`
@@ -335,7 +526,6 @@
 //         }
 //       }
 
-//       // If all steps are complete, nextStep is 0 (complete)
 //       if (isComplete) {
 //         nextStep = 0
 //       }
@@ -350,7 +540,7 @@
 //           isComplete,
 //           steps,
 //           wizard,
-//           totalSteps: 6 // ✅ Updated to 6 steps
+//           totalSteps: 6
 //         }
 //       }
 
@@ -370,7 +560,7 @@
 //   async updateWizardProgress(userId, stepNumber, completed = false) {
 //     try {
 //       if (!userId) throw new Error('User ID is required')
-//       if (!stepNumber || stepNumber < 1 || stepNumber > 6) { // ✅ Updated to 6
+//       if (!stepNumber || stepNumber < 1 || stepNumber > 6) {
 //         throw new Error('Valid step number (1-6) is required')
 //       }
 
@@ -386,7 +576,6 @@
 //         wizardData.completedAt = new Date().toISOString()
 //       }
 
-//       // If first time, add startedAt
 //       const profile = await this.getWorkerProfile(userId)
 //       if (profile.success && profile.data?.wizard?.startedAt) {
 //         wizardData.startedAt = profile.data.wizard.startedAt
@@ -418,7 +607,6 @@
 
 //       const { currentStep, nextStep, isComplete, steps } = progress.data
 
-//       // If wizard is complete, no need to resume
 //       if (isComplete) {
 //         return { 
 //           needsResume: false, 
@@ -428,9 +616,7 @@
 //         }
 //       }
 
-//       // If no steps completed, start from step 1
 //       if (currentStep === 1 && nextStep === 1) {
-//         // Check if step 1 has any data
 //         const hasStep1Data = Object.keys(steps).length > 0
 //         if (!hasStep1Data) {
 //           return { 
@@ -441,7 +627,6 @@
 //         }
 //       }
 
-//       // Resume from the first incomplete step
 //       const resumeStep = nextStep || currentStep + 1
       
 //       console.log(`🔄 Wizard resume: step=${resumeStep}, currentStep=${currentStep}, nextStep=${nextStep}`)
@@ -780,7 +965,7 @@
 //     const sectionMap = {
 //       1: 'basics',
 //       2: 'trade',
-//       3: 'trade',     // Tools & Certifications - same section
+//       3: 'trade',
 //       4: 'workHistory',
 //       5: 'availability',
 //       6: 'emergency'
@@ -845,6 +1030,78 @@
 //       return []
 //     }
 //   }
+
+//   /**
+//    * ============================================================
+//    * 🧹 CLEANUP AND MAINTENANCE
+//    * ============================================================
+//    */
+
+//   /**
+//    * ✅ Fix incomplete profile - restores missing fields from other sections
+//    * @param {string} userId - Firebase UID of the worker
+//    * @returns {Promise} Update response
+//    */
+//   async fixIncompleteProfile(userId) {
+//     try {
+//       if (!userId) throw new Error('User ID is required')
+
+//       console.log(`🔧 Fixing incomplete profile for user: ${userId}`)
+
+//       // Get current profile
+//       const profile = await this.getWorkerProfile(userId)
+//       if (!profile.success || !profile.data) {
+//         throw new Error('Profile not found')
+//       }
+
+//       const data = profile.data
+//       const tradeData = data.trade || {}
+//       const workHistoryData = data.workHistory || {}
+//       const existingBasics = data.basics || {}
+
+//       // Build complete basics from all available data
+//       const completeBasics = {
+//         emailAddress: existingBasics.emailAddress || tradeData.emailAddress || workHistoryData.emailAddress || '',
+//         legalFirstName: existingBasics.legalFirstName || tradeData.legalFirstName || workHistoryData.legalFirstName || '',
+//         legalLastName: existingBasics.legalLastName || tradeData.legalLastName || workHistoryData.legalLastName || '',
+//         mobilePhone: existingBasics.mobilePhone || tradeData.mobilePhone || workHistoryData.mobilePhone || '',
+//         dob: existingBasics.dob || tradeData.dob || workHistoryData.dob || '',
+//         addressLine1: existingBasics.addressLine1 || tradeData.addressLine1 || workHistoryData.addressLine1 || '',
+//         addressLine2: existingBasics.addressLine2 || tradeData.addressLine2 || workHistoryData.addressLine2 || '',
+//         city: existingBasics.city || tradeData.city || workHistoryData.city || '',
+//         stateCode: existingBasics.stateCode || tradeData.stateCode || workHistoryData.stateCode || '',
+//         zip: existingBasics.zip || tradeData.zip || workHistoryData.zip || '',
+//         currentAddressLine1: existingBasics.currentAddressLine1 || tradeData.currentAddressLine1 || workHistoryData.currentAddressLine1 || '',
+//         currentAddressLine2: existingBasics.currentAddressLine2 || tradeData.currentAddressLine2 || workHistoryData.currentAddressLine2 || '',
+//         currentCity: existingBasics.currentCity || tradeData.currentCity || workHistoryData.currentCity || '',
+//         currentStateCode: existingBasics.currentStateCode || tradeData.currentStateCode || workHistoryData.currentStateCode || '',
+//         currentZip: existingBasics.currentZip || tradeData.currentZip || workHistoryData.currentZip || '',
+//         english: existingBasics.english !== undefined ? existingBasics.english : (tradeData.english || false),
+//         spanish: existingBasics.spanish !== undefined ? existingBasics.spanish : (tradeData.spanish || false),
+//         englishSpanish: existingBasics.englishSpanish !== undefined ? existingBasics.englishSpanish : (tradeData.englishSpanish || false),
+//         sameAsAddress: existingBasics.sameAsAddress !== undefined ? existingBasics.sameAsAddress : (tradeData.sameAsAddress || false),
+//         acceptTerms: existingBasics.acceptTerms !== undefined ? existingBasics.acceptTerms : (tradeData.acceptTerms || false),
+//         acceptPrivacy: existingBasics.acceptPrivacy !== undefined ? existingBasics.acceptPrivacy : (tradeData.acceptPrivacy || false),
+//         consentElectronic: existingBasics.consentElectronic !== undefined ? existingBasics.consentElectronic : (tradeData.consentElectronic || false),
+//         certifyAccurate: existingBasics.certifyAccurate !== undefined ? existingBasics.certifyAccurate : (tradeData.certifyAccurate || false),
+//         profilePreview: existingBasics.profilePreview || tradeData.profilePreview || workHistoryData.profilePreview || '',
+//         profileImageKey: existingBasics.profileImageKey || tradeData.profileImageKey || workHistoryData.profileImageKey || '',
+//         profileImageUrl: existingBasics.profileImageUrl || tradeData.profileImageUrl || workHistoryData.profileImageUrl || '',
+//       }
+
+//       console.log('📝 Complete basics to save:', JSON.stringify(completeBasics, null, 2))
+
+//       // Save the complete basics
+//       const result = await this.updateSection(userId, 'basics', completeBasics)
+      
+//       console.log(`✅ Profile fixed for user: ${userId}`)
+//       return result
+
+//     } catch (error) {
+//       console.error('Error fixing incomplete profile:', error)
+//       throw error
+//     }
+//   }
 // }
 
 // // Export singleton instance
@@ -852,8 +1109,10 @@
 
 
 
+
 // src/worker/services/workerService.js
 import api from '../../services/api'
+import { setUserLanguage, changeLanguage, getStoredLanguage } from '../../i18n/config'
 
 class WorkerService {
   /**
@@ -877,6 +1136,18 @@ class WorkerService {
       
       if (response.data.success) {
         console.log('✅ Profile fetched successfully')
+        
+        // ✅ Sync language from profile if available
+        const language = response.data.data?.basics?.language
+        if (language) {
+          const currentLang = getStoredLanguage()
+          if (language !== currentLang) {
+            console.log(`🔄 Syncing language from profile: ${language}`)
+            setUserLanguage(language)
+            changeLanguage(language)
+          }
+        }
+        
         return response.data
       } else {
         throw new Error(response.data.message || 'Failed to fetch profile')
@@ -940,6 +1211,17 @@ class WorkerService {
       
       if (response.data.success) {
         console.log(`✅ ${section} updated successfully`)
+        
+        // ✅ If section is basics and contains language, update localStorage
+        if (section === 'basics' && data.language) {
+          const currentLang = getStoredLanguage()
+          if (data.language !== currentLang) {
+            console.log(`🔄 Language updated in profile: ${data.language}`)
+            setUserLanguage(data.language)
+            changeLanguage(data.language)
+          }
+        }
+        
         return response.data
       } else {
         throw new Error(response.data.message || `Failed to update ${section}`)
@@ -1034,6 +1316,12 @@ class WorkerService {
       }
 
       console.log('📝 Merged basics:', JSON.stringify(mergedBasics, null, 2))
+
+      // ✅ Save language if present
+      if (data.language) {
+        setUserLanguage(data.language)
+        changeLanguage(data.language)
+      }
 
       // If email is being updated, update it across ALL sections
       if (data.emailAddress) {
@@ -1940,9 +2228,16 @@ class WorkerService {
         profilePreview: existingBasics.profilePreview || tradeData.profilePreview || workHistoryData.profilePreview || '',
         profileImageKey: existingBasics.profileImageKey || tradeData.profileImageKey || workHistoryData.profileImageKey || '',
         profileImageUrl: existingBasics.profileImageUrl || tradeData.profileImageUrl || workHistoryData.profileImageUrl || '',
+        language: existingBasics.language || tradeData.language || 'en' // ✅ Include language
       }
 
       console.log('📝 Complete basics to save:', JSON.stringify(completeBasics, null, 2))
+
+      // ✅ Save language if present
+      if (completeBasics.language) {
+        setUserLanguage(completeBasics.language)
+        changeLanguage(completeBasics.language)
+      }
 
       // Save the complete basics
       const result = await this.updateSection(userId, 'basics', completeBasics)

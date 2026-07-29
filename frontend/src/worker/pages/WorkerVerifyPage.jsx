@@ -1,4 +1,3 @@
-
 // // src/worker/pages/WorkerVerifyPage.jsx
 // import { useState, useRef, useEffect, useCallback } from 'react'
 // import { useNavigate, useLocation } from 'react-router-dom'
@@ -795,6 +794,13 @@
 //           box-shadow: 0 4px 12px rgba(47, 180, 99, 0.3);
 //         }
         
+//         /* ✅ HIDE reCAPTCHA BADGE - Still works in background */
+//         .grecaptcha-badge {
+//           visibility: hidden !important;
+//           opacity: 0 !important;
+//           pointer-events: none !important;
+//         }
+        
 //         @media (max-width: 768px) {
 //           .verifyRow {
 //             flex-direction: column;
@@ -831,12 +837,10 @@
 
 
 
-
-
-
 // src/worker/pages/WorkerVerifyPage.jsx
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { TopNav } from '../../common/components/TopNav'
 import { TextField } from '../../common/components/TextField'
 import { IconMail, IconPhone } from '../../common/components/Icons'
@@ -848,8 +852,10 @@ import {
   sendPhoneOTP,
   verifyPhoneOTP
 } from '../../services/verificationService'
+import { setUserLanguage, changeLanguage, getStoredLanguage } from '../../i18n/config' // ✅ IMPORT LANGUAGE HELPERS
 
 export function WorkerVerifyPage() {
+  const { t, i18n } = useTranslation() // ✅ ADD i18n
   const navigate = useNavigate()
   const location = useLocation()
   
@@ -860,7 +866,7 @@ export function WorkerVerifyPage() {
   const firstName = location?.state?.firstName ?? localStorage.getItem('pendingFirstName') ?? ''
   const lastName = location?.state?.lastName ?? localStorage.getItem('pendingLastName') ?? ''
   const dob = location?.state?.dob ?? localStorage.getItem('pendingDob') ?? ''
-  const language = location?.state?.language ?? localStorage.getItem('pendingLanguage') ?? ''
+  const language = location?.state?.language ?? localStorage.getItem('pendingLanguage') ?? 'en'
   
   const [emailVerified, setEmailVerified] = useState(false)
   const [phoneVerified, setPhoneVerified] = useState(false)
@@ -882,6 +888,18 @@ export function WorkerVerifyPage() {
   const isSendingRef = useRef(false)
   const isVerifyingRef = useRef(false)
   const lastRequestTimeRef = useRef(0)
+
+  // ✅ Ensure language is set on mount
+  useEffect(() => {
+    const storedLang = getStoredLanguage() || language || 'en'
+    if (storedLang && storedLang !== i18n.language) {
+      changeLanguage(storedLang)
+    }
+    // Also save pending language if not already saved
+    if (language && !localStorage.getItem('userLanguage')) {
+      setUserLanguage(language)
+    }
+  }, [i18n, language])
 
   // ✅ Cleanup cooldown on unmount
   useEffect(() => {
@@ -1075,12 +1093,18 @@ export function WorkerVerifyPage() {
     await handleSendEmailCode()
   }, [resendCooldown, handleSendEmailCode])
 
-  // ✅ Proceed to wizard
+  // ✅ Proceed to wizard - Pass language
   const handleProceed = useCallback(() => {
     if (emailVerified && phoneVerified) {
       console.log('📋 Proceeding to wizard with data:', { 
         firstName, lastName, email, phoneNumber, dob, language 
       })
+      
+      // ✅ Ensure language is set
+      if (language) {
+        setUserLanguage(language)
+        changeLanguage(language)
+      }
       
       const generateSessionToken = () => {
         return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
@@ -1088,6 +1112,8 @@ export function WorkerVerifyPage() {
       
       const authToken = localStorage.getItem('authToken') || generateSessionToken()
       localStorage.setItem('authToken', authToken)
+      localStorage.setItem('userLanguage', language)
+      localStorage.setItem('profileLanguage', language)
       
       navigate('/wizard', { 
         state: { 
@@ -1096,7 +1122,7 @@ export function WorkerVerifyPage() {
           firstName,
           lastName,
           dob,
-          language,
+          language, // ✅ PASS LANGUAGE TO WIZARD
           password,
           authToken,
           fromVerification: true,
