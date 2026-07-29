@@ -56,18 +56,40 @@
     "passwordUpdated": "Password Updated!",
     "redirecting": "Redirecting to login...",
     "updatePassword": "Update Password",
-    "updating": "Updating..."
+    "updating": "Updating...",
+    "currentPassword": "Current Password",
+    "newPasswordRequired": "New password is required",
+    "passwordChanged": "Password changed successfully",
+    "passwordChangeError": "Error changing password"
   },
   "nav": {
     "language": "Language",
     "login": "Log in",
     "register": "Register",
     "profile": "Profile",
-    "logout": "Logout"
+    "logout": "Logout",
+    "accountSettings": "Account Settings",
+    "notifications": "Notifications",
+    "dashboard": "Dashboard",
+    "help": "Help"
   },
   "home": {
     "workInProgress": "Work in progress",
-    "workInProgressDescription": "We're building something amazing. Stay tuned!"
+    "workInProgressDescription": "We're building something amazing. Stay tuned!",
+    "welcome": "Welcome to TradesMap",
+    "heroTitle": "Connecting Talent with Opportunities",
+    "heroSubtitle": "Find projects, showcase your skills, and grow your career in the construction industry",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "featuredProjects": "Featured Projects",
+    "whyTradesMap": "Why TradesMap",
+    "trustedBy": "Trusted by Construction Professionals",
+    "feature1": "Find Work",
+    "feature1Desc": "Discover projects that match your skills and experience",
+    "feature2": "Showcase Your Skills",
+    "feature2Desc": "Create a professional profile that highlights your expertise",
+    "feature3": "Grow Your Career",
+    "feature3Desc": "Connect with employers and build your professional network"
   },
   "wizard": {
     "step1": {
@@ -101,7 +123,13 @@
       "noSkillGroupsFound": "No skill groups match your search",
       "experienceLevel": "Experience Level",
       "yearsOfExperience": "Years of Experience",
-      "skillDetails": "Skill Details"
+      "skillDetails": "Skill Details",
+      "addTrade": "Add Trade",
+      "removeTrade": "Remove Trade",
+      "tradeCount": "trades",
+      "selectTrade": "Select Trade",
+      "noTradesFound": "No trades found",
+      "skillGroupSelected": "Skill group selected"
     },
     "step3": {
       "title": "Tools, Certifications & Requirements",
@@ -112,7 +140,12 @@
       "equipmentOperationTasks": "Equipment Operation Task Capabilities",
       "selectedItems": "items selected",
       "noToolsCertifications": "No tools or certifications defined for this trade yet.",
-      "selectTradeFirst": "Please select a trade in the previous step first"
+      "selectTradeFirst": "Please select a trade in the previous step first",
+      "certifications": "Certifications",
+      "training": "Training",
+      "licenses": "Licenses",
+      "equipment": "Equipment",
+      "tools": "Tools"
     },
     "step4": {
       "title": "Work History & Project Experience",
@@ -128,7 +161,12 @@
       "scopeSummary": "Scope Summary",
       "characterCount": "characters",
       "addProject": "Add Project",
-      "removeProject": "Remove Project"
+      "removeProject": "Remove Project",
+      "noProjects": "No projects added",
+      "projectCount": "projects",
+      "currentJob": "Current Job",
+      "description": "Description",
+      "responsibilities": "Responsibilities"
     },
     "step5": {
       "title": "Availability, Travel & Pay Preferences",
@@ -154,7 +192,10 @@
         "friday": "Fri",
         "saturday": "Sat",
         "sunday": "Sun"
-      }
+      },
+      "paymentPreferences": "Payment Preferences",
+      "rateNegotiable": "Rate Negotiable",
+      "minimumRate": "Minimum Rate"
     },
     "step6": {
       "title": "Emergency Contact & Acknowledgments",
@@ -169,7 +210,10 @@
       "policy4": "I will follow site safety, housekeeping, attendance, and reporting requirements.",
       "policy5": "I consent to electronic records, signature, and communications through the app.",
       "completeFields": "Please fill in all emergency contact fields before proceeding.",
-      "allCompleted": "All fields completed! You're ready to finish."
+      "allCompleted": "All fields completed! You're ready to finish.",
+      "emergencyContactRequired": "Emergency contact is required",
+      "relationshipRequired": "Relationship is required",
+      "phoneRequired": "Phone number is required"
     }
   },
   "profile": {
@@ -186,7 +230,14 @@
     "availability": "Edit Availability & Rate",
     "workHistory": "Edit Work History",
     "medical": "Edit Medical Details",
-    "tradeProfile": "Edit Trade Profile"
+    "tradeProfile": "Edit Trade Profile",
+    "profileUpdated": "Profile updated successfully",
+    "profileUpdateError": "Error updating profile",
+    "sectionUpdated": "Section updated successfully",
+    "sectionUpdateError": "Error updating section",
+    "deleteAccount": "Delete Account",
+    "deleteConfirm": "Are you sure you want to delete your account? This action cannot be undone.",
+    "deleteConfirmText": "Type DELETE to confirm"
   },
   "common": {
     "loading": "Loading...",
@@ -211,7 +262,17 @@
     "skip": "Skip",
     "continue": "Continue",
     "submit": "Submit",
-    "review": "Review"
+    "review": "Review",
+    "yes": "Yes",
+    "no": "No",
+    "ok": "OK",
+    "tryAgain": "Try again",
+    "noResults": "No results found",
+    "select": "Select",
+    "selectAll": "Select All",
+    "deselectAll": "Deselect All",
+    "clear": "Clear",
+    "apply": "Apply"
   },
   "summary": {
     "languages": {
@@ -290,6 +351,76 @@
       "description": "Your registration has been submitted successfully. Our team is currently reviewing your information. Once the verification process is complete, your account will be activated.",
       "instruction": "In the meantime, please visit the Profile section and complete all remaining information. This will help us verify your account more quickly and ensure you can access all TradesMap features as soon as your account is approved.",
       "goToProfile": "Go to Profile"
+    },
+    "verify": {
+      "title": "Account Verification",
+      "subtitle": "Please verify your account to continue",
+      "codeSent": "We have sent a verification code to your email",
+      "enterCode": "Enter verification code",
+      "resendCode": "Resend Code",
+      "resendTimer": "Resend in {seconds}s",
+      "verify": "Verify",
+      "verifying": "Verifying...",
+      "invalidCode": "Invalid code. Please try again.",
+      "codeExpired": "Code has expired. Please request a new one.",
+      "verifiedSuccess": "Account verified successfully!"
     }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "unread": "unread",
+    "markAllRead": "Mark all as read",
+    "noNotifications": "No notifications",
+    "read": "Read",
+    "unreadFilter": "Unread",
+    "readFilter": "Read",
+    "allFilter": "All"
+  },
+  "account": {
+    "settings": "Account Settings",
+    "changePassword": "Change Password",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "language": "Language",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "updateSuccess": "Account updated successfully",
+    "updateError": "Error updating account",
+    "deleteAccount": "Delete Account",
+    "deleteConfirm": "Are you sure you want to delete your account?",
+    "deleteConfirmType": "Type DELETE to confirm"
+  },
+  "errors": {
+    "networkError": "Network error. Please check your connection.",
+    "serverError": "Server error. Please try again later.",
+    "unauthorized": "Unauthorized. Please login again.",
+    "notFound": "Not found",
+    "validationError": "Validation error. Please check your inputs.",
+    "unknownError": "An unexpected error occurred",
+    "sessionExpired": "Session expired. Please login again.",
+    "permissionDenied": "Permission denied",
+    "fileTooLarge": "File is too large",
+    "invalidFileType": "Invalid file type"
+  },
+  "buttons": {
+    "save": "Save",
+    "saveChanges": "Save Changes",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "update": "Update",
+    "add": "Add",
+    "remove": "Remove",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish",
+    "submit": "Submit",
+    "send": "Send",
+    "resend": "Resend",
+    "verify": "Verify",
+    "download": "Download",
+    "upload": "Upload"
   }
 }

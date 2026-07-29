@@ -56,18 +56,40 @@
     "passwordUpdated": "¡Contraseña Actualizada!",
     "redirecting": "Redirigiendo al inicio de sesión...",
     "updatePassword": "Actualizar Contraseña",
-    "updating": "Actualizando..."
+    "updating": "Actualizando...",
+    "currentPassword": "Contraseña Actual",
+    "newPasswordRequired": "La nueva contraseña es requerida",
+    "passwordChanged": "Contraseña cambiada exitosamente",
+    "passwordChangeError": "Error al cambiar la contraseña"
   },
   "nav": {
     "language": "Idioma",
     "login": "Iniciar sesión",
     "register": "Registrarse",
     "profile": "Perfil",
-    "logout": "Cerrar sesión"
+    "logout": "Cerrar sesión",
+    "accountSettings": "Configuración de Cuenta",
+    "notifications": "Notificaciones",
+    "dashboard": "Tablero",
+    "help": "Ayuda"
   },
   "home": {
     "workInProgress": "Trabajo en progreso",
-    "workInProgressDescription": "Estamos construyendo algo increíble. ¡Manténgase atento!"
+    "workInProgressDescription": "Estamos construyendo algo increíble. ¡Manténgase atento!",
+    "welcome": "Bienvenido a TradesMap",
+    "heroTitle": "Conectando Talentos con Oportunidades",
+    "heroSubtitle": "Encuentra proyectos, muestra tus habilidades y haz crecer tu carrera en la industria de la construcción",
+    "getStarted": "Comenzar",
+    "learnMore": "Más Información",
+    "featuredProjects": "Proyectos Destacados",
+    "whyTradesMap": "Por qué TradesMap",
+    "trustedBy": "Confiado por Profesionales de la Construcción",
+    "feature1": "Encuentra Trabajo",
+    "feature1Desc": "Descubre proyectos que coinciden con tus habilidades y experiencia",
+    "feature2": "Muestra tus Habilidades",
+    "feature2Desc": "Crea un perfil profesional que destaque tu experiencia",
+    "feature3": "Crece tu Carrera",
+    "feature3Desc": "Conéctate con empleadores y construye tu red profesional"
   },
   "wizard": {
     "step1": {
@@ -101,7 +123,13 @@
       "noSkillGroupsFound": "No se encontraron grupos de habilidades que coincidan con su búsqueda",
       "experienceLevel": "Nivel de Experiencia",
       "yearsOfExperience": "Años de Experiencia",
-      "skillDetails": "Detalles de Habilidades"
+      "skillDetails": "Detalles de Habilidades",
+      "addTrade": "Agregar Oficio",
+      "removeTrade": "Eliminar Oficio",
+      "tradeCount": "oficios",
+      "selectTrade": "Seleccionar Oficio",
+      "noTradesFound": "No se encontraron oficios",
+      "skillGroupSelected": "Grupo de habilidades seleccionado"
     },
     "step3": {
       "title": "Herramientas, Certificaciones y Requisitos",
@@ -112,7 +140,12 @@
       "equipmentOperationTasks": "Capacidades de Operación de Equipo",
       "selectedItems": "elementos seleccionados",
       "noToolsCertifications": "No hay herramientas o certificaciones definidas para este oficio aún.",
-      "selectTradeFirst": "Primero seleccione un oficio en el paso anterior"
+      "selectTradeFirst": "Primero seleccione un oficio en el paso anterior",
+      "certifications": "Certificaciones",
+      "training": "Capacitación",
+      "licenses": "Licencias",
+      "equipment": "Equipo",
+      "tools": "Herramientas"
     },
     "step4": {
       "title": "Historial Laboral y Experiencia en Proyectos",
@@ -128,7 +161,12 @@
       "scopeSummary": "Resumen del Alcance",
       "characterCount": "caracteres",
       "addProject": "Agregar Proyecto",
-      "removeProject": "Eliminar Proyecto"
+      "removeProject": "Eliminar Proyecto",
+      "noProjects": "No hay proyectos agregados",
+      "projectCount": "proyectos",
+      "currentJob": "Trabajo Actual",
+      "description": "Descripción",
+      "responsibilities": "Responsabilidades"
     },
     "step5": {
       "title": "Disponibilidad, Viaje y Preferencias de Pago",
@@ -154,7 +192,10 @@
         "friday": "Vie",
         "saturday": "Sáb",
         "sunday": "Dom"
-      }
+      },
+      "paymentPreferences": "Preferencias de Pago",
+      "rateNegotiable": "Tarifa Negociable",
+      "minimumRate": "Tarifa Mínima"
     },
     "step6": {
       "title": "Contacto de Emergencia y Reconocimientos",
@@ -169,7 +210,10 @@
       "policy4": "Seguiré los requisitos de seguridad, limpieza, asistencia y reportes del sitio.",
       "policy5": "Doy mi consentimiento para registros electrónicos, firma y comunicaciones a través de la aplicación.",
       "completeFields": "Por favor complete todos los campos de contacto de emergencia antes de continuar.",
-      "allCompleted": "¡Todos los campos completados! Está listo para finalizar."
+      "allCompleted": "¡Todos los campos completados! Está listo para finalizar.",
+      "emergencyContactRequired": "El contacto de emergencia es requerido",
+      "relationshipRequired": "La relación es requerida",
+      "phoneRequired": "El teléfono es requerido"
     }
   },
   "profile": {
@@ -186,7 +230,14 @@
     "availability": "Editar Disponibilidad y Tarifa",
     "workHistory": "Editar Historial Laboral",
     "medical": "Editar Detalles Médicos",
-    "tradeProfile": "Editar Perfil de Oficio"
+    "tradeProfile": "Editar Perfil de Oficio",
+    "profileUpdated": "Perfil actualizado exitosamente",
+    "profileUpdateError": "Error al actualizar el perfil",
+    "sectionUpdated": "Sección actualizada exitosamente",
+    "sectionUpdateError": "Error al actualizar la sección",
+    "deleteAccount": "Eliminar Cuenta",
+    "deleteConfirm": "¿Está seguro de que desea eliminar su cuenta? Esta acción no se puede deshacer.",
+    "deleteConfirmText": "Escriba DELETE para confirmar"
   },
   "common": {
     "loading": "Cargando...",
@@ -211,7 +262,17 @@
     "skip": "Omitir",
     "continue": "Continuar",
     "submit": "Enviar",
-    "review": "Revisar"
+    "review": "Revisar",
+    "yes": "Sí",
+    "no": "No",
+    "ok": "Aceptar",
+    "tryAgain": "Intentar de nuevo",
+    "noResults": "No se encontraron resultados",
+    "select": "Seleccionar",
+    "selectAll": "Seleccionar Todos",
+    "deselectAll": "Deseleccionar Todos",
+    "clear": "Limpiar",
+    "apply": "Aplicar"
   },
   "summary": {
     "languages": {
@@ -290,6 +351,76 @@
       "description": "Su registro ha sido enviado exitosamente. Nuestro equipo está revisando su información. Una vez que el proceso de verificación esté completo, su cuenta será activada.",
       "instruction": "Mientras tanto, por favor visite la sección de Perfil y complete toda la información restante. Esto nos ayudará a verificar su cuenta más rápidamente y asegurar que pueda acceder a todas las funciones de TradesMap tan pronto como su cuenta sea aprobada.",
       "goToProfile": "Ir al Perfil"
+    },
+    "verify": {
+      "title": "Verificación de Cuenta",
+      "subtitle": "Por favor verifique su cuenta para continuar",
+      "codeSent": "Hemos enviado un código de verificación a su correo electrónico",
+      "enterCode": "Ingrese el código de verificación",
+      "resendCode": "Reenviar Código",
+      "resendTimer": "Reenviar en {seconds}s",
+      "verify": "Verificar",
+      "verifying": "Verificando...",
+      "invalidCode": "Código inválido. Por favor intente nuevamente.",
+      "codeExpired": "El código ha expirado. Por favor solicite uno nuevo.",
+      "verifiedSuccess": "¡Cuenta verificada exitosamente!"
     }
+  },
+  "notifications": {
+    "title": "Notificaciones",
+    "unread": "no leídas",
+    "markAllRead": "Marcar todas como leídas",
+    "noNotifications": "No hay notificaciones",
+    "read": "Leídas",
+    "unreadFilter": "No leídas",
+    "readFilter": "Leídas",
+    "allFilter": "Todas"
+  },
+  "account": {
+    "settings": "Configuración de Cuenta",
+    "changePassword": "Cambiar Contraseña",
+    "email": "Correo Electrónico",
+    "phone": "Número de Teléfono",
+    "language": "Idioma",
+    "currentPassword": "Contraseña Actual",
+    "newPassword": "Nueva Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "updateSuccess": "Cuenta actualizada exitosamente",
+    "updateError": "Error al actualizar la cuenta",
+    "deleteAccount": "Eliminar Cuenta",
+    "deleteConfirm": "¿Está seguro de que desea eliminar su cuenta?",
+    "deleteConfirmType": "Escriba DELETE para confirmar"
+  },
+  "errors": {
+    "networkError": "Error de red. Por favor verifique su conexión.",
+    "serverError": "Error del servidor. Por favor intente más tarde.",
+    "unauthorized": "No autorizado. Por favor inicie sesión nuevamente.",
+    "notFound": "No encontrado",
+    "validationError": "Error de validación. Por favor revise los campos.",
+    "unknownError": "Ocurrió un error inesperado",
+    "sessionExpired": "La sesión ha expirado. Por favor inicie sesión nuevamente.",
+    "permissionDenied": "Permiso denegado",
+    "fileTooLarge": "El archivo es demasiado grande",
+    "invalidFileType": "Tipo de archivo inválido"
+  },
+  "buttons": {
+    "save": "Guardar",
+    "saveChanges": "Guardar Cambios",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "update": "Actualizar",
+    "add": "Agregar",
+    "remove": "Eliminar",
+    "close": "Cerrar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "finish": "Finalizar",
+    "submit": "Enviar",
+    "send": "Enviar",
+    "resend": "Reenviar",
+    "verify": "Verificar",
+    "download": "Descargar",
+    "upload": "Subir"
   }
 }
