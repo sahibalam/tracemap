@@ -1648,7 +1648,7 @@
 
 
 // src/worker/pages/AccountSettingsPage.jsx
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { TopNav } from '../../common/components/TopNav'
@@ -2033,6 +2033,100 @@ function UpdateButton({ onClick, loading, label = 'Update', disabled = false, va
   )
 }
 
+// ✅ MOVED FieldRow OUTSIDE the component and wrapped with React.memo
+const FieldRow = memo(function FieldRow({ label, children, icon }) {
+  return (
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      padding: '12px 16px',
+      borderBottom: '1px solid rgba(18, 38, 63, 0.06)',
+      gap: '16px',
+      minHeight: '60px'
+    }}>
+      <div style={{
+        minWidth: '140px',
+        fontSize: '14px',
+        fontWeight: 500,
+        color: '#17263a',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px'
+      }}>
+        {icon && <span style={{ color: 'rgba(23,38,58,0.4)' }}>{icon}</span>}
+        {label}
+      </div>
+      <div style={{ flex: 1 }}>
+        {children}
+      </div>
+    </div>
+  )
+})
+
+// ✅ Email Input Component - memoized
+const EmailInput = memo(function EmailInput({ value, onChange, isEditing, onFocus, onBlur }) {
+  return (
+    <input
+      ref={(el) => {
+        // Store ref in a variable if needed
+      }}
+      name="email-input"
+      type="email"
+      value={value}
+      onChange={onChange}
+      placeholder="Email Address"
+      readOnly={!isEditing}
+      style={{
+        width: '100%',
+        padding: '8px 12px',
+        border: '1px solid rgba(18, 38, 63, 0.12)',
+        borderRadius: '8px',
+        fontSize: '14px',
+        outline: 'none',
+        background: isEditing ? 'white' : '#f3f4f6',
+        transition: 'all 0.2s ease',
+        height: '36px',
+        cursor: isEditing ? 'text' : 'default',
+        color: isEditing ? '#17263a' : '#6b7280'
+      }}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    />
+  )
+})
+
+// ✅ Phone Input Component - memoized
+const PhoneInput = memo(function PhoneInput({ value, onChange, isEditing, onFocus, onBlur }) {
+  return (
+    <input
+      ref={(el) => {
+        // Store ref in a variable if needed
+      }}
+      name="phone-input"
+      type="tel"
+      value={value}
+      onChange={onChange}
+      placeholder="Phone Number"
+      readOnly={!isEditing}
+      style={{
+        width: '100%',
+        padding: '8px 12px',
+        border: '1px solid rgba(18, 38, 63, 0.12)',
+        borderRadius: '8px',
+        fontSize: '14px',
+        outline: 'none',
+        background: isEditing ? 'white' : '#f3f4f6',
+        transition: 'all 0.2s ease',
+        height: '36px',
+        cursor: isEditing ? 'text' : 'default',
+        color: isEditing ? '#17263a' : '#6b7280'
+      }}
+      onFocus={onFocus}
+      onBlur={onBlur}
+    />
+  )
+})
+
 export function AccountSettingsPage() {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -2051,9 +2145,8 @@ export function AccountSettingsPage() {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
   
-  // Email update states - using refs for input values to prevent re-renders
+  // Email update states
   const [isEditingEmail, setIsEditingEmail] = useState(false)
-  const emailInputRef = useRef(null)
   const [emailDisplayValue, setEmailDisplayValue] = useState('')
   const [isEmailAvailable, setIsEmailAvailable] = useState(false)
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
@@ -2067,10 +2160,10 @@ export function AccountSettingsPage() {
   const emailCodeInputRef = useRef(null)
   const cooldownIntervalRef = useRef(null)
   const emailCheckTimeoutRef = useRef(null)
+  const emailInputRef = useRef(null)
 
-  // Phone update states - using refs for input values to prevent re-renders
+  // Phone update states
   const [isEditingPhone, setIsEditingPhone] = useState(false)
-  const phoneInputRef = useRef(null)
   const [phoneDisplayValue, setPhoneDisplayValue] = useState('')
   const [isPhoneAvailable, setIsPhoneAvailable] = useState(false)
   const [isCheckingPhone, setIsCheckingPhone] = useState(false)
@@ -2084,6 +2177,7 @@ export function AccountSettingsPage() {
   const phoneCodeInputRef = useRef(null)
   const phoneCooldownIntervalRef = useRef(null)
   const phoneCheckTimeoutRef = useRef(null)
+  const phoneInputRef = useRef(null)
   
   // Delete account
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -2259,7 +2353,7 @@ export function AccountSettingsPage() {
     }
   }
 
-  const handleEmailInputChange = (e) => {
+  const handleEmailChange = (e) => {
     const value = e.target.value
     setEmailDisplayValue(value)
     
@@ -2275,6 +2369,14 @@ export function AccountSettingsPage() {
       setIsEmailAvailable(false)
       setEmailAvailabilityMessage('')
     }
+  }
+
+  const handleEmailFocus = (e) => {
+    if (isEditingEmail) e.target.style.borderColor = '#0f4ea9'
+  }
+
+  const handleEmailBlur = (e) => {
+    if (isEditingEmail) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
   }
 
   const handleStartEditEmail = () => {
@@ -2440,7 +2542,7 @@ export function AccountSettingsPage() {
     }
   }
 
-  const handlePhoneInputChange = (e) => {
+  const handlePhoneChange = (e) => {
     const value = e.target.value
     setPhoneDisplayValue(value)
     
@@ -2456,6 +2558,14 @@ export function AccountSettingsPage() {
       setIsPhoneAvailable(false)
       setPhoneAvailabilityMessage('')
     }
+  }
+
+  const handlePhoneFocus = (e) => {
+    if (isEditingPhone) e.target.style.borderColor = '#0f4ea9'
+  }
+
+  const handlePhoneBlur = (e) => {
+    if (isEditingPhone) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
   }
 
   const handleStartEditPhone = () => {
@@ -2657,33 +2767,6 @@ export function AccountSettingsPage() {
     }
   }
 
-  const FieldRow = ({ label, children, icon }) => (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      padding: '12px 16px',
-      borderBottom: '1px solid rgba(18, 38, 63, 0.06)',
-      gap: '16px',
-      minHeight: '60px'
-    }}>
-      <div style={{
-        minWidth: '140px',
-        fontSize: '14px',
-        fontWeight: 500,
-        color: '#17263a',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px'
-      }}>
-        {icon && <span style={{ color: 'rgba(23,38,58,0.4)' }}>{icon}</span>}
-        {label}
-      </div>
-      <div style={{ flex: 1 }}>
-        {children}
-      </div>
-    </div>
-  )
-
   return (
     <div className="appShell">
       <TopNav variant="solid" />
@@ -2849,33 +2932,13 @@ export function AccountSettingsPage() {
                     <div>
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
-                          <input
+                          <EmailInput
                             ref={emailInputRef}
-                            name="email-input"
-                            type="email"
                             value={emailDisplayValue}
-                            onChange={handleEmailInputChange}
-                            placeholder="Email Address"
-                            readOnly={!isEditingEmail}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid rgba(18, 38, 63, 0.12)',
-                              borderRadius: '8px',
-                              fontSize: '14px',
-                              outline: 'none',
-                              background: isEditingEmail ? 'white' : '#f3f4f6',
-                              transition: 'all 0.2s ease',
-                              height: '36px',
-                              cursor: isEditingEmail ? 'text' : 'default',
-                              color: isEditingEmail ? '#17263a' : '#6b7280'
-                            }}
-                            onFocus={(e) => {
-                              if (isEditingEmail) e.target.style.borderColor = '#0f4ea9'
-                            }}
-                            onBlur={(e) => {
-                              if (isEditingEmail) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                            }}
+                            onChange={handleEmailChange}
+                            isEditing={isEditingEmail}
+                            onFocus={handleEmailFocus}
+                            onBlur={handleEmailBlur}
                           />
                         </div>
                         {!isEditingEmail ? (
@@ -3004,33 +3067,13 @@ export function AccountSettingsPage() {
                     <div>
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
-                          <input
+                          <PhoneInput
                             ref={phoneInputRef}
-                            name="phone-input"
-                            type="tel"
                             value={phoneDisplayValue}
-                            onChange={handlePhoneInputChange}
-                            placeholder="Phone Number"
-                            readOnly={!isEditingPhone}
-                            style={{
-                              width: '100%',
-                              padding: '8px 12px',
-                              border: '1px solid rgba(18, 38, 63, 0.12)',
-                              borderRadius: '8px',
-                              fontSize: '14px',
-                              outline: 'none',
-                              background: isEditingPhone ? 'white' : '#f3f4f6',
-                              transition: 'all 0.2s ease',
-                              height: '36px',
-                              cursor: isEditingPhone ? 'text' : 'default',
-                              color: isEditingPhone ? '#17263a' : '#6b7280'
-                            }}
-                            onFocus={(e) => {
-                              if (isEditingPhone) e.target.style.borderColor = '#0f4ea9'
-                            }}
-                            onBlur={(e) => {
-                              if (isEditingPhone) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
-                            }}
+                            onChange={handlePhoneChange}
+                            isEditing={isEditingPhone}
+                            onFocus={handlePhoneFocus}
+                            onBlur={handlePhoneBlur}
                           />
                         </div>
                         {!isEditingPhone ? (
