@@ -145,7 +145,16 @@
       "training": "Capacitación",
       "licenses": "Licencias",
       "equipment": "Equipo",
-      "tools": "Herramientas"
+      "tools": "Herramientas",
+      "certificationsTraining": "Certificaciones / Capacitación",
+      "certificationsTrainingLicenses": "Certificaciones / Capacitación / Licencias",
+      "toolsEquipment": "Herramientas / Equipo",
+      "safetyCertificationsTraining": "Seguridad / Certificaciones / Capacitación",
+      "licensesCertifications": "Licencias / Certificaciones",
+      "toolsTestEquipment": "Herramientas / Equipo de Prueba",
+      "materialHandling": "Manejo de Materiales",
+      "materialHandlingLifting": "Manejo de Materiales y Elevación",
+      "documentationService": "Documentación y Servicio"
     },
     "step4": {
       "title": "Historial Laboral y Experiencia en Proyectos",
@@ -272,7 +281,8 @@
     "selectAll": "Seleccionar Todos",
     "deselectAll": "Deseleccionar Todos",
     "clear": "Limpiar",
-    "apply": "Aplicar"
+    "apply": "Aplicar",
+    "complete": "completo"
   },
   "summary": {
     "languages": {
@@ -386,7 +396,10 @@
       "verified": "✓ Verificado",
       "verifyEmailFirstButton": "Verificar correo primero",
       "resendCode": "Reenviar Código",
-      "resendTimer": "{seconds}s"
+      "resendTimer": "{seconds}s",
+      "invalidCode": "Código inválido. Por favor intente nuevamente.",
+      "codeExpired": "El código ha expirado. Por favor solicite uno nuevo.",
+      "verifiedSuccess": "¡Cuenta verificada exitosamente!"
     }
   },
   "notifications": {
@@ -445,5 +458,35 @@
     "verify": "Verificar",
     "download": "Descargar",
     "upload": "Subir"
+  },
+  "verify": {
+    "title": "Confirme su correo electrónico y número de teléfono para asegurar su cuenta.",
+    "emailId": "Correo Electrónico",
+    "phoneNo": "Número de Teléfono",
+    "sendCode": "Enviar Código de Verificación",
+    "codePlaceholder": "Código de 6 dígitos",
+    "verify": "Verificar",
+    "resend": "Reenviar",
+    "sendOtp": "Enviar OTP",
+    "continue": "Continuar al Registro →",
+    "verifyEmailFirst": "📧 Por favor verifique su correo electrónico primero",
+    "emailVerifiedMessage": "📱 ¡Correo verificado! Por favor verifique su número de teléfono",
+    "notYourEmail": "¿No es su correo?",
+    "notYourPhone": "¿No es su teléfono?",
+    "change": "Cambiar",
+    "codeSent": "Código de verificación enviado a {email}.",
+    "checkSpam": "💡 Revise su correo para el código de 6 dígitos. Revise la carpeta de spam si no lo encuentra.",
+    "emailVerifiedSuccess": "✓ ¡Correo verificado! Ahora puede verificar su número de teléfono.",
+    "otpSent": "📱 Ingrese el código de 6 dígitos enviado a {phone}",
+    "otpPlaceholder": "OTP",
+    "verifying": "Verificando...",
+    "sending": "Enviando...",
+    "verified": "✓ Verificado",
+    "verifyEmailFirstButton": "Verificar correo primero",
+    "resendCode": "Reenviar Código",
+    "resendTimer": "{seconds}s",
+    "invalidCode": "Código inválido. Por favor intente nuevamente.",
+    "codeExpired": "El código ha expirado. Por favor solicite uno nuevo.",
+    "verifiedSuccess": "¡Cuenta verificada exitosamente!"
   }
 }

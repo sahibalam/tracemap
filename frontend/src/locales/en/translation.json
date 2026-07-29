@@ -145,7 +145,16 @@
       "training": "Training",
       "licenses": "Licenses",
       "equipment": "Equipment",
-      "tools": "Tools"
+      "tools": "Tools",
+      "certificationsTraining": "Certifications / Training",
+      "certificationsTrainingLicenses": "Certifications / Training / Licenses",
+      "toolsEquipment": "Tools / Equipment",
+      "safetyCertificationsTraining": "Safety / Certifications / Training",
+      "licensesCertifications": "Licenses / Certifications",
+      "toolsTestEquipment": "Tools / Test Equipment",
+      "materialHandling": "Material Handling",
+      "materialHandlingLifting": "Material Handling & Lifting",
+      "documentationService": "Documentation & Service"
     },
     "step4": {
       "title": "Work History & Project Experience",
@@ -272,7 +281,8 @@
     "selectAll": "Select All",
     "deselectAll": "Deselect All",
     "clear": "Clear",
-    "apply": "Apply"
+    "apply": "Apply",
+    "complete": "complete"
   },
   "summary": {
     "languages": {
@@ -386,7 +396,10 @@
       "verified": "✓ Verified",
       "verifyEmailFirstButton": "Verify email first",
       "resendCode": "Resend Code",
-      "resendTimer": "{seconds}s"
+      "resendTimer": "{seconds}s",
+      "invalidCode": "Invalid code. Please try again.",
+      "codeExpired": "Code has expired. Please request a new one.",
+      "verifiedSuccess": "Account verified successfully!"
     }
   },
   "notifications": {
@@ -445,5 +458,35 @@
     "verify": "Verify",
     "download": "Download",
     "upload": "Upload"
+  },
+  "verify": {
+    "title": "Confirm your email and phone number to secure your account.",
+    "emailId": "Email ID",
+    "phoneNo": "Phone No.",
+    "sendCode": "Send Verification Code",
+    "codePlaceholder": "6-digit code",
+    "verify": "Verify",
+    "resend": "Resend",
+    "sendOtp": "Send OTP",
+    "continue": "Continue to Registration →",
+    "verifyEmailFirst": "📧 Please verify your email first",
+    "emailVerifiedMessage": "📱 Email verified! Please verify your phone number",
+    "notYourEmail": "Not your email?",
+    "notYourPhone": "Not your phone?",
+    "change": "Change",
+    "codeSent": "Verification code sent to {email}.",
+    "checkSpam": "💡 Check your email for the 6-digit code. Check spam folder if not found.",
+    "emailVerifiedSuccess": "✓ Email verified! You can now verify your phone number.",
+    "otpSent": "📱 Enter the 6-digit code sent to {phone}",
+    "otpPlaceholder": "OTP",
+    "verifying": "Verifying...",
+    "sending": "Sending...",
+    "verified": "✓ Verified",
+    "verifyEmailFirstButton": "Verify email first",
+    "resendCode": "Resend Code",
+    "resendTimer": "{seconds}s",
+    "invalidCode": "Invalid code. Please try again.",
+    "codeExpired": "Code has expired. Please request a new one.",
+    "verifiedSuccess": "Account verified successfully!"
   }
 }

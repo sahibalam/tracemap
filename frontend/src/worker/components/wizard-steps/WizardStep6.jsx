@@ -1,78 +1,12 @@
-// // src/worker/components/wizard-steps/WizardStep5.jsx
+
+// // src/worker/components/wizard-steps/WizardStep6.jsx
+// import { useTranslation } from 'react-i18next'
 // import { TextField } from '../../../common/components/TextField'
 // import { IconUser, IconSupport, IconPhone } from '../../../common/components/Icons'
 
-// export function WizardStep5({ data, onChange, onFinish, onBack }) {
-//   const handleChange = (field, value) => {
-//     onChange({ ...data, [field]: value })
-//   }
-
-//   const toggleMapValue = (key, setMap) => (e) => {
-//     const current = data[key] || {}
-//     setMap({ ...current, [key]: e.target.checked })
-//   }
-
-//   const setPolicyAcks = (acks) => handleChange('policyAcks', acks)
-
-//   const isValid = data.emergencyContactName && data.emergencyContactRelationship && data.emergencyContactPhone
-
-//   return (
-//     <div className="wizardStep">
-//       <div className="wizardBody">
-//         <div className="wizardSection">
-//           <div className="wizardSectionBar">1. Emergency Contact</div>
-//           <div className="wizardGrid3">
-//             <TextField
-//               placeholder="Contact name"
-//               icon={<IconUser />}
-//               value={data.emergencyContactName || ''}
-//               onChange={(v) => handleChange('emergencyContactName', v)}
-//             />
-//             <TextField
-//               placeholder="Relationship"
-//               icon={<IconSupport />}
-//               value={data.emergencyContactRelationship || ''}
-//               onChange={(v) => handleChange('emergencyContactRelationship', v)}
-//             />
-//             <TextField
-//               placeholder="Phone"
-//               icon={<IconPhone />}
-//               value={data.emergencyContactPhone || ''}
-//               onChange={(v) => handleChange('emergencyContactPhone', v)}
-//             />
-//           </div>
-//         </div>
-
-//         <div className="wizardSection">
-//           <div className="wizardSectionBar">2. Acknowledgments</div>
-//           <div className="wizardChecks">
-//             {[
-//               'I understand project assignment is contingent on profile, compliance, and project-specific approval.',
-//               'I will provide accurate information and update certifications when they expire.',
-//               'I understand I may be removed from assignment or hidden from matching if safety or conduct issues arise.',
-//               'I will follow site safety, housekeeping, attendance, and reporting requirements.',
-//               'I consent to electronic records, signature, and communications through the app.',
-//             ].map((k) => (
-//               <label key={k} className="wizardCheck">
-//                 <input type="checkbox" checked={!!(data.policyAcks?.[k] || false)} onChange={toggleMapValue(k, setPolicyAcks)} />
-//                 {k}
-//               </label>
-//             ))}
-//           </div>
-//         </div>
-
-//         {/* ❌ REMOVED: Section 3. Signature */}
-//       </div>
-//     </div>
-//   )
-// }
-
-
-// // src/worker/components/wizard-steps/WizardStep5.jsx
-// import { TextField } from '../../../common/components/TextField'
-// import { IconUser, IconSupport, IconPhone } from '../../../common/components/Icons'
-
-// export function WizardStep5({ data, onChange, onFinish, onBack }) {
+// export function WizardStep6({ data, onChange, onFinish, onBack }) {
+//   const { t } = useTranslation()
+  
 //   // ✅ FIX: Handle change - only update specific field
 //   const handleChange = (field, value) => {
 //     onChange({ [field]: value })
@@ -92,33 +26,33 @@
 //   const isValid = data.emergencyContactName && data.emergencyContactRelationship && data.emergencyContactPhone
 
 //   const policyItems = [
-//     'I understand project assignment is contingent on profile, compliance, and project-specific approval.',
-//     'I will provide accurate information and update certifications when they expire.',
-//     'I understand I may be removed from assignment or hidden from matching if safety or conduct issues arise.',
-//     'I will follow site safety, housekeeping, attendance, and reporting requirements.',
-//     'I consent to electronic records, signature, and communications through the app.',
+//     'wizard.step6.policy1',
+//     'wizard.step6.policy2',
+//     'wizard.step6.policy3',
+//     'wizard.step6.policy4',
+//     'wizard.step6.policy5'
 //   ]
 
 //   return (
 //     <div className="wizardStep">
 //       <div className="wizardBody">
 //         <div className="wizardSection">
-//           <div className="wizardSectionBar">1. Emergency Contact</div>
+//           <div className="wizardSectionBar">{t('wizard.step6.emergencyContact')}</div>
 //           <div className="wizardGrid3">
 //             <TextField
-//               placeholder="Contact name"
+//               placeholder={t('wizard.step6.contactName')}
 //               icon={<IconUser />}
 //               value={data.emergencyContactName || ''}
 //               onChange={(v) => handleChange('emergencyContactName', v)}
 //             />
 //             <TextField
-//               placeholder="Relationship"
+//               placeholder={t('wizard.step6.relationship')}
 //               icon={<IconSupport />}
 //               value={data.emergencyContactRelationship || ''}
 //               onChange={(v) => handleChange('emergencyContactRelationship', v)}
 //             />
 //             <TextField
-//               placeholder="Phone"
+//               placeholder={t('wizard.step6.phone')}
 //               icon={<IconPhone />}
 //               value={data.emergencyContactPhone || ''}
 //               onChange={(v) => handleChange('emergencyContactPhone', v)}
@@ -127,16 +61,16 @@
 //         </div>
 
 //         <div className="wizardSection">
-//           <div className="wizardSectionBar">2. Acknowledgments</div>
+//           <div className="wizardSectionBar">{t('wizard.step6.acknowledgments')}</div>
 //           <div className="wizardChecks">
-//             {policyItems.map((item) => (
-//               <label key={item} className="wizardCheck">
+//             {policyItems.map((itemKey) => (
+//               <label key={itemKey} className="wizardCheck">
 //                 <input 
 //                   type="checkbox" 
-//                   checked={!!(data.policyAcks?.[item] || false)} 
-//                   onChange={togglePolicyAck(item)} 
+//                   checked={!!(data.policyAcks?.[itemKey] || false)} 
+//                   onChange={togglePolicyAck(itemKey)} 
 //                 />
-//                 {item}
+//                 {t(itemKey)}
 //               </label>
 //             ))}
 //           </div>
@@ -153,7 +87,7 @@
 //             color: '#92400e',
 //             fontSize: '13px',
 //           }}>
-//             ⚠️ Please fill in all emergency contact fields before proceeding.
+//             ⚠️ {t('wizard.step6.completeFields')}
 //           </div>
 //         )}
 
@@ -170,7 +104,7 @@
 //             alignItems: 'center',
 //             gap: '8px'
 //           }}>
-//             ✅ All fields completed! You're ready to finish.
+//             ✅ {t('wizard.step6.allCompleted')}
 //           </div>
 //         )}
 //       </div>
@@ -178,7 +112,7 @@
 //   )
 // }
 
-
+// export default WizardStep6
 
 
 
