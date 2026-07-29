@@ -3,20 +3,26 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { TopNav } from '../../common/components/TopNav'
-import { IconArrowLeft, IconBell, IconCheck, IconClock, IconAlertCircle } from '../../common/components/Icons'
+import { 
+  IconArrowLeft, 
+  IconBell, 
+  IconCheck, 
+  IconClock, 
+  IconAlertCircle 
+} from '../../common/components/Icons'
 
 // Notification Item Component
 function NotificationItem({ notification, onMarkAsRead }) {
   const getIcon = () => {
     switch (notification.type) {
       case 'success':
-        return <IconCheck style={{ color: '#2fb463' }} />
+        return <IconCheck style={{ color: '#2fb463', width: '18px', height: '18px' }} />
       case 'warning':
-        return <IconAlertCircle style={{ color: '#f59e0b' }} />
+        return <IconAlertCircle style={{ color: '#f59e0b', width: '18px', height: '18px' }} />
       case 'info':
-        return <IconBell style={{ color: '#0f4ea9' }} />
+        return <IconBell style={{ color: '#0f4ea9', width: '18px', height: '18px' }} />
       default:
-        return <IconBell style={{ color: '#64748b' }} />
+        return <IconBell style={{ color: '#64748b', width: '18px', height: '18px' }} />
     }
   }
 
