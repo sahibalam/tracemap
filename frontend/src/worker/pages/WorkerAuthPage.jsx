@@ -1206,7 +1206,6 @@
 
 
 
-
 // src/worker/pages/WorkerAuthPage.jsx
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -1216,8 +1215,7 @@ import { IconUser, IconMail, IconLock, IconPhone, IconGlobe } from '../../common
 import { formatPhoneNumber } from '../../common/utils/validation'
 import authService from '../../services/authService'
 import { ForgotPasswordModal } from '../components/ForgotPasswordModal'
-import { LanguageSwitcher } from '../../common/components/LanguageSwitcher'
-import { setUserLanguage, changeLanguage, getStoredLanguage } from '../../i18n/config' // ✅ IMPORT LANGUAGE HELPERS
+import { setUserLanguage, changeLanguage, getStoredLanguage } from '../../i18n/config'
 
 // Eye icon component
 function IconEye(props) {
@@ -1301,7 +1299,7 @@ const getYearRange = () => {
 }
 
 export function WorkerAuthPage({ initialMode = 'login' }) {
-  const { t, i18n } = useTranslation() // ✅ ADD i18n
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -1617,13 +1615,11 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       if (result.success) {
         const token = result.data?.token || generateSessionToken()
         const userId = result.data?.userId || ''
-        const userLanguage = result.data?.language || 'en' // ✅ GET LANGUAGE FROM RESPONSE
+        const userLanguage = result.data?.language || 'en'
         
-        // Save to localStorage
         localStorage.setItem('authToken', token)
         localStorage.setItem('userId', userId)
         
-        // ✅ Save language from database
         setUserLanguage(userLanguage)
         
         if (result.data?.profile?.basics) {
@@ -1703,11 +1699,10 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
           lastName,
           phoneNumber,
           dob: formatDateToYYYYMMDD(dob),
-          language: language // ✅ PASS LANGUAGE TO BACKEND
+          language: language
         })
         
         if (result.success) {
-          // ✅ Save all data including language
           localStorage.setItem('pendingEmail', email)
           localStorage.setItem('pendingPassword', registerPassword)
           localStorage.setItem('pendingPhoneNumber', phoneNumber)
@@ -1717,7 +1712,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
           localStorage.setItem('pendingLanguage', language)
           localStorage.setItem('userId', result.data.userId)
           
-          // ✅ Set user language
           setUserLanguage(language)
           
           const sessionToken = generateSessionToken()
@@ -1750,7 +1744,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
               lastName,
               registerPassword,
               dob: formatDateToYYYYMMDD(dob),
-              language: language // ✅ PASS LANGUAGE TO VERIFY PAGE
+              language: language
             } 
           })
         } else {
@@ -2132,9 +2126,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       <main className="authMain">
         <div className="authBrand">
           <img className="authLogo" src="/assets/logo_tradesmap.png" alt="TradesMap" />
-          <div className="auth-language-switcher">
-            <LanguageSwitcher variant="inline" />
-          </div>
+          {/* ❌ REMOVED: LanguageSwitcher */}
         </div>
         <div className="authCard authCardCompact">
           <div className={`tabs ${mode}`}>
