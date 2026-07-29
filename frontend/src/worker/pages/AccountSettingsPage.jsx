@@ -1783,7 +1783,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
 
   return (
     <>
-      {/* Backdrop */}
       <div 
         style={{
           position: 'fixed',
@@ -1801,7 +1800,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
         }}
         onClick={onClose}
       >
-        {/* Modal */}
         <div 
           style={{
             background: 'white',
@@ -1816,7 +1814,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
           <div style={{
             textAlign: 'center',
             marginBottom: '24px'
@@ -1863,7 +1860,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
             </div>
           )}
 
-          {/* Old Password */}
           <div style={{ marginBottom: '16px' }}>
             <label style={{
               fontSize: '14px',
@@ -1883,7 +1879,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
             />
           </div>
 
-          {/* Forgot Password Link */}
           <div style={{
             textAlign: 'right',
             marginBottom: '16px'
@@ -1904,7 +1899,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
             </button>
           </div>
 
-          {/* New Password */}
           <div style={{ marginBottom: '16px' }}>
             <label style={{
               fontSize: '14px',
@@ -1924,7 +1918,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
             />
           </div>
 
-          {/* Confirm Password */}
           <div style={{ marginBottom: '24px' }}>
             <label style={{
               fontSize: '14px',
@@ -1944,7 +1937,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
             />
           </div>
 
-          {/* Update Button */}
           <button
             onClick={handleUpdate}
             disabled={loading}
@@ -1964,7 +1956,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
             {loading ? 'Updating...' : 'Update'}
           </button>
 
-          {/* After Update Message */}
           <div style={{
             marginTop: '16px',
             padding: '12px',
@@ -2003,7 +1994,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
   )
 }
 
-// Update Button Component
 function UpdateButton({ onClick, loading, label = 'Update', disabled = false, variant = 'primary' }) {
   const colors = variant === 'primary' 
     ? { default: '#0f4ea9', hover: '#0b3f90', disabled: '#94a3b8' }
@@ -2056,16 +2046,15 @@ export function AccountSettingsPage() {
   const [email, setEmail] = useState('')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [language, setLanguage] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
   
   // Password modal state
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
   
-  // Email update states
+  // Email update states - using refs for input values to prevent re-renders
   const [isEditingEmail, setIsEditingEmail] = useState(false)
-  const [newEmail, setNewEmail] = useState('')
+  const emailInputRef = useRef(null)
+  const [emailDisplayValue, setEmailDisplayValue] = useState('')
   const [isEmailAvailable, setIsEmailAvailable] = useState(false)
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
   const [emailAvailabilityMessage, setEmailAvailabilityMessage] = useState('')
@@ -2079,9 +2068,10 @@ export function AccountSettingsPage() {
   const cooldownIntervalRef = useRef(null)
   const emailCheckTimeoutRef = useRef(null)
 
-  // Phone update states
+  // Phone update states - using refs for input values to prevent re-renders
   const [isEditingPhone, setIsEditingPhone] = useState(false)
-  const [newPhoneNumber, setNewPhoneNumber] = useState('')
+  const phoneInputRef = useRef(null)
+  const [phoneDisplayValue, setPhoneDisplayValue] = useState('')
   const [isPhoneAvailable, setIsPhoneAvailable] = useState(false)
   const [isCheckingPhone, setIsCheckingPhone] = useState(false)
   const [phoneAvailabilityMessage, setPhoneAvailabilityMessage] = useState('')
@@ -2162,11 +2152,9 @@ export function AccountSettingsPage() {
       if (result.success && result.data) {
         const basics = result.data.basics || {}
         setEmail(basics.emailAddress || '')
-        setNewEmail(basics.emailAddress || '')
+        setEmailDisplayValue(basics.emailAddress || '')
         setPhoneNumber(basics.mobilePhone || '')
-        setNewPhoneNumber(basics.mobilePhone || '')
-        setFirstName(basics.legalFirstName || '')
-        setLastName(basics.legalLastName || '')
+        setPhoneDisplayValue(basics.mobilePhone || '')
         
         if (basics.english && basics.spanish) {
           setLanguage('en-es')
@@ -2227,7 +2215,7 @@ export function AccountSettingsPage() {
   }
 
   // ============================================================
-  // EMAIL UPDATE FUNCTIONS - Using the same pattern as WorkerAuthPage
+  // EMAIL UPDATE FUNCTIONS
   // ============================================================
 
   const checkEmailAvailabilityRealTime = async (emailToCheck) => {
@@ -2271,11 +2259,9 @@ export function AccountSettingsPage() {
     }
   }
 
-  // Debounced email check - same pattern as WorkerAuthPage
-  const handleEmailChange = (value) => {
-    setNewEmail(value)
-    setIsEmailAvailable(false)
-    setEmailAvailabilityMessage('')
+  const handleEmailInputChange = (e) => {
+    const value = e.target.value
+    setEmailDisplayValue(value)
     
     if (emailCheckTimeoutRef.current) {
       clearTimeout(emailCheckTimeoutRef.current)
@@ -2285,24 +2271,27 @@ export function AccountSettingsPage() {
       emailCheckTimeoutRef.current = setTimeout(() => {
         checkEmailAvailabilityRealTime(value)
       }, 500)
+    } else {
+      setIsEmailAvailable(false)
+      setEmailAvailabilityMessage('')
     }
   }
 
   const handleStartEditEmail = () => {
     setIsEditingEmail(true)
-    setNewEmail(email)
+    setEmailDisplayValue(email)
     setIsEmailAvailable(false)
     setEmailAvailabilityMessage('')
-    // Focus the input after render
     setTimeout(() => {
-      const input = document.querySelector('input[name="email-input"]')
-      if (input) input.focus()
+      if (emailInputRef.current) {
+        emailInputRef.current.focus()
+      }
     }, 100)
   }
 
   const handleCancelEditEmail = () => {
     setIsEditingEmail(false)
-    setNewEmail(email)
+    setEmailDisplayValue(email)
     setIsEmailAvailable(false)
     setEmailAvailabilityMessage('')
     setShowEmailVerification(false)
@@ -2315,7 +2304,8 @@ export function AccountSettingsPage() {
   }
 
   const handleSendEmailVerification = async () => {
-    if (!newEmail || !isEmailAvailable) {
+    const currentEmail = emailDisplayValue
+    if (!currentEmail || !isEmailAvailable) {
       setError('Please enter a valid and available email address')
       return
     }
@@ -2325,7 +2315,7 @@ export function AccountSettingsPage() {
     setSuccess('')
 
     try {
-      const result = await requestEmailUpdate(userId, newEmail, '')
+      const result = await requestEmailUpdate(userId, currentEmail, '')
       
       if (result.success) {
         setEmailCodeSent(true)
@@ -2373,10 +2363,11 @@ export function AccountSettingsPage() {
     setSuccess('')
 
     try {
-      const result = await verifyEmailUpdate(newEmail, emailVerificationCode)
+      const result = await verifyEmailUpdate(emailDisplayValue, emailVerificationCode)
       
       if (result.success) {
         setSuccess('✅ Email updated successfully!')
+        const newEmail = emailDisplayValue
         setEmail(newEmail)
         setShowEmailVerification(false)
         setEmailCodeSent(false)
@@ -2449,11 +2440,9 @@ export function AccountSettingsPage() {
     }
   }
 
-  // Debounced phone check - same pattern as WorkerAuthPage
-  const handlePhoneChange = (value) => {
-    setNewPhoneNumber(value)
-    setIsPhoneAvailable(false)
-    setPhoneAvailabilityMessage('')
+  const handlePhoneInputChange = (e) => {
+    const value = e.target.value
+    setPhoneDisplayValue(value)
     
     if (phoneCheckTimeoutRef.current) {
       clearTimeout(phoneCheckTimeoutRef.current)
@@ -2463,23 +2452,27 @@ export function AccountSettingsPage() {
       phoneCheckTimeoutRef.current = setTimeout(() => {
         checkPhoneAvailabilityRealTime(value)
       }, 500)
+    } else {
+      setIsPhoneAvailable(false)
+      setPhoneAvailabilityMessage('')
     }
   }
 
   const handleStartEditPhone = () => {
     setIsEditingPhone(true)
-    setNewPhoneNumber(phoneNumber)
+    setPhoneDisplayValue(phoneNumber)
     setIsPhoneAvailable(false)
     setPhoneAvailabilityMessage('')
     setTimeout(() => {
-      const input = document.querySelector('input[name="phone-input"]')
-      if (input) input.focus()
+      if (phoneInputRef.current) {
+        phoneInputRef.current.focus()
+      }
     }, 100)
   }
 
   const handleCancelEditPhone = () => {
     setIsEditingPhone(false)
-    setNewPhoneNumber(phoneNumber)
+    setPhoneDisplayValue(phoneNumber)
     setIsPhoneAvailable(false)
     setPhoneAvailabilityMessage('')
     setShowPhoneVerification(false)
@@ -2492,7 +2485,8 @@ export function AccountSettingsPage() {
   }
 
   const handleSendPhoneOTP = async () => {
-    if (!newPhoneNumber || !isPhoneAvailable) {
+    const currentPhone = phoneDisplayValue
+    if (!currentPhone || !isPhoneAvailable) {
       setError('Please enter a valid and available phone number')
       return
     }
@@ -2510,7 +2504,7 @@ export function AccountSettingsPage() {
         return
       }
 
-      const result = await sendPhoneOTP(newPhoneNumber, recaptchaVerifier)
+      const result = await sendPhoneOTP(currentPhone, recaptchaVerifier)
       
       if (result.success) {
         setPhoneCodeSent(true)
@@ -2562,10 +2556,11 @@ export function AccountSettingsPage() {
       const result = await verifyPhoneOTP(phoneVerificationCode)
       
       if (result.success) {
-        await workerService.updateBasics(userId, { mobilePhone: newPhoneNumber })
+        await workerService.updateBasics(userId, { mobilePhone: phoneDisplayValue })
         
         setSuccess('✅ Phone number updated successfully!')
-        setPhoneNumber(newPhoneNumber)
+        const newPhone = phoneDisplayValue
+        setPhoneNumber(newPhone)
         setShowPhoneVerification(false)
         setPhoneCodeSent(false)
         setPhoneVerificationCode('')
@@ -2573,7 +2568,7 @@ export function AccountSettingsPage() {
         setPhoneAvailabilityMessage('')
         setIsEditingPhone(false)
         
-        localStorage.setItem('pendingPhoneNumber', newPhoneNumber)
+        localStorage.setItem('pendingPhoneNumber', newPhone)
         await loadUserData()
         setTimeout(() => setSuccess(''), 5000)
       } else {
@@ -2622,13 +2617,7 @@ export function AccountSettingsPage() {
         delete updateData.language
       }
       
-      if (field === 'firstName') {
-        await workerService.updateBasics(userId, { legalFirstName: value })
-        localStorage.setItem('pendingFirstName', value)
-      } else if (field === 'lastName') {
-        await workerService.updateBasics(userId, { legalLastName: value })
-        localStorage.setItem('pendingLastName', value)
-      } else if (field === 'language') {
+      if (field === 'language') {
         await workerService.updateBasics(userId, updateData)
       }
       
@@ -2861,10 +2850,11 @@ export function AccountSettingsPage() {
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
                           <input
+                            ref={emailInputRef}
                             name="email-input"
                             type="email"
-                            value={newEmail}
-                            onChange={(e) => handleEmailChange(e.target.value)}
+                            value={emailDisplayValue}
+                            onChange={handleEmailInputChange}
                             placeholder="Email Address"
                             readOnly={!isEditingEmail}
                             style={{
@@ -2904,7 +2894,7 @@ export function AccountSettingsPage() {
                             <UpdateButton 
                               onClick={handleSendEmailVerification}
                               loading={isEmailCodeSending}
-                              disabled={!isEmailAvailable || newEmail === email || showEmailVerification}
+                              disabled={!isEmailAvailable || emailDisplayValue === email || showEmailVerification}
                               label="Send Code"
                               variant="primary"
                             />
@@ -2912,7 +2902,7 @@ export function AccountSettingsPage() {
                         )}
                       </div>
                       
-                      {isEditingEmail && newEmail !== email && (
+                      {isEditingEmail && emailDisplayValue !== email && (
                         <div style={{ marginTop: '4px', fontSize: '12px' }}>
                           {isCheckingEmail ? (
                             <span style={{ color: '#0f4ea9' }}>⏳ Checking availability...</span>
@@ -2929,7 +2919,7 @@ export function AccountSettingsPage() {
                       {isEditingEmail && showEmailVerification && (
                         <div style={{ marginTop: '8px', padding: '12px', background: '#f0f7ff', borderRadius: '8px', border: '1px solid rgba(15,78,169,0.2)' }}>
                           <div style={{ fontSize: '13px', fontWeight: 500, color: '#17263a', marginBottom: '8px' }}>
-                            Enter verification code sent to {newEmail}
+                            Enter verification code sent to {emailDisplayValue}
                           </div>
                           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                             <input
@@ -3015,10 +3005,11 @@ export function AccountSettingsPage() {
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
                           <input
+                            ref={phoneInputRef}
                             name="phone-input"
                             type="tel"
-                            value={newPhoneNumber}
-                            onChange={(e) => handlePhoneChange(e.target.value)}
+                            value={phoneDisplayValue}
+                            onChange={handlePhoneInputChange}
                             placeholder="Phone Number"
                             readOnly={!isEditingPhone}
                             style={{
@@ -3058,7 +3049,7 @@ export function AccountSettingsPage() {
                             <UpdateButton 
                               onClick={handleSendPhoneOTP}
                               loading={isPhoneCodeSending}
-                              disabled={!isPhoneAvailable || newPhoneNumber === phoneNumber || showPhoneVerification}
+                              disabled={!isPhoneAvailable || phoneDisplayValue === phoneNumber || showPhoneVerification}
                               label="Send OTP"
                               variant="primary"
                             />
@@ -3066,7 +3057,7 @@ export function AccountSettingsPage() {
                         )}
                       </div>
                       
-                      {isEditingPhone && newPhoneNumber !== phoneNumber && (
+                      {isEditingPhone && phoneDisplayValue !== phoneNumber && (
                         <div style={{ marginTop: '4px', fontSize: '12px' }}>
                           {isCheckingPhone ? (
                             <span style={{ color: '#0f4ea9' }}>⏳ Checking availability...</span>
@@ -3083,7 +3074,7 @@ export function AccountSettingsPage() {
                       {isEditingPhone && showPhoneVerification && (
                         <div style={{ marginTop: '8px', padding: '12px', background: '#f0f7ff', borderRadius: '8px', border: '1px solid rgba(15,78,169,0.2)' }}>
                           <div style={{ fontSize: '13px', fontWeight: 500, color: '#17263a', marginBottom: '8px' }}>
-                            Enter OTP sent to {newPhoneNumber}
+                            Enter OTP sent to {phoneDisplayValue}
                           </div>
                           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                             <input
@@ -3198,7 +3189,7 @@ export function AccountSettingsPage() {
                     </div>
                   </FieldRow>
 
-                  {/* Password - Updated with modal trigger */}
+                  {/* Password */}
                   <FieldRow label="Password" icon={<IconLock />}>
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center', width: '100%' }}>
                       <div style={{ flex: 1 }}>
@@ -3366,7 +3357,6 @@ export function AccountSettingsPage() {
         </main>
       </div>
 
-      {/* Password Modal */}
       <PasswordModal
         isOpen={isPasswordModalOpen}
         onClose={() => setIsPasswordModalOpen(false)}
@@ -3375,7 +3365,6 @@ export function AccountSettingsPage() {
         loading={passwordLoading}
       />
 
-      {/* Report Issue Modal */}
       <ReportIssueModal
         isOpen={isReportIssueOpen}
         onClose={() => setIsReportIssueOpen(false)}
