@@ -2077,6 +2077,7 @@ export function AccountSettingsPage() {
   const [resendCooldown, setResendCooldown] = useState(0)
   const emailCodeInputRef = useRef(null)
   const cooldownIntervalRef = useRef(null)
+  const emailCheckTimeoutRef = useRef(null)
 
   // Phone update states
   const [isEditingPhone, setIsEditingPhone] = useState(false)
@@ -2092,6 +2093,7 @@ export function AccountSettingsPage() {
   const [phoneResendCooldown, setPhoneResendCooldown] = useState(0)
   const phoneCodeInputRef = useRef(null)
   const phoneCooldownIntervalRef = useRef(null)
+  const phoneCheckTimeoutRef = useRef(null)
   
   // Delete account
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
@@ -2140,6 +2142,12 @@ export function AccountSettingsPage() {
       }
       if (phoneCooldownIntervalRef.current) {
         clearInterval(phoneCooldownIntervalRef.current)
+      }
+      if (emailCheckTimeoutRef.current) {
+        clearTimeout(emailCheckTimeoutRef.current)
+      }
+      if (phoneCheckTimeoutRef.current) {
+        clearTimeout(phoneCheckTimeoutRef.current)
       }
     }
   }, [])
@@ -2222,8 +2230,8 @@ export function AccountSettingsPage() {
   // EMAIL UPDATE FUNCTIONS
   // ============================================================
 
-  const checkEmailAvailabilityRealTime = async (emailToCheck) => {
-    if (!emailToCheck || emailToCheck === email) {
+  const checkEmailAvailabilityRealTime = useCallback(async (emailToCheck) => {
+    if (!emailToCheck || emailToCheck === email || !isEditingEmail) {
       setIsEmailAvailable(false)
       setEmailAvailabilityMessage('')
       return
@@ -2261,27 +2269,38 @@ export function AccountSettingsPage() {
     } finally {
       setIsCheckingEmail(false)
     }
-  }
+  }, [email, isEditingEmail])
 
+  // Debounced email check
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (newEmail && newEmail !== email && isEditingEmail) {
-        checkEmailAvailabilityRealTime(newEmail)
-      } else {
-        setIsEmailAvailable(false)
-        setEmailAvailabilityMessage('')
-      }
-    }, 500)
+    if (emailCheckTimeoutRef.current) {
+      clearTimeout(emailCheckTimeoutRef.current)
+    }
 
-    return () => clearTimeout(timer)
-  }, [newEmail, isEditingEmail])
+    if (newEmail && newEmail !== email && isEditingEmail) {
+      emailCheckTimeoutRef.current = setTimeout(() => {
+        checkEmailAvailabilityRealTime(newEmail)
+      }, 600)
+    } else if (!isEditingEmail) {
+      setIsEmailAvailable(false)
+      setEmailAvailabilityMessage('')
+    }
+
+    return () => {
+      if (emailCheckTimeoutRef.current) {
+        clearTimeout(emailCheckTimeoutRef.current)
+      }
+    }
+  }, [newEmail, email, isEditingEmail, checkEmailAvailabilityRealTime])
 
   const handleStartEditEmail = () => {
     setIsEditingEmail(true)
     setNewEmail(email)
+    setEmailAvailabilityMessage('')
+    setIsEmailAvailable(false)
     // Focus the input after render
     setTimeout(() => {
-      const input = document.querySelector('input[type="email"]')
+      const input = document.querySelector('input[name="email-input"]')
       if (input) input.focus()
     }, 100)
   }
@@ -2295,6 +2314,9 @@ export function AccountSettingsPage() {
     setEmailVerificationCode('')
     setEmailCodeSent(false)
     setError('')
+    if (emailCheckTimeoutRef.current) {
+      clearTimeout(emailCheckTimeoutRef.current)
+    }
   }
 
   const handleSendEmailVerification = async () => {
@@ -2390,8 +2412,8 @@ export function AccountSettingsPage() {
   // PHONE UPDATE FUNCTIONS
   // ============================================================
 
-  const checkPhoneAvailabilityRealTime = async (phoneToCheck) => {
-    if (!phoneToCheck || phoneToCheck === phoneNumber) {
+  const checkPhoneAvailabilityRealTime = useCallback(async (phoneToCheck) => {
+    if (!phoneToCheck || phoneToCheck === phoneNumber || !isEditingPhone) {
       setIsPhoneAvailable(false)
       setPhoneAvailabilityMessage('')
       return
@@ -2430,26 +2452,37 @@ export function AccountSettingsPage() {
     } finally {
       setIsCheckingPhone(false)
     }
-  }
+  }, [phoneNumber, isEditingPhone])
 
+  // Debounced phone check
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (newPhoneNumber && newPhoneNumber !== phoneNumber && isEditingPhone) {
-        checkPhoneAvailabilityRealTime(newPhoneNumber)
-      } else {
-        setIsPhoneAvailable(false)
-        setPhoneAvailabilityMessage('')
-      }
-    }, 500)
+    if (phoneCheckTimeoutRef.current) {
+      clearTimeout(phoneCheckTimeoutRef.current)
+    }
 
-    return () => clearTimeout(timer)
-  }, [newPhoneNumber, isEditingPhone])
+    if (newPhoneNumber && newPhoneNumber !== phoneNumber && isEditingPhone) {
+      phoneCheckTimeoutRef.current = setTimeout(() => {
+        checkPhoneAvailabilityRealTime(newPhoneNumber)
+      }, 600)
+    } else if (!isEditingPhone) {
+      setIsPhoneAvailable(false)
+      setPhoneAvailabilityMessage('')
+    }
+
+    return () => {
+      if (phoneCheckTimeoutRef.current) {
+        clearTimeout(phoneCheckTimeoutRef.current)
+      }
+    }
+  }, [newPhoneNumber, phoneNumber, isEditingPhone, checkPhoneAvailabilityRealTime])
 
   const handleStartEditPhone = () => {
     setIsEditingPhone(true)
     setNewPhoneNumber(phoneNumber)
+    setPhoneAvailabilityMessage('')
+    setIsPhoneAvailable(false)
     setTimeout(() => {
-      const input = document.querySelector('input[type="tel"]')
+      const input = document.querySelector('input[name="phone-input"]')
       if (input) input.focus()
     }, 100)
   }
@@ -2463,6 +2496,9 @@ export function AccountSettingsPage() {
     setPhoneVerificationCode('')
     setPhoneCodeSent(false)
     setError('')
+    if (phoneCheckTimeoutRef.current) {
+      clearTimeout(phoneCheckTimeoutRef.current)
+    }
   }
 
   const handleSendPhoneOTP = async () => {
@@ -2835,6 +2871,7 @@ export function AccountSettingsPage() {
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
                           <input
+                            name="email-input"
                             type="email"
                             value={newEmail}
                             onChange={(e) => setNewEmail(e.target.value)}
@@ -2988,6 +3025,7 @@ export function AccountSettingsPage() {
                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <div style={{ flex: 1 }}>
                           <input
+                            name="phone-input"
                             type="tel"
                             value={newPhoneNumber}
                             onChange={(e) => setNewPhoneNumber(e.target.value)}
