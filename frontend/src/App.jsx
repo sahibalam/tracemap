@@ -1,3 +1,8 @@
+
+
+
+
+
 // // src/App.jsx
 // import { Routes, Route } from 'react-router-dom'
 // import { HomePage } from './pages/HomePage'
@@ -15,7 +20,7 @@
 // import { CertificationEditPage } from './worker/pages/CertificationEditPage'
 // import { PaymentEditPage } from './worker/pages/PaymentEditPage'
 // import { AvailabilityEditPage } from './worker/pages/AvailabilityEditPage'
-// import { WorkHistoryEditPage } from './worker/pages/WorkHistoryEditPage' // Add this import
+// import { WorkHistoryEditPage } from './worker/pages/WorkHistoryEditPage'
 // import { CompanyAuthPage } from './company/pages/CompanyAuthPage'
 // import { CompanyVerifyPage } from './company/pages/CompanyVerifyPage'
 // import { CompanyWizardPage } from './company/pages/CompanyWizardPage'
@@ -24,6 +29,7 @@
 // import { BasicInfoEditPage } from './worker/pages/BasicInfoEditPage'
 // import { EmergencyContactEditPage } from './worker/pages/EmergencyContactEditPage'
 // import { ResetPasswordPage } from './pages/ResetPasswordPage'
+// import { AccountSettingsPage } from './worker/pages/AccountSettingsPage' // ✅ ADD THIS IMPORT
 
 // function App() {
 //   return (
@@ -31,8 +37,9 @@
 //       {/* Email Verification Handler - MUST be before other routes */}
 //       <Route path="/verify-email" element={<EmailVerificationHandler />} />
 
-//       {/* Password Reset Page - ADD THIS */}
+//       {/* Password Reset Page */}
 //       <Route path="/reset-password" element={<ResetPasswordPage />} />
+      
 //       {/* Legal Pages */}
 //       <Route path="/about" element={<AboutPage />} />
 //       <Route path="/privacy-policy" element={<PrivacyPage />} />
@@ -46,12 +53,17 @@
 //       <Route path="/wizard" element={<WorkerWizardPage />} />
 //       <Route path="/wizard/summary" element={<WorkerSummaryPage />} />
 //       <Route path="/registration-success" element={<RegistrationSuccessPage />} />
+      
+//       {/* ✅ NEW: Account Settings Route */}
+//       <Route path="/account-settings" element={<AccountSettingsPage />} />
+      
+//       {/* Edit Pages */}
 //       <Route path="/medical/edit" element={<MedicalEditPage />} />
 //       <Route path="/tax/edit" element={<TaxEditPage />} />
 //       <Route path="/certification/edit" element={<CertificationEditPage />} />
 //       <Route path="/payment/edit" element={<PaymentEditPage />} />
 //       <Route path="/availability/edit" element={<AvailabilityEditPage />} />
-//       <Route path="/work-history/edit" element={<WorkHistoryEditPage />} /> {/* Add this route */}
+//       <Route path="/work-history/edit" element={<WorkHistoryEditPage />} />
 //       <Route path="/trade-profile/edit" element={<TradeProfileEditPage />} />
 //       <Route path="/basic-info/edit" element={<BasicInfoEditPage />} />
 //       <Route path="/emergency-contact/edit" element={<EmergencyContactEditPage />} />
@@ -72,6 +84,9 @@
 // }
 
 // export default App
+
+
+
 
 
 
@@ -103,7 +118,8 @@ import { TradeProfileEditPage } from './worker/pages/TradeProfileEditPage'
 import { BasicInfoEditPage } from './worker/pages/BasicInfoEditPage'
 import { EmergencyContactEditPage } from './worker/pages/EmergencyContactEditPage'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
-import { AccountSettingsPage } from './worker/pages/AccountSettingsPage' // ✅ ADD THIS IMPORT
+import { AccountSettingsPage } from './worker/pages/AccountSettingsPage'
+import { NotificationPage } from './worker/pages/NotificationPage' // ✅ ADDED: Notification Page Import
 
 function App() {
   return (
@@ -128,8 +144,11 @@ function App() {
       <Route path="/wizard/summary" element={<WorkerSummaryPage />} />
       <Route path="/registration-success" element={<RegistrationSuccessPage />} />
       
-      {/* ✅ NEW: Account Settings Route */}
+      {/* Account Settings Route */}
       <Route path="/account-settings" element={<AccountSettingsPage />} />
+      
+      {/* ✅ NEW: Notifications Route */}
+      <Route path="/notifications" element={<NotificationPage />} />
       
       {/* Edit Pages */}
       <Route path="/medical/edit" element={<MedicalEditPage />} />
