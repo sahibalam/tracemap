@@ -342,7 +342,16 @@
     "allergies": "Allergies",
     "emergencyContact": "Emergency Contact",
     "name": "Name",
-    "relationship": "Relationship"
+    "relationship": "Relationship",
+    "days": {
+      "monday": "Mon",
+      "tuesday": "Tue",
+      "wednesday": "Wed",
+      "thursday": "Thu",
+      "friday": "Fri",
+      "saturday": "Sat",
+      "sunday": "Sun"
+    }
   },
   "registration": {
     "success": {
