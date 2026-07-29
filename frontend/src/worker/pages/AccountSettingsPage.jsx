@@ -1648,7 +1648,7 @@
 
 
 // src/worker/pages/AccountSettingsPage.jsx
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { TopNav } from '../../common/components/TopNav'
@@ -2044,7 +2044,7 @@ function UpdateButton({ onClick, loading, label = 'Update', disabled = false, va
 }
 
 // Email Input Component - memoized to prevent unnecessary re-renders
-const EmailInput = React.memo(({ value, onChange, isEditing, onFocus, onBlur }) => {
+const EmailInput = memo(({ value, onChange, isEditing, onFocus, onBlur }) => {
   return (
     <input
       name="email-input"
@@ -2073,7 +2073,7 @@ const EmailInput = React.memo(({ value, onChange, isEditing, onFocus, onBlur }) 
 });
 
 // Phone Input Component - memoized to prevent unnecessary re-renders
-const PhoneInput = React.memo(({ value, onChange, isEditing, onFocus, onBlur }) => {
+const PhoneInput = memo(({ value, onChange, isEditing, onFocus, onBlur }) => {
   return (
     <input
       name="phone-input"
