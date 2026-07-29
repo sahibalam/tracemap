@@ -836,7 +836,6 @@
 
 
 
-
 // src/worker/pages/WorkerVerifyPage.jsx
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -852,10 +851,10 @@ import {
   sendPhoneOTP,
   verifyPhoneOTP
 } from '../../services/verificationService'
-import { setUserLanguage, changeLanguage, getStoredLanguage } from '../../i18n/config' // ✅ IMPORT LANGUAGE HELPERS
+import { setUserLanguage, changeLanguage, getStoredLanguage } from '../../i18n/config'
 
 export function WorkerVerifyPage() {
-  const { t, i18n } = useTranslation() // ✅ ADD i18n
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   
@@ -928,7 +927,7 @@ export function WorkerVerifyPage() {
     }
     
     if (!email) {
-      setError('Email is required')
+      setError(t('auth.emailRequired'))
       return
     }
     
@@ -965,11 +964,11 @@ export function WorkerVerifyPage() {
         
         console.log('✅ Verification code sent to:', email)
       } else {
-        setError(result.message || 'Failed to send verification code')
+        setError(result.message || t('auth.loginError'))
       }
     } catch (err) {
       console.error('❌ Send code error:', err)
-      setError(err.message || 'An error occurred while sending verification code')
+      setError(err.message || t('errors.unknownError'))
     } finally {
       setEmailLoading(false)
       // ✅ Release the lock after delay
@@ -977,7 +976,7 @@ export function WorkerVerifyPage() {
         isSendingRef.current = false
       }, 500)
     }
-  }, [email, emailLoading])
+  }, [email, emailLoading, t])
 
   // ✅ Verify Email Code - WITH COMPLETE DOUBLE-CALL PROTECTION
   const handleVerifyEmailCode = useCallback(async () => {
@@ -996,7 +995,7 @@ export function WorkerVerifyPage() {
     }
     
     if (!emailCode || emailCode.length !== 6) {
-      setError('Please enter 6-digit verification code')
+      setError(t('registration.verify.invalidCode'))
       return
     }
     
@@ -1017,11 +1016,11 @@ export function WorkerVerifyPage() {
         setError('')
         console.log('✅ Email verified successfully!')
       } else {
-        setError(result.message || 'Invalid code. Please try again.')
+        setError(result.message || t('registration.verify.invalidCode'))
       }
     } catch (err) {
       console.error('❌ Verify code error:', err)
-      setError(err.message || 'An error occurred while verifying code')
+      setError(err.message || t('errors.unknownError'))
     } finally {
       setLoading(false)
       setIsVerifying(false)
@@ -1030,12 +1029,12 @@ export function WorkerVerifyPage() {
         isVerifyingRef.current = false
       }, 500)
     }
-  }, [email, emailCode, isVerifying])
+  }, [email, emailCode, isVerifying, t])
 
   // ✅ Send Phone OTP
   const handleSendPhoneOTP = useCallback(async () => {
     if (!emailVerified) {
-      setError('Please verify your email first')
+      setError(t('registration.verify.verifyEmailFirst'))
       return
     }
     
@@ -1050,19 +1049,19 @@ export function WorkerVerifyPage() {
         setShowPhoneOtp(true)
         setError('')
       } else {
-        setError(result.message || 'Failed to send OTP')
+        setError(result.message || t('auth.loginError'))
       }
     } catch (err) {
-      setError(err.message || 'An error occurred while sending OTP')
+      setError(err.message || t('errors.unknownError'))
     } finally {
       setLoading(false)
     }
-  }, [emailVerified, phoneNumber])
+  }, [emailVerified, phoneNumber, t])
 
   // ✅ Verify Phone OTP
   const handleVerifyPhone = useCallback(async () => {
     if (!phoneOtp || phoneOtp.length !== 6) {
-      setError('Please enter 6-digit OTP')
+      setError(t('registration.verify.invalidCode'))
       return
     }
     
@@ -1077,14 +1076,14 @@ export function WorkerVerifyPage() {
         setShowPhoneOtp(false)
         setError('')
       } else {
-        setError(result.message || 'Invalid OTP. Please try again.')
+        setError(result.message || t('registration.verify.invalidCode'))
       }
     } catch (err) {
-      setError(err.message || 'An error occurred while verifying OTP')
+      setError(err.message || t('errors.unknownError'))
     } finally {
       setLoading(false)
     }
-  }, [phoneOtp])
+  }, [phoneOtp, t])
 
   // ✅ Resend Email Code
   const handleResendEmailCode = useCallback(async () => {
@@ -1122,7 +1121,7 @@ export function WorkerVerifyPage() {
           firstName,
           lastName,
           dob,
-          language, // ✅ PASS LANGUAGE TO WIZARD
+          language,
           password,
           authToken,
           fromVerification: true,
@@ -1165,7 +1164,7 @@ export function WorkerVerifyPage() {
                     <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor"/>
                   </svg>
                 </span>
-                <span className="sideText">Overview</span>
+                <span className="sideText">{t('summary.overview')}</span>
               </span>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true">
@@ -1173,7 +1172,7 @@ export function WorkerVerifyPage() {
                     <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor"/>
                   </svg>
                 </span>
-                <span className="sideText">Projects</span>
+                <span className="sideText">{t('summary.projects')}</span>
                 <span className="sideBadge" aria-label="12 projects">12</span>
               </span>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
@@ -1182,7 +1181,7 @@ export function WorkerVerifyPage() {
                     <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor"/>
                   </svg>
                 </span>
-                <span className="sideText">Revenues</span>
+                <span className="sideText">{t('summary.revenues')}</span>
               </span>
               <a className="sideItem sideItemActive" href="#">
                 <span className="sideIcon" aria-hidden="true">
@@ -1190,13 +1189,13 @@ export function WorkerVerifyPage() {
                     <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor"/>
                   </svg>
                 </span>
-                <span className="sideText">Profile</span>
+                <span className="sideText">{t('summary.profile')}</span>
               </a>
             </nav>
           </div>
 
           <div className="sideNavBottom">
-            <div className="sideGroupLabel">GENERAL</div>
+            <div className="sideGroupLabel">{t('summary.general')}</div>
             <nav className="sideGroup" aria-label="General">
               <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
                 <span className="sideIcon" aria-hidden="true">
@@ -1204,7 +1203,7 @@ export function WorkerVerifyPage() {
                     <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor"/>
                   </svg>
                 </span>
-                <span className="sideText">Sign out</span>
+                <span className="sideText">{t('summary.signOut')}</span>
               </button>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true">
@@ -1212,7 +1211,7 @@ export function WorkerVerifyPage() {
                     <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" fill="currentColor"/>
                   </svg>
                 </span>
-                <span className="sideText">Support</span>
+                <span className="sideText">{t('summary.support')}</span>
               </span>
             </nav>
           </div>
@@ -1222,7 +1221,7 @@ export function WorkerVerifyPage() {
           <div className="verifyPage">
             <div className="authCard authCardCompact verifyCard verifyCardV2">
               <div className="verifyTitle verifyTitleV2">
-                Confirm your email and phone number to secure your account.
+                {t('registration.verify.title')}
               </div>
 
               {error && (
@@ -1245,12 +1244,12 @@ export function WorkerVerifyPage() {
                 {/* ✅ Email Row - Code Verification */}
                 <div className="verifyRow">
                   <div className="verifyRowLabel">
-                    Email ID <span className="verifyRequired">*</span>
+                    {t('registration.verify.emailId')} <span className="verifyRequired">*</span>
                   </div>
 
                   <div className="verifyRowMain">
                     <TextField 
-                      placeholder="Email" 
+                      placeholder={t('auth.email')} 
                       icon={<IconMail />} 
                       value={email} 
                       readOnly 
@@ -1266,13 +1265,13 @@ export function WorkerVerifyPage() {
                               onClick={handleSendEmailCode}
                               disabled={emailLoading || resendCooldown > 0 || isSendingRef.current}
                             >
-                              {emailLoading ? 'Sending...' : 'Send Verification Code'}
+                              {emailLoading ? t('registration.verify.sending') : t('registration.verify.sendCode')}
                             </button>
                           ) : (
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
                               <input 
                                 type="text"
-                                placeholder="6-digit code"
+                                placeholder={t('registration.verify.codePlaceholder')}
                                 value={emailCode}
                                 onChange={(e) => {
                                   const value = e.target.value.replace(/\D/g, '')
@@ -1292,7 +1291,7 @@ export function WorkerVerifyPage() {
                                 onClick={handleVerifyEmailCode} 
                                 disabled={loading || emailCode.length !== 6 || isVerifying || isVerifyingRef.current}
                               >
-                                {isVerifying ? 'Verifying...' : 'Verify'}
+                                {isVerifying ? t('registration.verify.verifying') : t('registration.verify.verify')}
                               </button>
                               <button 
                                 type="button" 
@@ -1300,37 +1299,37 @@ export function WorkerVerifyPage() {
                                 onClick={handleResendEmailCode}
                                 disabled={resendCooldown > 0 || emailLoading || isVerifying || isVerifyingRef.current || isSendingRef.current}
                               >
-                                {resendCooldown > 0 ? `${resendCooldown}s` : 'Resend'}
+                                {resendCooldown > 0 ? t('registration.verify.resendTimer', { seconds: resendCooldown }) : t('registration.verify.resendCode')}
                               </button>
                             </div>
                           )}
                         </>
                       ) : (
-                        <span style={{ color: '#2fb463', fontWeight: 600 }}>✓ Verified</span>
+                        <span style={{ color: '#2fb463', fontWeight: 600 }}>{t('registration.verify.verified')}</span>
                       )}
                     </div>
                     
                     {emailCodeSent && !emailVerified && showEmailOtp && (
                       <div style={{ fontSize: '11px', color: 'rgba(23,38,58,0.6)', marginTop: '6px' }}>
-                        📧 Verification code sent to {email}. 
+                        {t('registration.verify.codeSent', { email })}
                         <br />
                         <span style={{ color: '#f59e0b' }}>
-                          💡 Check your email for the 6-digit code. Check spam folder if not found.
+                          {t('registration.verify.checkSpam')}
                         </span>
                       </div>
                     )}
                     
                     {emailVerified && (
                       <div style={{ fontSize: '11px', color: '#2fb463', marginTop: '6px' }}>
-                        ✓ Email verified! You can now verify your phone number.
+                        {t('registration.verify.emailVerifiedSuccess')}
                       </div>
                     )}
                   </div>
 
                   <div className="verifyRowRight">
-                    <div className="verifyRowHint">Not your email?</div>
+                    <div className="verifyRowHint">{t('registration.verify.notYourEmail')}</div>
                     <button type="button" className="verifyChange" onClick={() => navigate('/register')}>
-                      Change
+                      {t('registration.verify.change')}
                     </button>
                   </div>
                 </div>
@@ -1338,12 +1337,12 @@ export function WorkerVerifyPage() {
                 {/* ✅ Phone Row - OTP Verification */}
                 <div className="verifyRow">
                   <div className="verifyRowLabel">
-                    Phone No. <span className="verifyRequired">*</span>
+                    {t('registration.verify.phoneNo')} <span className="verifyRequired">*</span>
                   </div>
 
                   <div className="verifyRowMain">
                     <TextField 
-                      placeholder="Phone" 
+                      placeholder={t('auth.phone')} 
                       icon={<IconPhone />} 
                       value={phoneNumber} 
                       readOnly 
@@ -1359,7 +1358,7 @@ export function WorkerVerifyPage() {
                           className="verifyOtpBtnDisabled" 
                           disabled={true}
                         >
-                          Verify email first
+                          {t('registration.verify.verifyEmailFirstButton')}
                         </button>
                       ) : !phoneVerified ? (
                         <>
@@ -1370,13 +1369,13 @@ export function WorkerVerifyPage() {
                               onClick={handleSendPhoneOTP}
                               disabled={loading}
                             >
-                              {loading ? 'Sending...' : 'Send OTP'}
+                              {loading ? t('registration.verify.sending') : t('registration.verify.sendOtp')}
                             </button>
                           ) : (
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
                               <input 
                                 type="text"
-                                placeholder="OTP"
+                                placeholder={t('registration.verify.otpPlaceholder')}
                                 value={phoneOtp}
                                 onChange={(e) => {
                                   const value = e.target.value.replace(/\D/g, '')
@@ -1394,7 +1393,7 @@ export function WorkerVerifyPage() {
                                 onClick={handleVerifyPhone} 
                                 disabled={loading || phoneOtp.length !== 6}
                               >
-                                {loading ? 'Verifying...' : 'Verify'}
+                                {loading ? t('registration.verify.verifying') : t('registration.verify.verify')}
                               </button>
                               <button 
                                 type="button" 
@@ -1402,27 +1401,27 @@ export function WorkerVerifyPage() {
                                 onClick={handleSendPhoneOTP}
                                 disabled={loading}
                               >
-                                Resend
+                                {t('registration.verify.resendCode')}
                               </button>
                             </div>
                           )}
                         </>
                       ) : (
-                        <span style={{ color: '#2fb463', fontWeight: 600 }}>✓ Verified</span>
+                        <span style={{ color: '#2fb463', fontWeight: 600 }}>{t('registration.verify.verified')}</span>
                       )}
                     </div>
                     
                     {showPhoneOtp && !phoneVerified && (
                       <div style={{ fontSize: '11px', color: 'rgba(23,38,58,0.6)', marginTop: '6px' }}>
-                        📱 Enter the 6-digit code sent to {phoneNumber}
+                        {t('registration.verify.otpSent', { phone: phoneNumber })}
                       </div>
                     )}
                   </div>
 
                   <div className="verifyRowRight">
-                    <div className="verifyRowHint">Not your phone?</div>
+                    <div className="verifyRowHint">{t('registration.verify.notYourPhone')}</div>
                     <button type="button" className="verifyChange" onClick={() => navigate('/register')}>
-                      Change
+                      {t('registration.verify.change')}
                     </button>
                   </div>
                 </div>
@@ -1470,13 +1469,13 @@ export function WorkerVerifyPage() {
                       fontWeight: 600
                     }}
                   >
-                    Continue to Registration →
+                    {t('registration.verify.continue')}
                   </button>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
                     <p style={{ fontSize: '13px', color: 'rgba(23,38,58,0.6)' }}>
-                      {!emailVerified && '📧 Please verify your email first'}
-                      {emailVerified && !phoneVerified && '📱 Email verified! Please verify your phone number'}
+                      {!emailVerified && t('registration.verify.verifyEmailFirst')}
+                      {emailVerified && !phoneVerified && t('registration.verify.emailVerifiedMessage')}
                     </p>
                   </div>
                 )}
