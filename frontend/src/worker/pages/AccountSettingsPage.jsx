@@ -1974,7 +1974,7 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
         </div>
       </div>
 
-      <style>{`
+     <style>{`
         @keyframes fadeIn {
           from { opacity: 0; }
           to { opacity: 1; }
@@ -1988,6 +1988,13 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
             opacity: 1;
             transform: translateY(0) scale(1);
           }
+        }
+
+        /* ✅ HIDE reCAPTCHA BADGE - Still works in background */
+        .grecaptcha-badge {
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
         }
       `}</style>
     </>
@@ -3419,26 +3426,33 @@ export function AccountSettingsPage() {
       />
 
       <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        
-        .accountSettingsPage {
-          max-width: 940px;
-          margin: 0 auto;
-          padding: 24px;
-        }
-        
-        @media (max-width: 768px) {
-          .accountSettingsPage {
-            padding: 16px;
-          }
-          .accountSettingsPage .authCard {
-            max-width: 100% !important;
-          }
-        }
-      `}</style>
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  .accountSettingsPage {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  @media (max-width: 768px) {
+    .accountSettingsPage {
+      padding: 16px;
+    }
+    .accountSettingsPage .authCard {
+      max-width: 100% !important;
+    }
+  }
+
+  /* ✅ HIDE reCAPTCHA BADGE - Still works in background */
+  .grecaptcha-badge {
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+`}</style>
     </div>
   )
 }
