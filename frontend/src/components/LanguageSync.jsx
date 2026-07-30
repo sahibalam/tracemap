@@ -8,6 +8,7 @@ import api from '../services/api'
 export function LanguageSync({ children }) {
   const { i18n } = useTranslation()
   const [isSyncing, setIsSyncing] = useState(true)
+  const [isInitialSync, setIsInitialSync] = useState(true)
 
   useEffect(() => {
     const syncLanguage = async () => {
@@ -23,7 +24,7 @@ export function LanguageSync({ children }) {
         const storedLang = getStoredLanguage()
         console.log(`📌 LanguageSync: Stored language: ${storedLang}`)
         
-        if (isAuthenticated) {
+        if (isAuthenticated && isInitialSync) {
           console.log(`👤 LanguageSync: User is authenticated (${userId})`)
           
           try {
@@ -35,22 +36,27 @@ export function LanguageSync({ children }) {
               const profileLanguage = result.data.basics.language
               console.log(`📥 LanguageSync: Language from database: ${profileLanguage}`)
               
-              // Update localStorage with database value
-              localStorage.setItem('userLanguage', profileLanguage)
-              localStorage.setItem('profileLanguage', profileLanguage)
+              // Only update if the database language is different from current
+              // AND the user hasn't manually changed it recently
+              const userManuallyChanged = localStorage.getItem('userManuallyChangedLanguage') === 'true'
               
-              // Change language if different from current
-              if (profileLanguage !== i18n.language) {
+              if (!userManuallyChanged && profileLanguage !== i18n.language) {
                 console.log(`🔄 LanguageSync: Changing language to ${profileLanguage}`)
+                localStorage.setItem('userLanguage', profileLanguage)
+                localStorage.setItem('profileLanguage', profileLanguage)
                 changeLanguage(profileLanguage)
+              } else if (userManuallyChanged) {
+                console.log(`📌 LanguageSync: User manually changed language, ignoring database value`)
+                // Clear the flag after using it
+                localStorage.removeItem('userManuallyChangedLanguage')
               }
               
+              setIsInitialSync(false)
               setIsSyncing(false)
               return
             }
           } catch (apiError) {
             console.error('❌ LanguageSync: Error fetching user profile:', apiError)
-            // If API fails, fall back to stored language
           }
         }
         
@@ -69,28 +75,36 @@ export function LanguageSync({ children }) {
           }
         }
         
+        setIsInitialSync(false)
         setIsSyncing(false)
         
       } catch (error) {
         console.error('❌ LanguageSync: Error during sync:', error)
         setIsSyncing(false)
+        setIsInitialSync(false)
       }
     }
 
     syncLanguage()
-  }, [i18n])
+  }, [i18n, isInitialSync])
 
-  // Listen for language change events from other components
+  // ✅ Listen for language change events from other components
   useEffect(() => {
     const handleLanguageChange = (event) => {
       const newLang = event.detail?.language
       if (newLang) {
         console.log(`📢 LanguageSync: Language change event received: ${newLang}`)
+        
+        // ✅ Set flag that user manually changed language
+        localStorage.setItem('userManuallyChangedLanguage', 'true')
+        
         if (newLang !== i18n.language) {
           changeLanguage(newLang)
         }
         localStorage.setItem('userLanguage', newLang)
         localStorage.setItem('profileLanguage', newLang)
+        localStorage.setItem('pendingLanguage', newLang)
+        localStorage.setItem('i18nextLng', newLang)
       }
     }
     
@@ -127,27 +141,33 @@ export function LanguageSync({ children }) {
   useEffect(() => {
     const handleOnline = () => {
       console.log('📡 LanguageSync: Online - resyncing language...')
-      // If user is authenticated, try to sync from database
-      const userId = localStorage.getItem('userId')
-      if (userId) {
-        const syncFromDatabase = async () => {
-          try {
-            const response = await api.get(`/worker/profile/${userId}`)
-            const result = response.data
-            
-            if (result.success && result.data?.basics?.language) {
-              const profileLanguage = result.data.basics.language
-              if (profileLanguage !== i18n.language) {
-                console.log(`🔄 LanguageSync: Online sync to ${profileLanguage}`)
-                changeLanguage(profileLanguage)
-                setUserLanguage(profileLanguage)
+      // Only resync if user hasn't manually changed language
+      const userManuallyChanged = localStorage.getItem('userManuallyChangedLanguage') === 'true'
+      if (!userManuallyChanged) {
+        const userId = localStorage.getItem('userId')
+        if (userId && isInitialSync) {
+          const syncFromDatabase = async () => {
+            try {
+              const response = await api.get(`/worker/profile/${userId}`)
+              const result = response.data
+              
+              if (result.success && result.data?.basics?.language) {
+                const profileLanguage = result.data.basics.language
+                if (profileLanguage !== i18n.language) {
+                  console.log(`🔄 LanguageSync: Online sync to ${profileLanguage}`)
+                  changeLanguage(profileLanguage)
+                  setUserLanguage(profileLanguage)
+                }
               }
+            } catch (error) {
+              console.error('❌ LanguageSync: Online sync failed:', error)
             }
-          } catch (error) {
-            console.error('❌ LanguageSync: Online sync failed:', error)
           }
+          syncFromDatabase()
         }
-        syncFromDatabase()
+      } else {
+        console.log('📌 LanguageSync: User manually changed language, skipping online sync')
+        localStorage.removeItem('userManuallyChangedLanguage')
       }
     }
     
@@ -156,7 +176,7 @@ export function LanguageSync({ children }) {
     return () => {
       window.removeEventListener('online', handleOnline)
     }
-  }, [i18n])
+  }, [i18n, isInitialSync])
 
   // Show nothing while syncing to avoid flash of wrong language
   if (isSyncing) {

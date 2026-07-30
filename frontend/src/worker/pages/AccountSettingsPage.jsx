@@ -2902,6 +2902,7 @@ export function AccountSettingsPage() {
         // ✅ STEP 1: Save to database
         await workerService.updateBasics(userId, updateData)
         
+        localStorage.setItem('userManuallyChangedLanguage', 'true')
         // ✅ STEP 2: Save to ALL localStorage keys
         localStorage.setItem('userLanguage', value)
         localStorage.setItem('profileLanguage', value)
