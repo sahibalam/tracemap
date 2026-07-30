@@ -1811,7 +1811,6 @@
 // export default AccountSettingsPage
 
 
-
 // src/worker/pages/AccountSettingsPage.jsx
 import { useState, useEffect, useRef, useCallback, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -2871,7 +2870,7 @@ export function AccountSettingsPage() {
   }
 
   // ============================================================
-  // OTHER UPDATE FUNCTIONS - FIXED FOR LANGUAGE
+  // ✅ OTHER UPDATE FUNCTIONS - FIXED FOR LANGUAGE
   // ============================================================
 
   const updateField = async (field, value) => {
@@ -2884,6 +2883,7 @@ export function AccountSettingsPage() {
       updateData[field] = value
       
       if (field === 'language') {
+        // Convert language selection to boolean flags
         if (value === 'en') {
           updateData.english = true
           updateData.spanish = false
@@ -2898,35 +2898,48 @@ export function AccountSettingsPage() {
           updateData.englishSpanish = true
         }
         delete updateData.language
-      }
-      
-      if (field === 'language') {
-        // ✅ Save to database
+        
+        // ✅ STEP 1: Save to database
         await workerService.updateBasics(userId, updateData)
         
-        // ✅ Save to localStorage
+        // ✅ STEP 2: Save to ALL localStorage keys
         localStorage.setItem('userLanguage', value)
         localStorage.setItem('profileLanguage', value)
         localStorage.setItem('pendingLanguage', value)
+        localStorage.setItem('i18nextLng', value)
         
-        // ✅ Apply language immediately
+        // ✅ STEP 3: Apply language immediately
         changeLanguage(value)
         setUserLanguage(value)
         
-        // ✅ Dispatch event for other components
+        // ✅ STEP 4: Dispatch event for other components
         window.dispatchEvent(new CustomEvent('languageChanged', { 
           detail: { language: value } 
         }))
         
-        // ✅ Update i18n directly
+        // ✅ STEP 5: Update i18n directly
         i18n.changeLanguage(value)
         
+        // ✅ STEP 6: Update HTML lang attribute
+        document.documentElement.lang = value
+        
         console.log(`✅ Language changed to: ${value}`)
+        console.log(`✅ localStorage userLanguage: ${localStorage.getItem('userLanguage')}`)
+        console.log(`✅ i18n language: ${i18n.language}`)
+        
+        setSuccess(`Language changed to ${value === 'en' ? 'English' : 'Spanish'} successfully!`)
+        setTimeout(() => setSuccess(''), 3000)
+        
+        // ✅ STEP 7: Reload user data
+        await loadUserData()
+        
+      } else {
+        // Handle other fields
+        await workerService.updateBasics(userId, updateData)
+        setSuccess(`${field} updated successfully!`)
+        setTimeout(() => setSuccess(''), 3000)
+        await loadUserData()
       }
-      
-      setSuccess(`${field} updated successfully!`)
-      setTimeout(() => setSuccess(''), 3000)
-      await loadUserData()
       
     } catch (err) {
       console.error(`Error updating ${field}:`, err)
@@ -3390,7 +3403,7 @@ export function AccountSettingsPage() {
                     </div>
                   </FieldRow>
 
-                  {/* Language */}
+                  {/* ✅ Language - FIXED */}
                   <FieldRow label="Language" icon={<IconGlobe />}>
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                       <div style={{ flex: 1 }}>
