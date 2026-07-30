@@ -2869,86 +2869,97 @@ export function AccountSettingsPage() {
     await handleSendPhoneOTP()
   }
 
-  // ============================================================
-  // ✅ OTHER UPDATE FUNCTIONS - FIXED FOR LANGUAGE
-  // ============================================================
+// ============================================================
+// ✅ OTHER UPDATE FUNCTIONS - FIXED FOR LANGUAGE
+// ============================================================
 
-  const updateField = async (field, value) => {
-    try {
-      setSaving(prev => ({ ...prev, [field]: true }))
-      setError('')
-      setSuccess('')
-      
-      const updateData = {}
-      updateData[field] = value
-      
-      if (field === 'language') {
-        // Convert language selection to boolean flags
-        if (value === 'en') {
-          updateData.english = true
-          updateData.spanish = false
-          updateData.englishSpanish = false
-        } else if (value === 'es') {
-          updateData.english = false
-          updateData.spanish = true
-          updateData.englishSpanish = false
-        } else if (value === 'en-es') {
-          updateData.english = false
-          updateData.spanish = false
-          updateData.englishSpanish = true
-        }
-        delete updateData.language
-        
-        // ✅ STEP 1: Save to database
-        await workerService.updateBasics(userId, updateData)
-        
-        localStorage.setItem('userManuallyChangedLanguage', 'true')
-        // ✅ STEP 2: Save to ALL localStorage keys
-        localStorage.setItem('userLanguage', value)
-        localStorage.setItem('profileLanguage', value)
-        localStorage.setItem('pendingLanguage', value)
-        localStorage.setItem('i18nextLng', value)
-        
-        // ✅ STEP 3: Apply language immediately
-        changeLanguage(value)
-        setUserLanguage(value)
-        
-        // ✅ STEP 4: Dispatch event for other components
-        window.dispatchEvent(new CustomEvent('languageChanged', { 
-          detail: { language: value } 
-        }))
-        
-        // ✅ STEP 5: Update i18n directly
-        i18n.changeLanguage(value)
-        
-        // ✅ STEP 6: Update HTML lang attribute
-        document.documentElement.lang = value
-        
-        console.log(`✅ Language changed to: ${value}`)
-        console.log(`✅ localStorage userLanguage: ${localStorage.getItem('userLanguage')}`)
-        console.log(`✅ i18n language: ${i18n.language}`)
-        
-        setSuccess(`Language changed to ${value === 'en' ? 'English' : 'Spanish'} successfully!`)
-        setTimeout(() => setSuccess(''), 3000)
-        
-        // ✅ STEP 7: Reload user data
-        await loadUserData()
-        
-      } else {
-        // Handle other fields
-        await workerService.updateBasics(userId, updateData)
-        setSuccess(`${field} updated successfully!`)
-        setTimeout(() => setSuccess(''), 3000)
-        await loadUserData()
+const updateField = async (field, value) => {
+  try {
+    setSaving(prev => ({ ...prev, [field]: true }))
+    setError('')
+    setSuccess('')
+    
+    const updateData = {}
+    updateData[field] = value
+    
+    if (field === 'language') {
+      // Convert language selection to boolean flags
+      if (value === 'en') {
+        updateData.english = true
+        updateData.spanish = false
+        updateData.englishSpanish = false
+      } else if (value === 'es') {
+        updateData.english = false
+        updateData.spanish = true
+        updateData.englishSpanish = false
+      } else if (value === 'en-es') {
+        updateData.english = false
+        updateData.spanish = false
+        updateData.englishSpanish = true
       }
       
-    } catch (err) {
-      console.error(`Error updating ${field}:`, err)
-      setError(err.response?.data?.message || err.message || `Failed to update ${field}`)
-    } finally {
-      setSaving(prev => ({ ...prev, [field]: false }))
+      // ✅ IMPORTANT: DON'T delete language - KEEP IT for database
+      // delete updateData.language  // ❌ REMOVE THIS LINE
+      
+      // ✅ Add language field explicitly
+      updateData.language = value  // ✅ ADD THIS
+      
+      // ✅ DEBUG: Log what's being sent
+      console.log('🔍 Sending to database:', {
+        section: 'basics',
+        data: updateData
+      });
+      
+      // ✅ STEP 1: Save to database
+      await workerService.updateBasics(userId, updateData)
+      
+      // ✅ STEP 2: Save to ALL localStorage keys
+      localStorage.setItem('userLanguage', value)
+      localStorage.setItem('profileLanguage', value)
+      localStorage.setItem('pendingLanguage', value)
+      localStorage.setItem('i18nextLng', value)
+      localStorage.setItem('userManuallyChangedLanguage', 'true')
+      
+      // ✅ STEP 3: Apply language immediately
+      changeLanguage(value)
+      setUserLanguage(value)
+      
+      // ✅ STEP 4: Dispatch event for other components
+      window.dispatchEvent(new CustomEvent('languageChanged', { 
+        detail: { language: value } 
+      }))
+      
+      // ✅ STEP 5: Update i18n directly
+      i18n.changeLanguage(value)
+      
+      // ✅ STEP 6: Update HTML lang attribute
+      document.documentElement.lang = value
+      
+      console.log(`✅ Language changed to: ${value}`)
+      console.log(`✅ localStorage userLanguage: ${localStorage.getItem('userLanguage')}`)
+      console.log(`✅ i18n language: ${i18n.language}`)
+      
+      setSuccess(`Language changed to ${value === 'en' ? 'English' : 'Spanish'} successfully!`)
+      setTimeout(() => setSuccess(''), 3000)
+      
+      // ✅ STEP 7: Reload user data
+      await loadUserData()
+      
+    } else {
+      // Handle other fields
+      await workerService.updateBasics(userId, updateData)
+      setSuccess(`${field} updated successfully!`)
+      setTimeout(() => setSuccess(''), 3000)
+      await loadUserData()
     }
+    
+  } catch (err) {
+    console.error(`Error updating ${field}:`, err)
+    setError(err.response?.data?.message || err.message || `Failed to update ${field}`)
+  } finally {
+    setSaving(prev => ({ ...prev, [field]: false }))
   }
+}
 
   const handleDeleteAccount = async () => {
     if (deleteConfirmText !== 'DELETE') {
