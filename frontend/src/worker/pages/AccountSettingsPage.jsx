@@ -3678,7 +3678,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { TopNav } from '../../common/components/TopNav'
 import { TextField } from '../../common/components/TextField'
-import { IconUser, IconMail, IconPhone, IconGlobe, IconLock, IconArrowLeft, IconEye, IconEyeOff, IconClose } from '../../common/components/Icons'
+import { IconUser, IconMail, IconPhone, IconGlobe, IconLock, IconArrowLeft, IconEye, IconEyeOff, IconX } from "../../common/components/Icons";
 import api from '../../services/api'
 import workerService from '../services/workerService'
 import { 
