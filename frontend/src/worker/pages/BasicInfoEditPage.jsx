@@ -2868,7 +2868,9 @@ export function BasicInfoEditPage() {
             }}>
               <style>{datePickerStyles}</style>
               
-              {/* ONE SINGLE CARD with THREE SECTIONS IN A ROW */}
+              {/* ============================================================
+              ONE SINGLE CARD with THREE SECTIONS IN A ROW
+              ============================================================ */}
               <div style={{
                 background: 'white',
                 borderRadius: '16px',
@@ -2881,13 +2883,13 @@ export function BasicInfoEditPage() {
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr 1fr',
-                  gap: '20px',
+                  gap: '0',
                 }}>
                   
                   {/* Section 1: Basic Information */}
                   <div style={{
-                    borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
                     paddingRight: '20px',
+                    borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
                   }}>
                     <div style={{
                       display: 'flex',
@@ -3068,8 +3070,9 @@ export function BasicInfoEditPage() {
 
                   {/* Section 2: Trade Profile */}
                   <div style={{
-                    borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
+                    paddingLeft: '20px',
                     paddingRight: '20px',
+                    borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
                   }}>
                     <div style={{
                       display: 'flex',
@@ -3140,7 +3143,9 @@ export function BasicInfoEditPage() {
                   </div>
 
                   {/* Section 3: Subscription */}
-                  <div>
+                  <div style={{
+                    paddingLeft: '20px',
+                  }}>
                     <div style={{
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -3188,6 +3193,21 @@ export function BasicInfoEditPage() {
                         marginTop: '4px',
                       }}>
                         Pro
+                      </div>
+                      <div style={{
+                        fontSize: '20px',
+                        fontWeight: 700,
+                        color: '#0f4ea9',
+                        marginTop: '8px',
+                      }}>
+                        12
+                      </div>
+                      <div style={{
+                        fontSize: '11px',
+                        color: 'rgba(23,38,58,0.5)',
+                        textAlign: 'center',
+                      }}>
+                        {t('summary.tradePoints')}
                       </div>
                     </div>
                   </div>
