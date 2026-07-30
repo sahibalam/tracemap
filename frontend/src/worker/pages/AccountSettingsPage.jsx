@@ -5925,9 +5925,11 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
   )
 }
 
-// ✅ NEW: Delete Account Confirmation Modal
+// ✅ Delete Account Confirmation Modal with Confirm Password
 function DeleteAccountModal({ isOpen, onClose, onDelete, loading }) {
   const [reason, setReason] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
 
   if (!isOpen) return null
@@ -5937,8 +5939,12 @@ function DeleteAccountModal({ isOpen, onClose, onDelete, loading }) {
       setError('Please add a reason for deleting your account')
       return
     }
+    if (!confirmPassword.trim()) {
+      setError('Please enter your password to confirm')
+      return
+    }
     setError('')
-    onDelete(reason)
+    onDelete(reason, confirmPassword)
   }
 
   return (
@@ -6057,7 +6063,7 @@ function DeleteAccountModal({ isOpen, onClose, onDelete, loading }) {
           )}
 
           {/* Reason for Delete */}
-          <div style={{ marginBottom: '24px' }}>
+          <div style={{ marginBottom: '16px' }}>
             <label style={{
               fontSize: '14px',
               fontWeight: 500,
@@ -6098,6 +6104,84 @@ function DeleteAccountModal({ isOpen, onClose, onDelete, loading }) {
                 e.target.style.boxShadow = 'none'
               }}
             />
+          </div>
+
+          {/* Confirm Password */}
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{
+              fontSize: '14px',
+              fontWeight: 500,
+              color: '#17263a',
+              display: 'block',
+              marginBottom: '6px'
+            }}>
+              Enter Password to Confirm
+            </label>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              width: '100%',
+              height: '44px',
+              border: '1px solid rgba(18, 38, 63, 0.12)',
+              borderRadius: '10px',
+              background: 'white',
+              transition: 'all 0.2s ease',
+              overflow: 'hidden'
+            }}>
+              <span style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0 10px',
+                color: 'rgba(23, 38, 58, 0.4)',
+                flexShrink: 0,
+                minWidth: '38px'
+              }}>
+                <IconLock />
+              </span>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                style={{
+                  flex: 1,
+                  height: '100%',
+                  border: 'none',
+                  outline: 'none',
+                  padding: '0 4px',
+                  fontSize: '14px',
+                  color: '#17263a',
+                  background: 'transparent',
+                  fontFamily: 'inherit',
+                  minWidth: 0,
+                  width: '100%'
+                }}
+                placeholder="Enter your password"
+                value={confirmPassword}
+                onChange={(e) => {
+                  setConfirmPassword(e.target.value)
+                  setError('')
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '0 10px',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'rgba(23, 38, 58, 0.4)',
+                  transition: 'color 0.2s ease',
+                  flexShrink: 0,
+                  height: '100%',
+                  minWidth: '38px'
+                }}
+              >
+                {showPassword ? <IconEyeOff /> : <IconEye />}
+              </button>
+            </div>
           </div>
 
           {/* Action Buttons */}
@@ -6492,17 +6576,20 @@ export function AccountSettingsPage() {
   }
 
   // ============================================================
-  // DELETE ACCOUNT FUNCTION
+  // DELETE ACCOUNT FUNCTION - UPDATED with password
   // ============================================================
 
-  const handleDeleteAccount = async (reason) => {
+  const handleDeleteAccount = async (reason, password) => {
     try {
       setDeleteLoading(true)
       setError('')
       
-      // Send delete request with reason
+      // Send delete request with reason and password
       await api.delete(`/worker/profile/${userId}`, {
-        data: { reason }
+        data: { 
+          reason,
+          password 
+        }
       })
       
       // Clear all local storage
