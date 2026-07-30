@@ -1,3 +1,4 @@
+
 // // src/worker/pages/BasicInfoEditPage.jsx
 // import { useState, useRef, useEffect } from 'react'
 // import { useNavigate, useLocation } from 'react-router-dom'
@@ -364,8 +365,12 @@
 //     }, 500)
 //   }
 
+//   // ✅ FIXED: Pass parent data back when cancel/back is clicked
 //   const handleBack = () => {
-//     navigate('/wizard/summary')
+//     navigate('/wizard/summary', {
+//       state: location?.state?.parentData || {},
+//       replace: true
+//     })
 //   }
 
 //   // Custom styles for date picker
@@ -1064,9 +1069,13 @@
 // }
 
 
+
+
+
 // src/worker/pages/BasicInfoEditPage.jsx
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { TopNav } from '../../common/components/TopNav'
@@ -1342,6 +1351,7 @@ function IconArrowLeft(props) {
 }
 
 export function BasicInfoEditPage() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
   
@@ -1430,7 +1440,7 @@ export function BasicInfoEditPage() {
     }, 500)
   }
 
-  // ✅ FIXED: Pass parent data back when cancel/back is clicked
+  // Pass parent data back when cancel/back is clicked
   const handleBack = () => {
     navigate('/wizard/summary', {
       state: location?.state?.parentData || {},
@@ -1668,38 +1678,38 @@ export function BasicInfoEditPage() {
       <div className="appShellBody appShellBodyVerify">
         <aside className="sideNav sideNavBlue" aria-label="Sidebar navigation">
           <div className="sideNavMain">
-            <div className="sideGroupLabel">WORKSPACE</div>
+            <div className="sideGroupLabel">{t('summary.workspace').toUpperCase()}</div>
             <nav className="sideGroup" aria-label="Workspace">
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true"><IconGrid /></span>
-                <span className="sideText">Overview</span>
+                <span className="sideText">{t('summary.overview')}</span>
               </span>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true"><IconFolder /></span>
-                <span className="sideText">Projects</span>
+                <span className="sideText">{t('summary.projects')}</span>
                 <span className="sideBadge" aria-label="12 projects">12</span>
               </span>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true"><IconChart /></span>
-                <span className="sideText">Revenues</span>
+                <span className="sideText">{t('summary.revenues')}</span>
               </span>
               <a className="sideItem sideItemActive" href="#">
                 <span className="sideIcon" aria-hidden="true"><IconUserIcon /></span>
-                <span className="sideText">Profile</span>
+                <span className="sideText">{t('summary.profile')}</span>
               </a>
             </nav>
           </div>
 
           <div className="sideNavBottom">
-            <div className="sideGroupLabel">GENERAL</div>
+            <div className="sideGroupLabel">{t('summary.general').toUpperCase()}</div>
             <nav className="sideGroup" aria-label="General">
               <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
                 <span className="sideIcon" aria-hidden="true"><IconLogout /></span>
-                <span className="sideText">Sign out</span>
+                <span className="sideText">{t('summary.signOut')}</span>
               </button>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
                 <span className="sideIcon" aria-hidden="true"><IconSupport /></span>
-                <span className="sideText">Support</span>
+                <span className="sideText">{t('summary.support')}</span>
               </span>
             </nav>
           </div>
@@ -1715,7 +1725,7 @@ export function BasicInfoEditPage() {
             flexDirection: 'column' 
           }}>
             
-            {/* Sticky Header with Back button - Transparent background */}
+            {/* Sticky Header with Back button */}
             <div style={{ 
               display: 'flex', 
               alignItems: 'center', 
@@ -1747,14 +1757,14 @@ export function BasicInfoEditPage() {
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
                 <IconArrowLeft />
-                Back
+                {t('profile.back')}
               </button>
               <span style={{
                 fontSize: '16px',
                 fontWeight: 600,
                 color: '#17263a',
               }}>
-                Edit Basic Information
+                {t('profile.basicInfo')}
               </span>
             </div>
 
@@ -1783,29 +1793,29 @@ export function BasicInfoEditPage() {
                     paddingBottom: '8px',
                     borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
                   }}>
-                    Personal Information
+                    {t('wizard.step1.title')}
                   </div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                     <TextField 
-                      placeholder="First name" 
+                      placeholder={t('auth.firstName')} 
                       icon={<IconUser />} 
                       value={basicData.legalFirstName || ''} 
                       onChange={(v) => handleChange('legalFirstName', v)} 
                     />
                     <TextField 
-                      placeholder="Last name" 
+                      placeholder={t('auth.lastName')} 
                       icon={<IconUser />} 
                       value={basicData.legalLastName || ''} 
                       onChange={(v) => handleChange('legalLastName', v)} 
                     />
                     <TextField 
-                      placeholder="Email Address" 
+                      placeholder={t('auth.emailAddress')} 
                       icon={<IconMail />} 
                       value={basicData.emailAddress || ''} 
                       onChange={(v) => handleChange('emailAddress', v)} 
                     />
                     <TextField 
-                      placeholder="Mobile number" 
+                      placeholder={t('auth.mobileNumber')} 
                       icon={<IconPhone />} 
                       value={basicData.mobilePhone || ''} 
                       onChange={(v) => handleChange('mobilePhone', v)} 
@@ -1824,17 +1834,17 @@ export function BasicInfoEditPage() {
                         color: '#17263a',
                         marginBottom: '8px',
                       }}>
-                        Address
+                        {t('wizard.step1.address')}
                       </div>
                       <TextField
-                        placeholder="Address"
+                        placeholder={t('wizard.step1.address')}
                         icon={<IconLocation />}
                         value={basicData.addressLine1 || ''}
                         onChange={(v) => handleChange('addressLine1', v)}
                       />
                       <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                         <TextField
-                          placeholder="City"
+                          placeholder={t('wizard.step1.city')}
                           icon={<IconLocation />}
                           value={basicData.city || ''}
                           onChange={(v) => handleChange('city', v)}
@@ -1844,11 +1854,11 @@ export function BasicInfoEditPage() {
                           <StateDropdown
                             value={basicData.stateCode || ''}
                             onChange={(v) => handleChange('stateCode', v)}
-                            placeholder="State"
+                            placeholder={t('wizard.step1.state')}
                           />
                         </div>
                         <TextField
-                          placeholder="Zip"
+                          placeholder={t('wizard.step1.zip')}
                           icon={<IconLocation />}
                           value={basicData.zip || ''}
                           onChange={(v) => handleChange('zip', v)}
@@ -1865,7 +1875,7 @@ export function BasicInfoEditPage() {
                           fontWeight: 600,
                           color: '#17263a',
                         }}>
-                          Current Address
+                          {t('wizard.step1.currentAddress')}
                         </div>
                         <label style={{ fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
                           <input
@@ -1887,18 +1897,18 @@ export function BasicInfoEditPage() {
                               }
                             }}
                           />
-                          Same as Address
+                          {t('wizard.step1.sameAsAddress')}
                         </label>
                       </div>
                       <TextField
-                        placeholder="Address"
+                        placeholder={t('wizard.step1.address')}
                         icon={<IconLocation />}
                         value={basicData.currentAddressLine1 || ''}
                         onChange={(v) => handleChange('currentAddressLine1', v)}
                       />
                       <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
                         <TextField
-                          placeholder="City"
+                          placeholder={t('wizard.step1.city')}
                           icon={<IconLocation />}
                           value={basicData.currentCity || ''}
                           onChange={(v) => handleChange('currentCity', v)}
@@ -1908,11 +1918,11 @@ export function BasicInfoEditPage() {
                           <StateDropdown
                             value={basicData.currentStateCode || ''}
                             onChange={(v) => handleChange('currentStateCode', v)}
-                            placeholder="State"
+                            placeholder={t('wizard.step1.state')}
                           />
                         </div>
                         <TextField
-                          placeholder="Zip"
+                          placeholder={t('wizard.step1.zip')}
                           icon={<IconLocation />}
                           value={basicData.currentZip || ''}
                           onChange={(v) => handleChange('currentZip', v)}
@@ -1934,7 +1944,7 @@ export function BasicInfoEditPage() {
                         color: '#17263a',
                         marginBottom: '8px',
                       }}>
-                        Date of Birth
+                        {t('auth.dateOfBirth')}
                       </div>
                       <div className="date-picker-wrapper custom-date-picker">
                         <DatePicker
@@ -1974,7 +1984,7 @@ export function BasicInfoEditPage() {
                         color: '#17263a',
                         marginBottom: '8px',
                       }}>
-                        Language(s) Known
+                        {t('wizard.step1.languagesKnown')}
                       </div>
                       <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginTop: '10px' }}>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
@@ -1983,7 +1993,7 @@ export function BasicInfoEditPage() {
                             checked={basicData.english || false}
                             onChange={(e) => handleChange('english', e.target.checked)}
                           />
-                          <span style={{ fontSize: '14px', color: '#17263a' }}>English</span>
+                          <span style={{ fontSize: '14px', color: '#17263a' }}>{t('wizard.step1.english')}</span>
                         </label>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
                           <input
@@ -1991,7 +2001,7 @@ export function BasicInfoEditPage() {
                             checked={basicData.englishSpanish || false}
                             onChange={(e) => handleChange('englishSpanish', e.target.checked)}
                           />
-                          <span style={{ fontSize: '14px', color: '#17263a' }}>English+Spanish</span>
+                          <span style={{ fontSize: '14px', color: '#17263a' }}>{t('wizard.step1.englishSpanish')}</span>
                         </label>
                         <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer' }}>
                           <input
@@ -1999,7 +2009,7 @@ export function BasicInfoEditPage() {
                             checked={basicData.spanish || false}
                             onChange={(e) => handleChange('spanish', e.target.checked)}
                           />
-                          <span style={{ fontSize: '14px', color: '#17263a' }}>Spanish</span>
+                          <span style={{ fontSize: '14px', color: '#17263a' }}>{t('wizard.step1.spanish')}</span>
                         </label>
                       </div>
                     </div>
@@ -2014,7 +2024,7 @@ export function BasicInfoEditPage() {
                     color: '#17263a',
                     marginBottom: '8px',
                   }}>
-                    Profile Image
+                    {t('wizard.step1.profileImage')}
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                     <div style={{ 
@@ -2053,7 +2063,7 @@ export function BasicInfoEditPage() {
                       }}
                     >
                       <IconUpload style={{ width: '14px', height: '14px' }} />
-                      Upload
+                      {t('wizard.step1.upload')}
                     </button>
                     <input 
                       ref={uploadRef}
@@ -2067,7 +2077,7 @@ export function BasicInfoEditPage() {
               </div>
             </div>
 
-            {/* Sticky Footer with Cancel and Save buttons - Transparent background */}
+            {/* Sticky Footer with Cancel and Save buttons */}
             <div style={{
               display: 'flex',
               justifyContent: 'flex-end',
@@ -2095,7 +2105,7 @@ export function BasicInfoEditPage() {
                 onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
               >
-                Cancel
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleSave}
@@ -2123,7 +2133,7 @@ export function BasicInfoEditPage() {
                   }
                 }}
               >
-                {isSaving ? 'Saving...' : 'Save Changes'}
+                {isSaving ? t('profile.saving') : t('profile.save')}
               </button>
             </div>
           </div>
@@ -2132,3 +2142,5 @@ export function BasicInfoEditPage() {
     </div>
   )
 }
+
+export default BasicInfoEditPage
