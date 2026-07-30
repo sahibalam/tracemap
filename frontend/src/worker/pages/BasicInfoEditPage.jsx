@@ -2877,7 +2877,7 @@ export function BasicInfoEditPage() {
                 marginBottom: '24px',
               }}>
                 
-                {/* Three sections in a row using CSS Grid */}
+                {/* Three sections in a row using CSS Grid - ALL INSIDE ONE CARD */}
                 <div style={{
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr 1fr',
@@ -2885,7 +2885,10 @@ export function BasicInfoEditPage() {
                 }}>
                   
                   {/* Section 1: Basic Information */}
-                  <div>
+                  <div style={{
+                    borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
+                    paddingRight: '20px',
+                  }}>
                     <div style={{
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -2918,152 +2921,145 @@ export function BasicInfoEditPage() {
                       </button>
                     </div>
                     
-                    {/* Vertical divider between sections */}
-                    <div style={{
-                      borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
-                      paddingRight: '20px',
-                      height: '100%',
-                    }}>
-                      <div>
-                        <div style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                          marginBottom: '12px',
-                        }}>
-                          <img
-                            src={profilePreview || '/assets/worker.avif'}
-                            alt="Profile"
-                            style={{
-                              width: '40px',
-                              height: '40px',
-                              borderRadius: '50%',
-                              objectFit: 'cover',
-                              background: '#f0f0f0',
-                              flexShrink: 0,
-                            }}
-                            onError={(e) => {
-                              e.target.src = '/assets/worker.avif'
-                            }}
-                          />
-                          <div style={{ minWidth: 0, flex: 1 }}>
-                            <div style={{
-                              fontWeight: 600,
-                              fontSize: '14px',
-                              color: '#17263a',
-                              wordBreak: 'break-word',
-                            }}>
-                              {[basicData.legalFirstName, basicData.legalLastName].filter(Boolean).join(' ') || '—'}
-                            </div>
-                            <span style={{
-                              fontSize: '11px',
-                              color: '#e0d616',
-                              fontWeight: 500,
-                            }}>
-                              {t('summary.pending')}
-                            </span>
+                    <div>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        marginBottom: '12px',
+                      }}>
+                        <img
+                          src={profilePreview || '/assets/worker.avif'}
+                          alt="Profile"
+                          style={{
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: '50%',
+                            objectFit: 'cover',
+                            background: '#f0f0f0',
+                            flexShrink: 0,
+                          }}
+                          onError={(e) => {
+                            e.target.src = '/assets/worker.avif'
+                          }}
+                        />
+                        <div style={{ minWidth: 0, flex: 1 }}>
+                          <div style={{
+                            fontWeight: 600,
+                            fontSize: '14px',
+                            color: '#17263a',
+                            wordBreak: 'break-word',
+                          }}>
+                            {[basicData.legalFirstName, basicData.legalLastName].filter(Boolean).join(' ') || '—'}
+                          </div>
+                          <span style={{
+                            fontSize: '11px',
+                            color: '#e0d616',
+                            fontWeight: 500,
+                          }}>
+                            {t('summary.pending')}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <div style={{
+                        display: 'grid',
+                        gridTemplateColumns: '1fr 1fr',
+                        gap: '4px 12px',
+                        fontSize: '12px',
+                      }}>
+                        <div>
+                          <span style={{
+                            fontSize: '10px',
+                            color: 'rgba(23,38,58,0.5)',
+                            fontWeight: 500,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.3px',
+                          }}>
+                            {t('summary.dob')}
+                          </span>
+                          <div style={{
+                            fontSize: '13px',
+                            color: '#17263a',
+                            fontWeight: 500,
+                          }}>
+                            {basicData.dob || '—'}
                           </div>
                         </div>
-                        
-                        <div style={{
-                          display: 'grid',
-                          gridTemplateColumns: '1fr 1fr',
-                          gap: '4px 12px',
-                          fontSize: '12px',
-                        }}>
-                          <div>
-                            <span style={{
-                              fontSize: '10px',
-                              color: 'rgba(23,38,58,0.5)',
-                              fontWeight: 500,
-                              textTransform: 'uppercase',
-                              letterSpacing: '0.3px',
-                            }}>
-                              {t('summary.dob')}
-                            </span>
-                            <div style={{
-                              fontSize: '13px',
-                              color: '#17263a',
-                              fontWeight: 500,
-                            }}>
-                              {basicData.dob || '—'}
-                            </div>
+                        <div>
+                          <span style={{
+                            fontSize: '10px',
+                            color: 'rgba(23,38,58,0.5)',
+                            fontWeight: 500,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.3px',
+                          }}>
+                            {t('summary.language')}
+                          </span>
+                          <div style={{
+                            fontSize: '13px',
+                            color: '#17263a',
+                            fontWeight: 500,
+                          }}>
+                            {basicData.english && basicData.spanish ? t('summary.languages.both') :
+                             basicData.english ? t('summary.languages.english') :
+                             basicData.spanish ? t('summary.languages.spanish') : '—'}
                           </div>
-                          <div>
-                            <span style={{
-                              fontSize: '10px',
-                              color: 'rgba(23,38,58,0.5)',
-                              fontWeight: 500,
-                              textTransform: 'uppercase',
-                              letterSpacing: '0.3px',
-                            }}>
-                              {t('summary.language')}
-                            </span>
-                            <div style={{
-                              fontSize: '13px',
-                              color: '#17263a',
-                              fontWeight: 500,
-                            }}>
-                              {basicData.english && basicData.spanish ? t('summary.languages.both') :
-                               basicData.english ? t('summary.languages.english') :
-                               basicData.spanish ? t('summary.languages.spanish') : '—'}
-                            </div>
+                        </div>
+                        <div style={{ gridColumn: '1 / -1' }}>
+                          <span style={{
+                            fontSize: '10px',
+                            color: 'rgba(23,38,58,0.5)',
+                            fontWeight: 500,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.3px',
+                          }}>
+                            {t('summary.email')}
+                          </span>
+                          <div style={{
+                            fontSize: '13px',
+                            color: '#17263a',
+                            fontWeight: 500,
+                            wordBreak: 'break-all',
+                          }}>
+                            {basicData.emailAddress || '—'}
                           </div>
-                          <div style={{ gridColumn: '1 / -1' }}>
-                            <span style={{
-                              fontSize: '10px',
-                              color: 'rgba(23,38,58,0.5)',
-                              fontWeight: 500,
-                              textTransform: 'uppercase',
-                              letterSpacing: '0.3px',
-                            }}>
-                              {t('summary.email')}
-                            </span>
-                            <div style={{
-                              fontSize: '13px',
-                              color: '#17263a',
-                              fontWeight: 500,
-                              wordBreak: 'break-all',
-                            }}>
-                              {basicData.emailAddress || '—'}
-                            </div>
+                        </div>
+                        <div>
+                          <span style={{
+                            fontSize: '10px',
+                            color: 'rgba(23,38,58,0.5)',
+                            fontWeight: 500,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.3px',
+                          }}>
+                            {t('summary.phone')}
+                          </span>
+                          <div style={{
+                            fontSize: '13px',
+                            color: '#17263a',
+                            fontWeight: 500,
+                          }}>
+                            {basicData.mobilePhone || '—'}
                           </div>
-                          <div>
-                            <span style={{
-                              fontSize: '10px',
-                              color: 'rgba(23,38,58,0.5)',
-                              fontWeight: 500,
-                              textTransform: 'uppercase',
-                              letterSpacing: '0.3px',
-                            }}>
-                              {t('summary.phone')}
-                            </span>
-                            <div style={{
-                              fontSize: '13px',
-                              color: '#17263a',
-                              fontWeight: 500,
-                            }}>
-                              {basicData.mobilePhone || '—'}
-                            </div>
-                          </div>
-                          <div style={{ gridColumn: '1 / -1' }}>
-                            <span style={{
-                              fontSize: '10px',
-                              color: 'rgba(23,38,58,0.5)',
-                              fontWeight: 500,
-                              textTransform: 'uppercase',
-                              letterSpacing: '0.3px',
-                            }}>
-                              {t('summary.address')}
-                            </span>
-                            <div style={{
-                              fontSize: '13px',
-                              color: '#17263a',
-                              fontWeight: 500,
-                              wordBreak: 'break-word',
-                            }}>
-                              {[basicData.addressLine1, basicData.city, basicData.stateCode, basicData.zip].filter(Boolean).join(', ') || '—'}
-                            </div>
+                        </div>
+                        <div style={{ gridColumn: '1 / -1' }}>
+                          <span style={{
+                            fontSize: '10px',
+                            color: 'rgba(23,38,58,0.5)',
+                            fontWeight: 500,
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.3px',
+                          }}>
+                            {t('summary.address')}
+                          </span>
+                          <div style={{
+                            fontSize: '13px',
+                            color: '#17263a',
+                            fontWeight: 500,
+                            wordBreak: 'break-word',
+                          }}>
+                            {[basicData.addressLine1, basicData.city, basicData.stateCode, basicData.zip].filter(Boolean).join(', ') || '—'}
                           </div>
                         </div>
                       </div>
@@ -3071,7 +3067,10 @@ export function BasicInfoEditPage() {
                   </div>
 
                   {/* Section 2: Trade Profile */}
-                  <div>
+                  <div style={{
+                    borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
+                    paddingRight: '20px',
+                  }}>
                     <div style={{
                       display: 'flex',
                       justifyContent: 'space-between',
@@ -3104,45 +3103,38 @@ export function BasicInfoEditPage() {
                       </button>
                     </div>
                     
-                    {/* Vertical divider between sections */}
                     <div style={{
-                      borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
-                      paddingRight: '20px',
-                      height: '100%',
+                      padding: '16px',
+                      background: 'rgba(15, 78, 169, 0.04)',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(15, 78, 169, 0.1)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minHeight: '140px',
                     }}>
                       <div style={{
-                        padding: '16px',
-                        background: 'rgba(15, 78, 169, 0.04)',
-                        borderRadius: '8px',
-                        border: '1px solid rgba(15, 78, 169, 0.1)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        minHeight: '120px',
+                        fontSize: '32px',
+                        marginBottom: '6px',
                       }}>
-                        <div style={{
-                          fontSize: '32px',
-                          marginBottom: '6px',
-                        }}>
-                          🔧
-                        </div>
-                        <div style={{
-                          fontSize: '13px',
-                          color: '#17263a',
-                          fontWeight: 500,
-                          textAlign: 'center',
-                        }}>
-                          {t('wizard.step2.title')}
-                        </div>
-                        <div style={{
-                          fontSize: '11px',
-                          color: 'rgba(23,38,58,0.5)',
-                          textAlign: 'center',
-                          marginTop: '4px',
-                        }}>
-                          Click the pencil icon to edit
-                        </div>
+                        🔧
+                      </div>
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#17263a',
+                        fontWeight: 500,
+                        textAlign: 'center',
+                      }}>
+                        {t('wizard.step2.title')}
+                      </div>
+                      <div style={{
+                        fontSize: '11px',
+                        color: 'rgba(23,38,58,0.5)',
+                        textAlign: 'center',
+                        marginTop: '4px',
+                      }}>
+                        Click the pencil icon to edit
                       </div>
                     </div>
                   </div>
@@ -3164,40 +3156,38 @@ export function BasicInfoEditPage() {
                       </span>
                     </div>
                     
-                    <div>
+                    <div style={{
+                      padding: '16px',
+                      background: 'rgba(15, 78, 169, 0.04)',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(15, 78, 169, 0.1)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      minHeight: '140px',
+                    }}>
                       <div style={{
-                        padding: '16px',
-                        background: 'rgba(15, 78, 169, 0.04)',
-                        borderRadius: '8px',
-                        border: '1px solid rgba(15, 78, 169, 0.1)',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        minHeight: '120px',
+                        fontSize: '32px',
+                        marginBottom: '6px',
                       }}>
-                        <div style={{
-                          fontSize: '32px',
-                          marginBottom: '6px',
-                        }}>
-                          🏆
-                        </div>
-                        <div style={{
-                          fontSize: '13px',
-                          color: '#17263a',
-                          fontWeight: 500,
-                          textAlign: 'center',
-                        }}>
-                          {t('summary.activePlan')}
-                        </div>
-                        <div style={{
-                          fontSize: '11px',
-                          color: 'rgba(23,38,58,0.5)',
-                          textAlign: 'center',
-                          marginTop: '4px',
-                        }}>
-                          Pro
-                        </div>
+                        🏆
+                      </div>
+                      <div style={{
+                        fontSize: '13px',
+                        color: '#17263a',
+                        fontWeight: 500,
+                        textAlign: 'center',
+                      }}>
+                        {t('summary.activePlan')}
+                      </div>
+                      <div style={{
+                        fontSize: '11px',
+                        color: 'rgba(23,38,58,0.5)',
+                        textAlign: 'center',
+                        marginTop: '4px',
+                      }}>
+                        Pro
                       </div>
                     </div>
                   </div>
