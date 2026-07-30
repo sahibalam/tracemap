@@ -5725,7 +5725,7 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
           }}
           onClick={(e) => e.stopPropagation()}
         >
-          {/* ✅ Close (X) Button - Top Right Corner */}
+          {/* Close (X) Button - Top Right Corner */}
           <button
             onClick={onClose}
             style={{
@@ -5896,8 +5896,6 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
           >
             {loading ? 'Updating...' : 'Update'}
           </button>
-
-          {/* ❌ REMOVED: "After Update, you will be logged out..." section */}
         </div>
       </div>
 
@@ -5917,11 +5915,266 @@ function PasswordModal({ isOpen, onClose, onUpdate, onForgotPassword, loading })
           }
         }
 
-        /* ✅ HIDE reCAPTCHA BADGE - Still works in background */
         .grecaptcha-badge {
           visibility: hidden !important;
           opacity: 0 !important;
           pointer-events: none !important;
+        }
+      `}</style>
+    </>
+  )
+}
+
+// ✅ NEW: Delete Account Confirmation Modal
+function DeleteAccountModal({ isOpen, onClose, onDelete, loading }) {
+  const [reason, setReason] = useState('')
+  const [error, setError] = useState('')
+
+  if (!isOpen) return null
+
+  const handleDelete = () => {
+    if (!reason.trim()) {
+      setError('Please add a reason for deleting your account')
+      return
+    }
+    setError('')
+    onDelete(reason)
+  }
+
+  return (
+    <>
+      <div 
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0, 0, 0, 0.5)',
+          backdropFilter: 'blur(4px)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          animation: 'fadeIn 0.2s ease'
+        }}
+        onClick={onClose}
+      >
+        <div 
+          style={{
+            background: 'white',
+            borderRadius: '16px',
+            maxWidth: '440px',
+            width: '90%',
+            padding: '32px 28px',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+            animation: 'slideUp 0.3s ease',
+            maxHeight: '90vh',
+            overflowY: 'auto',
+            position: 'relative'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Close (X) Button - Top Right Corner */}
+          <button
+            onClick={onClose}
+            style={{
+              position: 'absolute',
+              top: '16px',
+              right: '16px',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              color: '#6b7280',
+              padding: '8px',
+              borderRadius: '50%',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '36px',
+              height: '36px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(0, 0, 0, 0.06)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'transparent'
+            }}
+          >
+            <IconX style={{ width: '20px', height: '20px' }} />
+          </button>
+
+          <div style={{
+            textAlign: 'center',
+            marginBottom: '24px'
+          }}>
+            {/* Warning/Delete Icon */}
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '50%',
+              background: 'rgba(220, 38, 38, 0.1)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 12px'
+            }}>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dc2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6h14z" />
+                <line x1="10" y1="11" x2="10" y2="17" />
+                <line x1="14" y1="11" x2="14" y2="17" />
+              </svg>
+            </div>
+            <h2 style={{
+              fontSize: '20px',
+              fontWeight: 700,
+              color: '#17263a',
+              margin: 0
+            }}>
+              Account Delete
+            </h2>
+            <p style={{
+              fontSize: '14px',
+              color: 'rgba(23, 38, 58, 0.6)',
+              marginTop: '4px'
+            }}>
+              Are you sure to delete the account?
+            </p>
+          </div>
+
+          {error && (
+            <div style={{
+              padding: '10px 14px',
+              background: '#fee2e2',
+              color: '#dc2626',
+              borderRadius: '8px',
+              fontSize: '13px',
+              marginBottom: '16px'
+            }}>
+              ❌ {error}
+            </div>
+          )}
+
+          {/* Reason for Delete */}
+          <div style={{ marginBottom: '24px' }}>
+            <label style={{
+              fontSize: '14px',
+              fontWeight: 500,
+              color: '#17263a',
+              display: 'block',
+              marginBottom: '6px'
+            }}>
+              Add reason for Delete
+            </label>
+            <textarea
+              value={reason}
+              onChange={(e) => {
+                setReason(e.target.value)
+                setError('')
+              }}
+              placeholder="Please tell us why you're deleting your account..."
+              rows={3}
+              style={{
+                width: '100%',
+                padding: '12px 14px',
+                border: '1px solid rgba(18, 38, 63, 0.12)',
+                borderRadius: '10px',
+                fontSize: '14px',
+                fontFamily: 'inherit',
+                outline: 'none',
+                transition: 'all 0.2s ease',
+                resize: 'vertical',
+                color: '#17263a',
+                background: 'white',
+                minHeight: '80px'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#0f4ea9'
+                e.target.style.boxShadow = '0 0 0 3px rgba(15, 78, 169, 0.1)'
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+                e.target.style.boxShadow = 'none'
+              }}
+            />
+          </div>
+
+          {/* Action Buttons */}
+          <div style={{
+            display: 'flex',
+            gap: '12px'
+          }}>
+            <button
+              onClick={onClose}
+              style={{
+                flex: 1,
+                padding: '12px',
+                background: 'transparent',
+                border: '1px solid rgba(18, 38, 63, 0.12)',
+                borderRadius: '10px',
+                fontSize: '16px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                color: '#17263a'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = 'rgba(0, 0, 0, 0.04)'
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'transparent'
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDelete}
+              disabled={loading}
+              style={{
+                flex: 1,
+                padding: '12px',
+                background: loading ? '#94a3b8' : '#dc2626',
+                color: 'white',
+                border: 'none',
+                borderRadius: '10px',
+                fontSize: '16px',
+                fontWeight: 600,
+                cursor: loading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                opacity: loading ? 0.7 : 1
+              }}
+              onMouseEnter={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background = '#b91c1c'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!loading) {
+                  e.currentTarget.style.background = '#dc2626'
+                }
+              }}
+            >
+              {loading ? 'Deleting...' : 'Delete'}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+          }
         }
       `}</style>
     </>
@@ -5967,7 +6220,7 @@ function UpdateButton({ onClick, loading, label = 'Update', disabled = false, va
   )
 }
 
-// ✅ MOVED FieldRow OUTSIDE the component and wrapped with React.memo
+// FieldRow component
 const FieldRow = memo(function FieldRow({ label, children, icon }) {
   return (
     <div style={{
@@ -5997,13 +6250,11 @@ const FieldRow = memo(function FieldRow({ label, children, icon }) {
   )
 })
 
-// ✅ Email Input Component - memoized
+// Email Input Component
 const EmailInput = memo(function EmailInput({ value, onChange, isEditing, onFocus, onBlur }) {
   return (
     <input
-      ref={(el) => {
-        // Store ref in a variable if needed
-      }}
+      ref={(el) => {}}
       name="email-input"
       type="email"
       value={value}
@@ -6029,13 +6280,11 @@ const EmailInput = memo(function EmailInput({ value, onChange, isEditing, onFocu
   )
 })
 
-// ✅ Phone Input Component - memoized
+// Phone Input Component
 const PhoneInput = memo(function PhoneInput({ value, onChange, isEditing, onFocus, onBlur }) {
   return (
     <input
-      ref={(el) => {
-        // Store ref in a variable if needed
-      }}
+      ref={(el) => {}}
       name="phone-input"
       type="tel"
       value={value}
@@ -6079,6 +6328,10 @@ export function AccountSettingsPage() {
   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
   const [passwordLoading, setPasswordLoading] = useState(false)
   
+  // Delete account modal state
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [deleteLoading, setDeleteLoading] = useState(false)
+  
   // Email update states
   const [isEditingEmail, setIsEditingEmail] = useState(false)
   const [emailDisplayValue, setEmailDisplayValue] = useState('')
@@ -6112,10 +6365,6 @@ export function AccountSettingsPage() {
   const phoneCooldownIntervalRef = useRef(null)
   const phoneCheckTimeoutRef = useRef(null)
   const phoneInputRef = useRef(null)
-  
-  // Delete account
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [deleteConfirmText, setDeleteConfirmText] = useState('')
   
   // Report Issue Modal
   const [isReportIssueOpen, setIsReportIssueOpen] = useState(false)
@@ -6240,6 +6489,35 @@ export function AccountSettingsPage() {
     localStorage.clear()
     sessionStorage.clear()
     navigate('/reset-password')
+  }
+
+  // ============================================================
+  // DELETE ACCOUNT FUNCTION
+  // ============================================================
+
+  const handleDeleteAccount = async (reason) => {
+    try {
+      setDeleteLoading(true)
+      setError('')
+      
+      // Send delete request with reason
+      await api.delete(`/worker/profile/${userId}`, {
+        data: { reason }
+      })
+      
+      // Clear all local storage
+      localStorage.clear()
+      sessionStorage.clear()
+      
+      // Close modal and navigate to login
+      setIsDeleteModalOpen(false)
+      navigate('/login')
+      
+    } catch (err) {
+      console.error('Error deleting account:', err)
+      setError(err.response?.data?.message || err.message || 'Failed to delete account')
+      setDeleteLoading(false)
+    }
   }
 
   // ============================================================
@@ -6631,115 +6909,71 @@ export function AccountSettingsPage() {
     await handleSendPhoneOTP()
   }
 
-// ============================================================
-// ✅ OTHER UPDATE FUNCTIONS - FIXED FOR LANGUAGE
-// ============================================================
+  // ============================================================
+  // LANGUAGE UPDATE FUNCTION
+  // ============================================================
 
-const updateField = async (field, value) => {
-  try {
-    setSaving(prev => ({ ...prev, [field]: true }))
-    setError('')
-    setSuccess('')
-    
-    const updateData = {}
-    updateData[field] = value
-    
-    if (field === 'language') {
-      // Convert language selection to boolean flags
-      if (value === 'en') {
-        updateData.english = true
-        updateData.spanish = false
-        updateData.englishSpanish = false
-      } else if (value === 'es') {
-        updateData.english = false
-        updateData.spanish = true
-        updateData.englishSpanish = false
-      } else if (value === 'en-es') {
-        updateData.english = false
-        updateData.spanish = false
-        updateData.englishSpanish = true
+  const updateField = async (field, value) => {
+    try {
+      setSaving(prev => ({ ...prev, [field]: true }))
+      setError('')
+      setSuccess('')
+      
+      const updateData = {}
+      updateData[field] = value
+      
+      if (field === 'language') {
+        if (value === 'en') {
+          updateData.english = true
+          updateData.spanish = false
+          updateData.englishSpanish = false
+        } else if (value === 'es') {
+          updateData.english = false
+          updateData.spanish = true
+          updateData.englishSpanish = false
+        } else if (value === 'en-es') {
+          updateData.english = false
+          updateData.spanish = false
+          updateData.englishSpanish = true
+        }
+        
+        updateData.language = value
+        
+        await workerService.updateBasics(userId, updateData)
+        
+        localStorage.setItem('userLanguage', value)
+        localStorage.setItem('profileLanguage', value)
+        localStorage.setItem('pendingLanguage', value)
+        localStorage.setItem('i18nextLng', value)
+        localStorage.setItem('userManuallyChangedLanguage', 'true')
+        
+        changeLanguage(value)
+        setUserLanguage(value)
+        
+        window.dispatchEvent(new CustomEvent('languageChanged', { 
+          detail: { language: value } 
+        }))
+        
+        i18n.changeLanguage(value)
+        document.documentElement.lang = value
+        
+        setSuccess(`Language changed to ${value === 'en' ? 'English' : 'Spanish'} successfully!`)
+        setTimeout(() => setSuccess(''), 3000)
+        
+        await loadUserData()
+        
+      } else {
+        await workerService.updateBasics(userId, updateData)
+        setSuccess(`${field} updated successfully!`)
+        setTimeout(() => setSuccess(''), 3000)
+        await loadUserData()
       }
       
-      // ✅ Add language field explicitly
-      updateData.language = value
-      
-      console.log('🔍 Sending to database:', {
-        section: 'basics',
-        data: updateData
-      });
-      
-      // ✅ STEP 1: Save to database
-      await workerService.updateBasics(userId, updateData)
-      
-      // ✅ STEP 2: Save to ALL localStorage keys
-      localStorage.setItem('userLanguage', value)
-      localStorage.setItem('profileLanguage', value)
-      localStorage.setItem('pendingLanguage', value)
-      localStorage.setItem('i18nextLng', value)
-      localStorage.setItem('userManuallyChangedLanguage', 'true')
-      
-      // ✅ STEP 3: Apply language immediately
-      changeLanguage(value)
-      setUserLanguage(value)
-      
-      // ✅ STEP 4: Dispatch event for other components
-      window.dispatchEvent(new CustomEvent('languageChanged', { 
-        detail: { language: value } 
-      }))
-      
-      // ✅ STEP 5: Update i18n directly
-      i18n.changeLanguage(value)
-      
-      // ✅ STEP 6: Update HTML lang attribute
-      document.documentElement.lang = value
-      
-      console.log(`✅ Language changed to: ${value}`)
-      console.log(`✅ localStorage userLanguage: ${localStorage.getItem('userLanguage')}`)
-      console.log(`✅ i18n language: ${i18n.language}`)
-      
-      setSuccess(`Language changed to ${value === 'en' ? 'English' : 'Spanish'} successfully!`)
-      setTimeout(() => setSuccess(''), 3000)
-      
-      // ✅ STEP 7: Reload user data
-      await loadUserData()
-      
-    } else {
-      // Handle other fields
-      await workerService.updateBasics(userId, updateData)
-      setSuccess(`${field} updated successfully!`)
-      setTimeout(() => setSuccess(''), 3000)
-      await loadUserData()
-    }
-    
-  } catch (err) {
-    console.error(`Error updating ${field}:`, err)
-    setError(err.response?.data?.message || err.message || `Failed to update ${field}`)
-  } finally {
-    setSaving(prev => ({ ...prev, [field]: false }))
-  }
-}
-
-  const handleDeleteAccount = async () => {
-    if (deleteConfirmText !== 'DELETE') {
-      setError('Please type "DELETE" to confirm')
-      return
-    }
-    
-    try {
-      setSaving(prev => ({ ...prev, delete: true }))
-      setError('')
-      
-      await api.delete(`/worker/profile/${userId}`)
-      
-      localStorage.clear()
-      sessionStorage.clear()
-      
-      navigate('/login')
-      
     } catch (err) {
-      console.error('Error deleting account:', err)
-      setError(err.response?.data?.message || err.message || 'Failed to delete account')
-      setSaving(prev => ({ ...prev, delete: false }))
+      console.error(`Error updating ${field}:`, err)
+      setError(err.response?.data?.message || err.message || `Failed to update ${field}`)
+    } finally {
+      setSaving(prev => ({ ...prev, [field]: false }))
     }
   }
 
@@ -7270,7 +7504,7 @@ const updateField = async (field, value) => {
                     </button>
 
                     <button
-                      onClick={() => setShowDeleteConfirm(true)}
+                      onClick={() => setIsDeleteModalOpen(true)}
                       style={{
                         background: 'none',
                         border: 'none',
@@ -7287,88 +7521,6 @@ const updateField = async (field, value) => {
                       Delete my Account
                     </button>
                   </div>
-
-                  {/* Delete Confirmation */}
-                  {showDeleteConfirm && (
-                    <div style={{
-                      margin: '16px 24px',
-                      padding: '16px',
-                      background: '#fee2e2',
-                      borderRadius: '10px',
-                      border: '1px solid #fecaca'
-                    }}>
-                      <p style={{
-                        fontSize: '14px',
-                        color: '#dc2626',
-                        margin: '0 0 12px 0',
-                        fontWeight: 500
-                      }}>
-                        ⚠️ Are you sure? This action cannot be undone.
-                      </p>
-                      <p style={{
-                        fontSize: '13px',
-                        color: '#64748b',
-                        margin: '0 0 12px 0'
-                      }}>
-                        Type <strong>DELETE</strong> to confirm:
-                      </p>
-                      <input
-                        type="text"
-                        value={deleteConfirmText}
-                        onChange={(e) => setDeleteConfirmText(e.target.value)}
-                        placeholder="Type DELETE to confirm"
-                        style={{
-                          width: '100%',
-                          padding: '10px 12px',
-                          border: '1px solid rgba(18, 38, 63, 0.12)',
-                          borderRadius: '8px',
-                          fontSize: '14px',
-                          outline: 'none',
-                          marginBottom: '12px'
-                        }}
-                      />
-                      <div style={{ display: 'flex', gap: '8px' }}>
-                        <button
-                          onClick={() => {
-                            setShowDeleteConfirm(false)
-                            setDeleteConfirmText('')
-                            setError('')
-                          }}
-                          style={{
-                            flex: 1,
-                            padding: '8px',
-                            background: 'transparent',
-                            border: '1px solid rgba(18, 38, 63, 0.12)',
-                            borderRadius: '8px',
-                            cursor: 'pointer',
-                            fontSize: '14px',
-                            fontWeight: 500,
-                            color: '#17263a'
-                          }}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          onClick={handleDeleteAccount}
-                          disabled={saving.delete}
-                          style={{
-                            flex: 1,
-                            padding: '8px',
-                            background: '#dc2626',
-                            border: 'none',
-                            borderRadius: '8px',
-                            cursor: saving.delete ? 'not-allowed' : 'pointer',
-                            fontSize: '14px',
-                            fontWeight: 500,
-                            color: 'white',
-                            opacity: saving.delete ? 0.6 : 1
-                          }}
-                        >
-                          {saving.delete ? 'Deleting...' : 'Delete Account'}
-                        </button>
-                      </div>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
@@ -7376,6 +7528,7 @@ const updateField = async (field, value) => {
         </main>
       </div>
 
+      {/* Password Modal */}
       <PasswordModal
         isOpen={isPasswordModalOpen}
         onClose={() => setIsPasswordModalOpen(false)}
@@ -7384,6 +7537,18 @@ const updateField = async (field, value) => {
         loading={passwordLoading}
       />
 
+      {/* Delete Account Modal */}
+      <DeleteAccountModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false)
+          setError('')
+        }}
+        onDelete={handleDeleteAccount}
+        loading={deleteLoading}
+      />
+
+      {/* Report Issue Modal */}
       <ReportIssueModal
         isOpen={isReportIssueOpen}
         onClose={() => setIsReportIssueOpen(false)}
@@ -7415,7 +7580,6 @@ const updateField = async (field, value) => {
           }
         }
 
-        /* ✅ HIDE reCAPTCHA BADGE - Still works in background */
         .grecaptcha-badge {
           visibility: hidden !important;
           opacity: 0 !important;
