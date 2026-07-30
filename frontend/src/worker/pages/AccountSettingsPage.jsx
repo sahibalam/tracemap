@@ -1,6 +1,5 @@
-
 // // src/worker/pages/AccountSettingsPage.jsx
-// import { useState, useEffect, useRef, useCallback } from 'react'
+// import { useState, useEffect, useRef, useCallback, memo } from 'react'
 // import { useNavigate } from 'react-router-dom'
 // import { useTranslation } from 'react-i18next'
 // import { TopNav } from '../../common/components/TopNav'
@@ -16,7 +15,7 @@
 //   sendPhoneOTP,
 //   verifyPhoneOTP
 // } from '../../services/verificationService'
-// import { ReportIssueModal } from '../components/ReportIssueModal' // ✅ Added import
+// import { ReportIssueModal } from '../components/ReportIssueModal'
 
 // // Password Input Component with eye toggle
 // function PasswordInput({ placeholder, value, onChange, showPassword, onToggle, label }) {
@@ -135,7 +134,6 @@
 
 //   return (
 //     <>
-//       {/* Backdrop */}
 //       <div 
 //         style={{
 //           position: 'fixed',
@@ -153,7 +151,6 @@
 //         }}
 //         onClick={onClose}
 //       >
-//         {/* Modal */}
 //         <div 
 //           style={{
 //             background: 'white',
@@ -168,7 +165,6 @@
 //           }}
 //           onClick={(e) => e.stopPropagation()}
 //         >
-//           {/* Header */}
 //           <div style={{
 //             textAlign: 'center',
 //             marginBottom: '24px'
@@ -215,7 +211,6 @@
 //             </div>
 //           )}
 
-//           {/* Old Password */}
 //           <div style={{ marginBottom: '16px' }}>
 //             <label style={{
 //               fontSize: '14px',
@@ -235,7 +230,6 @@
 //             />
 //           </div>
 
-//           {/* Forgot Password Link */}
 //           <div style={{
 //             textAlign: 'right',
 //             marginBottom: '16px'
@@ -256,7 +250,6 @@
 //             </button>
 //           </div>
 
-//           {/* New Password */}
 //           <div style={{ marginBottom: '16px' }}>
 //             <label style={{
 //               fontSize: '14px',
@@ -276,7 +269,6 @@
 //             />
 //           </div>
 
-//           {/* Confirm Password */}
 //           <div style={{ marginBottom: '24px' }}>
 //             <label style={{
 //               fontSize: '14px',
@@ -296,7 +288,6 @@
 //             />
 //           </div>
 
-//           {/* Update Button */}
 //           <button
 //             onClick={handleUpdate}
 //             disabled={loading}
@@ -316,7 +307,6 @@
 //             {loading ? 'Updating...' : 'Update'}
 //           </button>
 
-//           {/* After Update Message */}
 //           <div style={{
 //             marginTop: '16px',
 //             padding: '12px',
@@ -335,7 +325,7 @@
 //         </div>
 //       </div>
 
-//       <style>{`
+//      <style>{`
 //         @keyframes fadeIn {
 //           from { opacity: 0; }
 //           to { opacity: 1; }
@@ -350,22 +340,32 @@
 //             transform: translateY(0) scale(1);
 //           }
 //         }
+
+//         /* ✅ HIDE reCAPTCHA BADGE - Still works in background */
+//         .grecaptcha-badge {
+//           visibility: hidden !important;
+//           opacity: 0 !important;
+//           pointer-events: none !important;
+//         }
 //       `}</style>
 //     </>
 //   )
 // }
 
-// // Update Button Component
-// function UpdateButton({ onClick, loading, label = 'Update', disabled = false }) {
+// function UpdateButton({ onClick, loading, label = 'Update', disabled = false, variant = 'primary' }) {
+//   const colors = variant === 'primary' 
+//     ? { default: '#0f4ea9', hover: '#0b3f90', disabled: '#94a3b8' }
+//     : { default: '#e5e7eb', hover: '#d1d5db', disabled: '#f3f4f6' };
+  
 //   return (
 //     <button
 //       onClick={onClick}
 //       disabled={loading || disabled}
 //       style={{
 //         padding: '6px 16px',
-//         background: (loading || disabled) ? '#94a3b8' : '#0f4ea9',
-//         color: 'white',
-//         border: 'none',
+//         background: (loading || disabled) ? colors.disabled : colors.default,
+//         color: variant === 'primary' ? 'white' : '#374151',
+//         border: variant === 'secondary' ? '1px solid #d1d5db' : 'none',
 //         borderRadius: '6px',
 //         fontSize: '12px',
 //         fontWeight: 600,
@@ -380,16 +380,110 @@
 //         flexShrink: 0
 //       }}
 //       onMouseEnter={(e) => {
-//         if (!loading && !disabled) e.currentTarget.style.background = '#0b3f90'
+//         if (!loading && !disabled) e.currentTarget.style.background = colors.hover
 //       }}
 //       onMouseLeave={(e) => {
-//         if (!loading && !disabled) e.currentTarget.style.background = '#0f4ea9'
+//         if (!loading && !disabled) e.currentTarget.style.background = colors.default
 //       }}
 //     >
 //       {loading ? '...' : label}
 //     </button>
 //   )
 // }
+
+// // ✅ MOVED FieldRow OUTSIDE the component and wrapped with React.memo
+// const FieldRow = memo(function FieldRow({ label, children, icon }) {
+//   return (
+//     <div style={{
+//       display: 'flex',
+//       alignItems: 'center',
+//       padding: '12px 16px',
+//       borderBottom: '1px solid rgba(18, 38, 63, 0.06)',
+//       gap: '16px',
+//       minHeight: '60px'
+//     }}>
+//       <div style={{
+//         minWidth: '140px',
+//         fontSize: '14px',
+//         fontWeight: 500,
+//         color: '#17263a',
+//         display: 'flex',
+//         alignItems: 'center',
+//         gap: '8px'
+//       }}>
+//         {icon && <span style={{ color: 'rgba(23,38,58,0.4)' }}>{icon}</span>}
+//         {label}
+//       </div>
+//       <div style={{ flex: 1 }}>
+//         {children}
+//       </div>
+//     </div>
+//   )
+// })
+
+// // ✅ Email Input Component - memoized
+// const EmailInput = memo(function EmailInput({ value, onChange, isEditing, onFocus, onBlur }) {
+//   return (
+//     <input
+//       ref={(el) => {
+//         // Store ref in a variable if needed
+//       }}
+//       name="email-input"
+//       type="email"
+//       value={value}
+//       onChange={onChange}
+//       placeholder="Email Address"
+//       readOnly={!isEditing}
+//       style={{
+//         width: '100%',
+//         padding: '8px 12px',
+//         border: '1px solid rgba(18, 38, 63, 0.12)',
+//         borderRadius: '8px',
+//         fontSize: '14px',
+//         outline: 'none',
+//         background: isEditing ? 'white' : '#f3f4f6',
+//         transition: 'all 0.2s ease',
+//         height: '36px',
+//         cursor: isEditing ? 'text' : 'default',
+//         color: isEditing ? '#17263a' : '#6b7280'
+//       }}
+//       onFocus={onFocus}
+//       onBlur={onBlur}
+//     />
+//   )
+// })
+
+// // ✅ Phone Input Component - memoized
+// const PhoneInput = memo(function PhoneInput({ value, onChange, isEditing, onFocus, onBlur }) {
+//   return (
+//     <input
+//       ref={(el) => {
+//         // Store ref in a variable if needed
+//       }}
+//       name="phone-input"
+//       type="tel"
+//       value={value}
+//       onChange={onChange}
+//       placeholder="Phone Number"
+//       readOnly={!isEditing}
+//       style={{
+//         width: '100%',
+//         padding: '8px 12px',
+//         border: '1px solid rgba(18, 38, 63, 0.12)',
+//         borderRadius: '8px',
+//         fontSize: '14px',
+//         outline: 'none',
+//         background: isEditing ? 'white' : '#f3f4f6',
+//         transition: 'all 0.2s ease',
+//         height: '36px',
+//         cursor: isEditing ? 'text' : 'default',
+//         color: isEditing ? '#17263a' : '#6b7280'
+//       }}
+//       onFocus={onFocus}
+//       onBlur={onBlur}
+//     />
+//   )
+// })
 
 // export function AccountSettingsPage() {
 //   const { t } = useTranslation()
@@ -404,15 +498,14 @@
 //   const [email, setEmail] = useState('')
 //   const [phoneNumber, setPhoneNumber] = useState('')
 //   const [language, setLanguage] = useState('')
-//   const [firstName, setFirstName] = useState('')
-//   const [lastName, setLastName] = useState('')
   
 //   // Password modal state
 //   const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
 //   const [passwordLoading, setPasswordLoading] = useState(false)
   
-//   // Email update fields
-//   const [newEmail, setNewEmail] = useState('')
+//   // Email update states
+//   const [isEditingEmail, setIsEditingEmail] = useState(false)
+//   const [emailDisplayValue, setEmailDisplayValue] = useState('')
 //   const [isEmailAvailable, setIsEmailAvailable] = useState(false)
 //   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
 //   const [emailAvailabilityMessage, setEmailAvailabilityMessage] = useState('')
@@ -424,9 +517,12 @@
 //   const [resendCooldown, setResendCooldown] = useState(0)
 //   const emailCodeInputRef = useRef(null)
 //   const cooldownIntervalRef = useRef(null)
+//   const emailCheckTimeoutRef = useRef(null)
+//   const emailInputRef = useRef(null)
 
-//   // Phone update fields
-//   const [newPhoneNumber, setNewPhoneNumber] = useState('')
+//   // Phone update states
+//   const [isEditingPhone, setIsEditingPhone] = useState(false)
+//   const [phoneDisplayValue, setPhoneDisplayValue] = useState('')
 //   const [isPhoneAvailable, setIsPhoneAvailable] = useState(false)
 //   const [isCheckingPhone, setIsCheckingPhone] = useState(false)
 //   const [phoneAvailabilityMessage, setPhoneAvailabilityMessage] = useState('')
@@ -438,17 +534,19 @@
 //   const [phoneResendCooldown, setPhoneResendCooldown] = useState(0)
 //   const phoneCodeInputRef = useRef(null)
 //   const phoneCooldownIntervalRef = useRef(null)
+//   const phoneCheckTimeoutRef = useRef(null)
+//   const phoneInputRef = useRef(null)
   
 //   // Delete account
 //   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 //   const [deleteConfirmText, setDeleteConfirmText] = useState('')
   
 //   // Report Issue Modal
-//   const [isReportIssueOpen, setIsReportIssueOpen] = useState(false) // ✅ Added state
+//   const [isReportIssueOpen, setIsReportIssueOpen] = useState(false)
   
 //   const userId = localStorage.getItem('userId')
 
-//   // ✅ Create reCAPTCHA container
+//   // Create reCAPTCHA container
 //   useEffect(() => {
 //     let container = document.getElementById('recaptcha-container-phone')
 //     if (!container) {
@@ -487,6 +585,12 @@
 //       if (phoneCooldownIntervalRef.current) {
 //         clearInterval(phoneCooldownIntervalRef.current)
 //       }
+//       if (emailCheckTimeoutRef.current) {
+//         clearTimeout(emailCheckTimeoutRef.current)
+//       }
+//       if (phoneCheckTimeoutRef.current) {
+//         clearTimeout(phoneCheckTimeoutRef.current)
+//       }
 //     }
 //   }, [])
 
@@ -500,11 +604,9 @@
 //       if (result.success && result.data) {
 //         const basics = result.data.basics || {}
 //         setEmail(basics.emailAddress || '')
-//         setNewEmail(basics.emailAddress || '')
+//         setEmailDisplayValue(basics.emailAddress || '')
 //         setPhoneNumber(basics.mobilePhone || '')
-//         setNewPhoneNumber(basics.mobilePhone || '')
-//         setFirstName(basics.legalFirstName || '')
-//         setLastName(basics.legalLastName || '')
+//         setPhoneDisplayValue(basics.mobilePhone || '')
         
 //         if (basics.english && basics.spanish) {
 //           setLanguage('en-es')
@@ -532,7 +634,6 @@
 //       setError('')
 //       setSuccess('')
 
-//       // Call the change password API
 //       const response = await api.post('/auth/change-password', {
 //         userId,
 //         currentPassword: oldPassword,
@@ -543,9 +644,7 @@
 //         setSuccess('✅ Password updated successfully!')
 //         setIsPasswordModalOpen(false)
         
-//         // Show success message
 //         setTimeout(() => {
-//           // Logout and redirect to login
 //           localStorage.clear()
 //           sessionStorage.clear()
 //           navigate('/login')
@@ -562,7 +661,6 @@
 //   }
 
 //   const handleForgotPassword = () => {
-//     // Clear all session data and redirect to forgot password
 //     localStorage.clear()
 //     sessionStorage.clear()
 //     navigate('/reset-password')
@@ -573,7 +671,7 @@
 //   // ============================================================
 
 //   const checkEmailAvailabilityRealTime = async (emailToCheck) => {
-//     if (!emailToCheck || emailToCheck === email) {
+//     if (!emailToCheck || emailToCheck === email || !isEditingEmail) {
 //       setIsEmailAvailable(false)
 //       setEmailAvailabilityMessage('')
 //       return
@@ -613,21 +711,61 @@
 //     }
 //   }
 
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       if (newEmail && newEmail !== email) {
-//         checkEmailAvailabilityRealTime(newEmail)
-//       } else {
-//         setIsEmailAvailable(false)
-//         setEmailAvailabilityMessage('')
-//       }
-//     }, 500)
+//   const handleEmailChange = (e) => {
+//     const value = e.target.value
+//     setEmailDisplayValue(value)
+    
+//     if (emailCheckTimeoutRef.current) {
+//       clearTimeout(emailCheckTimeoutRef.current)
+//     }
 
-//     return () => clearTimeout(timer)
-//   }, [newEmail])
+//     if (value && value.length > 3 && value !== email && isEditingEmail) {
+//       emailCheckTimeoutRef.current = setTimeout(() => {
+//         checkEmailAvailabilityRealTime(value)
+//       }, 500)
+//     } else {
+//       setIsEmailAvailable(false)
+//       setEmailAvailabilityMessage('')
+//     }
+//   }
+
+//   const handleEmailFocus = (e) => {
+//     if (isEditingEmail) e.target.style.borderColor = '#0f4ea9'
+//   }
+
+//   const handleEmailBlur = (e) => {
+//     if (isEditingEmail) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+//   }
+
+//   const handleStartEditEmail = () => {
+//     setIsEditingEmail(true)
+//     setEmailDisplayValue(email)
+//     setIsEmailAvailable(false)
+//     setEmailAvailabilityMessage('')
+//     setTimeout(() => {
+//       if (emailInputRef.current) {
+//         emailInputRef.current.focus()
+//       }
+//     }, 100)
+//   }
+
+//   const handleCancelEditEmail = () => {
+//     setIsEditingEmail(false)
+//     setEmailDisplayValue(email)
+//     setIsEmailAvailable(false)
+//     setEmailAvailabilityMessage('')
+//     setShowEmailVerification(false)
+//     setEmailVerificationCode('')
+//     setEmailCodeSent(false)
+//     setError('')
+//     if (emailCheckTimeoutRef.current) {
+//       clearTimeout(emailCheckTimeoutRef.current)
+//     }
+//   }
 
 //   const handleSendEmailVerification = async () => {
-//     if (!newEmail || !isEmailAvailable) {
+//     const currentEmail = emailDisplayValue
+//     if (!currentEmail || !isEmailAvailable) {
 //       setError('Please enter a valid and available email address')
 //       return
 //     }
@@ -637,7 +775,7 @@
 //     setSuccess('')
 
 //     try {
-//       const result = await requestEmailUpdate(userId, newEmail, '')
+//       const result = await requestEmailUpdate(userId, currentEmail, '')
       
 //       if (result.success) {
 //         setEmailCodeSent(true)
@@ -685,16 +823,18 @@
 //     setSuccess('')
 
 //     try {
-//       const result = await verifyEmailUpdate(newEmail, emailVerificationCode)
+//       const result = await verifyEmailUpdate(emailDisplayValue, emailVerificationCode)
       
 //       if (result.success) {
 //         setSuccess('✅ Email updated successfully!')
+//         const newEmail = emailDisplayValue
 //         setEmail(newEmail)
 //         setShowEmailVerification(false)
 //         setEmailCodeSent(false)
 //         setEmailVerificationCode('')
 //         setIsEmailAvailable(false)
 //         setEmailAvailabilityMessage('')
+//         setIsEditingEmail(false)
         
 //         localStorage.setItem('pendingEmail', newEmail)
 //         await loadUserData()
@@ -719,7 +859,7 @@
 //   // ============================================================
 
 //   const checkPhoneAvailabilityRealTime = async (phoneToCheck) => {
-//     if (!phoneToCheck || phoneToCheck === phoneNumber) {
+//     if (!phoneToCheck || phoneToCheck === phoneNumber || !isEditingPhone) {
 //       setIsPhoneAvailable(false)
 //       setPhoneAvailabilityMessage('')
 //       return
@@ -760,21 +900,61 @@
 //     }
 //   }
 
-//   useEffect(() => {
-//     const timer = setTimeout(() => {
-//       if (newPhoneNumber && newPhoneNumber !== phoneNumber) {
-//         checkPhoneAvailabilityRealTime(newPhoneNumber)
-//       } else {
-//         setIsPhoneAvailable(false)
-//         setPhoneAvailabilityMessage('')
-//       }
-//     }, 500)
+//   const handlePhoneChange = (e) => {
+//     const value = e.target.value
+//     setPhoneDisplayValue(value)
+    
+//     if (phoneCheckTimeoutRef.current) {
+//       clearTimeout(phoneCheckTimeoutRef.current)
+//     }
 
-//     return () => clearTimeout(timer)
-//   }, [newPhoneNumber])
+//     if (value && value.length > 3 && value !== phoneNumber && isEditingPhone) {
+//       phoneCheckTimeoutRef.current = setTimeout(() => {
+//         checkPhoneAvailabilityRealTime(value)
+//       }, 500)
+//     } else {
+//       setIsPhoneAvailable(false)
+//       setPhoneAvailabilityMessage('')
+//     }
+//   }
+
+//   const handlePhoneFocus = (e) => {
+//     if (isEditingPhone) e.target.style.borderColor = '#0f4ea9'
+//   }
+
+//   const handlePhoneBlur = (e) => {
+//     if (isEditingPhone) e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'
+//   }
+
+//   const handleStartEditPhone = () => {
+//     setIsEditingPhone(true)
+//     setPhoneDisplayValue(phoneNumber)
+//     setIsPhoneAvailable(false)
+//     setPhoneAvailabilityMessage('')
+//     setTimeout(() => {
+//       if (phoneInputRef.current) {
+//         phoneInputRef.current.focus()
+//       }
+//     }, 100)
+//   }
+
+//   const handleCancelEditPhone = () => {
+//     setIsEditingPhone(false)
+//     setPhoneDisplayValue(phoneNumber)
+//     setIsPhoneAvailable(false)
+//     setPhoneAvailabilityMessage('')
+//     setShowPhoneVerification(false)
+//     setPhoneVerificationCode('')
+//     setPhoneCodeSent(false)
+//     setError('')
+//     if (phoneCheckTimeoutRef.current) {
+//       clearTimeout(phoneCheckTimeoutRef.current)
+//     }
+//   }
 
 //   const handleSendPhoneOTP = async () => {
-//     if (!newPhoneNumber || !isPhoneAvailable) {
+//     const currentPhone = phoneDisplayValue
+//     if (!currentPhone || !isPhoneAvailable) {
 //       setError('Please enter a valid and available phone number')
 //       return
 //     }
@@ -792,7 +972,7 @@
 //         return
 //       }
 
-//       const result = await sendPhoneOTP(newPhoneNumber, recaptchaVerifier)
+//       const result = await sendPhoneOTP(currentPhone, recaptchaVerifier)
       
 //       if (result.success) {
 //         setPhoneCodeSent(true)
@@ -844,17 +1024,19 @@
 //       const result = await verifyPhoneOTP(phoneVerificationCode)
       
 //       if (result.success) {
-//         await workerService.updateBasics(userId, { mobilePhone: newPhoneNumber })
+//         await workerService.updateBasics(userId, { mobilePhone: phoneDisplayValue })
         
 //         setSuccess('✅ Phone number updated successfully!')
-//         setPhoneNumber(newPhoneNumber)
+//         const newPhone = phoneDisplayValue
+//         setPhoneNumber(newPhone)
 //         setShowPhoneVerification(false)
 //         setPhoneCodeSent(false)
 //         setPhoneVerificationCode('')
 //         setIsPhoneAvailable(false)
 //         setPhoneAvailabilityMessage('')
+//         setIsEditingPhone(false)
         
-//         localStorage.setItem('pendingPhoneNumber', newPhoneNumber)
+//         localStorage.setItem('pendingPhoneNumber', newPhone)
 //         await loadUserData()
 //         setTimeout(() => setSuccess(''), 5000)
 //       } else {
@@ -903,13 +1085,7 @@
 //         delete updateData.language
 //       }
       
-//       if (field === 'firstName') {
-//         await workerService.updateBasics(userId, { legalFirstName: value })
-//         localStorage.setItem('pendingFirstName', value)
-//       } else if (field === 'lastName') {
-//         await workerService.updateBasics(userId, { legalLastName: value })
-//         localStorage.setItem('pendingLastName', value)
-//       } else if (field === 'language') {
+//       if (field === 'language') {
 //         await workerService.updateBasics(userId, updateData)
 //       }
       
@@ -948,33 +1124,6 @@
 //       setSaving(prev => ({ ...prev, delete: false }))
 //     }
 //   }
-
-//   const FieldRow = ({ label, children, icon }) => (
-//     <div style={{
-//       display: 'flex',
-//       alignItems: 'center',
-//       padding: '12px 16px',
-//       borderBottom: '1px solid rgba(18, 38, 63, 0.06)',
-//       gap: '16px',
-//       minHeight: '60px'
-//     }}>
-//       <div style={{
-//         minWidth: '140px',
-//         fontSize: '14px',
-//         fontWeight: 500,
-//         color: '#17263a',
-//         display: 'flex',
-//         alignItems: 'center',
-//         gap: '8px'
-//       }}>
-//         {icon && <span style={{ color: 'rgba(23,38,58,0.4)' }}>{icon}</span>}
-//         {label}
-//       </div>
-//       <div style={{ flex: 1 }}>
-//         {children}
-//       </div>
-//     </div>
-//   )
 
 //   return (
 //     <div className="appShell">
@@ -1141,35 +1290,40 @@
 //                     <div>
 //                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 //                         <div style={{ flex: 1 }}>
-//                           <input
-//                             type="email"
-//                             value={newEmail}
-//                             onChange={(e) => setNewEmail(e.target.value)}
-//                             placeholder="Email Address"
-//                             style={{
-//                               width: '100%',
-//                               padding: '8px 12px',
-//                               border: '1px solid rgba(18, 38, 63, 0.12)',
-//                               borderRadius: '8px',
-//                               fontSize: '14px',
-//                               outline: 'none',
-//                               background: 'white',
-//                               transition: 'all 0.2s ease',
-//                               height: '36px'
-//                             }}
-//                             onFocus={(e) => e.target.style.borderColor = '#0f4ea9'}
-//                             onBlur={(e) => e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'}
+//                           <EmailInput
+//                             ref={emailInputRef}
+//                             value={emailDisplayValue}
+//                             onChange={handleEmailChange}
+//                             isEditing={isEditingEmail}
+//                             onFocus={handleEmailFocus}
+//                             onBlur={handleEmailBlur}
 //                           />
 //                         </div>
-//                         <UpdateButton 
-//                           onClick={handleSendEmailVerification}
-//                           loading={isEmailCodeSending}
-//                           disabled={!isEmailAvailable || newEmail === email}
-//                           label="Send Code"
-//                         />
+//                         {!isEditingEmail ? (
+//                           <UpdateButton 
+//                             onClick={handleStartEditEmail}
+//                             label="Update"
+//                             variant="primary"
+//                           />
+//                         ) : (
+//                           <>
+//                             <UpdateButton 
+//                               onClick={handleCancelEditEmail}
+//                               label="Cancel"
+//                               variant="secondary"
+//                             />
+//                             <UpdateButton 
+//                               onClick={handleSendEmailVerification}
+//                               loading={isEmailCodeSending}
+//                               disabled={!isEmailAvailable || emailDisplayValue === email || showEmailVerification}
+//                               label="Send Code"
+//                               variant="primary"
+//                             />
+//                           </>
+//                         )}
 //                       </div>
                       
-//                       {newEmail !== email && (
+//                       {isEditingEmail && emailDisplayValue !== email && (
 //                         <div style={{ marginTop: '4px', fontSize: '12px' }}>
 //                           {isCheckingEmail ? (
 //                             <span style={{ color: '#0f4ea9' }}>⏳ Checking availability...</span>
@@ -1183,10 +1337,10 @@
 //                         </div>
 //                       )}
 
-//                       {showEmailVerification && (
+//                       {isEditingEmail && showEmailVerification && (
 //                         <div style={{ marginTop: '8px', padding: '12px', background: '#f0f7ff', borderRadius: '8px', border: '1px solid rgba(15,78,169,0.2)' }}>
 //                           <div style={{ fontSize: '13px', fontWeight: 500, color: '#17263a', marginBottom: '8px' }}>
-//                             Enter verification code sent to {newEmail}
+//                             Enter verification code sent to {emailDisplayValue}
 //                           </div>
 //                           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 //                             <input
@@ -1271,35 +1425,40 @@
 //                     <div>
 //                       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 //                         <div style={{ flex: 1 }}>
-//                           <input
-//                             type="tel"
-//                             value={newPhoneNumber}
-//                             onChange={(e) => setNewPhoneNumber(e.target.value)}
-//                             placeholder="Phone Number"
-//                             style={{
-//                               width: '100%',
-//                               padding: '8px 12px',
-//                               border: '1px solid rgba(18, 38, 63, 0.12)',
-//                               borderRadius: '8px',
-//                               fontSize: '14px',
-//                               outline: 'none',
-//                               background: 'white',
-//                               transition: 'all 0.2s ease',
-//                               height: '36px'
-//                             }}
-//                             onFocus={(e) => e.target.style.borderColor = '#0f4ea9'}
-//                             onBlur={(e) => e.target.style.borderColor = 'rgba(18, 38, 63, 0.12)'}
+//                           <PhoneInput
+//                             ref={phoneInputRef}
+//                             value={phoneDisplayValue}
+//                             onChange={handlePhoneChange}
+//                             isEditing={isEditingPhone}
+//                             onFocus={handlePhoneFocus}
+//                             onBlur={handlePhoneBlur}
 //                           />
 //                         </div>
-//                         <UpdateButton 
-//                           onClick={handleSendPhoneOTP}
-//                           loading={isPhoneCodeSending}
-//                           disabled={!isPhoneAvailable || newPhoneNumber === phoneNumber}
-//                           label="Send OTP"
-//                         />
+//                         {!isEditingPhone ? (
+//                           <UpdateButton 
+//                             onClick={handleStartEditPhone}
+//                             label="Update"
+//                             variant="primary"
+//                           />
+//                         ) : (
+//                           <>
+//                             <UpdateButton 
+//                               onClick={handleCancelEditPhone}
+//                               label="Cancel"
+//                               variant="secondary"
+//                             />
+//                             <UpdateButton 
+//                               onClick={handleSendPhoneOTP}
+//                               loading={isPhoneCodeSending}
+//                               disabled={!isPhoneAvailable || phoneDisplayValue === phoneNumber || showPhoneVerification}
+//                               label="Send OTP"
+//                               variant="primary"
+//                             />
+//                           </>
+//                         )}
 //                       </div>
                       
-//                       {newPhoneNumber !== phoneNumber && (
+//                       {isEditingPhone && phoneDisplayValue !== phoneNumber && (
 //                         <div style={{ marginTop: '4px', fontSize: '12px' }}>
 //                           {isCheckingPhone ? (
 //                             <span style={{ color: '#0f4ea9' }}>⏳ Checking availability...</span>
@@ -1313,10 +1472,10 @@
 //                         </div>
 //                       )}
 
-//                       {showPhoneVerification && (
+//                       {isEditingPhone && showPhoneVerification && (
 //                         <div style={{ marginTop: '8px', padding: '12px', background: '#f0f7ff', borderRadius: '8px', border: '1px solid rgba(15,78,169,0.2)' }}>
 //                           <div style={{ fontSize: '13px', fontWeight: 500, color: '#17263a', marginBottom: '8px' }}>
-//                             Enter OTP sent to {newPhoneNumber}
+//                             Enter OTP sent to {phoneDisplayValue}
 //                           </div>
 //                           <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
 //                             <input
@@ -1425,11 +1584,13 @@
 //                       <UpdateButton 
 //                         onClick={() => updateField('language', language)}
 //                         loading={saving.language}
+//                         label="Update"
+//                         variant="primary"
 //                       />
 //                     </div>
 //                   </FieldRow>
 
-//                   {/* Password - Updated with modal trigger */}
+//                   {/* Password */}
 //                   <FieldRow label="Password" icon={<IconLock />}>
 //                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center', width: '100%' }}>
 //                       <div style={{ flex: 1 }}>
@@ -1444,8 +1605,8 @@
 //                             borderRadius: '8px',
 //                             fontSize: '14px',
 //                             outline: 'none',
-//                             background: '#f8fafc',
-//                             color: '#17263a',
+//                             background: '#f3f4f6',
+//                             color: '#6b7280',
 //                             height: '36px',
 //                             cursor: 'default',
 //                             fontFamily: 'inherit'
@@ -1456,6 +1617,7 @@
 //                         onClick={() => setIsPasswordModalOpen(true)}
 //                         loading={false}
 //                         label="Change"
+//                         variant="primary"
 //                       />
 //                     </div>
 //                   </FieldRow>
@@ -1472,7 +1634,7 @@
 //                     background: '#f8fafc'
 //                   }}>
 //                     <button
-//                       onClick={() => setIsReportIssueOpen(true)} // ✅ Open modal instead of mailto
+//                       onClick={() => setIsReportIssueOpen(true)}
 //                       style={{
 //                         background: 'none',
 //                         border: 'none',
@@ -1596,7 +1758,6 @@
 //         </main>
 //       </div>
 
-//       {/* Password Modal */}
 //       <PasswordModal
 //         isOpen={isPasswordModalOpen}
 //         onClose={() => setIsPasswordModalOpen(false)}
@@ -1605,7 +1766,6 @@
 //         loading={passwordLoading}
 //       />
 
-//       {/* Report Issue Modal */}
 //       <ReportIssueModal
 //         isOpen={isReportIssueOpen}
 //         onClose={() => setIsReportIssueOpen(false)}
@@ -1617,33 +1777,38 @@
 //       />
 
 //       <style>{`
-//         @keyframes spin {
-//           0% { transform: rotate(0deg); }
-//           100% { transform: rotate(360deg); }
-//         }
-        
-//         .accountSettingsPage {
-//           max-width: 940px;
-//           margin: 0 auto;
-//           padding: 24px;
-//         }
-        
-//         @media (max-width: 768px) {
-//           .accountSettingsPage {
-//             padding: 16px;
-//           }
-//           .accountSettingsPage .authCard {
-//             max-width: 100% !important;
-//           }
-//         }
-//       `}</style>
+//   @keyframes spin {
+//     0% { transform: rotate(0deg); }
+//     100% { transform: rotate(360deg); }
+//   }
+  
+//   .accountSettingsPage {
+//     max-width: 940px;
+//     margin: 0 auto;
+//     padding: 24px;
+//   }
+  
+//   @media (max-width: 768px) {
+//     .accountSettingsPage {
+//       padding: 16px;
+//     }
+//     .accountSettingsPage .authCard {
+//       max-width: 100% !important;
+//     }
+//   }
+
+//   /* ✅ HIDE reCAPTCHA BADGE - Still works in background */
+//   .grecaptcha-badge {
+//     visibility: hidden !important;
+//     opacity: 0 !important;
+//     pointer-events: none !important;
+//   }
+// `}</style>
 //     </div>
 //   )
 // }
 
 // export default AccountSettingsPage
-
-
 
 
 
@@ -1665,6 +1830,7 @@ import {
   verifyPhoneOTP
 } from '../../services/verificationService'
 import { ReportIssueModal } from '../components/ReportIssueModal'
+import { changeLanguage, setUserLanguage } from '../../i18n/config'
 
 // Password Input Component with eye toggle
 function PasswordInput({ placeholder, value, onChange, showPassword, onToggle, label }) {
@@ -2135,7 +2301,7 @@ const PhoneInput = memo(function PhoneInput({ value, onChange, isEditing, onFocu
 })
 
 export function AccountSettingsPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   
   const [loading, setLoading] = useState(true)
@@ -2705,7 +2871,7 @@ export function AccountSettingsPage() {
   }
 
   // ============================================================
-  // OTHER UPDATE FUNCTIONS
+  // OTHER UPDATE FUNCTIONS - FIXED FOR LANGUAGE
   // ============================================================
 
   const updateField = async (field, value) => {
@@ -2735,7 +2901,27 @@ export function AccountSettingsPage() {
       }
       
       if (field === 'language') {
+        // ✅ Save to database
         await workerService.updateBasics(userId, updateData)
+        
+        // ✅ Save to localStorage
+        localStorage.setItem('userLanguage', value)
+        localStorage.setItem('profileLanguage', value)
+        localStorage.setItem('pendingLanguage', value)
+        
+        // ✅ Apply language immediately
+        changeLanguage(value)
+        setUserLanguage(value)
+        
+        // ✅ Dispatch event for other components
+        window.dispatchEvent(new CustomEvent('languageChanged', { 
+          detail: { language: value } 
+        }))
+        
+        // ✅ Update i18n directly
+        i18n.changeLanguage(value)
+        
+        console.log(`✅ Language changed to: ${value}`)
       }
       
       setSuccess(`${field} updated successfully!`)
@@ -3426,38 +3612,35 @@ export function AccountSettingsPage() {
       />
 
       <style>{`
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .accountSettingsPage {
-    max-width: 940px;
-    margin: 0 auto;
-    padding: 24px;
-  }
-  
-  @media (max-width: 768px) {
-    .accountSettingsPage {
-      padding: 16px;
-    }
-    .accountSettingsPage .authCard {
-      max-width: 100% !important;
-    }
-  }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        .accountSettingsPage {
+          max-width: 940px;
+          margin: 0 auto;
+          padding: 24px;
+        }
+        
+        @media (max-width: 768px) {
+          .accountSettingsPage {
+            padding: 16px;
+          }
+          .accountSettingsPage .authCard {
+            max-width: 100% !important;
+          }
+        }
 
-  /* ✅ HIDE reCAPTCHA BADGE - Still works in background */
-  .grecaptcha-badge {
-    visibility: hidden !important;
-    opacity: 0 !important;
-    pointer-events: none !important;
-  }
-`}</style>
+        /* ✅ HIDE reCAPTCHA BADGE - Still works in background */
+        .grecaptcha-badge {
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
+        }
+      `}</style>
     </div>
   )
 }
 
 export default AccountSettingsPage
-
-
-
