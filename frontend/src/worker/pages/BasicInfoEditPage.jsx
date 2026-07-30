@@ -3214,7 +3214,7 @@ export function BasicInfoEditPage() {
                 </div>
               </div>
 
-              {/* Basic Information Form - remains below the card */}
+              {/* Basic Information Form */}
               <div style={{
                 background: 'white',
                 borderRadius: '16px',
