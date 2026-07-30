@@ -2868,349 +2868,343 @@ export function BasicInfoEditPage() {
             }}>
               <style>{datePickerStyles}</style>
               
-              {/* Three Cards Row - Basic Information, Trade Profile, Subscription */}
+              {/* ONE SINGLE CARD with THREE SECTIONS IN A ROW */}
               <div style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr 1fr',
-                gap: '20px',
+                background: 'white',
+                borderRadius: '16px',
+                padding: '24px',
+                border: '2px dashed rgba(15, 78, 169, 0.3)',
                 marginBottom: '24px',
               }}>
                 
-                {/* Basic Information Card */}
+                {/* Three sections in a row using CSS Grid */}
                 <div style={{
-                  background: 'white',
-                  borderRadius: '16px',
-                  padding: '20px',
-                  border: '2px dashed rgba(15, 78, 169, 0.3)',
-                  minHeight: '280px',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gap: '20px',
                 }}>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '16px',
-                  }}>
-                    <span style={{
-                      fontSize: '16px',
-                      fontWeight: 600,
-                      color: '#17263a',
-                    }}>
-                      {t('summary.basicInfo')}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleBack}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#0f4ea9',
-                        cursor: 'pointer',
-                        padding: '4px 8px',
-                        borderRadius: '6px',
-                        transition: 'background 0.2s',
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <IconPencil />
-                    </button>
-                  </div>
+                  
+                  {/* Section 1: Basic Information */}
                   <div>
                     <div style={{
                       display: 'flex',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
-                      gap: '12px',
-                      marginBottom: '16px',
+                      marginBottom: '12px',
                     }}>
-                      <img
-                        src={profilePreview || '/assets/worker.avif'}
-                        alt="Profile"
+                      <span style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: '#17263a',
+                      }}>
+                        {t('summary.basicInfo')}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={handleBack}
                         style={{
-                          width: '48px',
-                          height: '48px',
-                          borderRadius: '50%',
-                          objectFit: 'cover',
-                          background: '#f0f0f0',
-                          flexShrink: 0,
+                          background: 'none',
+                          border: 'none',
+                          color: '#0f4ea9',
+                          cursor: 'pointer',
+                          padding: '4px 8px',
+                          borderRadius: '6px',
+                          transition: 'background 0.2s',
                         }}
-                        onError={(e) => {
-                          e.target.src = '/assets/worker.avif'
-                        }}
-                      />
-                      <div style={{ minWidth: 0, flex: 1 }}>
-                        <div style={{
-                          fontWeight: 600,
-                          fontSize: '16px',
-                          color: '#17263a',
-                          wordBreak: 'break-word',
-                        }}>
-                          {[basicData.legalFirstName, basicData.legalLastName].filter(Boolean).join(' ') || '—'}
-                        </div>
-                        <span style={{
-                          fontSize: '12px',
-                          color: '#e0d616',
-                          fontWeight: 500,
-                        }}>
-                          {t('summary.pending')}
-                        </span>
-                      </div>
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <IconPencil />
+                      </button>
                     </div>
                     
+                    {/* Vertical divider between sections */}
                     <div style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '6px 16px',
-                      marginTop: '4px',
+                      borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
+                      paddingRight: '20px',
+                      height: '100%',
                     }}>
                       <div>
-                        <span style={{
-                          fontSize: '11px',
-                          color: 'rgba(23,38,58,0.5)',
-                          fontWeight: 500,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.3px',
-                        }}>
-                          {t('summary.dob')}
-                        </span>
                         <div style={{
-                          fontSize: '14px',
-                          color: '#17263a',
-                          fontWeight: 500,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          marginBottom: '12px',
                         }}>
-                          {basicData.dob || '—'}
+                          <img
+                            src={profilePreview || '/assets/worker.avif'}
+                            alt="Profile"
+                            style={{
+                              width: '40px',
+                              height: '40px',
+                              borderRadius: '50%',
+                              objectFit: 'cover',
+                              background: '#f0f0f0',
+                              flexShrink: 0,
+                            }}
+                            onError={(e) => {
+                              e.target.src = '/assets/worker.avif'
+                            }}
+                          />
+                          <div style={{ minWidth: 0, flex: 1 }}>
+                            <div style={{
+                              fontWeight: 600,
+                              fontSize: '14px',
+                              color: '#17263a',
+                              wordBreak: 'break-word',
+                            }}>
+                              {[basicData.legalFirstName, basicData.legalLastName].filter(Boolean).join(' ') || '—'}
+                            </div>
+                            <span style={{
+                              fontSize: '11px',
+                              color: '#e0d616',
+                              fontWeight: 500,
+                            }}>
+                              {t('summary.pending')}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <span style={{
-                          fontSize: '11px',
-                          color: 'rgba(23,38,58,0.5)',
-                          fontWeight: 500,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.3px',
-                        }}>
-                          {t('summary.language')}
-                        </span>
+                        
                         <div style={{
-                          fontSize: '14px',
-                          color: '#17263a',
-                          fontWeight: 500,
+                          display: 'grid',
+                          gridTemplateColumns: '1fr 1fr',
+                          gap: '4px 12px',
+                          fontSize: '12px',
                         }}>
-                          {basicData.english && basicData.spanish ? t('summary.languages.both') :
-                           basicData.english ? t('summary.languages.english') :
-                           basicData.spanish ? t('summary.languages.spanish') : '—'}
-                        </div>
-                      </div>
-                      <div style={{ gridColumn: '1 / -1' }}>
-                        <span style={{
-                          fontSize: '11px',
-                          color: 'rgba(23,38,58,0.5)',
-                          fontWeight: 500,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.3px',
-                        }}>
-                          {t('summary.email')}
-                        </span>
-                        <div style={{
-                          fontSize: '14px',
-                          color: '#17263a',
-                          fontWeight: 500,
-                          wordBreak: 'break-all',
-                        }}>
-                          {basicData.emailAddress || '—'}
-                        </div>
-                      </div>
-                      <div>
-                        <span style={{
-                          fontSize: '11px',
-                          color: 'rgba(23,38,58,0.5)',
-                          fontWeight: 500,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.3px',
-                        }}>
-                          {t('summary.phone')}
-                        </span>
-                        <div style={{
-                          fontSize: '14px',
-                          color: '#17263a',
-                          fontWeight: 500,
-                        }}>
-                          {basicData.mobilePhone || '—'}
-                        </div>
-                      </div>
-                      <div style={{ gridColumn: '1 / -1' }}>
-                        <span style={{
-                          fontSize: '11px',
-                          color: 'rgba(23,38,58,0.5)',
-                          fontWeight: 500,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.3px',
-                        }}>
-                          {t('summary.address')}
-                        </span>
-                        <div style={{
-                          fontSize: '14px',
-                          color: '#17263a',
-                          fontWeight: 500,
-                          wordBreak: 'break-word',
-                        }}>
-                          {[basicData.addressLine1, basicData.city, basicData.stateCode, basicData.zip].filter(Boolean).join(', ') || '—'}
+                          <div>
+                            <span style={{
+                              fontSize: '10px',
+                              color: 'rgba(23,38,58,0.5)',
+                              fontWeight: 500,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.3px',
+                            }}>
+                              {t('summary.dob')}
+                            </span>
+                            <div style={{
+                              fontSize: '13px',
+                              color: '#17263a',
+                              fontWeight: 500,
+                            }}>
+                              {basicData.dob || '—'}
+                            </div>
+                          </div>
+                          <div>
+                            <span style={{
+                              fontSize: '10px',
+                              color: 'rgba(23,38,58,0.5)',
+                              fontWeight: 500,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.3px',
+                            }}>
+                              {t('summary.language')}
+                            </span>
+                            <div style={{
+                              fontSize: '13px',
+                              color: '#17263a',
+                              fontWeight: 500,
+                            }}>
+                              {basicData.english && basicData.spanish ? t('summary.languages.both') :
+                               basicData.english ? t('summary.languages.english') :
+                               basicData.spanish ? t('summary.languages.spanish') : '—'}
+                            </div>
+                          </div>
+                          <div style={{ gridColumn: '1 / -1' }}>
+                            <span style={{
+                              fontSize: '10px',
+                              color: 'rgba(23,38,58,0.5)',
+                              fontWeight: 500,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.3px',
+                            }}>
+                              {t('summary.email')}
+                            </span>
+                            <div style={{
+                              fontSize: '13px',
+                              color: '#17263a',
+                              fontWeight: 500,
+                              wordBreak: 'break-all',
+                            }}>
+                              {basicData.emailAddress || '—'}
+                            </div>
+                          </div>
+                          <div>
+                            <span style={{
+                              fontSize: '10px',
+                              color: 'rgba(23,38,58,0.5)',
+                              fontWeight: 500,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.3px',
+                            }}>
+                              {t('summary.phone')}
+                            </span>
+                            <div style={{
+                              fontSize: '13px',
+                              color: '#17263a',
+                              fontWeight: 500,
+                            }}>
+                              {basicData.mobilePhone || '—'}
+                            </div>
+                          </div>
+                          <div style={{ gridColumn: '1 / -1' }}>
+                            <span style={{
+                              fontSize: '10px',
+                              color: 'rgba(23,38,58,0.5)',
+                              fontWeight: 500,
+                              textTransform: 'uppercase',
+                              letterSpacing: '0.3px',
+                            }}>
+                              {t('summary.address')}
+                            </span>
+                            <div style={{
+                              fontSize: '13px',
+                              color: '#17263a',
+                              fontWeight: 500,
+                              wordBreak: 'break-word',
+                            }}>
+                              {[basicData.addressLine1, basicData.city, basicData.stateCode, basicData.zip].filter(Boolean).join(', ') || '—'}
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Trade Profile Card */}
-                <div style={{
-                  background: 'white',
-                  borderRadius: '16px',
-                  padding: '20px',
-                  border: '2px dashed rgba(15, 78, 169, 0.3)',
-                  minHeight: '280px',
-                }}>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '16px',
-                  }}>
-                    <span style={{
-                      fontSize: '16px',
-                      fontWeight: 600,
-                      color: '#17263a',
-                    }}>
-                      {t('summary.tradeProfile')}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => navigate('/trade-profile/edit')}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        color: '#0f4ea9',
-                        cursor: 'pointer',
-                        padding: '4px 8px',
-                        borderRadius: '6px',
-                        transition: 'background 0.2s',
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <IconPencil />
-                    </button>
-                  </div>
-                  <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '12px',
-                    height: 'calc(100% - 40px)',
-                  }}>
+                  {/* Section 2: Trade Profile */}
+                  <div>
                     <div style={{
-                      padding: '12px',
-                      background: 'rgba(15, 78, 169, 0.04)',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(15, 78, 169, 0.1)',
-                      flex: 1,
                       display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
-                      minHeight: '120px',
+                      marginBottom: '12px',
+                    }}>
+                      <span style={{
+                        fontSize: '14px',
+                        fontWeight: 600,
+                        color: '#17263a',
+                      }}>
+                        {t('summary.tradeProfile')}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => navigate('/trade-profile/edit')}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          color: '#0f4ea9',
+                          cursor: 'pointer',
+                          padding: '4px 8px',
+                          borderRadius: '6px',
+                          transition: 'background 0.2s',
+                        }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                      >
+                        <IconPencil />
+                      </button>
+                    </div>
+                    
+                    {/* Vertical divider between sections */}
+                    <div style={{
+                      borderRight: '1px dashed rgba(15, 78, 169, 0.2)',
+                      paddingRight: '20px',
+                      height: '100%',
                     }}>
                       <div style={{
-                        fontSize: '40px',
-                        marginBottom: '8px',
+                        padding: '16px',
+                        background: 'rgba(15, 78, 169, 0.04)',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(15, 78, 169, 0.1)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: '120px',
                       }}>
-                        🔧
-                      </div>
-                      <div style={{
-                        fontSize: '14px',
-                        color: '#17263a',
-                        fontWeight: 500,
-                        textAlign: 'center',
-                      }}>
-                        {t('wizard.step2.title')}
-                      </div>
-                      <div style={{
-                        fontSize: '12px',
-                        color: 'rgba(23,38,58,0.5)',
-                        textAlign: 'center',
-                        marginTop: '4px',
-                      }}>
-                        Click the pencil icon to edit
+                        <div style={{
+                          fontSize: '32px',
+                          marginBottom: '6px',
+                        }}>
+                          🔧
+                        </div>
+                        <div style={{
+                          fontSize: '13px',
+                          color: '#17263a',
+                          fontWeight: 500,
+                          textAlign: 'center',
+                        }}>
+                          {t('wizard.step2.title')}
+                        </div>
+                        <div style={{
+                          fontSize: '11px',
+                          color: 'rgba(23,38,58,0.5)',
+                          textAlign: 'center',
+                          marginTop: '4px',
+                        }}>
+                          Click the pencil icon to edit
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                {/* Subscription Card */}
-                <div style={{
-                  background: 'white',
-                  borderRadius: '16px',
-                  padding: '20px',
-                  border: '2px dashed rgba(15, 78, 169, 0.3)',
-                  minHeight: '280px',
-                }}>
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: '16px',
-                  }}>
-                    <span style={{
-                      fontSize: '16px',
-                      fontWeight: 600,
-                      color: '#17263a',
-                    }}>
-                      {t('summary.subscription')}
-                    </span>
-                  </div>
-                  <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '12px',
-                    height: 'calc(100% - 40px)',
-                  }}>
+                  {/* Section 3: Subscription */}
+                  <div>
                     <div style={{
-                      padding: '12px',
-                      background: 'rgba(15, 78, 169, 0.04)',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(15, 78, 169, 0.1)',
-                      flex: 1,
                       display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'center',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
-                      minHeight: '120px',
+                      marginBottom: '12px',
                     }}>
-                      <div style={{
-                        fontSize: '40px',
-                        marginBottom: '8px',
-                      }}>
-                        🏆
-                      </div>
-                      <div style={{
+                      <span style={{
                         fontSize: '14px',
+                        fontWeight: 600,
                         color: '#17263a',
-                        fontWeight: 500,
-                        textAlign: 'center',
                       }}>
-                        {t('summary.activePlan')}
-                      </div>
+                        {t('summary.subscription')}
+                      </span>
+                    </div>
+                    
+                    <div>
                       <div style={{
-                        fontSize: '12px',
-                        color: 'rgba(23,38,58,0.5)',
-                        textAlign: 'center',
-                        marginTop: '4px',
+                        padding: '16px',
+                        background: 'rgba(15, 78, 169, 0.04)',
+                        borderRadius: '8px',
+                        border: '1px solid rgba(15, 78, 169, 0.1)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        minHeight: '120px',
                       }}>
-                        Pro
+                        <div style={{
+                          fontSize: '32px',
+                          marginBottom: '6px',
+                        }}>
+                          🏆
+                        </div>
+                        <div style={{
+                          fontSize: '13px',
+                          color: '#17263a',
+                          fontWeight: 500,
+                          textAlign: 'center',
+                        }}>
+                          {t('summary.activePlan')}
+                        </div>
+                        <div style={{
+                          fontSize: '11px',
+                          color: 'rgba(23,38,58,0.5)',
+                          textAlign: 'center',
+                          marginTop: '4px',
+                        }}>
+                          Pro
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Basic Information Form */}
+              {/* Basic Information Form - remains below the card */}
               <div style={{
                 background: 'white',
                 borderRadius: '16px',
