@@ -3831,13 +3831,6 @@ export function WizardStep3({ data, onChange, onNext, onBack, onSkip }) {
     onChange({ heavyEquipment: updated })
   }
 
-  // ✅ Skip handler - moves to next step without saving
-  const handleSkip = () => {
-    if (onSkip) {
-      onSkip()
-    }
-  }
-
   const selectedTrade = data?.mainTrade || ''
   const sections = getToolSections(selectedTrade)
   const sectionKeys = Object.keys(sections)
@@ -4102,113 +4095,6 @@ export function WizardStep3({ data, onChange, onNext, onBack, onSkip }) {
                 : t('wizard.step3.selectTradeFirst')}
             </div>
           )}
-        </div>
-      </div>
-
-      {/* ✅ Footer with Back, Skip, and Next buttons */}
-      <div className="wizardFooter" style={{
-        position: 'sticky',
-        bottom: 0,
-        zIndex: 10,
-        background: 'white',
-        padding: '12px 24px',
-        borderTop: '1px solid rgba(18, 38, 63, 0.06)',
-        boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: '20px',
-      }}>
-        <button 
-          type="button" 
-          className="wizardPillBtn" 
-          onClick={onBack}
-          style={{
-            padding: '8px 20px',
-            borderRadius: '8px',
-            background: 'transparent',
-            color: '#17263a',
-            border: '1px solid rgba(18, 38, 63, 0.12)',
-            cursor: 'pointer',
-            fontWeight: 500,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
-          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-        >
-          <span>← {t('common.back') || 'Back'}</span>
-        </button>
-
-        <div className="wizardFooterRight" style={{
-          display: 'flex',
-          gap: '12px',
-          alignItems: 'center'
-        }}>
-          {/* ✅ SKIP BUTTON - White theme, before Next */}
-          <button 
-            type="button" 
-            className="wizardPillBtn wizardPillBtnSkip" 
-            onClick={handleSkip}
-            style={{
-              padding: '8px 24px',
-              borderRadius: '8px',
-              background: 'transparent',
-              color: '#17263a',
-              border: '1px solid rgba(18, 38, 63, 0.2)',
-              cursor: 'pointer',
-              fontWeight: 500,
-              fontSize: '14px',
-              transition: 'all 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'
-              e.currentTarget.style.borderColor = 'rgba(18, 38, 63, 0.3)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'transparent'
-              e.currentTarget.style.borderColor = 'rgba(18, 38, 63, 0.2)'
-            }}
-          >
-            <span>{t('common.skip') || 'Skip'}</span>
-            <span>→</span>
-          </button>
-
-          {/* ✅ NEXT BUTTON */}
-          <button 
-            type="button" 
-            className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
-            onClick={onNext}
-            style={{
-              padding: '8px 24px',
-              borderRadius: '8px',
-              background: '#0f4ea9',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '14px',
-              transition: 'all 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#0b3f90'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#0f4ea9'
-            }}
-          >
-            <span>{t('common.next') || 'Next'}</span>
-            <span>→</span>
-          </button>
         </div>
       </div>
     </div>
