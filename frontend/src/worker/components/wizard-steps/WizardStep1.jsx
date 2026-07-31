@@ -2046,7 +2046,7 @@ export function WizardStep1({ data, onChange, onNext }) {
     return isValid
   }
 
-  // ✅ Handle Next button click with validation
+  // ✅ Handle Next button click with validation - calls the parent's onNext
   const handleNext = () => {
     const isValid = validateFields()
     if (isValid && onNext) {
@@ -2216,9 +2216,6 @@ export function WizardStep1({ data, onChange, onNext }) {
     }
     return null
   }
-
-  const isValid = data.emailAddress && data.mobilePhone && data.legalFirstName && 
-                  data.legalLastName && data.dob && data.city && data.stateCode && data.zip
 
   const datePickerStyles = `
     .date-picker-wrapper {
@@ -2438,9 +2435,6 @@ export function WizardStep1({ data, onChange, onNext }) {
   // ✅ Check if user is authenticated (has userId) - if so, fields are read-only
   const userId = localStorage.getItem('userId')
   const isAuthenticated = !!userId
-
-  // ✅ Check if all agreements are checked
-  const allAgreementsChecked = data.acceptTerms && data.acceptPrivacy && data.consentElectronic && data.certifyAccurate
 
   return (
     <div className="wizardStep">
@@ -2748,50 +2742,6 @@ export function WizardStep1({ data, onChange, onNext }) {
           </div>
           {agreementsError && <div className="field-error">⚠️ {agreementsError}</div>}
         </div>
-      </div>
-
-      {/* Footer with Next button */}
-      <div className="wizardFooter" style={{
-        position: 'sticky',
-        bottom: 0,
-        zIndex: 10,
-        background: 'white',
-        padding: '12px 24px',
-        borderTop: '1px solid rgba(18, 38, 63, 0.06)',
-        boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
-        display: 'flex',
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-        marginTop: '20px'
-      }}>
-        <button 
-          type="button" 
-          className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
-          onClick={handleNext}
-          style={{
-            padding: '8px 24px',
-            borderRadius: '8px',
-            background: '#0f4ea9',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            fontWeight: 600,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#0b3f90'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#0f4ea9'
-          }}
-        >
-          <span>{t('common.next') || 'Next'}</span>
-          <span>→</span>
-        </button>
       </div>
     </div>
   )
