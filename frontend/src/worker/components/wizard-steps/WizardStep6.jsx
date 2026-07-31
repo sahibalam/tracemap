@@ -239,7 +239,6 @@
 
 
 
-
 // src/worker/components/wizard-steps/WizardStep6.jsx
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -324,7 +323,7 @@ export function WizardStep6({ data, onChange, onFinish, onBack }) {
     return isValid
   }
 
-  // ✅ Handle Finish button click with validation
+  // ✅ Handle Finish button click with validation - calls parent's onFinish
   const handleFinish = () => {
     const isValid = validateFields()
     if (isValid && onFinish) {
@@ -435,74 +434,6 @@ export function WizardStep6({ data, onChange, onFinish, onBack }) {
             ✅ {t('wizard.step6.allCompleted')}
           </div>
         )}
-      </div>
-
-      {/* Footer with Back and Finish buttons */}
-      <div className="wizardFooter" style={{
-        position: 'sticky',
-        bottom: 0,
-        zIndex: 10,
-        background: 'white',
-        padding: '12px 24px',
-        borderTop: '1px solid rgba(18, 38, 63, 0.06)',
-        boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: '20px'
-      }}>
-        <button 
-          type="button" 
-          className="wizardPillBtn" 
-          onClick={onBack}
-          style={{
-            padding: '8px 20px',
-            borderRadius: '8px',
-            background: 'transparent',
-            color: '#17263a',
-            border: '1px solid rgba(18, 38, 63, 0.12)',
-            cursor: 'pointer',
-            fontWeight: 500,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
-          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-        >
-          <span>← {t('common.back') || 'Back'}</span>
-        </button>
-
-        <button 
-          type="button" 
-          className="wizardPillBtn wizardPillBtnSuccess" 
-          onClick={handleFinish}
-          style={{
-            padding: '8px 24px',
-            borderRadius: '8px',
-            background: '#2fb463',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            fontWeight: 600,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#1a9e4f'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#2fb463'
-          }}
-        >
-          <span>{t('common.finish') || 'Finish'}</span>
-          <span>✓</span>
-        </button>
       </div>
 
       {/* CSS styles for error messages */}

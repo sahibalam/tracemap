@@ -846,7 +846,7 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
     return isValid
   }
 
-  // ✅ Handle Next button click with validation
+  // ✅ Handle Next button click with validation - calls parent's onNext
   const handleNext = () => {
     const isValid = validateFields()
     if (isValid && onNext) {
@@ -1148,74 +1148,6 @@ export function WizardStep5({ data, onChange, onNext, onBack }) {
           </div>
           {availableDaysError && <div className="field-error">⚠️ {availableDaysError}</div>}
         </div>
-      </div>
-
-      {/* Footer with Back and Next buttons */}
-      <div className="wizardFooter" style={{
-        position: 'sticky',
-        bottom: 0,
-        zIndex: 10,
-        background: 'white',
-        padding: '12px 24px',
-        borderTop: '1px solid rgba(18, 38, 63, 0.06)',
-        boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: '20px'
-      }}>
-        <button 
-          type="button" 
-          className="wizardPillBtn" 
-          onClick={onBack}
-          style={{
-            padding: '8px 20px',
-            borderRadius: '8px',
-            background: 'transparent',
-            color: '#17263a',
-            border: '1px solid rgba(18, 38, 63, 0.12)',
-            cursor: 'pointer',
-            fontWeight: 500,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
-          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-        >
-          <span>← {t('common.back') || 'Back'}</span>
-        </button>
-
-        <button 
-          type="button" 
-          className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
-          onClick={handleNext}
-          style={{
-            padding: '8px 24px',
-            borderRadius: '8px',
-            background: '#0f4ea9',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            fontWeight: 600,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#0b3f90'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#0f4ea9'
-          }}
-        >
-          <span>{t('common.next') || 'Next'}</span>
-          <span>→</span>
-        </button>
       </div>
 
       {/* CSS styles for error messages */}
