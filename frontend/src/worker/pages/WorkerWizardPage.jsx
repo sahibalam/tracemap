@@ -3456,99 +3456,137 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
           )}
         </div>
 
-        {/* Footer */}
-        <div className="wizardFooter" style={{
-          position: 'sticky',
-          bottom: 0,
-          zIndex: 10,
-          background: 'white',
-          padding: '12px 24px',
-          borderTop: '1px solid rgba(18, 38, 63, 0.06)',
-          boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <button 
-            type="button" 
-            className="wizardPillBtn" 
-            onClick={step === 1 ? () => navigate('/verify') : goPrev}
-            disabled={step === 1 && isSaving}
-            style={{
-              padding: '8px 20px',
-              borderRadius: '8px',
-              background: 'transparent',
-              color: '#17263a',
-              border: '1px solid rgba(18, 38, 63, 0.12)',
-              cursor: 'pointer',
-              fontWeight: 500,
-              fontSize: '14px',
-              transition: 'all 0.2s',
-              opacity: step === 1 ? 0.6 : 1,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px'
-            }}
-          >
-            <span>{step === 1 ? 'Back' : 'Back'}</span>
-          </button>
+      {/* Footer */}
+<div className="wizardFooter" style={{
+  position: 'sticky',
+  bottom: 0,
+  zIndex: 10,
+  background: 'white',
+  padding: '12px 24px',
+  borderTop: '1px solid rgba(18, 38, 63, 0.06)',
+  boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center'
+}}>
+  <button 
+    type="button" 
+    className="wizardPillBtn" 
+    onClick={step === 1 ? () => navigate('/verify') : goPrev}
+    disabled={step === 1 && isSaving}
+    style={{
+      padding: '8px 20px',
+      borderRadius: '8px',
+      background: 'transparent',
+      color: '#17263a',
+      border: '1px solid rgba(18, 38, 63, 0.12)',
+      cursor: 'pointer',
+      fontWeight: 500,
+      fontSize: '14px',
+      transition: 'all 0.2s',
+      opacity: step === 1 ? 0.6 : 1,
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px'
+    }}
+  >
+    <span>{step === 1 ? 'Back' : 'Back'}</span>
+  </button>
 
-          <div className="wizardFooterRight">
-            {step < maxStep ? (
-              <button 
-                type="button" 
-                className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
-                onClick={goNext}
-                disabled={isSaving || !completedSteps.includes(step)}
-                style={{
-                  padding: '8px 24px',
-                  borderRadius: '8px',
-                  background: isSaving || !completedSteps.includes(step) ? '#94a3b8' : '#0f4ea9',
-                  color: 'white',
-                  border: 'none',
-                  cursor: (isSaving || !completedSteps.includes(step)) ? 'not-allowed' : 'pointer',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  opacity: (isSaving || !completedSteps.includes(step)) ? 0.7 : 1
-                }}
-                title={!completedSteps.includes(step) ? `Complete all fields in Step ${step} first` : ''}
-              >
-                <span>{isSaving ? 'Saving...' : 'Next'}</span>
-                <span>→</span>
-              </button>
-            ) : (
-              <button 
-                type="button" 
-                className="wizardPillBtn wizardPillBtnSuccess" 
-                onClick={finishWizard}
-                disabled={isSaving || !completedSteps.includes(6)}
-                style={{
-                  padding: '8px 24px',
-                  borderRadius: '8px',
-                  background: isSaving || !completedSteps.includes(6) ? '#94a3b8' : '#2fb463',
-                  color: 'white',
-                  border: 'none',
-                  cursor: (isSaving || !completedSteps.includes(6)) ? 'not-allowed' : 'pointer',
-                  fontWeight: 600,
-                  fontSize: '14px',
-                  transition: 'all 0.2s',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  opacity: (isSaving || !completedSteps.includes(6)) ? 0.7 : 1
-                }}
-                title={!completedSteps.includes(6) ? 'Complete all fields in Step 6 first' : ''}
-              >
-                <span>{isSaving ? 'Saving...' : 'Finish'}</span>
-                <span>✓</span>
-              </button>
-            )}
-          </div>
-        </div>
+  <div className="wizardFooterRight" style={{
+    display: 'flex',
+    gap: '12px',
+    alignItems: 'center'
+  }}>
+    {/* ✅ SKIP BUTTON - Only show on Step 3 */}
+    {step === 3 && (
+      <button 
+        type="button" 
+        className="wizardPillBtn wizardPillBtnSkip" 
+        onClick={handleSkipStep3}
+        style={{
+          padding: '8px 24px',
+          borderRadius: '8px',
+          background: 'transparent',
+          color: '#17263a',
+          border: '1px solid rgba(18, 38, 63, 0.2)',
+          cursor: 'pointer',
+          fontWeight: 500,
+          fontSize: '14px',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'
+          e.currentTarget.style.borderColor = 'rgba(18, 38, 63, 0.3)'
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = 'transparent'
+          e.currentTarget.style.borderColor = 'rgba(18, 38, 63, 0.2)'
+        }}
+      >
+        <span>{t('common.skip') || 'Skip'}</span>
+        <span>→</span>
+      </button>
+    )}
+
+    {step < maxStep ? (
+      <button 
+        type="button" 
+        className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
+        onClick={goNext}
+        disabled={isSaving || !completedSteps.includes(step)}
+        style={{
+          padding: '8px 24px',
+          borderRadius: '8px',
+          background: isSaving || !completedSteps.includes(step) ? '#94a3b8' : '#0f4ea9',
+          color: 'white',
+          border: 'none',
+          cursor: (isSaving || !completedSteps.includes(step)) ? 'not-allowed' : 'pointer',
+          fontWeight: 600,
+          fontSize: '14px',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          opacity: (isSaving || !completedSteps.includes(step)) ? 0.7 : 1
+        }}
+        title={!completedSteps.includes(step) ? `Complete all fields in Step ${step} first` : ''}
+      >
+        <span>{isSaving ? 'Saving...' : 'Next'}</span>
+        <span>→</span>
+      </button>
+    ) : (
+      <button 
+        type="button" 
+        className="wizardPillBtn wizardPillBtnSuccess" 
+        onClick={finishWizard}
+        disabled={isSaving || !completedSteps.includes(6)}
+        style={{
+          padding: '8px 24px',
+          borderRadius: '8px',
+          background: isSaving || !completedSteps.includes(6) ? '#94a3b8' : '#2fb463',
+          color: 'white',
+          border: 'none',
+          cursor: (isSaving || !completedSteps.includes(6)) ? 'not-allowed' : 'pointer',
+          fontWeight: 600,
+          fontSize: '14px',
+          transition: 'all 0.2s',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          opacity: (isSaving || !completedSteps.includes(6)) ? 0.7 : 1
+        }}
+        title={!completedSteps.includes(6) ? 'Complete all fields in Step 6 first' : ''}
+      >
+        <span>{isSaving ? 'Saving...' : 'Finish'}</span>
+        <span>✓</span>
+      </button>
+    )}
+  </div>
+</div>
       </div>
     </div>
   )
