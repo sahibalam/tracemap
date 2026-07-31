@@ -6185,27 +6185,11 @@ export function WorkerSummaryPage() {
                   </div>
                 </div>
 
-                {/* Tax Profile Card */}
+                {/* Tax Profile Card - NO PENCIL ICON */}
                 <div style={{ padding: '16px', border: '1px solid rgba(18,38,63,0.08)', borderRadius: '12px', background: 'white' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
                     <span style={{ fontSize: '14px', fontWeight: 600, color: '#17263a' }}>{t('summary.taxProfile')}</span>
-                    <button 
-                      type="button" 
-                      onClick={handleEditTax}
-                      style={{ 
-                        background: 'none', 
-                        border: 'none', 
-                        color: '#0f4ea9', 
-                        cursor: 'pointer',
-                        padding: '4px 8px',
-                        borderRadius: '6px',
-                        transition: 'background 0.2s',
-                      }}
-                      onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'}
-                      onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-                    >
-                      <IconPencil />
-                    </button>
+                    {/* ❌ PENCIL ICON REMOVED */}
                   </div>
                   <div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
