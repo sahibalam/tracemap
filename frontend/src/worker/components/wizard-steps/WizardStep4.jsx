@@ -1352,7 +1352,6 @@
 
 
 
-
 // src/worker/components/wizard-steps/WizardStep4.jsx
 import { useState, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -1486,13 +1485,11 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
 
     // ✅ At least one completed project is required
     if (!hasCompletedProject && isValid) {
-      // Check if any project has at least one field filled (partial completion)
       const anyFilled = projects.some(p => p.name || p.client || p.phone || p.start || p.end || p.trade)
       if (anyFilled) {
         setGeneralError('At least one project must be fully completed')
         isValid = false
       } else {
-        // No projects filled at all - this is also invalid
         setGeneralError('At least one project is required')
         isValid = false
       }
@@ -1504,7 +1501,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
     return isValid
   }
 
-  // ✅ Handle Next button click with validation
+  // ✅ Handle Next button click with validation - calls parent's onNext
   const handleNext = () => {
     const isValid = validateProjects()
     if (isValid && onNext) {
@@ -2230,74 +2227,6 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Footer with Back and Next buttons */}
-      <div className="wizardFooter" style={{
-        position: 'sticky',
-        bottom: 0,
-        zIndex: 10,
-        background: 'white',
-        padding: '12px 24px',
-        borderTop: '1px solid rgba(18, 38, 63, 0.06)',
-        boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: '20px'
-      }}>
-        <button 
-          type="button" 
-          className="wizardPillBtn" 
-          onClick={onBack}
-          style={{
-            padding: '8px 20px',
-            borderRadius: '8px',
-            background: 'transparent',
-            color: '#17263a',
-            border: '1px solid rgba(18, 38, 63, 0.12)',
-            cursor: 'pointer',
-            fontWeight: 500,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'}
-          onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-        >
-          <span>← {t('common.back') || 'Back'}</span>
-        </button>
-
-        <button 
-          type="button" 
-          className="wizardPillBtn wizardPillBtnPrimary wizardPillBtnNext" 
-          onClick={handleNext}
-          style={{
-            padding: '8px 24px',
-            borderRadius: '8px',
-            background: '#0f4ea9',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            fontWeight: 600,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#0b3f90'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#0f4ea9'
-          }}
-        >
-          <span>{t('common.next') || 'Next'}</span>
-          <span>→</span>
-        </button>
       </div>
     </div>
   )
