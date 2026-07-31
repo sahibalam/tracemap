@@ -2439,14 +2439,6 @@
 
 
 
-
-
-
-
-
-
-
-
 // src/worker/pages/WorkerAuthPage.jsx
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
@@ -2475,7 +2467,7 @@ function IconEyeOff(props) {
   )
 }
 
-// Custom Password Input Component
+// Custom Password Input Component with error support
 function PasswordInput({ placeholder, value, onChange, icon, showPassword, onToggle, error }) {
   return (
     <div className="password-input-wrapper">
@@ -2566,28 +2558,24 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   const [selectedDay, setSelectedDay] = useState('')
   const [daysInMonth, setDaysInMonth] = useState(31)
   
-  // Validation errors
+  // ✅ Validation error states
+  const [firstNameError, setFirstNameError] = useState('')
+  const [lastNameError, setLastNameError] = useState('')
   const [emailError, setEmailError] = useState('')
   const [isCheckingEmail, setIsCheckingEmail] = useState(false)
   const [emailCheckTimeout, setEmailCheckTimeout] = useState(null)
   const [emailValid, setEmailValid] = useState(false)
+  const [phoneError, setPhoneError] = useState('')
+  const [dobError, setDobError] = useState('')
+  const [languageError, setLanguageError] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordStrength, setPasswordStrength] = useState('')
   
   const [showLoginPassword, setShowLoginPassword] = useState(false)
   const [showRegisterPassword, setShowRegisterPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  
-  const [phoneError, setPhoneError] = useState('')
-  const [passwordError, setPasswordError] = useState('')
-  const [passwordStrength, setPasswordStrength] = useState('')
-  const [dobError, setDobError] = useState('')
-  
-  // ✅ NEW: Field validation errors
-  const [firstNameError, setFirstNameError] = useState('')
-  const [lastNameError, setLastNameError] = useState('')
-  const [languageError, setLanguageError] = useState('')
 
   const [showForgotPassword, setShowForgotPassword] = useState(false)
-  const [registerError, setRegisterError] = useState('')
 
   const usStates = useMemo(() => [
     { name: 'Alabama', code: 'AL' }, { name: 'Alaska', code: 'AK' },
@@ -2654,6 +2642,15 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       age--
     }
     return age
+  }
+
+  const formatDateToMMDDYYYY = (dateStr) => {
+    if (!dateStr) return ''
+    const parts = dateStr.split('/')
+    if (parts.length === 3) {
+      return `${parts[0]}/${parts[1]}/${parts[2]}`
+    }
+    return dateStr
   }
 
   const formatDateToYYYYMMDD = (dateStr) => {
@@ -2896,7 +2893,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
 
   const validateRegistration = () => {
     let isValid = true
-    let errorMessages = []
 
     // ✅ First Name - Required
     if (!firstName.trim()) {
@@ -2958,27 +2954,17 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       isValid = false
     }
 
-    // ✅ Check if email is available
-    if (email && !emailError && !emailValid) {
-      // Email validation is async, handled separately
-      // But if there's an email error, it's already invalid
-      if (emailError) {
-        isValid = false
-      }
-    }
-
     return isValid
   }
 
   const handleRegister = async (e) => {
     e.preventDefault()
-    setRegisterError('')
     
     const isValid = validateRegistration()
     
     if (!isValid) {
-      // Scroll to the first error
-      const firstError = document.querySelector('.field-error, .password-input-error, .dob-error, .email-error')
+      // Scroll to first error
+      const firstError = document.querySelector('.password-input-error, .email-error, .dob-error, .field-error')
       if (firstError) {
         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' })
       }
@@ -3042,12 +3028,12 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
           } 
         })
       } else {
-        setRegisterError(result.message || t('auth.loginError'))
+        setLoginError(result.message || t('auth.loginError'))
       }
       
     } catch (error) {
       console.error('❌ Registration error:', error)
-      setRegisterError(error.message || t('auth.loginError'))
+      setLoginError(error.message || t('auth.loginError'))
     }
   }
 
@@ -3324,15 +3310,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       margin-bottom: 8px;
     }
 
-    .register-error {
-      color: #dc2626;
-      font-size: 13px;
-      padding: 8px 12px;
-      background: #fee2e2;
-      border-radius: 8px;
-      margin-bottom: 4px;
-    }
-
     .btn:disabled {
       opacity: 0.6;
       cursor: not-allowed;
@@ -3437,15 +3414,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
       gap: 4px;
     }
 
-    .field-success {
-      color: #2fb463;
-      font-size: 11px;
-      margin-top: 2px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
     .field-error-input {
       border-color: #dc2626 !important;
     }
@@ -3453,6 +3421,15 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
     .field-error-input:focus {
       border-color: #dc2626 !important;
       box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
+    }
+
+    .field-success {
+      color: #2fb463;
+      font-size: 11px;
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
   `
 
@@ -3525,10 +3502,6 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
               </>
             ) : (
               <>
-                {registerError && (
-                  <div className="register-error">❌ {registerError}</div>
-                )}
-                
                 {/* Row 1: First Name & Last Name */}
                 <div className="formGrid2">
                   <div>
@@ -3536,7 +3509,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                       placeholder={t('auth.firstName')} 
                       icon={<IconUser />} 
                       value={firstName} 
-                      onChange={setFirstName} 
+                      onChange={setFirstName}
                       className={firstNameError ? 'field-error-input' : ''}
                     />
                     {firstNameError && <div className="field-error">⚠️ {firstNameError}</div>}
@@ -3556,7 +3529,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                 {/* Row 2: Email & Phone Number */}
                 <div className="formGrid2">
                   <div className="field">
-                    <div className={`fieldControl ${emailError ? 'field-error-input' : ''}`}>
+                    <div className="fieldControl">
                       <span className="fieldIcon"><IconMail /></span>
                       <input
                         type="email"
@@ -3730,7 +3703,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                       onChange={handlePasswordChange}
                       showPassword={showRegisterPassword}
                       onToggle={() => setShowRegisterPassword(!showRegisterPassword)}
-                      error={passwordError && !confirmPassword}
+                      error={!!passwordError}
                     />
                   </div>
                   <div>
@@ -3741,7 +3714,7 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
                       onChange={handleConfirmPasswordChange}
                       showPassword={showConfirmPassword}
                       onToggle={() => setShowConfirmPassword(!showConfirmPassword)}
-                      error={passwordError && confirmPassword}
+                      error={!!passwordError}
                     />
                   </div>
                 </div>
