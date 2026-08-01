@@ -2837,56 +2837,83 @@ export function WorkerAuthPage({ initialMode = 'login' }) {
   // ✅ LOGIN HANDLER - Restore language from database
   // ============================================================
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
+// src/worker/pages/WorkerAuthPage.jsx
+
+const handleLogin = async (e) => {
+  e.preventDefault()
+  
+  if (!loginUsername || !loginPassword) {
+    setLoginError(t('auth.enterEmailAndPassword'))
+    return
+  }
+
+  setLoginLoading(true)
+  setLoginError('')
+
+  try {
+    const result = await authService.login(loginUsername, loginPassword)
     
-    if (!loginUsername || !loginPassword) {
-      setLoginError(t('auth.enterEmailAndPassword'))
-      return
-    }
-
-    setLoginLoading(true)
-    setLoginError('')
-
-    try {
-      const result = await authService.login(loginUsername, loginPassword)
+    if (result.success) {
+      const token = result.data?.token || generateSessionToken()
+      const userId = result.data?.userId || ''
+      const userLanguage = result.data?.language || 'en'
       
-      if (result.success) {
-        const token = result.data?.token || generateSessionToken()
-        const userId = result.data?.userId || ''
-        const userLanguage = result.data?.language || 'en'
-        
-        localStorage.setItem('authToken', token)
-        localStorage.setItem('userId', userId)
-        
-        setUserLanguage(userLanguage)
-        
-        if (result.data?.profile?.basics) {
-          const basics = result.data.profile.basics
-          localStorage.setItem('userFirstName', basics.legalFirstName || '')
-          localStorage.setItem('userLastName', basics.legalLastName || '')
-          localStorage.setItem('pendingFirstName', basics.legalFirstName || '')
-          localStorage.setItem('pendingLastName', basics.legalLastName || '')
-          localStorage.setItem('pendingEmail', basics.emailAddress || '')
-        }
-        
-        window.dispatchEvent(new CustomEvent('profileImageUpdated', {
-          detail: { 
-            firstName: localStorage.getItem('userFirstName') || 'User',
-            profileImage: localStorage.getItem('userProfileImage')
-          }
-        }))
-        
-        navigate('/wizard/summary', { replace: true })
+      localStorage.setItem('authToken', token)
+      localStorage.setItem('userId', userId)
+      
+      setUserLanguage(userLanguage)
+      
+      if (result.data?.profile?.basics) {
+        const basics = result.data.profile.basics
+        localStorage.setItem('userFirstName', basics.legalFirstName || '')
+        localStorage.setItem('userLastName', basics.legalLastName || '')
+        localStorage.setItem('pendingFirstName', basics.legalFirstName || '')
+        localStorage.setItem('pendingLastName', basics.legalLastName || '')
+        localStorage.setItem('pendingEmail', basics.emailAddress || '')
       }
       
-    } catch (error) {
-      console.error('❌ Login error:', error)
-      setLoginError(error.message || t('auth.loginError'))
-    } finally {
-      setLoginLoading(false)
+      // ✅ STEP 1: Check if wizard is completed
+      const profile = result.data?.profile || {}
+      const tradeData = profile.trade || {}
+      const hasTradeData = tradeData.tradeRows?.length > 0 || 
+                          tradeData.mainTrade ||
+                          Object.keys(tradeData.skillGroups || {}).length > 0
+      
+      if (hasTradeData) {
+        localStorage.setItem('wizardCompleted', 'true')
+        console.log('✅ Wizard completed flag set for user')
+        
+        // ✅ STEP 2: Dispatch event for TopNav
+        window.dispatchEvent(new CustomEvent('wizardCompleted', {
+          detail: { completed: true }
+        }))
+      } else {
+        localStorage.removeItem('wizardCompleted')
+        console.log('ℹ️ Wizard not completed yet')
+      }
+      
+      window.dispatchEvent(new CustomEvent('profileImageUpdated', {
+        detail: { 
+          firstName: localStorage.getItem('userFirstName') || 'User',
+          profileImage: localStorage.getItem('userProfileImage')
+        }
+      }))
+      
+      // ✅ STEP 3: Navigate based on completion
+      if (hasTradeData) {
+        navigate('/wizard/summary', { replace: true })
+      } else {
+        navigate('/wizard', { replace: true })
+      }
     }
+    
+  } catch (error) {
+    console.error('❌ Login error:', error)
+    setLoginError(error.message || t('auth.loginError'))
+  } finally {
+    setLoginLoading(false)
   }
+}
 
   // ============================================================
   // ✅ REGISTER HANDLER - Save language to database

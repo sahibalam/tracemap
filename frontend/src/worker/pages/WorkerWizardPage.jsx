@@ -3181,44 +3181,55 @@ export function WorkerWizardPage({ embedded = false, initialStepOverride }) {
   // ✅ FINISH WIZARD - Navigate to Registration Success Page
   // ============================================================
 
-  const finishWizard = async () => {
-    try {
-      let userId = localStorage.getItem('userId')
-      if (!userId) {
-        const user = auth.currentUser
-        if (user) {
-          userId = user.uid
-          localStorage.setItem('userId', userId)
-        }
+ // src/worker/pages/WorkerWizardPage.jsx
+
+const finishWizard = async () => {
+  try {
+    let userId = localStorage.getItem('userId')
+    if (!userId) {
+      const user = auth.currentUser
+      if (user) {
+        userId = user.uid
+        localStorage.setItem('userId', userId)
       }
-      
-      if (!userId) {
-        throw new Error('User ID not found')
-      }
-      
-      setIsSaving(true)
-      setError('')
-      
-      // ✅ Save final step
-      await wizardService.saveStep(userId, 6, wizardData)
-      
-      // ✅ Complete wizard - This marks wizard as complete
-      await wizardService.completeWizard(userId)
-      
-      console.log('✅ Wizard completed successfully')
-      
-      // ✅ Navigate to Registration Success Page
-      navigate('/registration-success', { 
-        replace: true 
-      })
-      
-    } catch (error) {
-      console.error('Error completing wizard:', error)
-      setError(error.message || 'Failed to complete wizard')
-    } finally {
-      setIsSaving(false)
     }
+    
+    if (!userId) {
+      throw new Error('User ID not found')
+    }
+    
+    setIsSaving(true)
+    setError('')
+    
+    // Save final step
+    await wizardService.saveStep(userId, 6, wizardData)
+    
+    // Complete wizard
+    await wizardService.completeWizard(userId)
+    
+    console.log('✅ Wizard completed successfully')
+    
+    // ✅ STEP 13: Set wizard completed flag before navigation
+    localStorage.setItem('wizardCompleted', 'true')
+    localStorage.setItem('wizardCompletedDate', new Date().toISOString())
+    
+    // ✅ STEP 14: Dispatch event for TopNav
+    window.dispatchEvent(new CustomEvent('wizardCompleted', {
+      detail: { completed: true }
+    }))
+    
+    // Navigate to Registration Success Page
+    navigate('/registration-success', { 
+      replace: true 
+    })
+    
+  } catch (error) {
+    console.error('Error completing wizard:', error)
+    setError(error.message || 'Failed to complete wizard')
+  } finally {
+    setIsSaving(false)
   }
+}
 
   // ============================================================
   // RENDER

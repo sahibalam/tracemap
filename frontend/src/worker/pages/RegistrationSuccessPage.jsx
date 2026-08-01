@@ -385,18 +385,28 @@ export function RegistrationSuccessPage() {
   const navigate = useNavigate()
 
   // ✅ Set wizard completion flag when component mounts
-  useEffect(() => {
-    // Mark wizard as completed
-    localStorage.setItem('wizardCompleted', 'true')
-    localStorage.setItem('wizardCompletedDate', new Date().toISOString())
-    
-    // Dispatch event for TopNav and other components
-    window.dispatchEvent(new CustomEvent('wizardCompleted', {
-      detail: { completed: true }
-    }))
-    
-    console.log('✅ Wizard marked as completed on RegistrationSuccessPage')
-  }, [])
+// src/worker/pages/RegistrationSuccessPage.jsx
+
+useEffect(() => {
+  // ✅ STEP 6: Mark wizard as completed
+  localStorage.setItem('wizardCompleted', 'true')
+  localStorage.setItem('wizardCompletedDate', new Date().toISOString())
+  
+  // ✅ STEP 7: Dispatch event for TopNav and other components
+  window.dispatchEvent(new CustomEvent('wizardCompleted', {
+    detail: { completed: true }
+  }))
+  
+  // ✅ STEP 8: Also trigger profile update to refresh avatar
+  window.dispatchEvent(new CustomEvent('profileImageUpdated', {
+    detail: { 
+      firstName: localStorage.getItem('userFirstName') || 'User',
+      profileImage: localStorage.getItem('userProfileImage')
+    }
+  }))
+  
+  console.log('✅ Wizard marked as completed on RegistrationSuccessPage')
+}, [])
 
   const handleGoToProfile = () => {
     navigate('/wizard/summary')

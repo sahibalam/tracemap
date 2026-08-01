@@ -6470,58 +6470,76 @@ export function WorkerSummaryPage() {
   // ✅ ALWAYS FETCH FROM DYNAMODB
   // ============================================================
   
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const userId = localStorage.getItem('userId')
-        
-        if (!userId) {
-          setError('User not logged in. Please login again.')
-          setLoading(false)
-          return
-        }
+// src/worker/pages/WorkerSummaryPage.jsx
 
-        console.log('📊 Fetching profile from DynamoDB for user:', userId)
-        
-        const result = await workerService.getWorkerProfile(userId)
-        
-        if (result.success && result.data) {
-          console.log('✅ Profile loaded from DynamoDB')
-          setProfile(result.data)
-          
-          const basics = result.data.basics || {}
-          if (basics.profileImageKey) {
-            const freshUrl = await getFreshProfileImage(basics.profileImageKey)
-            if (freshUrl) {
-              setProfileImage(freshUrl)
-              setProfile(prev => ({
-                ...prev,
-                basics: {
-                  ...prev.basics,
-                  profilePreview: freshUrl
-                }
-              }))
-            } else if (basics.profilePreview) {
-              setProfileImage(basics.profilePreview)
-            }
-          } else {
-            setProfileImage('/assets/worker.avif')
-          }
-          
-          setError('')
-        } else {
-          setError('No profile data found. Please complete the wizard.')
-        }
-      } catch (error) {
-        console.error('❌ Error loading profile:', error)
-        setError(error.message || 'Failed to load profile')
-      } finally {
+useEffect(() => {
+  const loadProfile = async () => {
+    try {
+      const userId = localStorage.getItem('userId')
+      
+      if (!userId) {
+        setError('User not logged in. Please login again.')
         setLoading(false)
+        return
       }
-    }
 
-    loadProfile()
-  }, [])
+      console.log('📊 Fetching profile from DynamoDB for user:', userId)
+      
+      const result = await workerService.getWorkerProfile(userId)
+      
+      if (result.success && result.data) {
+        console.log('✅ Profile loaded from DynamoDB')
+        setProfile(result.data)
+        
+        // ✅ STEP 4: Check and set wizard completed flag
+        const tradeData = result.data.trade || {}
+        const hasTradeData = tradeData.tradeRows?.length > 0 || 
+                            tradeData.mainTrade ||
+                            Object.keys(tradeData.skillGroups || {}).length > 0
+        
+        if (hasTradeData) {
+          localStorage.setItem('wizardCompleted', 'true')
+          console.log('✅ Wizard completed flag set from summary page')
+          
+          // ✅ STEP 5: Dispatch event for TopNav
+          window.dispatchEvent(new CustomEvent('wizardCompleted', {
+            detail: { completed: true }
+          }))
+        }
+        
+        const basics = result.data.basics || {}
+        if (basics.profileImageKey) {
+          const freshUrl = await getFreshProfileImage(basics.profileImageKey)
+          if (freshUrl) {
+            setProfileImage(freshUrl)
+            setProfile(prev => ({
+              ...prev,
+              basics: {
+                ...prev.basics,
+                profilePreview: freshUrl
+              }
+            }))
+          } else if (basics.profilePreview) {
+            setProfileImage(basics.profilePreview)
+          }
+        } else {
+          setProfileImage('/assets/worker.avif')
+        }
+        
+        setError('')
+      } else {
+        setError('No profile data found. Please complete the wizard.')
+      }
+    } catch (error) {
+      console.error('❌ Error loading profile:', error)
+      setError(error.message || 'Failed to load profile')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  loadProfile()
+}, [])
 
   // ============================================================
   // DATA EXTRACTION
