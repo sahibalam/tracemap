@@ -8442,35 +8442,59 @@ export function WorkerSummaryPage() {
             <div className="sideGroupLabel">{t('summary.workspace')}</div>
             <nav className="sideGroup" aria-label="Workspace">
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon" aria-hidden="true"><IconGrid /></span>
-                <span className="sideText">{t('summary.overview')}</span>
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 4h7v7H4V4Zm9 0h7v7h-7V4ZM4 13h7v7H4v-7Zm9 0h7v7h-7v-7Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Overview</span>
               </span>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon" aria-hidden="true"><IconFolder /></span>
-                <span className="sideText">{t('summary.projects')}</span>
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M10 4 12 6h8a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Projects</span>
                 <span className="sideBadge" aria-label="12 projects">12</span>
               </span>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon" aria-hidden="true"><IconChart /></span>
-                <span className="sideText">{t('summary.revenues')}</span>
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M4 19h18v2H2V3h2v16Zm4-2V9h3v8H8Zm5 0V5h3v12h-3Zm5 0v-6h3v6h-3Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Revenues</span>
               </span>
               <a className="sideItem sideItemActive" href="#">
-                <span className="sideIcon" aria-hidden="true"><IconUser /></span>
-                <span className="sideText">{t('summary.profile')}</span>
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4.42 0-8 2.24-8 5v1h16v-1c0-2.76-3.58-5-8-5Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Profile</span>
               </a>
             </nav>
           </div>
 
           <div className="sideNavBottom">
-            <div className="sideGroupLabel">{t('summary.general')}</div>
+            <div className="sideGroupLabel">GENERAL</div>
             <nav className="sideGroup" aria-label="General">
               <button type="button" className="sideItem sideItemButton" onClick={() => navigate('/login')}>
-                <span className="sideIcon" aria-hidden="true"><IconLogout /></span>
-                <span className="sideText">{t('summary.signOut')}</span>
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Sign out</span>
               </button>
               <span className="sideItem sideItemDisabled" role="link" aria-disabled="true">
-                <span className="sideIcon" aria-hidden="true"><IconSupport /></span>
-                <span className="sideText">{t('summary.support')}</span>
+                <span className="sideIcon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span className="sideText">Support</span>
               </span>
             </nav>
           </div>
@@ -9045,7 +9069,7 @@ export function WorkerSummaryPage() {
               </div>
 
               {/* ============================================================
-              ROW 2: Work History
+              ROW 2: Work History - FULLY RESPONSIVE
               ============================================================ */}
               <div style={{ marginBottom: '24px', paddingBottom: '24px', borderBottom: '1px solid rgba(18, 38, 63, 0.08)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -9071,7 +9095,8 @@ export function WorkerSummaryPage() {
                 
                 {projects.length > 0 ? (
                   <div>
-                    <div style={{ 
+                    {/* ✅ Desktop Table Header - Hidden on mobile */}
+                    <div className="work-history-header" style={{ 
                       display: 'grid', 
                       gridTemplateColumns: '1.5fr 1.5fr 1.2fr 0.8fr', 
                       gap: '12px', 
@@ -9101,6 +9126,7 @@ export function WorkerSummaryPage() {
                       return (
                         <div 
                           key={idx} 
+                          className="work-history-row"
                           style={{ 
                             display: 'grid', 
                             gridTemplateColumns: '1.5fr 1.5fr 1.2fr 0.8fr', 
@@ -9168,6 +9194,121 @@ export function WorkerSummaryPage() {
                         </div>
                       )
                     })}
+                    
+                    {/* ✅ Responsive Mobile Card View - Hidden on desktop, shown on mobile */}
+                    <div className="work-history-mobile">
+                      {projects.map((p, idx) => {
+                        const projectTrade = p.trade || p.projectTrade || p.primaryTrade || p.tradeType || (p.trade && p.trade.name) || ''
+                        const projectCompany = p.client || p.company || ''
+                        const startDate = p.start || p.startDate || ''
+                        const endDate = p.end || p.endDate || ''
+                        const dateDisplay = startDate || endDate ? `${startDate} - ${endDate}` : '—'
+                        
+                        return (
+                          <div 
+                            key={`mobile-${idx}`}
+                            style={{
+                              padding: '12px 14px',
+                              marginBottom: '10px',
+                              background: 'white',
+                              border: '1px solid rgba(18,38,63,0.08)',
+                              borderRadius: '10px',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.04)',
+                            }}
+                          >
+                            <div style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                              alignItems: 'flex-start',
+                              marginBottom: '6px',
+                            }}>
+                              <div style={{
+                                fontWeight: 600,
+                                color: '#0f4ea9',
+                                fontSize: '14px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '6px',
+                              }}>
+                                <span style={{
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  width: '20px',
+                                  height: '20px',
+                                  borderRadius: '50%',
+                                  background: 'rgba(15, 78, 169, 0.1)',
+                                  color: '#0f4ea9',
+                                  fontSize: '10px',
+                                  fontWeight: 700,
+                                  flexShrink: 0,
+                                }}>
+                                  {idx + 1}
+                                </span>
+                                {displayValue(p.name, 'Untitled Project')}
+                              </div>
+                              <div style={{
+                                fontSize: '11px',
+                                color: 'rgba(23,38,58,0.5)',
+                                fontWeight: 500,
+                                whiteSpace: 'nowrap',
+                              }}>
+                                {dateDisplay}
+                              </div>
+                            </div>
+                            
+                            <div style={{
+                              display: 'grid',
+                              gridTemplateColumns: '1fr 1fr',
+                              gap: '4px 12px',
+                              fontSize: '13px',
+                              color: '#17263a',
+                            }}>
+                              <div>
+                                <span style={{
+                                  fontSize: '10px',
+                                  color: 'rgba(23,38,58,0.4)',
+                                  fontWeight: 600,
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.3px',
+                                  display: 'block',
+                                }}>
+                                  {t('summary.company')}
+                                </span>
+                                <div style={{ wordBreak: 'break-word' }}>{displayValue(projectCompany)}</div>
+                              </div>
+                              <div>
+                                <span style={{
+                                  fontSize: '10px',
+                                  color: 'rgba(23,38,58,0.4)',
+                                  fontWeight: 600,
+                                  textTransform: 'uppercase',
+                                  letterSpacing: '0.3px',
+                                  display: 'block',
+                                }}>
+                                  {t('summary.trade')}
+                                </span>
+                                {projectTrade ? (
+                                  <span style={{
+                                    display: 'inline-block',
+                                    padding: '2px 10px',
+                                    background: 'rgba(15, 78, 169, 0.08)',
+                                    borderRadius: '12px',
+                                    fontSize: '11px',
+                                    color: '#0f4ea9',
+                                    fontWeight: 500,
+                                  }}>
+                                    {projectTrade}
+                                  </span>
+                                ) : (
+                                  <span style={{ color: 'rgba(23,38,58,0.4)' }}>—</span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
                   </div>
                 ) : (
                   <div style={{ 
@@ -9495,9 +9636,8 @@ export function WorkerSummaryPage() {
 
       {/* ✅ Mobile Responsive Styles */}
       <style>{`
-        /* Mobile Responsive Styles for WorkerSummaryPage */
+        /* Sidebar responsive - consistent with other pages */
         @media (max-width: 768px) {
-          /* ✅ Hide sidebar on mobile */
           .sideNav {
             display: none !important;
           }
@@ -9556,23 +9696,17 @@ export function WorkerSummaryPage() {
             font-size: 10px !important;
           }
 
-          /* ROW 2: Work History */
-          .wizardSummaryPage div[style*="gridTemplateColumns: '1.5fr 1.5fr 1.2fr 0.8fr'"] {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 4px 8px !important;
-            font-size: 10px !important;
-            padding: 8px 10px !important;
+          /* ✅ Work History - Hide desktop table, show mobile cards */
+          .work-history-header {
+            display: none !important;
           }
-
-          .wizardSummaryPage div[style*="display: grid"][style*="borderBottom: 1px solid rgba(18,38,63,0.06)"] {
-            grid-template-columns: 1fr 1fr !important;
-            gap: 4px 8px !important;
-            padding: 8px 10px !important;
-            font-size: 12px !important;
+          
+          .work-history-row {
+            display: none !important;
           }
-
-          .wizardSummaryPage div[style*="gridTemplateColumns: '1.5fr 1.5fr 1.2fr 0.8fr'"] > div:last-child {
-            text-align: left !important;
+          
+          .work-history-mobile {
+            display: block !important;
           }
 
           /* ROW 3: Availability, Certifications, Tax, Payment - 2 columns on mobile */
@@ -9650,6 +9784,29 @@ export function WorkerSummaryPage() {
           }
         }
 
+        @media (min-width: 769px) {
+          .sideNav {
+            display: flex !important;
+          }
+          .appShellBody {
+            grid-template-columns: 300px 1fr !important;
+          }
+          
+          /* Hide mobile card view on desktop */
+          .work-history-mobile {
+            display: none !important;
+          }
+          
+          /* Show desktop table on desktop */
+          .work-history-header {
+            display: grid !important;
+          }
+          
+          .work-history-row {
+            display: grid !important;
+          }
+        }
+
         @media (max-width: 480px) {
           .appShellBody {
             padding: 8px 12px !important;
@@ -9669,17 +9826,6 @@ export function WorkerSummaryPage() {
           .wizardSummaryPage img[style*="width: 40px"][style*="height: 40px"] {
             width: 28px !important;
             height: 28px !important;
-          }
-
-          /* Work history grid - 1 column on very small screens */
-          .wizardSummaryPage div[style*="gridTemplateColumns: '1.5fr 1.5fr 1.2fr 0.8fr'"] {
-            grid-template-columns: 1fr !important;
-            gap: 2px 0 !important;
-          }
-
-          .wizardSummaryPage div[style*="display: grid"][style*="borderBottom: 1px solid rgba(18,38,63,0.06)"] {
-            grid-template-columns: 1fr !important;
-            gap: 2px 0 !important;
           }
 
           /* Trade profile - more compact */
@@ -9710,16 +9856,6 @@ export function WorkerSummaryPage() {
           }
         }
 
-        /* Desktop: Show sidebar */
-        @media (min-width: 769px) {
-          .sideNav {
-            display: flex !important;
-          }
-          .appShellBody {
-            grid-template-columns: 300px 1fr !important;
-          }
-        }
-
         /* Tablet optimization */
         @media (min-width: 769px) and (max-width: 1024px) {
           .wizardSummaryPage > div[style*="padding: 24px"] {
@@ -9737,6 +9873,21 @@ export function WorkerSummaryPage() {
 
           .sideNav {
             width: 240px !important;
+          }
+
+          /* Tablet - show compact table */
+          .work-history-row {
+            grid-template-columns: 1.2fr 1.2fr 1fr 0.7fr !important;
+            gap: 8px !important;
+            font-size: 12px !important;
+            padding: 10px 10px !important;
+          }
+
+          .work-history-header {
+            grid-template-columns: 1.2fr 1.2fr 1fr 0.7fr !important;
+            gap: 8px !important;
+            font-size: 10px !important;
+            padding: 8px 10px !important;
           }
         }
       `}</style>
