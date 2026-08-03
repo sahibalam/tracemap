@@ -394,7 +394,7 @@ export function NotificationPage() {
                 background: '#f8fafc',
                 flexWrap: 'wrap'
               }}>
-                <button
+                {/* <button
                   onClick={() => navigate('/wizard/summary')}
                   style={{
                     background: 'none',
@@ -415,7 +415,7 @@ export function NotificationPage() {
                 >
                   <IconArrowLeft />
                   Back
-                </button>
+                </button> */}
                 <h2 style={{
                   fontSize: '18px',
                   fontWeight: 700,
