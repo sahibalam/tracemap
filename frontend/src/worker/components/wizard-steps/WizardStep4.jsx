@@ -2624,7 +2624,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
       box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1) !important;
     }
 
-    /* Trade select styles */
+    /* Trade select styles - without icon */
     .trade-select-wrapper {
       position: relative;
       width: 100%;
@@ -2633,8 +2633,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
     .trade-select-wrapper select {
       width: 100%;
       height: 40px;
-      padding: 0 12px;
-      padding-right: 12px;
+      padding: 0 32px 0 12px;
       border: 1px solid rgba(18, 38, 63, 0.12);
       border-radius: 8px;
       font-size: 13px;
@@ -2645,6 +2644,12 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
       transition: all 0.2s ease;
       cursor: pointer;
       box-sizing: border-box;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2317263a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
     }
 
     .trade-select-wrapper select:hover {
@@ -2672,22 +2677,6 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
 
     .trade-select-wrapper select option.placeholder-option {
       color: rgba(23, 38, 58, 0.4);
-    }
-
-    .trade-select-wrapper .select-icon {
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(23, 38, 58, 0.4);
-      pointer-events: none;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-    }
-
-    .trade-select-wrapper select.has-icon {
-      padding-left: 36px;
     }
 
     .project-card {
@@ -2873,11 +2862,12 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
               {errors[0]?.start && <div className="field-error">⚠️ {errors[0].start}</div>}
               {errors[0]?.end && <div className="field-error">⚠️ {errors[0].end}</div>}
               
+              {/* ✅ Trade Dropdown - No Icon */}
               <div className="trade-select-wrapper mt-8">
                 <select 
                   value={projects[0]?.trade || ''} 
                   onChange={(e) => updateProjectField(0, 'trade')(e.target.value)}
-                  className={`has-icon ${errors[0]?.trade ? 'error' : ''}`}
+                  className={errors[0]?.trade ? 'error' : ''}
                   style={{
                     color: projects[0]?.trade ? '#17263a' : '#6b7280',
                   }}
@@ -2891,7 +2881,6 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     </option>
                   ))}
                 </select>
-                <span className="select-icon"><IconSupport /></span>
               </div>
               {errors[0]?.trade && <div className="field-error">⚠️ {errors[0].trade}</div>}
             </div>
@@ -2983,11 +2972,12 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
               {errors[1]?.start && <div className="field-error">⚠️ {errors[1].start}</div>}
               {errors[1]?.end && <div className="field-error">⚠️ {errors[1].end}</div>}
               
+              {/* ✅ Trade Dropdown - No Icon */}
               <div className="trade-select-wrapper mt-8">
                 <select 
                   value={projects[1]?.trade || ''} 
                   onChange={(e) => updateProjectField(1, 'trade')(e.target.value)}
-                  className={`has-icon ${errors[1]?.trade ? 'error' : ''}`}
+                  className={errors[1]?.trade ? 'error' : ''}
                   style={{
                     color: projects[1]?.trade ? '#17263a' : '#6b7280',
                   }}
@@ -3001,7 +2991,6 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     </option>
                   ))}
                 </select>
-                <span className="select-icon"><IconSupport /></span>
               </div>
               {errors[1]?.trade && <div className="field-error">⚠️ {errors[1].trade}</div>}
             </div>
@@ -3093,11 +3082,12 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
               {errors[2]?.start && <div className="field-error">⚠️ {errors[2].start}</div>}
               {errors[2]?.end && <div className="field-error">⚠️ {errors[2].end}</div>}
               
+              {/* ✅ Trade Dropdown - No Icon */}
               <div className="trade-select-wrapper mt-8">
                 <select 
                   value={projects[2]?.trade || ''} 
                   onChange={(e) => updateProjectField(2, 'trade')(e.target.value)}
-                  className={`has-icon ${errors[2]?.trade ? 'error' : ''}`}
+                  className={errors[2]?.trade ? 'error' : ''}
                   style={{
                     color: projects[2]?.trade ? '#17263a' : '#6b7280',
                   }}
@@ -3111,7 +3101,6 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
                     </option>
                   ))}
                 </select>
-                <span className="select-icon"><IconSupport /></span>
               </div>
               {errors[2]?.trade && <div className="field-error">⚠️ {errors[2].trade}</div>}
             </div>
