@@ -759,7 +759,7 @@ export const sendPhoneOTP = async (phoneNumber, recaptchaVerifier) => {
     // Format for India: +91 + 10 digits
     let formattedPhone = phoneNumber.startsWith('+') 
       ? phoneNumber 
-      : `+91${digitsOnly}`
+      : `+1${digitsOnly}`
     
     console.log('📱 Original Phone:', phoneNumber)
     console.log('📱 Formatted Phone:', formattedPhone)
