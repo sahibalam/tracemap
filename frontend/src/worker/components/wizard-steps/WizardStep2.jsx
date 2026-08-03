@@ -1,3 +1,4 @@
+
 // // src/worker/components/wizard-steps/WizardStep2.jsx
 // import { useState } from 'react'
 // import { useTranslation } from 'react-i18next'
@@ -4266,12 +4267,17 @@
 //     return {}
 //   })
 
+//   // ✅ State for search query
+//   const [searchQuery, setSearchQuery] = useState('')
+
 //   // ✅ Handle main trade selection
 //   const handleMainTradeChange = (value) => {
 //     onChange({ mainTrade: value })
 //     // Reset skill groups when main trade changes
 //     setSkillGroups({})
 //     setSkillDetails({})
+//     // Reset search query
+//     setSearchQuery('')
 //   }
 
 //   // ✅ Handle skill group checkbox toggle
@@ -4354,8 +4360,20 @@
 //     return EXPERIENCE_LEVELS[skillGroup] || ['Helper', 'Skilled Worker', 'Lead']
 //   }
 
+//   // ✅ Filter skill groups based on search query
+//   const getFilteredSkillGroups = () => {
+//     const groups = getSkillGroups()
+//     if (!searchQuery.trim()) return groups
+//     return groups.filter(group => 
+//       group.toLowerCase().includes(searchQuery.toLowerCase().trim())
+//     )
+//   }
+
 //   const selectedTrade = data?.mainTrade || ''
 //   const groups = getSkillGroups()
+//   const filteredGroups = getFilteredSkillGroups()
+//   const totalGroups = groups.length
+//   const filteredCount = filteredGroups.length
 
 //   return (
 //     <div className="wizardStep">
@@ -4377,128 +4395,213 @@
 //             </SelectField>
 //           </div>
 
-//           {/* ✅ Skill Groups */}
+//           {/* ✅ Skill Groups with Search Box */}
 //           {selectedTrade && groups.length > 0 && (
 //             <div style={{ marginTop: '16px' }}>
 //               <div style={{
-//                 fontSize: '14px',
-//                 fontWeight: 600,
-//                 color: '#17263a',
+//                 display: 'flex',
+//                 justifyContent: 'space-between',
+//                 alignItems: 'center',
 //                 marginBottom: '16px',
 //                 paddingBottom: '8px',
 //                 borderBottom: '2px solid rgba(18, 38, 63, 0.08)',
+//                 flexWrap: 'wrap',
+//                 gap: '12px'
 //               }}>
-//                 Skill Groups
-//               </div>
-
-//               {groups.map((group, index) => (
-//                 <div key={group} style={{
-//                   marginBottom: index < groups.length - 1 ? '24px' : '16px',
+//                 <div style={{
+//                   fontSize: '14px',
+//                   fontWeight: 600,
+//                   color: '#17263a',
 //                 }}>
-//                   {/* ✅ Skill Group Row with Checkbox */}
-//                   <div style={{
-//                     display: 'flex',
-//                     alignItems: 'center',
-//                     gap: '12px',
-//                     padding: '12px 16px',
-//                     background: 'rgba(15, 78, 169, 0.03)',
-//                     border: '1px solid rgba(18, 38, 63, 0.08)',
-//                     borderRadius: '8px',
+//                   Skill Groups
+//                   <span style={{
+//                     fontSize: '12px',
+//                     fontWeight: 400,
+//                     color: 'rgba(23, 38, 58, 0.5)',
+//                     marginLeft: '8px'
 //                   }}>
-//                     <label style={{
-//                       display: 'flex',
-//                       alignItems: 'center',
-//                       gap: '8px',
-//                       cursor: 'pointer',
-//                       flex: 1,
-//                       fontSize: '14px',
-//                       fontWeight: 500,
-//                       color: '#17263a',
+//                     ({totalGroups} total)
+//                   </span>
+//                   {searchQuery && filteredCount !== totalGroups && (
+//                     <span style={{
+//                       fontSize: '12px',
+//                       fontWeight: 400,
+//                       color: '#0f4ea9',
+//                       marginLeft: '8px'
 //                     }}>
-//                       <input
-//                         type="checkbox"
-//                         checked={!!skillGroups[group]}
-//                         onChange={handleSkillGroupToggle(group)}
-//                       />
-//                       {group}
-//                     </label>
-
-//                     <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
-//                       <SelectField
-//                         label=""
-//                         value={skillDetails[group]?.experience || ''}
-//                         onChange={(value) => handleExperienceChange(group, value)}
-//                         style={{ flex: 1 }}
-//                       >
-//                         <option value="">Experience Level</option>
-//                         {getExperienceLevels(group).map((level) => (
-//                           <option key={level} value={level}>
-//                             {level}
-//                           </option>
-//                         ))}
-//                       </SelectField>
-
-//                       <SelectField
-//                         label=""
-//                         value={skillDetails[group]?.years || ''}
-//                         onChange={(value) => handleYearsChange(group, value)}
-//                         style={{ flex: 1 }}
-//                       >
-//                         <option value="">Years of Experience</option>
-//                         {YEARS_OF_EXPERIENCE.map((years) => (
-//                           <option key={years} value={years}>
-//                             {years}
-//                           </option>
-//                         ))}
-//                       </SelectField>
-//                     </div>
-//                   </div>
-
-//                   {/* ✅ Skill Details Legend (appears when checkbox is checked) */}
-//                   {skillGroups[group] && (
-//                     <div style={{
-//                       marginTop: '8px',
-//                       marginLeft: '28px',
-//                       padding: '16px 20px',
-//                       border: '1px solid rgba(15, 78, 169, 0.2)',
-//                       borderRadius: '8px',
-//                       background: 'rgba(15, 78, 169, 0.02)',
-//                     }}>
-//                       <div style={{
-//                         fontSize: '12px',
-//                         fontWeight: 600,
-//                         color: '#0f4ea9',
-//                         marginBottom: '12px',
-//                       }}>
-//                         Skill Details - {group}
-//                       </div>
-//                       <div style={{
-//                         display: 'grid',
-//                         gridTemplateColumns: '1fr 1fr',
-//                         gap: '6px 16px',
-//                       }}>
-//                         {getSkillDetails(group).map((skill) => (
-//                           <label key={skill} style={{
-//                             display: 'flex',
-//                             alignItems: 'center',
-//                             gap: '8px',
-//                             cursor: 'pointer',
-//                             fontSize: '13px',
-//                             color: '#17263a',
-//                           }}>
-//                             <input
-//                               type="checkbox"
-//                               checked={!!(skillDetails[group]?.skills?.[skill] || false)}
-//                               onChange={handleSkillDetailToggle(group, skill)}
-//                             />
-//                             {skill}
-//                           </label>
-//                         ))}
-//                       </div>
-//                     </div>
+//                       - {filteredCount} shown
+//                     </span>
 //                   )}
 //                 </div>
-//               ))}
+                
+//                 {/* ✅ Search Box */}
+//                 <div style={{
+//                   display: 'flex',
+//                   alignItems: 'center',
+//                   gap: '8px',
+//                   background: 'white',
+//                   border: '1px solid rgba(18, 38, 63, 0.12)',
+//                   borderRadius: '8px',
+//                   padding: '4px 12px',
+//                   transition: 'all 0.2s ease',
+//                   minWidth: '200px',
+//                 }}>
+//                   <span style={{ color: 'rgba(23, 38, 58, 0.4)', fontSize: '14px' }}>🔍</span>
+//                   <input
+//                     type="text"
+//                     placeholder="Search skill groups..."
+//                     value={searchQuery}
+//                     onChange={(e) => setSearchQuery(e.target.value)}
+//                     style={{
+//                       border: 'none',
+//                       outline: 'none',
+//                       padding: '6px 0',
+//                       fontSize: '13px',
+//                       width: '100%',
+//                       background: 'transparent',
+//                       color: '#17263a',
+//                       fontFamily: 'inherit'
+//                     }}
+//                   />
+//                   {searchQuery && (
+//                     <button
+//                       onClick={() => setSearchQuery('')}
+//                       style={{
+//                         background: 'none',
+//                         border: 'none',
+//                         cursor: 'pointer',
+//                         color: 'rgba(23, 38, 58, 0.4)',
+//                         fontSize: '16px',
+//                         padding: '0 4px'
+//                       }}
+//                     >
+//                       ✕
+//                     </button>
+//                   )}
+//                 </div>
+//               </div>
+
+//               {filteredGroups.length === 0 ? (
+//                 <div style={{
+//                   padding: '32px 20px',
+//                   textAlign: 'center',
+//                   border: '1px dashed rgba(18, 38, 63, 0.12)',
+//                   borderRadius: '8px',
+//                   color: 'rgba(23, 38, 58, 0.4)',
+//                   fontSize: '14px',
+//                 }}>
+//                   No skill groups match your search: "{searchQuery}"
+//                 </div>
+//               ) : (
+//                 filteredGroups.map((group, index) => (
+//                   <div key={group} style={{
+//                     marginBottom: index < filteredGroups.length - 1 ? '24px' : '16px',
+//                   }}>
+//                     {/* ✅ Skill Group Row with Checkbox */}
+//                     <div style={{
+//                       display: 'flex',
+//                       alignItems: 'center',
+//                       gap: '12px',
+//                       padding: '12px 16px',
+//                       background: 'rgba(15, 78, 169, 0.03)',
+//                       border: '1px solid rgba(18, 38, 63, 0.08)',
+//                       borderRadius: '8px',
+//                     }}>
+//                       <label style={{
+//                         display: 'flex',
+//                         alignItems: 'center',
+//                         gap: '8px',
+//                         cursor: 'pointer',
+//                         flex: 1,
+//                         fontSize: '14px',
+//                         fontWeight: 500,
+//                         color: '#17263a',
+//                       }}>
+//                         <input
+//                           type="checkbox"
+//                           checked={!!skillGroups[group]}
+//                           onChange={handleSkillGroupToggle(group)}
+//                         />
+//                         {group}
+//                       </label>
+
+//                       <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
+//                         <SelectField
+//                           label=""
+//                           value={skillDetails[group]?.experience || ''}
+//                           onChange={(value) => handleExperienceChange(group, value)}
+//                           style={{ flex: 1 }}
+//                         >
+//                           <option value="">Experience Level</option>
+//                           {getExperienceLevels(group).map((level) => (
+//                             <option key={level} value={level}>
+//                               {level}
+//                             </option>
+//                           ))}
+//                         </SelectField>
+
+//                         <SelectField
+//                           label=""
+//                           value={skillDetails[group]?.years || ''}
+//                           onChange={(value) => handleYearsChange(group, value)}
+//                           style={{ flex: 1 }}
+//                         >
+//                           <option value="">Years of Experience</option>
+//                           {YEARS_OF_EXPERIENCE.map((years) => (
+//                             <option key={years} value={years}>
+//                               {years}
+//                             </option>
+//                           ))}
+//                         </SelectField>
+//                       </div>
+//                     </div>
+
+//                     {/* ✅ Skill Details Legend (appears when checkbox is checked) */}
+//                     {skillGroups[group] && (
+//                       <div style={{
+//                         marginTop: '8px',
+//                         marginLeft: '28px',
+//                         padding: '16px 20px',
+//                         border: '1px solid rgba(15, 78, 169, 0.2)',
+//                         borderRadius: '8px',
+//                         background: 'rgba(15, 78, 169, 0.02)',
+//                       }}>
+//                         <div style={{
+//                           fontSize: '12px',
+//                           fontWeight: 600,
+//                           color: '#0f4ea9',
+//                           marginBottom: '12px',
+//                         }}>
+//                           Skill Details - {group}
+//                         </div>
+//                         <div style={{
+//                           display: 'grid',
+//                           gridTemplateColumns: '1fr 1fr',
+//                           gap: '6px 16px',
+//                         }}>
+//                           {getSkillDetails(group).map((skill) => (
+//                             <label key={skill} style={{
+//                               display: 'flex',
+//                               alignItems: 'center',
+//                               gap: '8px',
+//                               cursor: 'pointer',
+//                               fontSize: '13px',
+//                               color: '#17263a',
+//                             }}>
+//                               <input
+//                                 type="checkbox"
+//                                 checked={!!(skillDetails[group]?.skills?.[skill] || false)}
+//                                 onChange={handleSkillDetailToggle(group, skill)}
+//                               />
+//                               {skill}
+//                             </label>
+//                           ))}
+//                         </div>
+//                       </div>
+//                     )}
+//                   </div>
+//                 ))
+//               )}
 //             </div>
 //           )}
 //         </div>
@@ -4508,6 +4611,9 @@
 // }
 
 // export default WizardStep2
+
+
+
 
 
 
@@ -8888,6 +8994,16 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
   const totalGroups = groups.length
   const filteredCount = filteredGroups.length
 
+  // ✅ Check if at least one skill group is selected
+  const hasSelectedSkill = Object.values(skillGroups).some(value => value === true)
+
+  // ✅ Handle Next with validation
+  const handleNext = () => {
+    if (selectedTrade && hasSelectedSkill) {
+      onNext()
+    }
+  }
+
   return (
     <div className="wizardStep">
       <div className="wizardBody">
@@ -9010,22 +9126,22 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                   <div key={group} style={{
                     marginBottom: index < filteredGroups.length - 1 ? '24px' : '16px',
                   }}>
-                    {/* ✅ Skill Group Row with Checkbox */}
+                    {/* ✅ Skill Group Row with Checkbox - Mobile Responsive */}
                     <div style={{
                       display: 'flex',
-                      alignItems: 'center',
+                      flexDirection: 'column',
                       gap: '12px',
                       padding: '12px 16px',
                       background: 'rgba(15, 78, 169, 0.03)',
                       border: '1px solid rgba(18, 38, 63, 0.08)',
                       borderRadius: '8px',
                     }}>
+                      {/* Checkbox and Label */}
                       <label style={{
                         display: 'flex',
                         alignItems: 'center',
                         gap: '8px',
                         cursor: 'pointer',
-                        flex: 1,
                         fontSize: '14px',
                         fontWeight: 500,
                         color: '#17263a',
@@ -9034,38 +9150,47 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                           type="checkbox"
                           checked={!!skillGroups[group]}
                           onChange={handleSkillGroupToggle(group)}
+                          style={{ flexShrink: 0 }}
                         />
-                        {group}
+                        <span>{group}</span>
                       </label>
 
-                      <div style={{ display: 'flex', gap: '8px', flex: 1 }}>
-                        <SelectField
-                          label=""
-                          value={skillDetails[group]?.experience || ''}
-                          onChange={(value) => handleExperienceChange(group, value)}
-                          style={{ flex: 1 }}
-                        >
-                          <option value="">Experience Level</option>
-                          {getExperienceLevels(group).map((level) => (
-                            <option key={level} value={level}>
-                              {level}
-                            </option>
-                          ))}
-                        </SelectField>
+                      {/* Dropdowns - Stack on mobile */}
+                      <div style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        gap: '8px',
+                        flexWrap: 'wrap',
+                      }}>
+                        <div style={{ flex: '1 1 200px', minWidth: '140px' }}>
+                          <SelectField
+                            label=""
+                            value={skillDetails[group]?.experience || ''}
+                            onChange={(value) => handleExperienceChange(group, value)}
+                          >
+                            <option value="">Experience Level</option>
+                            {getExperienceLevels(group).map((level) => (
+                              <option key={level} value={level}>
+                                {level}
+                              </option>
+                            ))}
+                          </SelectField>
+                        </div>
 
-                        <SelectField
-                          label=""
-                          value={skillDetails[group]?.years || ''}
-                          onChange={(value) => handleYearsChange(group, value)}
-                          style={{ flex: 1 }}
-                        >
-                          <option value="">Years of Experience</option>
-                          {YEARS_OF_EXPERIENCE.map((years) => (
-                            <option key={years} value={years}>
-                              {years}
-                            </option>
-                          ))}
-                        </SelectField>
+                        <div style={{ flex: '1 1 140px', minWidth: '120px' }}>
+                          <SelectField
+                            label=""
+                            value={skillDetails[group]?.years || ''}
+                            onChange={(value) => handleYearsChange(group, value)}
+                          >
+                            <option value="">Years of Experience</option>
+                            {YEARS_OF_EXPERIENCE.map((years) => (
+                              <option key={years} value={years}>
+                                {years}
+                              </option>
+                            ))}
+                          </SelectField>
+                        </div>
                       </div>
                     </div>
 
@@ -9073,7 +9198,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                     {skillGroups[group] && (
                       <div style={{
                         marginTop: '8px',
-                        marginLeft: '28px',
+                        marginLeft: '8px',
                         padding: '16px 20px',
                         border: '1px solid rgba(15, 78, 169, 0.2)',
                         borderRadius: '8px',
@@ -9087,6 +9212,7 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                         }}>
                           Skill Details - {group}
                         </div>
+                        {/* ✅ Responsive Grid for Skill Details */}
                         <div style={{
                           display: 'grid',
                           gridTemplateColumns: '1fr 1fr',
@@ -9105,8 +9231,9 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
                                 type="checkbox"
                                 checked={!!(skillDetails[group]?.skills?.[skill] || false)}
                                 onChange={handleSkillDetailToggle(group, skill)}
+                                style={{ flexShrink: 0 }}
                               />
-                              {skill}
+                              <span>{skill}</span>
                             </label>
                           ))}
                         </div>
@@ -9117,8 +9244,212 @@ export function WizardStep2({ data, onChange, onNext, onBack }) {
               )}
             </div>
           )}
+
+          {/* ✅ No skills message when trade is selected but no skill groups exist */}
+          {selectedTrade && groups.length === 0 && (
+            <div style={{
+              padding: '32px 20px',
+              textAlign: 'center',
+              border: '1px dashed rgba(18, 38, 63, 0.12)',
+              borderRadius: '8px',
+              color: 'rgba(23, 38, 58, 0.4)',
+              fontSize: '14px',
+              marginTop: '16px'
+            }}>
+              No skill groups available for this trade.
+            </div>
+          )}
+
+          {/* ✅ No trade selected message */}
+          {!selectedTrade && (
+            <div style={{
+              padding: '32px 20px',
+              textAlign: 'center',
+              border: '1px dashed rgba(18, 38, 63, 0.12)',
+              borderRadius: '8px',
+              color: 'rgba(23, 38, 58, 0.4)',
+              fontSize: '14px',
+              marginTop: '16px'
+            }}>
+              Please select a main trade above to see available skill groups.
+            </div>
+          )}
         </div>
       </div>
+
+      {/* ✅ Footer with Back and Next buttons */}
+      <div className="wizardFooter" style={{
+        position: 'sticky',
+        bottom: 0,
+        zIndex: 10,
+        background: 'white',
+        padding: '12px 24px',
+        borderTop: '1px solid rgba(18, 38, 63, 0.06)',
+        boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: '24px',
+        borderBottomLeftRadius: '12px',
+        borderBottomRightRadius: '12px',
+      }}>
+        <button 
+          type="button" 
+          onClick={onBack}
+          style={{
+            padding: '8px 20px',
+            borderRadius: '8px',
+            background: 'transparent',
+            color: '#17263a',
+            border: '1px solid rgba(18, 38, 63, 0.12)',
+            cursor: 'pointer',
+            fontWeight: 500,
+            fontSize: '14px',
+            transition: 'all 0.2s',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent'
+          }}
+        >
+          <span>←</span> Back
+        </button>
+
+        <button 
+          type="button" 
+          onClick={handleNext}
+          disabled={!selectedTrade || !hasSelectedSkill}
+          style={{
+            padding: '8px 24px',
+            borderRadius: '8px',
+            background: (!selectedTrade || !hasSelectedSkill) ? '#94a3b8' : '#0f4ea9',
+            color: 'white',
+            border: 'none',
+            cursor: (!selectedTrade || !hasSelectedSkill) ? 'not-allowed' : 'pointer',
+            fontWeight: 600,
+            fontSize: '14px',
+            transition: 'all 0.2s',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            opacity: (!selectedTrade || !hasSelectedSkill) ? 0.7 : 1
+          }}
+          title={!selectedTrade ? 'Please select a main trade' : !hasSelectedSkill ? 'Please select at least one skill group' : ''}
+        >
+          Continue <span>→</span>
+        </button>
+      </div>
+
+      {/* ✅ Mobile Responsive Styles */}
+      <style>{`
+        /* Mobile Responsive Styles for WizardStep2 */
+        @media (max-width: 768px) {
+          .wizardStep .wizardBody {
+            padding: 12px !important;
+          }
+
+          /* Main trade dropdown - full width on mobile */
+          .wizardStep .wizardSection > div:first-child {
+            max-width: 100% !important;
+            margin: 0 auto 20px auto !important;
+          }
+
+          /* Search box - full width on mobile */
+          .wizardStep .wizardSection div[style*="minWidth: 200px"] {
+            min-width: 100% !important;
+            width: 100% !important;
+          }
+
+          /* Skill group header - stack on mobile */
+          .wizardStep .wizardSection div[style*="justify-content: space-between"] {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 8px !important;
+          }
+
+          /* Skill group rows - full width on mobile */
+          .wizardStep .wizardSection div[style*="flexDirection: column"] {
+            padding: 12px !important;
+          }
+
+          /* Dropdowns in skill groups - stack on mobile */
+          .wizardStep .wizardSection div[style*="flexWrap: wrap"] {
+            flex-direction: column !important;
+            width: 100% !important;
+          }
+
+          .wizardStep .wizardSection div[style*="flexWrap: wrap"] > div {
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+            width: 100% !important;
+          }
+
+          /* Skill details grid - single column on mobile */
+          .wizardStep .wizardSection div[style*="gridTemplateColumns: '1fr 1fr'"] {
+            grid-template-columns: 1fr !important;
+            gap: 4px 0 !important;
+          }
+
+          /* Skill details labels - full width on mobile */
+          .wizardStep .wizardSection label[style*="fontSize: 13px"] {
+            font-size: 12px !important;
+          }
+
+          /* Footer buttons - full width on mobile */
+          .wizardFooter {
+            flex-direction: column !important;
+            gap: 10px !important;
+            padding: 12px 16px !important;
+          }
+
+          .wizardFooter button {
+            width: 100% !important;
+            justify-content: center !important;
+          }
+
+          /* No skills / no trade messages */
+          .wizardStep .wizardSection div[style*="border: 1px dashed"] {
+            padding: 20px 16px !important;
+            font-size: 13px !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .wizardStep .wizardBody {
+            padding: 8px !important;
+          }
+
+          /* Make skill group rows more compact on very small screens */
+          .wizardStep .wizardSection div[style*="flexDirection: column"] {
+            padding: 10px 12px !important;
+          }
+
+          .wizardStep .wizardSection div[style*="flexDirection: column"] label {
+            font-size: 13px !important;
+          }
+
+          /* Skill details panel - more compact */
+          .wizardStep .wizardSection div[style*="border: 1px solid rgba(15, 78, 169, 0.2)"] {
+            padding: 12px 14px !important;
+            margin-left: 0 !important;
+          }
+
+          /* Footer - more compact */
+          .wizardFooter {
+            padding: 10px 12px !important;
+          }
+
+          .wizardFooter button {
+            font-size: 13px !important;
+            padding: 10px 16px !important;
+          }
+        }
+      `}</style>
     </div>
   )
 }
