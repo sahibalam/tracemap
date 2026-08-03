@@ -7232,7 +7232,7 @@ export function AccountSettingsPage() {
                 borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
                 background: '#f8fafc'
               }}>
-                <button
+                {/* <button
                   onClick={() => navigate('/wizard/summary')}
                   style={{
                     background: 'none',
@@ -7253,7 +7253,7 @@ export function AccountSettingsPage() {
                 >
                   <IconArrowLeft />
                   Back
-                </button>
+                </button> */}
                 <h2 style={{
                   fontSize: '18px',
                   fontWeight: 700,
