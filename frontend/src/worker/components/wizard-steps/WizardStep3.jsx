@@ -4105,118 +4105,7 @@ export function WizardStep3({ data, onChange, onNext, onBack, onSkip }) {
         </div>
       </div>
 
-      {/* ✅ Footer with Back, Skip (Step 3 only), and Next buttons */}
-      <div className="wizardFooter" style={{
-        position: 'sticky',
-        bottom: 0,
-        zIndex: 10,
-        background: 'white',
-        padding: '12px 24px',
-        borderTop: '1px solid rgba(18, 38, 63, 0.06)',
-        boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: '24px',
-        borderBottomLeftRadius: '12px',
-        borderBottomRightRadius: '12px',
-        flexWrap: 'wrap',
-        gap: '10px',
-      }}>
-        <button 
-          type="button" 
-          onClick={onBack}
-          style={{
-            padding: '8px 20px',
-            borderRadius: '8px',
-            background: 'transparent',
-            color: '#17263a',
-            border: '1px solid rgba(18, 38, 63, 0.12)',
-            cursor: 'pointer',
-            fontWeight: 500,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent'
-          }}
-        >
-          <span>←</span> Back
-        </button>
-
-        <div style={{
-          display: 'flex',
-          gap: '12px',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-        }}>
-          {/* ✅ Skip button for Step 3 */}
-          {onSkip && (
-            <button 
-              type="button" 
-              onClick={onSkip}
-              style={{
-                padding: '8px 24px',
-                borderRadius: '8px',
-                background: 'transparent',
-                color: '#17263a',
-                border: '1px solid rgba(18, 38, 63, 0.2)',
-                cursor: 'pointer',
-                fontWeight: 500,
-                fontSize: '14px',
-                transition: 'all 0.2s',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'
-                e.currentTarget.style.borderColor = 'rgba(18, 38, 63, 0.3)'
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'transparent'
-                e.currentTarget.style.borderColor = 'rgba(18, 38, 63, 0.2)'
-              }}
-            >
-              {t('common.skip') || 'Skip'} <span>→</span>
-            </button>
-          )}
-
-          <button 
-            type="button" 
-            onClick={onNext}
-            style={{
-              padding: '8px 24px',
-              borderRadius: '8px',
-              background: '#0f4ea9',
-              color: 'white',
-              border: 'none',
-              cursor: 'pointer',
-              fontWeight: 600,
-              fontSize: '14px',
-              transition: 'all 0.2s',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              opacity: 1
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#0b3f90'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#0f4ea9'
-            }}
-          >
-            Continue <span>→</span>
-          </button>
-        </div>
-      </div>
+      {/* ✅ Footer REMOVED - Parent (WorkerWizardPage) handles navigation */}
 
       {/* ✅ Mobile Responsive Styles */}
       <style>{`
@@ -4280,30 +4169,6 @@ export function WizardStep3({ data, onChange, onNext, onBack, onSkip }) {
             padding: 12px 14px !important;
           }
 
-          /* Footer - stack on mobile */
-          .wizardFooter {
-            flex-direction: column !important;
-            gap: 10px !important;
-            padding: 12px 16px !important;
-            border-bottom-left-radius: 0 !important;
-            border-bottom-right-radius: 0 !important;
-          }
-
-          .wizardFooter button {
-            width: 100% !important;
-            justify-content: center !important;
-          }
-
-          .wizardFooter div[style*="display: flex"] {
-            width: 100% !important;
-            flex-direction: column !important;
-            gap: 8px !important;
-          }
-
-          .wizardFooter div[style*="display: flex"] button {
-            width: 100% !important;
-          }
-
           /* Heavy equipment summary */
           .wizardStep .wizardSection div[style*="padding: 10px 16px"][style*="background: rgba(47, 180, 99, 0.06)"] {
             padding: 8px 12px !important;
@@ -4332,16 +4197,6 @@ export function WizardStep3({ data, onChange, onNext, onBack, onSkip }) {
 
           .wizardStep .wizardSection div[style*="fontSize: 13px"][style*="color: #0f4ea9"] {
             font-size: 11px !important;
-          }
-
-          /* Footer - more compact */
-          .wizardFooter {
-            padding: 10px 12px !important;
-          }
-
-          .wizardFooter button {
-            font-size: 13px !important;
-            padding: 10px 16px !important;
           }
 
           /* No items message - more compact */
