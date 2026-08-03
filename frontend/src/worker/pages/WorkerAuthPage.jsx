@@ -2890,6 +2890,11 @@ const handleLogin = async (e) => {
       } else {
         localStorage.removeItem('wizardCompleted')
         console.log('ℹ️ Wizard not completed yet')
+        
+        // ✅ Also dispatch event to clear state
+        window.dispatchEvent(new CustomEvent('wizardCompleted', {
+          detail: { completed: false }
+        }))
       }
       
       window.dispatchEvent(new CustomEvent('profileImageUpdated', {
