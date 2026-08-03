@@ -105,140 +105,183 @@ export function HomePage() {
           alignItems: 'center',
           padding: '40px 0'
         }}>
-          {/* Left Column - Phone/Mockup */}
+          {/* Left Column - Mobile Mockup (EXACTLY LIKE ATTACHMENT) */}
           <div className="homeLeft" style={{
             display: 'flex',
             justifyContent: 'center'
           }}>
             <div className="phoneCard" style={{
-              width: 'min(420px, 90%)',
-              borderRadius: '20px',
-              padding: '22px',
-              background: 'rgba(255, 255, 255, 0.12)',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
-              boxShadow: '0 24px 70px rgba(0, 0, 0, 0.25)',
-              backdropFilter: 'blur(10px)'
+              width: 'min(380px, 90%)',
+              borderRadius: '24px',
+              padding: '16px',
+              background: 'rgba(255, 255, 255, 0.95)',
+              border: '1px solid rgba(18, 38, 63, 0.12)',
+              boxShadow: '0 24px 70px rgba(0, 0, 0, 0.15)',
             }}>
+              {/* Phone Screen */}
               <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '16px'
+                width: '100%',
+                backgroundColor: '#f8f9fc',
+                borderRadius: '16px',
+                overflow: 'hidden',
+                padding: '12px 16px 20px',
+                border: '1px solid rgba(18, 38, 63, 0.06)'
               }}>
-                {/* Mock Mobile UI */}
+                {/* Status Bar */}
                 <div style={{
-                  width: '100%',
-                  backgroundColor: '#0f4ea9',
-                  borderRadius: '12px',
-                  padding: '12px 16px',
                   display: 'flex',
+                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  justifyContent: 'space-between'
+                  padding: '4px 0 12px 0',
+                  borderBottom: '1px solid rgba(18, 38, 63, 0.06)',
+                  marginBottom: '12px'
                 }}>
-                  <span style={{ color: 'white', fontWeight: '700', fontSize: '14px' }}>9:41</span>
-                  <span style={{ color: 'white', fontWeight: '700', fontSize: '14px' }}>AA</span>
+                  <span style={{ 
+                    fontSize: '14px', 
+                    fontWeight: '700', 
+                    color: '#17263a' 
+                  }}>9:41</span>
+                  <span style={{ 
+                    fontSize: '14px', 
+                    fontWeight: '700', 
+                    color: '#17263a' 
+                  }}>AA</span>
                 </div>
                 
+                {/* App Header - EXACTLY LIKE ATTACHMENT */}
                 <div style={{
-                  width: '100%',
-                  backgroundColor: 'white',
-                  borderRadius: '12px',
-                  padding: '16px',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '8px 0 4px 0',
+                  borderBottom: '1px solid rgba(18, 38, 63, 0.08)',
+                  marginBottom: '12px'
+                }}>
+                  {/* Left: Hamburger Icon */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    <span style={{ 
+                      fontSize: '24px', 
+                      fontWeight: '400',
+                      color: '#17263a',
+                      cursor: 'pointer'
+                    }}>☰</span>
+                  </div>
+                  
+                  {/* Center: Logo */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <img 
+                      src="/assets/logo_tradesmap.png" 
+                      alt="TradesMap" 
+                      style={{ 
+                        height: '28px',
+                        width: 'auto',
+                        objectFit: 'contain'
+                      }} 
+                    />
+                    <span style={{
+                      fontSize: '18px',
+                      fontWeight: '700',
+                      color: '#0f4ea9'
+                    }}>TradesMap</span>
+                  </div>
+                  
+                  {/* Right: User Avatar */}
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center'
+                  }}>
+                    <div style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      backgroundColor: '#0f4ea9',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontWeight: '700',
+                      fontSize: '14px',
+                      border: '2px solid rgba(15, 78, 169, 0.15)'
+                    }}>
+                      R
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Labels - EXACTLY LIKE ATTACHMENT */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr 1fr',
+                  gap: '8px',
+                  padding: '8px 0',
+                  marginTop: '4px'
                 }}>
                   <div style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    marginBottom: '12px'
+                    textAlign: 'center',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    color: '#17263a',
+                    padding: '6px 0',
+                    backgroundColor: 'rgba(15, 78, 169, 0.04)',
+                    borderRadius: '6px'
                   }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: '50%',
-                        backgroundColor: '#0f4ea9',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: 'white',
-                        fontWeight: '700',
-                        fontSize: '14px'
-                      }}>
-                        R
-                      </div>
-                      <span style={{ fontWeight: '600', fontSize: '14px' }}>ric kr</span>
-                    </div>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <span style={{ fontSize: '20px' }}>☰</span>
-                    </div>
+                    Hamburger
                   </div>
-                  
                   <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '12px',
-                    backgroundColor: '#f8f9fa',
-                    borderRadius: '8px',
-                    marginBottom: '12px'
+                    textAlign: 'center',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    color: '#17263a',
+                    padding: '6px 0',
+                    backgroundColor: 'rgba(15, 78, 169, 0.04)',
+                    borderRadius: '6px'
                   }}>
-                    <span style={{ fontSize: '14px', color: '#17263a' }}>TradesMap</span>
-                    <span style={{ fontSize: '14px', fontWeight: '600', color: '#0f4ea9' }}>R</span>
+                    Logo
                   </div>
-                  
                   <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr',
-                    gap: '8px',
-                    padding: '8px 0'
+                    textAlign: 'center',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    color: '#17263a',
+                    padding: '6px 0',
+                    backgroundColor: 'rgba(15, 78, 169, 0.04)',
+                    borderRadius: '6px'
                   }}>
-                    <div style={{
-                      padding: '12px',
-                      backgroundColor: '#f0f4ff',
-                      borderRadius: '8px',
-                      textAlign: 'center',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      color: '#17263a'
-                    }}>
-                      Menu
-                    </div>
-                    <div style={{
-                      padding: '12px',
-                      backgroundColor: '#f0f4ff',
-                      borderRadius: '8px',
-                      textAlign: 'center',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      color: '#17263a'
-                    }}>
-                      Logo
-                    </div>
-                    <div style={{
-                      padding: '12px',
-                      backgroundColor: '#f0f4ff',
-                      borderRadius: '8px',
-                      textAlign: 'center',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      color: '#17263a'
-                    }}>
-                      User Name
-                    </div>
+                    User Name
                   </div>
-                  
-                  <div style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    padding: '8px 0',
-                    fontSize: '12px',
-                    color: '#64748b'
-                  }}>
-                    <span>Left</span>
-                    <span>Center</span>
-                    <span>Right</span>
-                  </div>
+                </div>
+                
+                {/* Bottom Labels - EXACTLY LIKE ATTACHMENT */}
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  padding: '10px 0 0 0',
+                  marginTop: '8px',
+                  borderTop: '1px solid rgba(18, 38, 63, 0.06)'
+                }}>
+                  <span style={{ 
+                    fontSize: '12px', 
+                    color: '#64748b',
+                    fontWeight: '500'
+                  }}>Menu (Left)</span>
+                  <span style={{ 
+                    fontSize: '12px', 
+                    color: '#64748b',
+                    fontWeight: '500'
+                  }}>(Center)</span>
+                  <span style={{ 
+                    fontSize: '12px', 
+                    color: '#64748b',
+                    fontWeight: '500'
+                  }}>(Right)</span>
                 </div>
               </div>
             </div>
@@ -357,7 +400,7 @@ export function HomePage() {
           }
           
           .phoneCard {
-            width: min(360px, 85%) !important;
+            width: min(340px, 85%) !important;
           }
         }
         
@@ -381,8 +424,8 @@ export function HomePage() {
           }
           
           .phoneCard {
-            width: min(320px, 90%) !important;
-            padding: 16px !important;
+            width: min(300px, 90%) !important;
+            padding: 12px !important;
           }
           
           .homeMain {
@@ -406,7 +449,7 @@ export function HomePage() {
           
           .phoneCard {
             width: 95% !important;
-            padding: 12px !important;
+            padding: 10px !important;
           }
         }
       `}</style>
