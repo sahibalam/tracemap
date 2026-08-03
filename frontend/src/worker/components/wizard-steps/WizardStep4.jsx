@@ -3119,78 +3119,7 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
         </div>
       </div>
 
-      {/* ✅ Footer with Back and Next buttons */}
-      <div className="wizardFooter" style={{
-        position: 'sticky',
-        bottom: 0,
-        zIndex: 10,
-        background: 'white',
-        padding: '12px 24px',
-        borderTop: '1px solid rgba(18, 38, 63, 0.06)',
-        boxShadow: '0 -2px 8px rgba(0, 0, 0, 0.04)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: '24px',
-        borderBottomLeftRadius: '12px',
-        borderBottomRightRadius: '12px',
-        flexWrap: 'wrap',
-        gap: '10px',
-      }}>
-        <button 
-          type="button" 
-          onClick={onBack}
-          style={{
-            padding: '8px 20px',
-            borderRadius: '8px',
-            background: 'transparent',
-            color: '#17263a',
-            border: '1px solid rgba(18, 38, 63, 0.12)',
-            cursor: 'pointer',
-            fontWeight: 500,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(18, 38, 63, 0.06)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'transparent'
-          }}
-        >
-          <span>←</span> Back
-        </button>
-
-        <button 
-          type="button" 
-          onClick={handleNext}
-          style={{
-            padding: '8px 24px',
-            borderRadius: '8px',
-            background: '#0f4ea9',
-            color: 'white',
-            border: 'none',
-            cursor: 'pointer',
-            fontWeight: 600,
-            fontSize: '14px',
-            transition: 'all 0.2s',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = '#0b3f90'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = '#0f4ea9'
-          }}
-        >
-          Continue <span>→</span>
-        </button>
-      </div>
+      {/* ✅ Footer REMOVED - Parent (WorkerWizardPage) handles navigation */}
 
       {/* ✅ Mobile Responsive Styles */}
       <style>{`
@@ -3258,20 +3187,6 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
             font-size: 11px !important;
             padding: 6px 10px !important;
           }
-
-          /* Footer - stack on mobile */
-          .wizardFooter {
-            flex-direction: column !important;
-            gap: 10px !important;
-            padding: 12px 16px !important;
-            border-bottom-left-radius: 0 !important;
-            border-bottom-right-radius: 0 !important;
-          }
-
-          .wizardFooter button {
-            width: 100% !important;
-            justify-content: center !important;
-          }
         }
 
         @media (max-width: 480px) {
@@ -3303,16 +3218,6 @@ export function WizardStep4({ data, onChange, onNext, onBack }) {
 
           .wizardStep .wizardSection .fieldInput {
             font-size: 11px !important;
-          }
-
-          /* Footer - more compact */
-          .wizardFooter {
-            padding: 10px 12px !important;
-          }
-
-          .wizardFooter button {
-            font-size: 13px !important;
-            padding: 10px 16px !important;
           }
 
           .field-error {
