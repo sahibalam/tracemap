@@ -1,75 +1,69 @@
 // src/company/pages/CompanyDashboardDemo.jsx
+// EXACT MIRROR OF THE ATTACHMENT
 import { TopNav } from '../../common/components/TopNav'
 
 // ============================================================
-// 📊 STATS CARD COMPONENT
+// 📊 STATS CARDS - EXACT MATCH
 // ============================================================
-function StatCard({ label, value, change, icon, isNegative }) {
-  const isPositive = change > 0 && !isNegative
-  const isNegativeChange = change < 0 || isNegative
-  
-  return (
-    <div style={{ 
-      padding: '20px', 
-      background: 'white', 
-      borderRadius: '12px',
-      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
-      border: '1px solid rgba(18,38,63,0.06)'
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-        <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 500 }}>{label}</span>
-        <span style={{ fontSize: '20px' }}>{icon}</span>
-      </div>
-      <div style={{ fontSize: '28px', fontWeight: 700, color: '#17263a' }}>{value}</div>
-      {change !== undefined && (
-        <div style={{ 
-          fontSize: '13px', 
-          color: isPositive ? '#2fb463' : isNegativeChange ? '#dc2626' : '#64748b',
-          fontWeight: 500,
-          marginTop: '4px'
-        }}>
-          {isPositive ? '↑' : isNegativeChange ? '↓' : ''} {Math.abs(change)}% from last month
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ============================================================
-// 📊 DASHBOARD STATS
-// ============================================================
-function DashboardStats({ stats }) {
+function DashboardStats() {
   return (
     <div style={{ 
       display: 'grid', 
       gridTemplateColumns: 'repeat(4, 1fr)', 
-      gap: '16px' 
+      gap: '16px',
+      marginBottom: '24px'
     }}>
-      <StatCard 
-        label="Projects" 
-        value={stats.projects} 
-        change={stats.projectsGrowth} 
-        icon="📋"
-      />
-      <StatCard 
-        label="Workforce" 
-        value={stats.workforce} 
-        change={stats.workforceGrowth} 
-        icon="👷"
-      />
-      <StatCard 
-        label="Active Workforce" 
-        value={stats.activeWorkforce} 
-        change={stats.activeWorkforceGrowth} 
-        icon="✅"
-      />
-      <StatCard 
-        label="Total Reports" 
-        value={`$${stats.totalReports.toLocaleString()}`} 
-        change={stats.reportsChange}
-        isNegative
-        icon="📊"
-      />
+      {/* Projects */}
+      <div style={{ 
+        padding: '20px', 
+        background: 'white', 
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+        border: '1px solid rgba(18,38,63,0.06)'
+      }}>
+        <div style={{ fontSize: '13px', color: '#64748b', fontWeight: 500, marginBottom: '8px' }}>Projects</div>
+        <div style={{ fontSize: '28px', fontWeight: 700, color: '#17263a' }}>24</div>
+        <div style={{ fontSize: '13px', color: '#2fb463', fontWeight: 500, marginTop: '4px' }}>↑ 12% from last month</div>
+      </div>
+
+      {/* Workforce */}
+      <div style={{ 
+        padding: '20px', 
+        background: 'white', 
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+        border: '1px solid rgba(18,38,63,0.06)'
+      }}>
+        <div style={{ fontSize: '13px', color: '#64748b', fontWeight: 500, marginBottom: '8px' }}>Workforce</div>
+        <div style={{ fontSize: '28px', fontWeight: 700, color: '#17263a' }}>156</div>
+        <div style={{ fontSize: '13px', color: '#2fb463', fontWeight: 500, marginTop: '4px' }}>↑ 8% from last month</div>
+      </div>
+
+      {/* Active Workforce */}
+      <div style={{ 
+        padding: '20px', 
+        background: 'white', 
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+        border: '1px solid rgba(18,38,63,0.06)'
+      }}>
+        <div style={{ fontSize: '13px', color: '#64748b', fontWeight: 500, marginBottom: '8px' }}>Active Workforce</div>
+        <div style={{ fontSize: '28px', fontWeight: 700, color: '#17263a' }}>48</div>
+        <div style={{ fontSize: '13px', color: '#2fb463', fontWeight: 500, marginTop: '4px' }}>↑ 15% from last month</div>
+      </div>
+
+      {/* Total Reports */}
+      <div style={{ 
+        padding: '20px', 
+        background: 'white', 
+        borderRadius: '12px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+        border: '1px solid rgba(18,38,63,0.06)'
+      }}>
+        <div style={{ fontSize: '13px', color: '#64748b', fontWeight: 500, marginBottom: '8px' }}>Total Reports</div>
+        <div style={{ fontSize: '28px', fontWeight: 700, color: '#17263a' }}>$36,750</div>
+        <div style={{ fontSize: '13px', color: '#dc2626', fontWeight: 500, marginTop: '4px' }}>↓ 5% from last month</div>
+      </div>
     </div>
   )
 }
@@ -81,12 +75,10 @@ function StatusBadge({ status }) {
   const colors = {
     'In Progress': { bg: 'rgba(15, 78, 169, 0.1)', text: '#0f4ea9' },
     'Open': { bg: 'rgba(47, 180, 99, 0.1)', text: '#2fb463' },
-    'Pending': { bg: 'rgba(245, 158, 11, 0.1)', text: '#f59e0b' },
-    'Closed': { bg: 'rgba(148, 163, 184, 0.1)', text: '#64748b' },
-    'On Hold': { bg: 'rgba(220, 38, 38, 0.1)', text: '#dc2626' }
+    'Pending': { bg: 'rgba(245, 158, 11, 0.1)', text: '#f59e0b' }
   }
   
-  const style = colors[status] || colors['Pending']
+  const style = colors[status] || { bg: 'rgba(148, 163, 184, 0.1)', text: '#64748b' }
   
   return (
     <span style={{ 
@@ -104,9 +96,17 @@ function StatusBadge({ status }) {
 }
 
 // ============================================================
-// 📋 RECENT PROJECTS TABLE
+// 📋 RECENT PROJECTS TABLE - EXACT MATCH
 // ============================================================
-function RecentProjectsTable({ projects }) {
+function RecentProjectsTable() {
+  const projects = [
+    { name: 'Downtown Tower Build', location: 'New York, NY', workers: 32, status: 'In Progress', dueDate: 'Jun 25, 2025' },
+    { name: 'Westside Plaza', location: 'Los Angeles, CA', workers: 28, status: 'Open', dueDate: 'Jun 30, 2025' },
+    { name: 'Airport Road Expansion', location: 'Austin, TX', workers: 45, status: 'In Progress', dueDate: 'Jul 05, 2025' },
+    { name: 'School Renovation', location: 'Chicago, IL', workers: 18, status: 'Pending', dueDate: 'Jul 10, 2025' },
+    { name: 'Warehouse Construction', location: 'Dallas, TX', workers: 24, status: 'Open', dueDate: 'Jul 15, 2025' }
+  ]
+
   return (
     <div style={{ 
       background: 'white', 
@@ -150,15 +150,15 @@ function RecentProjectsTable({ projects }) {
 }
 
 // ============================================================
-// ⚡ QUICK ACTIONS
+// ⚡ QUICK ACTIONS - EXACT MATCH
 // ============================================================
 function QuickActions() {
   const actions = [
-    { icon: '📋', label: 'Create New Project' },
-    { icon: '👷', label: 'Add Workforce' },
-    { icon: '📊', label: 'Create Report' },
-    { icon: '✉️', label: 'Send Message' },
-    { icon: '📅', label: 'View Calendar' }
+    'Create New Project',
+    'Add Workforce',
+    'Create Report',
+    'Send Message',
+    'View Calendar'
   ]
   
   return (
@@ -202,8 +202,14 @@ function QuickActions() {
               e.currentTarget.style.borderColor = 'rgba(15, 78, 169, 0.08)'
             }}
           >
-            <span style={{ fontSize: '18px' }}>{action.icon}</span>
-            {action.label}
+            <span style={{ fontSize: '18px' }}>
+              {idx === 0 && '📋'}
+              {idx === 1 && '👷'}
+              {idx === 2 && '📊'}
+              {idx === 3 && '✉️'}
+              {idx === 4 && '📅'}
+            </span>
+            {action}
           </button>
         ))}
       </div>
@@ -212,9 +218,16 @@ function QuickActions() {
 }
 
 // ============================================================
-// 👷 WORKFORCE OVERVIEW
+// 👷 WORKFORCE OVERVIEW - EXACT MATCH
 // ============================================================
-function WorkforceOverview({ data }) {
+function WorkforceOverview() {
+  const data = [
+    { status: 'On Site', count: 92, percentage: 59 },
+    { status: 'Available', count: 38, percentage: 24 },
+    { status: 'On Leave', count: 16, percentage: 10 },
+    { status: 'Unavailable', count: 10, percentage: 7 }
+  ]
+
   const getBarColor = (status) => {
     const colors = {
       'On Site': '#0f4ea9',
@@ -268,9 +281,18 @@ function WorkforceOverview({ data }) {
 }
 
 // ============================================================
-// 📅 UPCOMING DEADLINES
+// 📅 UPCOMING DEADLINES - EXACT MATCH
 // ============================================================
-function UpcomingDeadlines({ deadlines }) {
+function UpcomingDeadlines() {
+  const deadlines = [
+    { project: 'Downtown Tower Build', task: 'Material Approval', date: 'Jun 25' },
+    { project: 'Westside Plaza', task: 'Workforce Review', date: 'Jun 30' },
+    { project: 'Airport Road Expansion', task: 'Progress Report', date: 'Jul 05' },
+    { from: 'John Doe', message: 'Please review the updated project...', date: 'Jul 10 AM' },
+    { from: 'Sarah Miller', message: 'Workforce list for next week.', date: 'Jul 15 AM' },
+    { from: 'Admin Team', message: 'Your project has been approved.', date: 'Jul 20 AM' }
+  ]
+
   return (
     <div style={{ 
       background: 'white', 
@@ -320,7 +342,7 @@ function UpcomingDeadlines({ deadlines }) {
             <div style={{ 
               fontSize: '13px', 
               fontWeight: 600, 
-              color: getDateColor(item.date),
+              color: '#0f4ea9',
               whiteSpace: 'nowrap',
               marginLeft: '12px'
             }}>
@@ -331,42 +353,6 @@ function UpcomingDeadlines({ deadlines }) {
       </div>
     </div>
   )
-}
-
-// ============================================================
-// 🎨 DATE COLOR HELPER
-// ============================================================
-function getDateColor(dateStr) {
-  if (!dateStr) return '#64748b'
-  
-  const today = new Date()
-  const currentYear = today.getFullYear()
-  
-  // Parse date like "Jun 25" or "Jul 10 AM"
-  const parts = dateStr.split(' ')
-  const month = parts[0]
-  const day = parseInt(parts[1])
-  
-  const monthMap = {
-    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
-    'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
-  }
-  
-  const monthIndex = monthMap[month]
-  if (monthIndex === undefined) return '#64748b'
-  
-  const dateObj = new Date(currentYear, monthIndex, day)
-  
-  // If the date is in the past, add a year
-  if (dateObj < today) {
-    dateObj.setFullYear(currentYear + 1)
-  }
-  
-  const diff = Math.ceil((dateObj - today) / (1000 * 60 * 60 * 24))
-  
-  if (diff < 0) return '#dc2626'
-  if (diff <= 3) return '#f59e0b'
-  return '#0f4ea9'
 }
 
 // ============================================================
@@ -452,45 +438,7 @@ function MobileSidebarContent() {
 }
 
 // ============================================================
-// 📊 MOCK DATA - EXACT MATCH OF ATTACHMENT
-// ============================================================
-const mockStats = {
-  projects: 24,
-  projectsGrowth: 12,
-  workforce: 156,
-  workforceGrowth: 8,
-  activeWorkforce: 48,
-  activeWorkforceGrowth: 15,
-  totalReports: 36750,
-  reportsChange: -5
-}
-
-const mockProjects = [
-  { name: 'Downtown Tower Build', location: 'New York, NY', workers: 32, status: 'In Progress', dueDate: 'Jun 25, 2025' },
-  { name: 'Westside Plaza', location: 'Los Angeles, CA', workers: 28, status: 'Open', dueDate: 'Jun 30, 2025' },
-  { name: 'Airport Road Expansion', location: 'Austin, TX', workers: 45, status: 'In Progress', dueDate: 'Jul 05, 2025' },
-  { name: 'School Renovation', location: 'Chicago, IL', workers: 18, status: 'Pending', dueDate: 'Jul 10, 2025' },
-  { name: 'Warehouse Construction', location: 'Dallas, TX', workers: 24, status: 'Open', dueDate: 'Jul 15, 2025' }
-]
-
-const mockWorkforce = [
-  { status: 'On Site', count: 92, percentage: 59 },
-  { status: 'Available', count: 38, percentage: 24 },
-  { status: 'On Leave', count: 16, percentage: 10 },
-  { status: 'Unavailable', count: 10, percentage: 7 }
-]
-
-const mockDeadlines = [
-  { project: 'Downtown Tower Build', task: 'Material Approval', date: 'Jun 25' },
-  { project: 'Westside Plaza', task: 'Workforce Review', date: 'Jun 30' },
-  { project: 'Airport Road Expansion', task: 'Progress Report', date: 'Jul 05' },
-  { from: 'John Doe', message: 'Please review the updated project...', date: 'Jul 10 AM' },
-  { from: 'Sarah Miller', message: 'Workforce list for next week.', date: 'Jul 15 AM' },
-  { from: 'Admin Team', message: 'Your project has been approved.', date: 'Jul 20 AM' }
-]
-
-// ============================================================
-// 🏠 MAIN PAGE COMPONENT
+// 🏠 MAIN PAGE - EXACT MIRROR
 // ============================================================
 export function CompanyDashboardDemo() {
   return (
@@ -537,36 +485,15 @@ export function CompanyDashboardDemo() {
 
         {/* Main Content */}
         <main className="appContent">
-          <div className="dashboardPage" style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
-            {/* Demo Banner */}
-            <div style={{ 
-              background: 'linear-gradient(135deg, #fef3c7, #fde68a)', 
-              padding: '12px 20px', 
-              borderRadius: '8px', 
-              marginBottom: '20px',
-              border: '1px solid #f59e0b',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '8px'
-            }}>
-              <span style={{ color: '#92400e', fontWeight: 500 }}>
-                🎯 Preview - Mock Data
-              </span>
-              <span style={{ fontSize: '12px', color: '#92400e' }}>
-                No login required
-              </span>
-            </div>
-
-            {/* Welcome Header */}
+          <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
+            {/* Header - EXACT MATCH */}
             <div style={{ marginBottom: '24px' }}>
               <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#17263a' }}>Dashboard</h1>
               <p style={{ fontSize: '14px', color: '#64748b' }}>Welcome back! Here's what's happening with your projects.</p>
             </div>
 
             {/* Stats Cards */}
-            <DashboardStats stats={mockStats} />
+            <DashboardStats />
 
             {/* Main Content Grid */}
             <div style={{ 
@@ -575,7 +502,7 @@ export function CompanyDashboardDemo() {
               gap: '20px',
               marginTop: '24px'
             }}>
-              <RecentProjectsTable projects={mockProjects} />
+              <RecentProjectsTable />
               <QuickActions />
             </div>
 
@@ -586,11 +513,11 @@ export function CompanyDashboardDemo() {
               gap: '20px',
               marginTop: '20px'
             }}>
-              <WorkforceOverview data={mockWorkforce} />
-              <UpcomingDeadlines deadlines={mockDeadlines} />
+              <WorkforceOverview />
+              <UpcomingDeadlines />
             </div>
 
-            {/* Footer */}
+            {/* Footer - EXACT MATCH */}
             <div style={{ marginTop: '32px', paddingTop: '16px', borderTop: '1px solid rgba(18, 38, 63, 0.06)', textAlign: 'center', fontSize: '12px', color: '#94a3b8' }}>
               © 2026 TradesMap. All rights reserved.
             </div>
@@ -604,15 +531,15 @@ export function CompanyDashboardDemo() {
           .sideNav { display: none !important; }
           .appShellBody { grid-template-columns: 1fr !important; padding: 12px 16px !important; }
           
-          .dashboardPage > div[style*="grid-template-columns: 2fr 1fr"] {
+          div[style*="grid-template-columns: 2fr 1fr"] {
             grid-template-columns: 1fr !important;
           }
           
-          .dashboardPage > div[style*="grid-template-columns: 1fr 1fr"] {
+          div[style*="grid-template-columns: 1fr 1fr"] {
             grid-template-columns: 1fr !important;
           }
 
-          .dashboardPage > div:first-of-type[style*="grid-template-columns: repeat(4, 1fr)"] {
+          div[style*="grid-template-columns: repeat(4, 1fr)"] {
             grid-template-columns: 1fr 1fr !important;
           }
         }
@@ -621,7 +548,7 @@ export function CompanyDashboardDemo() {
           .appShellBody { grid-template-columns: 300px 1fr !important; }
         }
         @media (max-width: 480px) {
-          .dashboardPage > div:first-of-type[style*="grid-template-columns: repeat(4, 1fr)"] {
+          div[style*="grid-template-columns: repeat(4, 1fr)"] {
             grid-template-columns: 1fr !important;
           }
         }
