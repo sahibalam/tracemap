@@ -1,47 +1,352 @@
 // src/company/pages/CompanyDashboardDemo.jsx
 import { TopNav } from '../../common/components/TopNav'
-import DashboardStats from '../components/dashboard/DashboardStats'
-import RecentProjectsTable from '../components/dashboard/RecentProjectsTable'
-import QuickActions from '../components/dashboard/QuickActions'
-import WorkforceOverview from '../components/dashboard/WorkforceOverview'
-import UpcomingDeadlines from '../components/dashboard/UpcomingDeadlines'
 
-// Mock Data
-const mockStats = {
-  projects: 24,
-  projectsGrowth: 12,
-  workforce: 156,
-  workforceGrowth: 8,
-  totalReports: 48,
-  outstanding: 36750,
-  outstandingChange: -5
+// ============================================================
+// 📊 STATS CARD COMPONENT
+// ============================================================
+function StatCard({ label, value, change, icon, isNegative }) {
+  const isPositive = change > 0 && !isNegative
+  const isNegativeChange = change < 0 || isNegative
+  
+  return (
+    <div style={{ 
+      padding: '20px', 
+      background: 'white', 
+      borderRadius: '12px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+      border: '1px solid rgba(18,38,63,0.06)'
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+        <span style={{ fontSize: '13px', color: '#64748b', fontWeight: 500 }}>{label}</span>
+        <span style={{ fontSize: '20px' }}>{icon}</span>
+      </div>
+      <div style={{ fontSize: '28px', fontWeight: 700, color: '#17263a' }}>{value}</div>
+      {change !== undefined && (
+        <div style={{ 
+          fontSize: '13px', 
+          color: isPositive ? '#2fb463' : isNegativeChange ? '#dc2626' : '#64748b',
+          fontWeight: 500,
+          marginTop: '4px'
+        }}>
+          {isPositive ? '↑' : isNegativeChange ? '↓' : ''} {Math.abs(change)}% from last month
+        </div>
+      )}
+    </div>
+  )
 }
 
-const mockProjects = [
-  { name: 'Downtown Tower Build', location: 'New York, NY', workers: 32, status: 'In Progress', dueDate: 'Jun 25, 2025' },
-  { name: 'Westside Plaza', location: 'Los Angeles, CA', workers: 28, status: 'Open', dueDate: 'Jun 30, 2025' },
-  { name: 'Airport Road Expansion', location: 'Austin, TX', workers: 45, status: 'In Progress', dueDate: 'Jul 05, 2025' },
-  { name: 'School Renovation', location: 'Chicago, IL', workers: 18, status: 'Pending', dueDate: 'Jul 10, 2025' },
-  { name: 'Warehouse Construction', location: 'Dallas, TX', workers: 24, status: 'Open', dueDate: 'Jul 15, 2025' }
-]
+// ============================================================
+// 📊 DASHBOARD STATS
+// ============================================================
+function DashboardStats({ stats }) {
+  return (
+    <div style={{ 
+      display: 'grid', 
+      gridTemplateColumns: 'repeat(4, 1fr)', 
+      gap: '16px' 
+    }}>
+      <StatCard 
+        label="Projects" 
+        value={stats.projects} 
+        change={stats.projectsGrowth} 
+        icon="📋"
+      />
+      <StatCard 
+        label="Workforce" 
+        value={stats.workforce} 
+        change={stats.workforceGrowth} 
+        icon="👷"
+      />
+      <StatCard 
+        label="Total Reports" 
+        value={stats.totalReports} 
+        icon="📊"
+      />
+      <StatCard 
+        label="Outstanding" 
+        value={`$${stats.outstanding.toLocaleString()}`} 
+        change={stats.outstandingChange}
+        isNegative
+        icon="💰"
+      />
+    </div>
+  )
+}
 
-const mockWorkforce = [
-  { status: 'On Site', count: 92, percentage: 59 },
-  { status: 'Available', count: 38, percentage: 24 },
-  { status: 'On Leave', count: 16, percentage: 10 },
-  { status: 'Unavailable', count: 10, percentage: 7 }
-]
+// ============================================================
+// 🏷️ STATUS BADGE
+// ============================================================
+function StatusBadge({ status }) {
+  const colors = {
+    'In Progress': { bg: 'rgba(15, 78, 169, 0.1)', text: '#0f4ea9' },
+    'Open': { bg: 'rgba(47, 180, 99, 0.1)', text: '#2fb463' },
+    'Pending': { bg: 'rgba(245, 158, 11, 0.1)', text: '#f59e0b' },
+    'Closed': { bg: 'rgba(148, 163, 184, 0.1)', text: '#64748b' },
+    'On Hold': { bg: 'rgba(220, 38, 38, 0.1)', text: '#dc2626' }
+  }
+  
+  const style = colors[status] || colors['Pending']
+  
+  return (
+    <span style={{ 
+      display: 'inline-block', 
+      padding: '2px 12px', 
+      borderRadius: '12px', 
+      fontSize: '12px', 
+      fontWeight: 600,
+      background: style.bg,
+      color: style.text
+    }}>
+      {status}
+    </span>
+  )
+}
 
-const mockDeadlines = [
-  { project: 'Downtown Tower Build', task: 'Material Approval', date: 'Jun 25' },
-  { project: 'Westside Plaza', task: 'Workforce Review', date: 'Jun 30' },
-  { project: 'Airport Road Expansion', task: 'Progress Report', date: 'Jul 05' },
-  { from: 'John Doe', message: 'Please review the updated project...', date: 'Jul 05' },
-  { from: 'Sarah Miller', message: 'Workforce list for next week.', date: 'Jul 05' },
-  { from: 'Admin Team', message: 'Your project has been approved.', date: 'Jul 05' }
-]
+// ============================================================
+// 📋 RECENT PROJECTS TABLE
+// ============================================================
+function RecentProjectsTable({ projects }) {
+  return (
+    <div style={{ 
+      background: 'white', 
+      borderRadius: '12px',
+      padding: '20px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+      border: '1px solid rgba(18,38,63,0.06)'
+    }}>
+      <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#17263a', marginBottom: '16px' }}>
+        Recent Projects
+      </h3>
+      
+      <div style={{ overflowX: 'auto' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+          <thead>
+            <tr style={{ borderBottom: '1px solid rgba(18,38,63,0.06)' }}>
+              <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: '12px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Project Name</th>
+              <th style={{ textAlign: 'left', padding: '10px 12px', fontSize: '12px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Location</th>
+              <th style={{ textAlign: 'center', padding: '10px 12px', fontSize: '12px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Workers</th>
+              <th style={{ textAlign: 'center', padding: '10px 12px', fontSize: '12px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Status</th>
+              <th style={{ textAlign: 'center', padding: '10px 12px', fontSize: '12px', fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Due Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projects.map((project, idx) => (
+              <tr key={idx} style={{ borderBottom: idx < projects.length - 1 ? '1px solid rgba(18,38,63,0.04)' : 'none' }}>
+                <td style={{ padding: '12px 12px', fontSize: '14px', fontWeight: 500, color: '#17263a' }}>{project.name}</td>
+                <td style={{ padding: '12px 12px', fontSize: '13px', color: '#64748b' }}>{project.location}</td>
+                <td style={{ padding: '12px 12px', fontSize: '13px', textAlign: 'center', color: '#17263a' }}>{project.workers}</td>
+                <td style={{ padding: '12px 12px', textAlign: 'center' }}>
+                  <StatusBadge status={project.status} />
+                </td>
+                <td style={{ padding: '12px 12px', fontSize: '13px', textAlign: 'center', color: '#64748b' }}>{project.dueDate}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
 
-// Sidebar Icons (same as before)
+// ============================================================
+// ⚡ QUICK ACTIONS
+// ============================================================
+function QuickActions() {
+  const actions = [
+    { icon: '📋', label: 'Create New Project' },
+    { icon: '👷', label: 'Add Workforce' },
+    { icon: '📊', label: 'Create Report' },
+    { icon: '✉️', label: 'Send Message' },
+    { icon: '📅', label: 'View Calendar' }
+  ]
+  
+  return (
+    <div style={{ 
+      background: 'white', 
+      borderRadius: '12px',
+      padding: '20px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+      border: '1px solid rgba(18,38,63,0.06)'
+    }}>
+      <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#17263a', marginBottom: '16px' }}>
+        Quick Actions
+      </h3>
+      
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+        {actions.map((action, idx) => (
+          <button
+            key={idx}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '10px',
+              padding: '12px 16px',
+              background: 'rgba(15, 78, 169, 0.04)',
+              border: '1px solid rgba(15, 78, 169, 0.08)',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '13px',
+              fontWeight: 500,
+              color: '#17263a',
+              transition: 'all 0.2s ease',
+              fontFamily: 'inherit',
+              width: '100%'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'rgba(15, 78, 169, 0.08)'
+              e.currentTarget.style.borderColor = 'rgba(15, 78, 169, 0.2)'
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'rgba(15, 78, 169, 0.04)'
+              e.currentTarget.style.borderColor = 'rgba(15, 78, 169, 0.08)'
+            }}
+          >
+            <span style={{ fontSize: '18px' }}>{action.icon}</span>
+            {action.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ============================================================
+// 👷 WORKFORCE OVERVIEW
+// ============================================================
+function WorkforceOverview({ data }) {
+  const getBarColor = (status) => {
+    const colors = {
+      'On Site': '#0f4ea9',
+      'Available': '#2fb463',
+      'On Leave': '#f59e0b',
+      'Unavailable': '#dc2626'
+    }
+    return colors[status] || '#94a3b8'
+  }
+
+  return (
+    <div style={{ 
+      background: 'white', 
+      borderRadius: '12px',
+      padding: '20px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+      border: '1px solid rgba(18,38,63,0.06)'
+    }}>
+      <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#17263a', marginBottom: '16px' }}>
+        Workforce by Status
+      </h3>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        {data.map((item, idx) => (
+          <div key={idx}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+              <span style={{ fontSize: '13px', color: '#17263a' }}>{item.status}</span>
+              <span style={{ fontSize: '13px', fontWeight: 600, color: '#17263a' }}>
+                {item.count} ({item.percentage}%)
+              </span>
+            </div>
+            <div style={{ 
+              height: '6px', 
+              background: 'rgba(18,38,63,0.06)', 
+              borderRadius: '3px',
+              overflow: 'hidden'
+            }}>
+              <div style={{ 
+                width: `${item.percentage}%`, 
+                height: '100%', 
+                background: getBarColor(item.status),
+                borderRadius: '3px',
+                transition: 'width 0.5s ease'
+              }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ============================================================
+// 📅 UPCOMING DEADLINES
+// ============================================================
+function UpcomingDeadlines({ deadlines }) {
+  const getDateColor = (date) => {
+    if (!date) return '#64748b'
+    const today = new Date()
+    const [month, day] = date.split(' ')
+    const dateObj = new Date(`${month} ${day}, ${today.getFullYear()}`)
+    const diff = Math.ceil((dateObj - today) / (1000 * 60 * 60 * 24))
+    
+    if (diff < 0) return '#dc2626'
+    if (diff <= 3) return '#f59e0b'
+    return '#0f4ea9'
+  }
+
+  return (
+    <div style={{ 
+      background: 'white', 
+      borderRadius: '12px',
+      padding: '20px',
+      boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+      border: '1px solid rgba(18,38,63,0.06)'
+    }}>
+      <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#17263a', marginBottom: '16px' }}>
+        Upcoming Deadlines
+      </h3>
+      
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {deadlines.map((item, idx) => (
+          <div 
+            key={idx}
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              padding: '10px 12px',
+              background: idx % 2 === 0 ? 'rgba(15, 78, 169, 0.02)' : 'transparent',
+              borderRadius: '6px'
+            }}
+          >
+            <div>
+              {item.project ? (
+                <>
+                  <div style={{ fontSize: '13px', fontWeight: 500, color: '#17263a' }}>
+                    {item.project}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>
+                    {item.task}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div style={{ fontSize: '13px', fontWeight: 500, color: '#17263a' }}>
+                    {item.from}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#64748b' }}>
+                    {item.message}
+                  </div>
+                </>
+              )}
+            </div>
+            <div style={{ 
+              fontSize: '13px', 
+              fontWeight: 600, 
+              color: getDateColor(item.date),
+              whiteSpace: 'nowrap',
+              marginLeft: '12px'
+            }}>
+              {item.date}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ============================================================
+// 🎨 SIDEBAR ICONS
+// ============================================================
 function IconGrid(props) {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
@@ -74,14 +379,6 @@ function IconUser(props) {
   )
 }
 
-function IconLogout(props) {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
-      <path d="M10 17v2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h6v2H4v10h6Zm4.59-1L16 14.59 13.41 12H22v-2h-8.59L16 7.41 14.59 6 10.59 10l4 4Z" fill="currentColor" />
-    </svg>
-  )
-}
-
 function IconSupport(props) {
   return (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" {...props}>
@@ -90,7 +387,9 @@ function IconSupport(props) {
   )
 }
 
-// Mobile Sidebar Content
+// ============================================================
+// 📱 MOBILE SIDEBAR CONTENT
+// ============================================================
 function MobileSidebarContent() {
   return (
     <>
@@ -126,6 +425,43 @@ function MobileSidebarContent() {
     </>
   )
 }
+
+// ============================================================
+// 🏠 MAIN PAGE COMPONENT
+// ============================================================
+const mockStats = {
+  projects: 24,
+  projectsGrowth: 12,
+  workforce: 156,
+  workforceGrowth: 8,
+  totalReports: 48,
+  outstanding: 36750,
+  outstandingChange: -5
+}
+
+const mockProjects = [
+  { name: 'Downtown Tower Build', location: 'New York, NY', workers: 32, status: 'In Progress', dueDate: 'Jun 25, 2025' },
+  { name: 'Westside Plaza', location: 'Los Angeles, CA', workers: 28, status: 'Open', dueDate: 'Jun 30, 2025' },
+  { name: 'Airport Road Expansion', location: 'Austin, TX', workers: 45, status: 'In Progress', dueDate: 'Jul 05, 2025' },
+  { name: 'School Renovation', location: 'Chicago, IL', workers: 18, status: 'Pending', dueDate: 'Jul 10, 2025' },
+  { name: 'Warehouse Construction', location: 'Dallas, TX', workers: 24, status: 'Open', dueDate: 'Jul 15, 2025' }
+]
+
+const mockWorkforce = [
+  { status: 'On Site', count: 92, percentage: 59 },
+  { status: 'Available', count: 38, percentage: 24 },
+  { status: 'On Leave', count: 16, percentage: 10 },
+  { status: 'Unavailable', count: 10, percentage: 7 }
+]
+
+const mockDeadlines = [
+  { project: 'Downtown Tower Build', task: 'Material Approval', date: 'Jun 25' },
+  { project: 'Westside Plaza', task: 'Workforce Review', date: 'Jun 30' },
+  { project: 'Airport Road Expansion', task: 'Progress Report', date: 'Jul 05' },
+  { from: 'John Doe', message: 'Please review the updated project...', date: 'Jul 05' },
+  { from: 'Sarah Miller', message: 'Workforce list for next week.', date: 'Jul 05' },
+  { from: 'Admin Team', message: 'Your project has been approved.', date: 'Jul 05' }
+]
 
 export function CompanyDashboardDemo() {
   return (
@@ -182,7 +518,9 @@ export function CompanyDashboardDemo() {
               border: '1px solid #f59e0b',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '8px'
             }}>
               <span style={{ color: '#92400e', fontWeight: 500 }}>
                 🎯 Demo Preview - Mock Data Only
@@ -244,10 +582,20 @@ export function CompanyDashboardDemo() {
           .dashboardPage > div[style*="grid-template-columns: 1fr 1fr"] {
             grid-template-columns: 1fr !important;
           }
+
+          /* Stats cards - 2 columns on mobile */
+          .dashboardPage > div:first-of-type[style*="grid-template-columns: repeat(4, 1fr)"] {
+            grid-template-columns: 1fr 1fr !important;
+          }
         }
         @media (min-width: 769px) {
           .sideNav { display: flex !important; }
           .appShellBody { grid-template-columns: 300px 1fr !important; }
+        }
+        @media (max-width: 480px) {
+          .dashboardPage > div:first-of-type[style*="grid-template-columns: repeat(4, 1fr)"] {
+            grid-template-columns: 1fr !important;
+          }
         }
       `}</style>
     </div>
