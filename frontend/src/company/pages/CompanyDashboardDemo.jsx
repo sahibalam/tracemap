@@ -58,16 +58,17 @@ function DashboardStats({ stats }) {
         icon="👷"
       />
       <StatCard 
-        label="Total Reports" 
-        value={stats.totalReports} 
-        icon="📊"
+        label="Active Workforce" 
+        value={stats.activeWorkforce} 
+        change={stats.activeWorkforceGrowth} 
+        icon="✅"
       />
       <StatCard 
-        label="Outstanding" 
-        value={`$${stats.outstanding.toLocaleString()}`} 
-        change={stats.outstandingChange}
+        label="Total Reports" 
+        value={`$${stats.totalReports.toLocaleString()}`} 
+        change={stats.reportsChange}
         isNegative
-        icon="💰"
+        icon="📊"
       />
     </div>
   )
@@ -270,18 +271,6 @@ function WorkforceOverview({ data }) {
 // 📅 UPCOMING DEADLINES
 // ============================================================
 function UpcomingDeadlines({ deadlines }) {
-  const getDateColor = (date) => {
-    if (!date) return '#64748b'
-    const today = new Date()
-    const [month, day] = date.split(' ')
-    const dateObj = new Date(`${month} ${day}, ${today.getFullYear()}`)
-    const diff = Math.ceil((dateObj - today) / (1000 * 60 * 60 * 24))
-    
-    if (diff < 0) return '#dc2626'
-    if (diff <= 3) return '#f59e0b'
-    return '#0f4ea9'
-  }
-
   return (
     <div style={{ 
       background: 'white', 
@@ -342,6 +331,42 @@ function UpcomingDeadlines({ deadlines }) {
       </div>
     </div>
   )
+}
+
+// ============================================================
+// 🎨 DATE COLOR HELPER
+// ============================================================
+function getDateColor(dateStr) {
+  if (!dateStr) return '#64748b'
+  
+  const today = new Date()
+  const currentYear = today.getFullYear()
+  
+  // Parse date like "Jun 25" or "Jul 10 AM"
+  const parts = dateStr.split(' ')
+  const month = parts[0]
+  const day = parseInt(parts[1])
+  
+  const monthMap = {
+    'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+    'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+  }
+  
+  const monthIndex = monthMap[month]
+  if (monthIndex === undefined) return '#64748b'
+  
+  const dateObj = new Date(currentYear, monthIndex, day)
+  
+  // If the date is in the past, add a year
+  if (dateObj < today) {
+    dateObj.setFullYear(currentYear + 1)
+  }
+  
+  const diff = Math.ceil((dateObj - today) / (1000 * 60 * 60 * 24))
+  
+  if (diff < 0) return '#dc2626'
+  if (diff <= 3) return '#f59e0b'
+  return '#0f4ea9'
 }
 
 // ============================================================
@@ -427,16 +452,17 @@ function MobileSidebarContent() {
 }
 
 // ============================================================
-// 🏠 MAIN PAGE COMPONENT
+// 📊 MOCK DATA - EXACT MATCH OF ATTACHMENT
 // ============================================================
 const mockStats = {
   projects: 24,
   projectsGrowth: 12,
   workforce: 156,
   workforceGrowth: 8,
-  totalReports: 48,
-  outstanding: 36750,
-  outstandingChange: -5
+  activeWorkforce: 48,
+  activeWorkforceGrowth: 15,
+  totalReports: 36750,
+  reportsChange: -5
 }
 
 const mockProjects = [
@@ -458,11 +484,14 @@ const mockDeadlines = [
   { project: 'Downtown Tower Build', task: 'Material Approval', date: 'Jun 25' },
   { project: 'Westside Plaza', task: 'Workforce Review', date: 'Jun 30' },
   { project: 'Airport Road Expansion', task: 'Progress Report', date: 'Jul 05' },
-  { from: 'John Doe', message: 'Please review the updated project...', date: 'Jul 05' },
-  { from: 'Sarah Miller', message: 'Workforce list for next week.', date: 'Jul 05' },
-  { from: 'Admin Team', message: 'Your project has been approved.', date: 'Jul 05' }
+  { from: 'John Doe', message: 'Please review the updated project...', date: 'Jul 10 AM' },
+  { from: 'Sarah Miller', message: 'Workforce list for next week.', date: 'Jul 15 AM' },
+  { from: 'Admin Team', message: 'Your project has been approved.', date: 'Jul 20 AM' }
 ]
 
+// ============================================================
+// 🏠 MAIN PAGE COMPONENT
+// ============================================================
 export function CompanyDashboardDemo() {
   return (
     <div className="appShell">
@@ -523,7 +552,7 @@ export function CompanyDashboardDemo() {
               gap: '8px'
             }}>
               <span style={{ color: '#92400e', fontWeight: 500 }}>
-                🎯 Demo Preview - Mock Data Only
+                🎯 Preview - Mock Data
               </span>
               <span style={{ fontSize: '12px', color: '#92400e' }}>
                 No login required
@@ -583,7 +612,6 @@ export function CompanyDashboardDemo() {
             grid-template-columns: 1fr !important;
           }
 
-          /* Stats cards - 2 columns on mobile */
           .dashboardPage > div:first-of-type[style*="grid-template-columns: repeat(4, 1fr)"] {
             grid-template-columns: 1fr 1fr !important;
           }
