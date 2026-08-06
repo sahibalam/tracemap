@@ -1234,10 +1234,8 @@
 
 
 
-
-
 // src/company/pages/CompanyDashboardDemo.jsx
-// EXACT MIRROR OF THE ATTACHMENT - Using existing navbar and sidebar theme
+// EXACT MIRROR OF THE ATTACHMENT - Including header design
 import { TopNav } from '../../common/components/TopNav'
 
 // ============================================================
@@ -1577,9 +1575,9 @@ function UpcomingDeadlines() {
     { project: 'Downtown Tower Build', task: 'Material Approval', date: 'Jun 25' },
     { project: 'Westside Plaza', task: 'Workforce Review', date: 'Jun 30' },
     { project: 'Airport Road Expansion', task: 'Progress Report', date: 'Jul 05' },
-    { from: 'John Doe', message: 'Please review the updated project...', date: 'Jul 05' },
-    { from: 'Sarah Miller', message: 'Workforce list for next week.', date: 'Jul 05' },
-    { from: 'Admin Team', message: 'Your project has been approved.', date: 'Jul 05' }
+    { from: 'John Doe', message: 'Please review the updated project...', date: 'Jul 10 AM' },
+    { from: 'Sarah Miller', message: 'Workforce list for next week.', date: 'Jul 15 AM' },
+    { from: 'Admin Team', message: 'Your project has been approved.', date: 'Jul 20 AM' }
   ]
 
   return (
@@ -1645,7 +1643,7 @@ function UpcomingDeadlines() {
 }
 
 // ============================================================
-// 🏠 MAIN PAGE - Using existing navbar and sidebar theme
+// 🏠 MAIN PAGE - Matching attachment design
 // ============================================================
 export function CompanyDashboardDemo() {
   return (
@@ -1711,10 +1709,105 @@ export function CompanyDashboardDemo() {
 
         <main className="appContent">
           <div style={{ padding: '24px', maxWidth: '1400px', margin: '0 auto' }}>
-            <div style={{ marginBottom: '24px' }}>
-              <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#17263a' }}>Dashboard</h1>
-              <p style={{ fontSize: '14px', color: '#64748b' }}>Welcome back! Here's what's happening with your projects.</p>
+            {/* Header - Matching attachment: "TradesMap" brand on left, search on right */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              marginBottom: '8px'
+            }}>
+              <div>
+                <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#17263a' }}>Dashboard</h1>
+              </div>
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '16px'
+              }}>
+                {/* Search Bar - matching attachment style */}
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  background: 'white',
+                  border: '1px solid rgba(18,38,63,0.08)',
+                  borderRadius: '8px',
+                  padding: '6px 12px',
+                  gap: '8px'
+                }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="#94a3b8"/>
+                  </svg>
+                  <input 
+                    type="text" 
+                    placeholder="Search..." 
+                    style={{ 
+                      border: 'none', 
+                      outline: 'none', 
+                      fontSize: '13px',
+                      padding: '4px 0',
+                      width: '160px',
+                      fontFamily: 'inherit'
+                    }}
+                  />
+                </div>
+                {/* Notification Bell - matching attachment */}
+                <button style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  cursor: 'pointer',
+                  color: '#64748b',
+                  position: 'relative',
+                  padding: '4px'
+                }}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.63-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.64 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z" fill="currentColor"/>
+                  </svg>
+                  <span style={{
+                    position: 'absolute',
+                    top: '2px',
+                    right: '2px',
+                    width: '8px',
+                    height: '8px',
+                    background: '#dc2626',
+                    borderRadius: '50%',
+                    border: '2px solid white'
+                  }} />
+                </button>
+                {/* Company Selector - matching attachment */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '4px 12px 4px 8px',
+                  background: 'white',
+                  border: '1px solid rgba(18,38,63,0.08)',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}>
+                  <div style={{
+                    width: '28px',
+                    height: '28px',
+                    borderRadius: '6px',
+                    background: '#0f4ea9',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '12px',
+                    fontWeight: 600
+                  }}>
+                    ABC
+                  </div>
+                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#17263a' }}>
+                    ABC Construction Co.
+                  </span>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M7 10l5 5 5-5" stroke="#94a3b8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </div>
+              </div>
             </div>
+            <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '24px' }}>Welcome back! Here's what's happening with your projects.</p>
 
             <DashboardStats />
 
@@ -1761,6 +1854,11 @@ export function CompanyDashboardDemo() {
           div[style*="grid-template-columns: repeat(4, 1fr)"] {
             grid-template-columns: 1fr 1fr !important;
           }
+          
+          /* Hide search on mobile */
+          div[style*="width: 160px"] {
+            display: none !important;
+          }
         }
         @media (min-width: 769px) {
           .sideNav { display: flex !important; }
@@ -1769,6 +1867,9 @@ export function CompanyDashboardDemo() {
         @media (max-width: 480px) {
           div[style*="grid-template-columns: repeat(4, 1fr)"] {
             grid-template-columns: 1fr !important;
+          }
+          div[style*="display: flex"][style*="gap: 16px"] {
+            gap: 8px !important;
           }
         }
       `}</style>
